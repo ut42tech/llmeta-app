@@ -1,9 +1,10 @@
-import { Sky } from "@react-three/drei";
+import { Sky, SoftShadows } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
   SimpleCharacter,
   type SimpleCharacterImpl,
 } from "@react-three/viverse";
+import { useControls } from "leva";
 import { Suspense, useEffect, useRef } from "react";
 import { type DirectionalLight, Vector3 } from "three";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
@@ -13,6 +14,9 @@ const LIGHT_OFFSET = new Vector3(2, 5, 2);
 const tmpVec = new Vector3();
 
 export const Scene = () => {
+  // Debug
+  const { softShadows } = useControls({ softShadows: true });
+
   const computeCharacterCell = useWorld((state) => state.computeCharacterCell);
   const characterRef = useRef<SimpleCharacterImpl>(null);
   const directionalLight = useRef<DirectionalLight | null>(null);
@@ -48,6 +52,8 @@ export const Scene = () => {
 
   return (
     <>
+      {softShadows ? <SoftShadows /> : null}
+
       <Sky />
       <directionalLight
         intensity={1.2}

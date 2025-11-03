@@ -1,11 +1,17 @@
 "use client";
 
+import { Stats } from "@react-three/drei";
+
 import { Canvas } from "@react-three/fiber";
 import { BvhPhysicsWorld } from "@react-three/viverse";
+import { useControls } from "leva";
 import { Suspense } from "react";
 import { Scene } from "@/components/Scene";
 
 export default function Home() {
+  // Debug
+  const { stats } = useControls({ stats: true });
+
   return (
     <BvhPhysicsWorld>
       <Canvas
@@ -17,6 +23,7 @@ export default function Home() {
         }}
         flat
       >
+        {stats ? <Stats /> : null}
         <Suspense>
           <Scene />
         </Suspense>
