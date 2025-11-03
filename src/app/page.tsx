@@ -8,7 +8,6 @@ import { Scene } from "@/components/Scene";
 export default function Home() {
   return (
     <BvhPhysicsWorld>
-      <Suspense fallback={null}></Suspense>
       <Canvas
         className="fixed! w-screen! h-screen! touch-none"
         shadows
@@ -18,7 +17,7 @@ export default function Home() {
         }}
         flat
       >
-        <Suspense fallback={null}>
+        <Suspense>
           <Scene />
         </Suspense>
       </Canvas>
