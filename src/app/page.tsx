@@ -9,25 +9,27 @@ import { Suspense } from "react";
 import { Scene } from "@/components/Scene";
 
 export default function Home() {
-  // Debug
+  // debug
   const { stats } = useControls({ stats: true });
 
   return (
-    <BvhPhysicsWorld>
-      <Canvas
-        className="fixed! w-screen! h-screen! touch-none"
-        shadows
-        camera={{ position: [3, 3, 3], fov: 40 }}
-        gl={{
-          preserveDrawingBuffer: true,
-        }}
-        flat
-      >
-        {stats ? <Stats /> : null}
-        <Suspense>
-          <Scene />
-        </Suspense>
-      </Canvas>
-    </BvhPhysicsWorld>
+    <>
+      {stats && <Stats />}
+      <BvhPhysicsWorld>
+        <Canvas
+          className="fixed! w-screen! h-screen! touch-none"
+          shadows
+          camera={{ position: [3, 3, 3], fov: 40 }}
+          gl={{
+            preserveDrawingBuffer: true,
+          }}
+          flat
+        >
+          <Suspense>
+            <Scene />
+          </Suspense>
+        </Canvas>
+      </BvhPhysicsWorld>
+    </>
   );
 }

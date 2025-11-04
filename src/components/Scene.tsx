@@ -14,7 +14,7 @@ const LIGHT_OFFSET = new Vector3(2, 5, 2);
 const tmpVec = new Vector3();
 
 export const Scene = () => {
-  // Debug
+  // debug
   const { softShadows } = useControls({ softShadows: true });
 
   const computeCharacterCell = useWorld((state) => state.computeCharacterCell);
@@ -52,7 +52,7 @@ export const Scene = () => {
 
   return (
     <>
-      {softShadows ? <SoftShadows /> : null}
+      {softShadows && <SoftShadows />}
 
       <Sky />
       <directionalLight
