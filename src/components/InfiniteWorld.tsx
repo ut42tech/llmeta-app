@@ -3,13 +3,12 @@ import { BvhPhysicsBody, PrototypeBox } from "@react-three/viverse";
 import {
   GRID_CELL_SIZE,
   HALF_GRID_CELL_SIZE,
-  playerStore,
-} from "@/stores/playerStore";
-import { worldStore } from "@/stores/worldStore";
+  useWorld,
+} from "@/hooks/useWorld";
 
 export const InfiniteWorld = ({ ...props }) => {
-  const gridPosition = playerStore((state) => state.gridPosition);
-  const gridSize = worldStore((state) => state.gridSize);
+  const gridPosition = useWorld((state) => state.gridPosition);
+  const gridSize = useWorld((state) => state.gridSize);
   return (
     <group
       {...props}
