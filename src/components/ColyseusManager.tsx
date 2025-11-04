@@ -16,6 +16,11 @@ import {
 /**
  * Manages Colyseus connection and synchronization between local/remote players
  */
+
+// Threshold for position/rotation changes to trigger updates
+const POSITION_THRESHOLD = 0.01;
+const ROTATION_THRESHOLD = 0.01;
+
 export const ColyseusManager = () => {
   const room = useColyseusRoom();
   const state = useColyseusState();
@@ -27,6 +32,7 @@ export const ColyseusManager = () => {
   const localPlayerRotation = useLocalPlayerStore((state) => state.rotation);
 
   // Remote players store
+  const players = useRemotePlayersStore((state) => state.players);
   const setPlayer = useRemotePlayersStore((state) => state.setPlayer);
   const removePlayer = useRemotePlayersStore((state) => state.removePlayer);
   const clearPlayers = useRemotePlayersStore((state) => state.clear);
@@ -82,13 +88,12 @@ export const ColyseusManager = () => {
 
       // Remove players that are no longer in the state
       const currentPlayerIds = new Set(Array.from(newState.players.keys()));
-      Array.from(useRemotePlayersStore.getState().players.keys()).forEach(
-        (playerId) => {
-          if (!currentPlayerIds.has(playerId)) {
-            removePlayer(playerId);
-          }
-        },
-      );
+      const storedPlayerIds = Array.from(players.keys());
+      for (const playerId of storedPlayerIds) {
+        if (!currentPlayerIds.has(playerId)) {
+          removePlayer(playerId);
+        }
+      }
     };
 
     room.onStateChange(stateChangeHandler);
@@ -96,7 +101,7 @@ export const ColyseusManager = () => {
     return () => {
       room.onStateChange.remove(stateChangeHandler);
     };
-  }, [state, room, setPlayer, removePlayer]);
+  }, [state, room, setPlayer, removePlayer, players]);
 
   // Send position updates to server
   useEffect(() => {
@@ -104,12 +109,16 @@ export const ColyseusManager = () => {
 
     // Check if position or rotation has changed significantly
     const posChanged =
-      Math.abs(localPlayerPosition.x - lastSentPosition.current.x) > 0.01 ||
-      Math.abs(localPlayerPosition.y - lastSentPosition.current.y) > 0.01 ||
-      Math.abs(localPlayerPosition.z - lastSentPosition.current.z) > 0.01;
+      Math.abs(localPlayerPosition.x - lastSentPosition.current.x) >
+        POSITION_THRESHOLD ||
+      Math.abs(localPlayerPosition.y - lastSentPosition.current.y) >
+        POSITION_THRESHOLD ||
+      Math.abs(localPlayerPosition.z - lastSentPosition.current.z) >
+        POSITION_THRESHOLD;
 
     const rotChanged =
-      Math.abs(localPlayerRotation.y - lastSentRotation.current.y) > 0.01;
+      Math.abs(localPlayerRotation.y - lastSentRotation.current.y) >
+      ROTATION_THRESHOLD;
 
     if (posChanged || rotChanged) {
       const moveData: MoveData = {

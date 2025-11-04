@@ -1,3 +1,4 @@
+import { Text } from "@react-three/drei";
 import { useEffect, useRef } from "react";
 import type { Group } from "three";
 import type { Player } from "@/utils/colyseus";
@@ -7,7 +8,7 @@ type RemotePlayerProps = {
   playerId: string;
 };
 
-export const RemotePlayer = ({ player }: RemotePlayerProps) => {
+export const RemotePlayer = ({ player, playerId }: RemotePlayerProps) => {
   const groupRef = useRef<Group>(null);
 
   useEffect(() => {
@@ -38,9 +39,15 @@ export const RemotePlayer = ({ player }: RemotePlayerProps) => {
         <meshStandardMaterial color="#3b82f6" />
       </mesh>
       {/* Username label above the player */}
-      <mesh position={[0, 2.5, 0]}>
-        <meshBasicMaterial color="white" />
-      </mesh>
+      <Text
+        position={[0, 2.5, 0]}
+        fontSize={0.3}
+        color="white"
+        anchorX="center"
+        anchorY="middle"
+      >
+        {player.username || playerId.substring(0, 8)}
+      </Text>
     </group>
   );
 };
