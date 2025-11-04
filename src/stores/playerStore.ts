@@ -1,4 +1,3 @@
-// import type { Avatar } from "@react-three/viverse";
 import { Vector3 } from "three";
 import { create } from "zustand";
 
@@ -7,26 +6,24 @@ export const HALF_GRID_CELL_SIZE = GRID_CELL_SIZE / 2;
 
 type GridCoordinates = { x: number; y: number };
 
-type WorldState = {
-  characterPosition: Vector3;
+type PlayerState = {
+  position: Vector3;
   gridPosition: GridCoordinates;
-  gridSize: GridCoordinates;
-  computeCharacterCell: (position: Vector3) => void;
+  updatePosition: (position: Vector3) => void;
 };
 
+const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
 const INITIAL_GRID_POSITION: GridCoordinates = { x: 0, y: 0 };
-const DEFAULT_GRID_SIZE: GridCoordinates = { x: 3, y: 3 };
 
 const deriveGridCoordinates = (position: Vector3): GridCoordinates => ({
   x: Math.floor((position.x + HALF_GRID_CELL_SIZE) / GRID_CELL_SIZE),
   y: Math.floor((position.z + HALF_GRID_CELL_SIZE) / GRID_CELL_SIZE),
 });
 
-export const useWorld = create<WorldState>((set, _get) => ({
-  characterPosition: new Vector3(0, 0, 0),
+export const playerStore = create<PlayerState>((set) => ({
+  position: INITIAL_PLAYER_POSITION,
   gridPosition: { ...INITIAL_GRID_POSITION },
-  gridSize: { ...DEFAULT_GRID_SIZE },
-  computeCharacterCell: (position: Vector3) => {
+  updatePosition: (position: Vector3) => {
     const nextGridPosition = deriveGridCoordinates(position);
 
     set((state) => {
@@ -34,14 +31,14 @@ export const useWorld = create<WorldState>((set, _get) => ({
         state.gridPosition.x !== nextGridPosition.x ||
         state.gridPosition.y !== nextGridPosition.y;
 
-      const nextCharacterPosition = position.clone();
+      const nextPosition = position.clone();
 
       if (!hasGridChanged) {
-        return { characterPosition: nextCharacterPosition };
+        return { position: nextPosition };
       }
 
       return {
-        characterPosition: nextCharacterPosition,
+        position: nextPosition,
         gridPosition: nextGridPosition,
       };
     });
