@@ -9,7 +9,6 @@ import {
   disconnectFromColyseus,
   MessageType,
   type MoveData,
-  type Player,
   useColyseusRoom,
   useColyseusState,
 } from "@/utils/colyseus";
@@ -65,27 +64,6 @@ export const ColyseusManager = () => {
   useEffect(() => {
     if (!state?.players || !room) return;
 
-    // Handle player additions
-    const onPlayerAdd = (player: Player, sessionId: string) => {
-      // Don't add ourselves to the remote players
-      if (sessionId !== room.sessionId) {
-        setPlayer(sessionId, player);
-      }
-    };
-
-    // Handle player changes
-    const onPlayerChange = (player: Player, sessionId: string) => {
-      // Don't track ourselves in remote players
-      if (sessionId !== room.sessionId) {
-        setPlayer(sessionId, player);
-      }
-    };
-
-    // Handle player removals
-    const onPlayerRemove = (_player: Player, sessionId: string) => {
-      removePlayer(sessionId);
-    };
-
     // Subscribe to all current players
     state.players.forEach((player, sessionId) => {
       if (sessionId !== room.sessionId) {
@@ -93,15 +71,30 @@ export const ColyseusManager = () => {
       }
     });
 
-    // Listen for player events
-    state.players.onAdd(onPlayerAdd);
-    state.players.onChange(onPlayerChange);
-    state.players.onRemove(onPlayerRemove);
+    // Listen for state changes using room.onStateChange
+    const stateChangeHandler = (newState: typeof state) => {
+      // Update all players on state change
+      newState.players.forEach((player, sessionId) => {
+        if (sessionId !== room.sessionId) {
+          setPlayer(sessionId, player);
+        }
+      });
+
+      // Remove players that are no longer in the state
+      const currentPlayerIds = new Set(Array.from(newState.players.keys()));
+      Array.from(useRemotePlayersStore.getState().players.keys()).forEach(
+        (playerId) => {
+          if (!currentPlayerIds.has(playerId)) {
+            removePlayer(playerId);
+          }
+        },
+      );
+    };
+
+    room.onStateChange(stateChangeHandler);
 
     return () => {
-      state.players.onAdd(() => {});
-      state.players.onChange(() => {});
-      state.players.onRemove(() => {});
+      room.onStateChange.remove(stateChangeHandler);
     };
   }, [state, room, setPlayer, removePlayer]);
 
