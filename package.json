@@ -12,10 +12,11 @@
   "dependencies": {
     "@colyseus/schema": "2.0.37",
     "@pixiv/three-vrm": "^3.4.4",
+    "@pmndrs/viverse": "^0.1.19",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.4.0",
     "@react-three/postprocessing": "^3.0.4",
-    "@react-three/viverse": "^0.1.20",
+    "@react-three/viverse": "^0.1.19",
     "colyseus.js": "^0.16.22",
     "leva": "^0.10.1",
     "next": "16.0.1",
