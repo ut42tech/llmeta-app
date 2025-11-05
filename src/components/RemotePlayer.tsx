@@ -14,7 +14,7 @@ const POSITION_LERP_FACTOR = 0.2;
 const RemotePlayerComponent = ({ player }: RemotePlayerProps) => {
   const groupRef = useRef<Group>(null);
 
-  const { mixer, actions, modelScene, isLoaded } = useCharacterModel(groupRef);
+  const { mixer, actions, isLoaded } = useCharacterModel(groupRef);
 
   useAnimationController({
     animation: player.animation,
@@ -29,10 +29,8 @@ const RemotePlayerComponent = ({ player }: RemotePlayerProps) => {
 
     group.position.lerp(player.position, POSITION_LERP_FACTOR);
 
-    if (modelScene) {
-      const { rotation } = player;
-      modelScene.rotation.set(rotation.x, rotation.y, rotation.z);
-    }
+    const { rotation } = player;
+    group.rotation.set(rotation.x, rotation.y, rotation.z);
 
     mixer?.update(delta);
   });
