@@ -55,10 +55,10 @@ export type MoveData = {
  * プレイヤー状態スキーマ
  */
 export class Player extends Schema {
-  @type("string") username = "Anonymous";
+  @type("string") username = "Player";
   @type(Vec3) position = new Vec3();
   @type(Vec3) rotation = new Vec3();
-  @type("string") animation = "Idle";
+  @type("string") animation = "idle";
 }
 
 /**
