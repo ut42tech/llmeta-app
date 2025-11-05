@@ -23,6 +23,7 @@ export const Scene = () => {
 
   const room = useColyseusRoom();
 
+  const setSessionId = useLocalPlayerStore((state) => state.setSessionId);
   const setPosition = useLocalPlayerStore((state) => state.setPosition);
   const setRotation = useLocalPlayerStore((state) => state.setRotation);
   const setAction = useLocalPlayerStore((state) => state.setAction);
@@ -34,6 +35,8 @@ export const Scene = () => {
   const characterRef = useRef<SimpleCharacterImpl>(null);
   const directionalLight = useRef<DirectionalLight | null>(null);
   const { scene } = useThree();
+
+  setSessionId(room?.sessionId || "");
 
   useEffect(() => {
     const light = directionalLight.current;
@@ -93,9 +96,13 @@ export const Scene = () => {
       />
       <ambientLight intensity={1} />
 
+      {/* Local Player */}
       <Suspense>
         <SimpleCharacter ref={characterRef} />
       </Suspense>
+
+      {/* Remote Players */}
+      {/* TODO: <RemotePlayers /> */}
 
       <Suspense>
         <InfiniteWorld />
