@@ -10,6 +10,7 @@ type RemotePlayerProps = {
 };
 
 const POSITION_LERP_FACTOR = 0.2;
+const ROTATION_LERP_FACTOR = 0.2;
 
 const RemotePlayerComponent = ({ player }: RemotePlayerProps) => {
   const groupRef = useRef<Group>(null);
@@ -29,8 +30,13 @@ const RemotePlayerComponent = ({ player }: RemotePlayerProps) => {
 
     group.position.lerp(player.position, POSITION_LERP_FACTOR);
 
-    const { rotation } = player;
-    group.rotation.set(rotation.x, rotation.y, rotation.z);
+    group.rotation.y =
+      Math.atan2(
+        Math.sin(player.rotation.y - group.rotation.y),
+        Math.cos(player.rotation.y - group.rotation.y),
+      ) *
+        ROTATION_LERP_FACTOR +
+      group.rotation.y;
 
     mixer?.update(delta);
   });
