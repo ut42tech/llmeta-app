@@ -7,7 +7,7 @@ import type { AnimationAction } from "three";
 import { AnimationMixer } from "three";
 import type { AnimationName } from "@/stores/localPlayerStore";
 
-export const ANIMATION_NAMES = [
+export const ANIMATION_NAMES: AnimationName[] = [
   "idle",
   "walk",
   "run",
@@ -15,7 +15,7 @@ export const ANIMATION_NAMES = [
   "jumpLoop",
   "jumpDown",
   "jumpForward",
-] as const;
+];
 
 export const INITIAL_ANIMATION: AnimationName = "idle";
 
