@@ -3,7 +3,7 @@ import {
   simpleCharacterAnimationNames,
 } from "@pmndrs/viverse";
 import type { AnimationAction } from "three";
-import { AnimationMixer } from "three";
+import { AnimationMixer, Group, LoopOnce } from "three";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils.js";
 import type { AnimationName } from "@/stores/localPlayerStore";
 
@@ -40,9 +40,13 @@ export const getSharedCharacterAssets = async () => {
 export const createRemotePlayerInstance = async () => {
   const { model, animations } = await getSharedCharacterAssets();
 
-  const modelScene = SkeletonUtils.clone(model.scene);
-  const mixer = new AnimationMixer(modelScene);
+  const group = new Group();
+  group.name = "RemotePlayerRoot";
 
+  const modelScene = SkeletonUtils.clone(model.scene);
+  group.add(modelScene);
+
+  const mixer = new AnimationMixer(group);
   const actions = new Map<AnimationName, AnimationAction>();
 
   const animationNames =
@@ -50,10 +54,19 @@ export const createRemotePlayerInstance = async () => {
 
   for (const name of animationNames) {
     const clip = animations?.[name];
-    if (clip) {
-      actions.set(name, mixer.clipAction(clip));
+    if (!clip) {
+      continue;
     }
+
+    const action = mixer.clipAction(clip);
+
+    if (name === "jumpDown" || name === "jumpUp" || name === "jumpForward") {
+      action.setLoop(LoopOnce, 1);
+      action.clampWhenFinished = true;
+    }
+
+    actions.set(name, action);
   }
 
-  return { modelScene, mixer, actions };
+  return { group, mixer, actions, model };
 };

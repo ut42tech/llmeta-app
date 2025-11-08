@@ -1,6 +1,7 @@
+import { VRM } from "@pixiv/three-vrm";
 import { useFrame } from "@react-three/fiber";
 import { memo, useRef } from "react";
-import type { Group } from "three";
+import { type Group, Quaternion } from "three";
 import { PERFORMANCE } from "@/constants";
 import { useRemoteCharacter } from "@/hooks/useRemoteCharacter";
 import { useRemoteCharacterAnimation } from "@/hooks/useRemoteCharacterAnimation";
@@ -10,13 +11,16 @@ type RemotePlayerProps = {
   player: RemotePlayerData;
 };
 
+const tmpQuat = new Quaternion();
+
 /**
  * リモートプレイヤーコンポーネント
  * 位置と回転を滑らかに補間し、アニメーションを再生する
  */
 const RemotePlayerComponent = ({ player }: RemotePlayerProps) => {
   const groupRef = useRef<Group>(null);
-  const { mixer, actions, isLoaded } = useRemoteCharacter(groupRef);
+  const { mixer, actions, model, characterGroup, isLoaded } =
+    useRemoteCharacter(groupRef);
 
   useRemoteCharacterAnimation({
     animation: player.animation,
@@ -26,18 +30,19 @@ const RemotePlayerComponent = ({ player }: RemotePlayerProps) => {
   });
 
   useFrame((_, delta) => {
-    const group = groupRef.current;
-    if (!group || !isLoaded) return;
+    if (!characterGroup || !isLoaded) return;
 
-    group.position.lerp(player.position, PERFORMANCE.POSITION_LERP_FACTOR);
+    characterGroup.position.lerp(
+      player.position,
+      PERFORMANCE.POSITION_LERP_FACTOR,
+    );
 
-    group.rotation.y =
-      Math.atan2(
-        Math.sin(player.rotation.y - group.rotation.y),
-        Math.cos(player.rotation.y - group.rotation.y),
-      ) *
-        PERFORMANCE.ROTATION_LERP_FACTOR +
-      group.rotation.y;
+    tmpQuat.setFromEuler(player.rotation);
+    characterGroup.quaternion.slerp(tmpQuat, PERFORMANCE.ROTATION_LERP_FACTOR);
+
+    if (model instanceof VRM) {
+      model.update(delta);
+    }
 
     mixer?.update(delta);
   });
@@ -51,6 +56,6 @@ export const RemotePlayer = memo(RemotePlayerComponent, (prev, next) => {
     prev.player.sessionId === next.player.sessionId &&
     prev.player.animation === next.player.animation &&
     prev.player.position.equals(next.player.position) &&
-    prev.player.rotation.y === next.player.rotation.y
+    prev.player.rotation.equals(next.player.rotation)
   );
 });
