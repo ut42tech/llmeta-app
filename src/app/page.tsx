@@ -22,10 +22,12 @@ export default function Home() {
           camera={{ position: [3, 3, 3], fov: 40 }}
           gl={{
             preserveDrawingBuffer: true,
+            antialias: true,
+            powerPreference: "high-performance",
           }}
           flat
         >
-          <Suspense>
+          <Suspense fallback={null}>
             <Scene />
           </Suspense>
         </Canvas>
