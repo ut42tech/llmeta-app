@@ -2,21 +2,14 @@ import { useEffect, useRef } from "react";
 import type { AnimationAction, AnimationMixer } from "three";
 import type { AnimationName } from "@/stores/localPlayerStore";
 
-type UseAnimationControllerParams = {
-  animation: AnimationName;
-  mixer: AnimationMixer | null;
-  actions: Map<AnimationName, AnimationAction>;
-  isModelLoaded: boolean;
-};
-
 const FADE_DURATION = 0.2;
 
-export const useAnimationController = ({
-  animation,
-  mixer,
-  actions,
-  isModelLoaded,
-}: UseAnimationControllerParams) => {
+export const useRemoteCharacterAnimation = (
+  animation: AnimationName,
+  mixer: AnimationMixer | null,
+  actions: Map<AnimationName, AnimationAction>,
+  isModelLoaded: boolean,
+) => {
   const currentActionRef = useRef<AnimationAction | null>(null);
 
   useEffect(() => {
@@ -29,6 +22,4 @@ export const useAnimationController = ({
     nextAction.reset().fadeIn(FADE_DURATION).play();
     currentActionRef.current = nextAction;
   }, [animation, mixer, actions, isModelLoaded]);
-
-  return currentActionRef;
 };
