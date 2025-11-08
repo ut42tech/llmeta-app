@@ -4,6 +4,7 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 /**
  * デバッグ用パネル - localPlayerStoreとその他の状態を監視
+ * Levaを使用して状態を可視化
  */
 export const DebugPanel = () => {
   // Local Player State
@@ -13,7 +14,6 @@ export const DebugPanel = () => {
   const username = useLocalPlayerStore((state) => state.username);
   const animationState = useLocalPlayerStore((state) => state.animationState);
 
-  // Levaコントロールとset関数を取得
   const [, setPlayerControls] = useControls("Local Player", () => ({
     "Session ID": {
       value: sessionId,
@@ -53,7 +53,6 @@ export const DebugPanel = () => {
     },
   }));
 
-  // 状態が変わったらLevaの値を更新
   useEffect(() => {
     setPlayerControls({
       "Session ID": sessionId,
@@ -68,12 +67,16 @@ export const DebugPanel = () => {
     });
   }, [
     sessionId,
-    position,
-    rotation,
+    position.x,
+    position.y,
+    position.z,
+    rotation.x,
+    rotation.y,
+    rotation.z,
     username,
     animationState,
     setPlayerControls,
   ]);
 
-  return null; // UIは描画しない(Levaパネルのみ)
+  return null;
 };
