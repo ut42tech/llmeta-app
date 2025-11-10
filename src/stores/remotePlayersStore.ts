@@ -1,9 +1,10 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
 import type { AnimationName } from "@/stores/localPlayerStore";
+import { DEFAULT_ANIMATION } from "@/stores/localPlayerStore";
 
 /**
- * リモートプレイヤーの状態
+ * Remote player state
  */
 export type RemotePlayerData = {
   sessionId: string;
@@ -32,6 +33,10 @@ const initialState: RemotePlayersState = {
   players: new Map(),
 };
 
+/**
+ * Store for remote player state.
+ * Manages other players in a multiplayer environment.
+ */
 export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
   // State
   ...initialState,
@@ -48,7 +53,8 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
         username: data.username ?? existingPlayer?.username ?? "Player",
         position: data.position ?? existingPlayer?.position ?? new Vector3(),
         rotation: data.rotation ?? existingPlayer?.rotation ?? new Euler(),
-        animation: data.animation ?? existingPlayer?.animation ?? "idle",
+        animation:
+          data.animation ?? existingPlayer?.animation ?? DEFAULT_ANIMATION,
       };
 
       newPlayers.set(sessionId, updatedPlayer);

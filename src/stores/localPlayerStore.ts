@@ -1,10 +1,21 @@
+import { simpleCharacterAnimationNames } from "@pmndrs/viverse";
 import type { Room } from "colyseus.js";
 import { type AnimationAction, Euler, Vector3 } from "three";
 import { create } from "zustand";
+import { PERFORMANCE, PRECISION } from "@/constants";
 import { MessageType, type MoveData, type MyRoomState } from "@/utils/colyseus";
 
 const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
 const INITIAL_PLAYER_ROTATION = new Euler(0, 0, 0);
+
+/**
+ * Convert a Vector3 to a plain object
+ */
+const toPlainVec3 = (
+  v: Vector3 | Euler,
+): { x: number; y: number; z: number } => {
+  return { x: v.x, y: v.y, z: v.z };
+};
 
 /**
  * Round a number to the specified decimal places
@@ -18,14 +29,7 @@ const roundToDecimals = (value: number, decimals = 2): number => {
 };
 
 /**
- * Vector3をプレーンオブジェクトに変換
- */
-function toPlainVec3(v: Vector3 | Euler): { x: number; y: number; z: number } {
-  return { x: v.x, y: v.y, z: v.z };
-}
-
-/**
- * Vector3とEulerから移動データを構築（デスクトップ用）
+ * Build movement data from Vector3 and Euler (desktop)
  */
 export function createMoveData(
   position: Vector3,
@@ -39,26 +43,35 @@ export function createMoveData(
   };
 }
 
-export type AnimationName =
-  | "walk"
-  | "run"
-  | "idle"
-  | "jumpUp"
-  | "jumpLoop"
-  | "jumpDown"
-  | "jumpForward";
+export type AnimationName = (typeof simpleCharacterAnimationNames)[number];
+
+const PREFERRED_ANIMATION = "idle";
+
+const FALLBACK_ANIMATION =
+  simpleCharacterAnimationNames[0] ?? PREFERRED_ANIMATION;
+
+const SELECTED_DEFAULT = simpleCharacterAnimationNames.includes(
+  PREFERRED_ANIMATION,
+)
+  ? PREFERRED_ANIMATION
+  : FALLBACK_ANIMATION;
+
+export const DEFAULT_ANIMATION = SELECTED_DEFAULT as AnimationName;
 
 type LocalPlayerState = {
   sessionId: string;
-  // プレイヤー情報
+  // Player info
   username: string;
 
-  // 位置・回転
+  // Position and rotation
   position: Vector3;
   rotation: Euler;
 
-  // 状態
+  // State
   animationState: AnimationName;
+
+  // Last sent time (for throttling)
+  lastSentTime: number;
 };
 
 type LocalPlayerActions = {
@@ -79,10 +92,11 @@ const initialState: LocalPlayerState = {
   username: "Player",
   position: INITIAL_PLAYER_POSITION.clone(),
   rotation: INITIAL_PLAYER_ROTATION.clone(),
-  animationState: "idle",
+  animationState: DEFAULT_ANIMATION,
+  lastSentTime: 0,
 };
 
-export const useLocalPlayerStore = create<LocalPlayerStore>((set) => ({
+export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
   // State
   ...initialState,
 
@@ -97,9 +111,18 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set) => ({
   // Actions
   setPosition: (position: Vector3) => {
     const roundedPosition = position.clone();
-    roundedPosition.x = roundToDecimals(roundedPosition.x);
-    roundedPosition.y = roundToDecimals(roundedPosition.y);
-    roundedPosition.z = roundToDecimals(roundedPosition.z);
+    roundedPosition.x = roundToDecimals(
+      roundedPosition.x,
+      PRECISION.DECIMAL_PLACES,
+    );
+    roundedPosition.y = roundToDecimals(
+      roundedPosition.y,
+      PRECISION.DECIMAL_PLACES,
+    );
+    roundedPosition.z = roundToDecimals(
+      roundedPosition.z,
+      PRECISION.DECIMAL_PLACES,
+    );
     set({ position: roundedPosition });
   },
 
@@ -112,10 +135,19 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set) => ({
       ((normalizedRotation.y + Math.PI) % (2 * Math.PI)) - Math.PI;
     normalizedRotation.z =
       ((normalizedRotation.z + Math.PI) % (2 * Math.PI)) - Math.PI;
-    // Round rotation values to 2 decimal places
-    normalizedRotation.x = roundToDecimals(normalizedRotation.x);
-    normalizedRotation.y = roundToDecimals(normalizedRotation.y);
-    normalizedRotation.z = roundToDecimals(normalizedRotation.z);
+
+    normalizedRotation.x = roundToDecimals(
+      normalizedRotation.x,
+      PRECISION.DECIMAL_PLACES,
+    );
+    normalizedRotation.y = roundToDecimals(
+      normalizedRotation.y,
+      PRECISION.DECIMAL_PLACES,
+    );
+    normalizedRotation.z = roundToDecimals(
+      normalizedRotation.z,
+      PRECISION.DECIMAL_PLACES,
+    );
     set({ rotation: normalizedRotation });
   },
 
@@ -130,16 +162,24 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set) => ({
             action?.isRunning() && (action.getEffectiveWeight?.() ?? 0) > 0,
         )?.[0] as AnimationName | undefined)
       : undefined;
-    set({ animationState: activeAnimationName ?? "idle" });
+    set({ animationState: activeAnimationName ?? DEFAULT_ANIMATION });
   },
 
   sendMovement: (room: Room<MyRoomState>) => {
+    const now = Date.now();
+    const state = get();
+
+    if (now - state.lastSentTime < PERFORMANCE.MOVEMENT_UPDATE_THROTTLE) {
+      return;
+    }
+
     const moveData = createMoveData(
-      useLocalPlayerStore.getState().position,
-      useLocalPlayerStore.getState().rotation,
-      useLocalPlayerStore.getState().animationState,
+      state.position,
+      state.rotation,
+      state.animationState,
     );
     room.send(MessageType.MOVE, moveData);
+    set({ lastSentTime: now });
   },
 
   reset: () => {

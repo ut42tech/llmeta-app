@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import type { AnimationAction, AnimationMixer } from "three";
+import { PERFORMANCE } from "@/constants";
 import type { AnimationName } from "@/stores/localPlayerStore";
 
 type UseAnimationControllerParams = {
@@ -9,9 +10,9 @@ type UseAnimationControllerParams = {
   isModelLoaded: boolean;
 };
 
-const FADE_DURATION = 0.2;
+const FADE_DURATION = PERFORMANCE.ANIMATION_FADE_DURATION;
 
-export const useAnimationController = ({
+export const useRemoteCharacterAnimation = ({
   animation,
   mixer,
   actions,
@@ -25,8 +26,13 @@ export const useAnimationController = ({
     const nextAction = actions.get(animation);
     if (!nextAction || nextAction === currentActionRef.current) return;
 
-    currentActionRef.current?.fadeOut(FADE_DURATION);
-    nextAction.reset().fadeIn(FADE_DURATION).play();
+    const currentAction = currentActionRef.current;
+
+    currentAction?.fadeOut(FADE_DURATION);
+    nextAction.reset();
+    nextAction.play();
+    nextAction.fadeIn(FADE_DURATION);
+
     currentActionRef.current = nextAction;
   }, [animation, mixer, actions, isModelLoaded]);
 

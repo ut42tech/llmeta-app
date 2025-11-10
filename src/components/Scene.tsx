@@ -6,39 +6,60 @@ import {
 } from "@react-three/viverse";
 import type { Room } from "colyseus.js";
 import { useControls } from "leva";
-import { Suspense, useEffect, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { type DirectionalLight, Euler, Vector3 } from "three";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { RemotePlayers } from "@/components/RemotePlayers";
+import { LIGHTING, PHYSICS } from "@/constants";
+import { useColyseusLifecycle } from "@/hooks/useColyseusLifecycle";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
 import { useColyseusRoom } from "@/utils/colyseus";
 
-const LIGHT_OFFSET = new Vector3(2, 5, 2);
+const LIGHT_OFFSET = new Vector3(
+  LIGHTING.LIGHT_OFFSET.x,
+  LIGHTING.LIGHT_OFFSET.y,
+  LIGHTING.LIGHT_OFFSET.z,
+);
 const tmpVec = new Vector3();
 
+/**
+ * Main scene component.
+ * Manages the local player, remote players, and the world.
+ */
 export const Scene = () => {
   // debug
   const { softShadows } = useControls({ softShadows: true });
 
+  useColyseusLifecycle();
+
   const room = useColyseusRoom();
+  const [isConnected, setIsConnected] = useState(false);
 
   const setSessionId = useLocalPlayerStore((state) => state.setSessionId);
   const setPosition = useLocalPlayerStore((state) => state.setPosition);
   const setRotation = useLocalPlayerStore((state) => state.setRotation);
   const setAction = useLocalPlayerStore((state) => state.setAction);
   const sendMovement = useLocalPlayerStore((state) => state.sendMovement);
-
   const updateCurrentGridCell = useWorldStore(
     (state) => state.updateCurrentGridCell,
   );
+
   const characterRef = useRef<SimpleCharacterImpl>(null);
   const directionalLight = useRef<DirectionalLight | null>(null);
   const { scene } = useThree();
 
-  setSessionId(room?.sessionId || "");
+  // Handle session connection
+  useEffect(() => {
+    if (room?.sessionId) {
+      setSessionId(room.sessionId);
+      setIsConnected(true);
+      console.log("[Scene] Colyseus connected, session ID:", room.sessionId);
+    }
+  }, [room?.sessionId, setSessionId]);
 
+  // Add/remove light target
   useEffect(() => {
     const light = directionalLight.current;
     if (!light) {
@@ -51,6 +72,7 @@ export const Scene = () => {
     };
   }, [scene]);
 
+  // Main loop
   useFrame(() => {
     const character = characterRef.current;
     const light = directionalLight.current;
@@ -59,28 +81,36 @@ export const Scene = () => {
       return;
     }
 
-    // Reset position if fallen below threshold
-    if (character.position.y < -10) {
+    // Reset on fall
+    if (character.position.y < PHYSICS.RESET_Y_THRESHOLD) {
       character.position.copy(new Vector3());
     }
 
-    // Update player position and grid cell independently
+    // Update player info
     setPosition(character.position);
     setRotation(character.model?.scene.rotation || new Euler());
-
-    // Determine current animation state based on active action
     setAction(character.actions);
 
-    // Send movement update to server
-    sendMovement((room as unknown as Room) || undefined);
+    // Send movement to server
+    if (isConnected && room) {
+      sendMovement((room as unknown as Room) || undefined);
+    }
 
+    // Update grid cell
     updateCurrentGridCell(character.position);
 
-    // Keep the light aligned with the character so shadows stay accurate
+    // Update light position (shadow follows character)
     light.target.position.copy(character.position);
     tmpVec.copy(light.target.position).add(LIGHT_OFFSET);
     light.position.copy(tmpVec);
   });
+
+  // Light settings
+  const directionalLightIntensity = useMemo(
+    () => LIGHTING.DIRECTIONAL_INTENSITY,
+    [],
+  );
+  const ambientLightIntensity = useMemo(() => LIGHTING.AMBIENT_INTENSITY, []);
 
   return (
     <>
@@ -90,24 +120,24 @@ export const Scene = () => {
 
       <Sky />
       <directionalLight
-        intensity={1.2}
+        intensity={directionalLightIntensity}
         position={[-10, 10, -10]}
         castShadow
         ref={directionalLight}
       />
-      <ambientLight intensity={1} />
+      <ambientLight intensity={ambientLightIntensity} />
 
       {/* Local Player */}
-      <Suspense>
+      <Suspense fallback={null}>
         <SimpleCharacter ref={characterRef} />
       </Suspense>
 
       {/* Remote Players */}
-      <Suspense>
+      <Suspense fallback={null}>
         <RemotePlayers />
       </Suspense>
 
-      <Suspense>
+      <Suspense fallback={null}>
         <InfiniteWorld />
       </Suspense>
     </>
