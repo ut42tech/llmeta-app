@@ -4,7 +4,7 @@ import type { AnimationName } from "@/stores/localPlayerStore";
 import { DEFAULT_ANIMATION } from "@/stores/localPlayerStore";
 
 /**
- * リモートプレイヤーの状態
+ * Remote player state
  */
 export type RemotePlayerData = {
   sessionId: string;
@@ -34,8 +34,8 @@ const initialState: RemotePlayersState = {
 };
 
 /**
- * リモートプレイヤー状態管理ストア
- * マルチプレイヤー環境での他プレイヤー情報を管理
+ * Store for remote player state.
+ * Manages other players in a multiplayer environment.
  */
 export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
   // State
@@ -47,7 +47,7 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
       const newPlayers = new Map(state.players);
       const existingPlayer = newPlayers.get(sessionId);
 
-      // プレイヤーデータの作成または更新
+      // Create or update player data
       const updatedPlayer: RemotePlayerData = {
         sessionId,
         username: data.username ?? existingPlayer?.username ?? "Player",

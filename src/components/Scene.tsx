@@ -25,8 +25,8 @@ const LIGHT_OFFSET = new Vector3(
 const tmpVec = new Vector3();
 
 /**
- * メインシーンコンポーネント
- * ローカルプレイヤー、リモートプレイヤー、ワールドを管理
+ * Main scene component.
+ * Manages the local player, remote players, and the world.
  */
 export const Scene = () => {
   // debug
@@ -50,7 +50,7 @@ export const Scene = () => {
   const directionalLight = useRef<DirectionalLight | null>(null);
   const { scene } = useThree();
 
-  // セッション接続時の処理
+  // Handle session connection
   useEffect(() => {
     if (room?.sessionId) {
       setSessionId(room.sessionId);
@@ -59,7 +59,7 @@ export const Scene = () => {
     }
   }, [room?.sessionId, setSessionId]);
 
-  // ライトターゲットの追加・削除
+  // Add/remove light target
   useEffect(() => {
     const light = directionalLight.current;
     if (!light) {
@@ -72,7 +72,7 @@ export const Scene = () => {
     };
   }, [scene]);
 
-  // メインループ（最適化済み）
+  // Main loop
   useFrame(() => {
     const character = characterRef.current;
     const light = directionalLight.current;
@@ -81,31 +81,31 @@ export const Scene = () => {
       return;
     }
 
-    // 落下時のリセット
+    // Reset on fall
     if (character.position.y < PHYSICS.RESET_Y_THRESHOLD) {
       character.position.copy(new Vector3());
     }
 
-    // プレイヤー情報の更新
+    // Update player info
     setPosition(character.position);
     setRotation(character.model?.scene.rotation || new Euler());
     setAction(character.actions);
 
-    // サーバーへの移動情報送信（スロットリング済み）
+    // Send movement to server
     if (isConnected && room) {
       sendMovement((room as unknown as Room) || undefined);
     }
 
-    // グリッドセル更新
+    // Update grid cell
     updateCurrentGridCell(character.position);
 
-    // ライト位置の更新（影がキャラクターに追従）
+    // Update light position (shadow follows character)
     light.target.position.copy(character.position);
     tmpVec.copy(light.target.position).add(LIGHT_OFFSET);
     light.position.copy(tmpVec);
   });
 
-  // ライト設定
+  // Light settings
   const directionalLightIntensity = useMemo(
     () => LIGHTING.DIRECTIONAL_INTENSITY,
     [],

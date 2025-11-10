@@ -38,8 +38,8 @@ const isGridCellEqual = (
 ): boolean => cell1.x === cell2.x && cell1.y === cell2.y;
 
 /**
- * ワールド状態管理ストア
- * グリッドベースの無限ワールドシステムを管理
+ * World state store.
+ * Manages a grid-based infinite world system.
  */
 export const useWorldStore = create<WorldStore>((set) => ({
   // State
@@ -50,10 +50,9 @@ export const useWorldStore = create<WorldStore>((set) => ({
   updateCurrentGridCell: (position: Vector3) => {
     const newGridCell = calculateGridCell(position);
 
-    // グリッドセルが変わった場合のみ更新（パフォーマンス最適化）
     set((state) => {
       if (isGridCellEqual(state.currentGridCell, newGridCell)) {
-        return state; // 変更なし
+        return state;
       }
 
       return {

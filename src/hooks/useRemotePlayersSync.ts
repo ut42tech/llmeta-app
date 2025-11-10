@@ -7,8 +7,8 @@ import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import { type Player, useColyseusState } from "@/utils/colyseus";
 
 /**
- * Colyseusのルーム状態とZustandストアの同期を行うフック。
- * 追加/削除/変更イベントを購読して、リモートプレイヤーのローカルキャッシュを更新する。
+ * Hook that syncs Colyseus room state with the Zustand store.
+ * Subscribes to add/remove/change events to keep the local cache of remote players up to date.
  */
 export function useRemotePlayersSync() {
   const state = useColyseusState();

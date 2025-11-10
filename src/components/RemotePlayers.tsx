@@ -5,8 +5,8 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 /**
- * すべてのリモートプレイヤーを管理するコンポーネント
- * Colyseusルームの状態変更を監視し、プレイヤー情報を更新
+ * Component that manages all remote players.
+ * Watches Colyseus room state changes and updates player info.
  */
 export const RemotePlayers = () => {
   useRemotePlayersSync();

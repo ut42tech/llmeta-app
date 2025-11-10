@@ -3,8 +3,8 @@ import { useEffect } from "react";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 /**
- * デバッグ用パネル - localPlayerStoreとその他の状態を監視
- * Levaを使用して状態を可視化
+ * Debug panel that monitors localPlayerStore and other state.
+ * Visualizes state using Leva.
  */
 export const DebugPanel = () => {
   // Local Player State

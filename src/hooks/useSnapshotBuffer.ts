@@ -6,9 +6,9 @@ import { Euler, Quaternion, Vector3 } from "three";
 import { INTERPOLATION, ORIENTATION, PERFORMANCE } from "@/constants";
 
 /**
- * サーバーから届く量子化されたスナップショット値を、
- * クライアント側で連続的に補完するための軽量バッファ。
- * 位置は lerp、回転は quaternion の slerp で補間します。
+ * Lightweight client-side buffer to continuously interpolate
+ * quantized snapshot values received from the server.
+ * Positions are interpolated with lerp; rotations use quaternion slerp.
  */
 
 export function usePositionBuffer(
@@ -28,7 +28,7 @@ export function usePositionBuffer(
       initialized.current = true;
       return;
     }
-    // フレームレート非依存の平滑化係数
+
     const alpha = 1 - (1 - baseFactor) ** (delta * INTERPOLATION.TARGET_FPS);
     if (
       current.current.distanceToSquared(targetRef.current) <=
@@ -87,10 +87,9 @@ export function useRotationBuffer(
       return;
     }
 
-    // フレームレート非依存の平滑化係数
     const alpha = 1 - (1 - baseFactor) ** (delta * INTERPOLATION.TARGET_FPS);
-    // 角度差が十分小さい場合はスナップ
     const dot = Math.abs(currentQuat.current.dot(tmpQuatTo));
+
     if (1 - dot <= epsilon) {
       currentQuat.current.copy(tmpQuatTo);
       return;

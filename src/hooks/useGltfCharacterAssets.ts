@@ -29,8 +29,8 @@ export type GltfCharacterAssets = {
 };
 
 /**
- * GLTFキャラクター（モデル + アニメーション）を読み込み、
- * AnimationMixer と Action マップを提供するフック。
+ * Hook that loads a GLTF character (model + animations)
+ * and provides an AnimationMixer and action map.
  */
 export function useGltfCharacterAssets(): GltfCharacterAssets {
   const [model, setModel] = useState<Group | null>(null);
@@ -45,7 +45,7 @@ export function useGltfCharacterAssets(): GltfCharacterAssets {
     return loader;
   }, []);
 
-  // モデルの読み込み
+  // Load model
   useEffect(() => {
     let disposed = false;
     (async () => {
@@ -63,7 +63,7 @@ export function useGltfCharacterAssets(): GltfCharacterAssets {
       disposed = true;
     };
   }, [gltfLoader]);
-  // アニメーションの読み込み
+  // Load animations
   useEffect(() => {
     if (!model || !mixer) return;
     let cancelled = false;

@@ -22,7 +22,7 @@ export const RemoteSimpleCharacter = ({
 
   const { model, mixer, actions, isLoaded } = useGltfCharacterAssets();
 
-  // アニメーションブレンド（フェード）
+  // Animation blending (fade)
   useRemoteCharacterAnimation({
     animation: player.animation,
     mixer,
@@ -30,11 +30,11 @@ export const RemoteSimpleCharacter = ({
     isModelLoaded: isLoaded,
   });
 
-  // 位置・回転の補間（スナップショット補完）
+  // Interpolate position and rotation (snapshot smoothing)
   const smoothPosition = usePositionBuffer(player.position);
   const smoothRotationQuat = useRotationBuffer(player.rotation);
 
-  // 位置/回転 & mixer の更新
+  // Update position/rotation and mixer
   useFrame((_, delta) => {
     const g = group.current;
     if (!g) return;

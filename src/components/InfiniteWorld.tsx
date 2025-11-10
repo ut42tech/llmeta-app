@@ -15,7 +15,7 @@ type GridCellProps = {
 };
 
 /**
- * グリッドセル単体のコンポーネント
+ * Component for a single grid cell
  */
 const GridCell = memo(
   ({ gridX, gridY, cellX, cellY }: GridCellProps) => {
@@ -57,13 +57,13 @@ type InfiniteWorldProps = {
 };
 
 /**
- * 無限ワールドのグリッド表示コンポーネント
+ * Grid renderer for an infinite world
  */
 export const InfiniteWorld = memo(({ ...props }: InfiniteWorldProps) => {
   const currentGridCell = useWorldStore((state) => state.currentGridCell);
   const visibleGridSize = useWorldStore((state) => state.visibleGridSize);
 
-  // グリッドのオフセット計算
+  // Compute grid offsets
   const { centerOffsetX, centerOffsetZ, halfGridWidth, halfGridHeight } =
     useMemo(() => {
       const halfWidth = visibleGridSize.x / 2;
@@ -76,7 +76,7 @@ export const InfiniteWorld = memo(({ ...props }: InfiniteWorldProps) => {
       };
     }, [visibleGridSize.x, visibleGridSize.y]);
 
-  // グリッドセル生成
+  // Generate grid cells
   const gridCells = useMemo(() => {
     const cells = [];
     for (let x = 0; x < visibleGridSize.x; x++) {

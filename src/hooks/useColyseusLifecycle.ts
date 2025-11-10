@@ -8,10 +8,10 @@ import {
 } from "@/utils/colyseus";
 
 /**
- * Colyseus接続ライフサイクル管理フック
- * コンポーネントのマウント時に接続、アンマウント時に切断を自動管理
+ * Hook to manage the Colyseus connection lifecycle.
+ * Automatically connects on mount and disconnects on unmount.
  *
- * @param roomName - 接続するルーム名（デフォルト: "my_room"）
+ * @param roomName - Room name to connect to (default: "my_room")
  */
 export function useColyseusLifecycle(
   roomName: string = COLYSEUS_CONFIG.DEFAULT_ROOM_NAME,
@@ -21,7 +21,7 @@ export function useColyseusLifecycle(
     let connecting = false;
 
     const connect = async () => {
-      // 二重接続を防ぐ
+      // Prevent duplicate connections
       if (connecting) return;
       connecting = true;
 

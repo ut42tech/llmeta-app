@@ -8,14 +8,14 @@ export const PERFORMANCE = {
   ANIMATION_FADE_DURATION: 0.1,
 };
 
-// 補間・スナップ用の定数（マジックナンバー回避）
+// Interpolation and snapping constants
 export const INTERPOLATION = {
   TARGET_FPS: 60,
   POSITION_EPSILON: 1e-4,
   ROTATION_EPSILON: 1e-4,
 } as const;
 
-// 見た目上の回転オフセット（モデル基準の前後差など）
+// Visual rotation offset
 export const ORIENTATION = {
   REMOTE_Y_OFFSET: Math.PI,
 } as const;

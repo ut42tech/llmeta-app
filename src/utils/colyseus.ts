@@ -2,7 +2,7 @@ import { MapSchema, Schema, type } from "@colyseus/schema";
 import { colyseus } from "use-colyseus";
 
 /**
- * Colyseus設定定数
+ * Colyseus configuration constants
  */
 export const COLYSEUS_CONFIG = {
   DEFAULT_ENDPOINT: "http://localhost:2567",
@@ -10,7 +10,7 @@ export const COLYSEUS_CONFIG = {
 } as const;
 
 /**
- * メッセージタイプ（サーバーと同期）
+ * Message types (must match server)
  */
 export enum MessageType {
   CHANGE_PROFILE,
@@ -18,7 +18,7 @@ export enum MessageType {
 }
 
 /**
- * 3D座標スキーマ
+ * 3D vector schema
  */
 export class Vec3 extends Schema {
   @type("number") x = 0;
@@ -27,7 +27,7 @@ export class Vec3 extends Schema {
 }
 
 /**
- * プレーンな3D座標オブジェクト（メッセージ送信用）
+ * Plain 3D vector object (for messages)
  */
 export type Vec3Data = {
   x: number;
@@ -36,14 +36,14 @@ export type Vec3Data = {
 };
 
 /**
- * プロフィール更新メッセージ
+ * Profile update message
  */
 export type ProfileData = {
   username?: string;
 };
 
 /**
- * 移動・姿勢更新メッセージ（送信用）
+ * Movement and pose update message (outbound)
  */
 export type MoveData = {
   position?: Vec3Data;
@@ -52,7 +52,7 @@ export type MoveData = {
 };
 
 /**
- * プレイヤー状態スキーマ
+ * Player state schema
  */
 export class Player extends Schema {
   @type("string") username = "Player";
@@ -62,14 +62,14 @@ export class Player extends Schema {
 }
 
 /**
- * ルーム状態スキーマ
+ * Room state schema
  */
 export class MyRoomState extends Schema {
   @type({ map: Player }) players = new MapSchema<Player>();
 }
 
 /**
- * Colyseusクライアントとフック
+ * Colyseus client and hooks
  */
 const serverEndpoint =
   process.env.NEXT_PUBLIC_SERVER_ENDPOINT || COLYSEUS_CONFIG.DEFAULT_ENDPOINT;

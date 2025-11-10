@@ -4,20 +4,32 @@ import { type AnimationAction, Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { PERFORMANCE, PRECISION } from "@/constants";
 import { MessageType, type MoveData, type MyRoomState } from "@/utils/colyseus";
-import { roundToDecimals } from "@/utils/performance";
 
 const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
 const INITIAL_PLAYER_ROTATION = new Euler(0, 0, 0);
 
 /**
- * Vector3をプレーンオブジェクトに変換
+ * Convert a Vector3 to a plain object
  */
-function toPlainVec3(v: Vector3 | Euler): { x: number; y: number; z: number } {
+const toPlainVec3 = (
+  v: Vector3 | Euler,
+): { x: number; y: number; z: number } => {
   return { x: v.x, y: v.y, z: v.z };
-}
+};
 
 /**
- * Vector3とEulerから移動データを構築（デスクトップ用）
+ * Round a number to the specified decimal places
+ * @param value - The number to round
+ * @param decimals - Number of decimal places (default: 2)
+ * @returns Rounded number
+ */
+const roundToDecimals = (value: number, decimals = 2): number => {
+  const multiplier = 10 ** decimals;
+  return Math.round(value * multiplier) / multiplier;
+};
+
+/**
+ * Build movement data from Vector3 and Euler (desktop)
  */
 export function createMoveData(
   position: Vector3,
@@ -48,17 +60,17 @@ export const DEFAULT_ANIMATION = SELECTED_DEFAULT as AnimationName;
 
 type LocalPlayerState = {
   sessionId: string;
-  // プレイヤー情報
+  // Player info
   username: string;
 
-  // 位置・回転
+  // Position and rotation
   position: Vector3;
   rotation: Euler;
 
-  // 状態
+  // State
   animationState: AnimationName;
 
-  // 最後の送信時刻（スロットリング用）
+  // Last sent time (for throttling)
   lastSentTime: number;
 };
 
@@ -123,7 +135,7 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
       ((normalizedRotation.y + Math.PI) % (2 * Math.PI)) - Math.PI;
     normalizedRotation.z =
       ((normalizedRotation.z + Math.PI) % (2 * Math.PI)) - Math.PI;
-    // Round rotation values to 2 decimal places
+
     normalizedRotation.x = roundToDecimals(
       normalizedRotation.x,
       PRECISION.DECIMAL_PLACES,
@@ -157,7 +169,6 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
     const now = Date.now();
     const state = get();
 
-    // スロットリング: 最小間隔を空ける
     if (now - state.lastSentTime < PERFORMANCE.MOVEMENT_UPDATE_THROTTLE) {
       return;
     }
