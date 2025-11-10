@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { AnimationAction, Group } from "three";
-import { AnimationMixer } from "three";
+import { AnimationMixer, LoopOnce } from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import {
@@ -63,7 +63,6 @@ export function useGltfCharacterAssets(): GltfCharacterAssets {
       disposed = true;
     };
   }, [gltfLoader]);
-
   // アニメーションの読み込み
   useEffect(() => {
     if (!model || !mixer) return;
@@ -83,8 +82,28 @@ export function useGltfCharacterAssets(): GltfCharacterAssets {
       for (const [name, url] of entries) {
         const { animations } = await gltfLoader.loadAsync(url);
         if (!animations?.length) continue;
-        const action = mixer.clipAction(animations[0], model);
-        map.set(name, action);
+        const animAction = mixer.clipAction(animations[0], model);
+
+        if (name === "walk") {
+          animAction.timeScale = 1 / 0.5;
+        } // 2.0
+        if (name === "run") {
+          animAction.timeScale = 1 / 0.8;
+        } // 1.25
+        if (name === "jumpForward") {
+          animAction.timeScale = 1 / 0.9;
+        } // ≈1.111...
+
+        if (
+          name === "jumpUp" ||
+          name === "jumpDown" ||
+          name === "jumpForward"
+        ) {
+          animAction.loop = LoopOnce;
+          animAction.clampWhenFinished = true;
+        }
+
+        map.set(name, animAction);
       }
       if (cancelled) return;
       setActions(map);
