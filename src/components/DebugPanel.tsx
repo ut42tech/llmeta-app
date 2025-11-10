@@ -14,44 +14,48 @@ export const DebugPanel = () => {
   const username = useLocalPlayerStore((state) => state.username);
   const animationState = useLocalPlayerStore((state) => state.animationState);
 
-  const [, setPlayerControls] = useControls("Local Player", () => ({
-    "Session ID": {
-      value: sessionId,
-      disabled: true,
-    },
-    Username: {
-      value: username,
-      disabled: true,
-    },
-    "Position X": {
-      value: position.x,
-      disabled: true,
-    },
-    "Position Y": {
-      value: position.y,
-      disabled: true,
-    },
-    "Position Z": {
-      value: position.z,
-      disabled: true,
-    },
-    "Rotation X": {
-      value: rotation.x,
-      disabled: true,
-    },
-    "Rotation Y": {
-      value: rotation.y,
-      disabled: true,
-    },
-    "Rotation Z": {
-      value: rotation.z,
-      disabled: true,
-    },
-    Animation: {
-      value: animationState,
-      disabled: true,
-    },
-  }));
+  const [, setPlayerControls] = useControls(
+    "Local Player",
+    () => ({
+      "Session ID": {
+        value: sessionId,
+        disabled: true,
+      },
+      Username: {
+        value: username,
+        disabled: true,
+      },
+      "Position X": {
+        value: position.x,
+        disabled: true,
+      },
+      "Position Y": {
+        value: position.y,
+        disabled: true,
+      },
+      "Position Z": {
+        value: position.z,
+        disabled: true,
+      },
+      "Rotation X": {
+        value: rotation.x,
+        disabled: true,
+      },
+      "Rotation Y": {
+        value: rotation.y,
+        disabled: true,
+      },
+      "Rotation Z": {
+        value: rotation.z,
+        disabled: true,
+      },
+      Animation: {
+        value: animationState,
+        disabled: true,
+      },
+    }),
+    { collapsed: true },
+  );
 
   useEffect(() => {
     setPlayerControls({
