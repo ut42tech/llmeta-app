@@ -2,6 +2,7 @@
 import { useFrame } from "@react-three/fiber";
 import { Suspense, useEffect, useRef } from "react";
 import type { Group } from "three";
+import { ORIENTATION } from "@/constants";
 import { useGltfCharacterAssets } from "@/hooks/useGltfCharacterAssets";
 import { useRemoteCharacterAnimation } from "@/hooks/useRemoteCharacterAnimation";
 import {
@@ -13,8 +14,6 @@ import type { RemotePlayerData } from "@/stores/remotePlayersStore";
 export type RemoteSimpleCharacterProps = {
   player: RemotePlayerData;
 };
-
-// smoothing handled via hooks
 
 export const RemoteSimpleCharacter = ({
   player,
@@ -39,21 +38,18 @@ export const RemoteSimpleCharacter = ({
   useFrame((_, delta) => {
     const g = group.current;
     if (!g) return;
-    // バッファ済みのスムーズな位置/回転を適用
     g.position.copy(smoothPosition);
     if (model) model.quaternion.copy(smoothRotationQuat);
-    // アニメーション時間更新
     mixer?.update(delta);
   });
 
-  // 初期スナップ
   useEffect(() => {
     const g = group.current;
     if (!g || !model) return;
     g.position.copy(player.position);
     model.rotation.set(
       player.rotation.x,
-      player.rotation.y + Math.PI,
+      player.rotation.y + ORIENTATION.REMOTE_Y_OFFSET,
       player.rotation.z,
     );
   }, [
