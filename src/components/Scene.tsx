@@ -1,11 +1,10 @@
-import { Sky, SoftShadows } from "@react-three/drei";
+import { Sky } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import {
   SimpleCharacter,
   type SimpleCharacterImpl,
 } from "@react-three/viverse";
 import type { Room } from "colyseus.js";
-import { useControls } from "leva";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { type DirectionalLight, Euler, Vector3 } from "three";
 import { DebugPanel } from "@/components/DebugPanel";
@@ -29,9 +28,6 @@ const tmpVec = new Vector3();
  * Manages the local player, remote players, and the world.
  */
 export const Scene = () => {
-  // debug
-  const { softShadows } = useControls({ softShadows: true });
-
   useColyseusLifecycle();
 
   const room = useColyseusRoom();
@@ -115,8 +111,6 @@ export const Scene = () => {
   return (
     <>
       <DebugPanel />
-
-      {softShadows && <SoftShadows />}
 
       <Sky />
       <directionalLight
