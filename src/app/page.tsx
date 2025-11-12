@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
-import { OverlayUI } from "@/components/OverlayUI";
+import { OverlayUI } from "@/components/overlay/OverlayUI";
 import { Scene } from "@/components/Scene";
 
 const Viverse = dynamic(

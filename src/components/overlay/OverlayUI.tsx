@@ -37,7 +37,6 @@ const statusConfig: Record<
 };
 
 export const OverlayUI = ({ className }: Props) => {
-  // Select primitives individually to keep snapshots referentially stable
   const status = useConnectionStore((state) => state.status);
   const error = useConnectionStore((state) => state.error);
   const playersCount = useRemotePlayersStore((state) => state.players.size);
