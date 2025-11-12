@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { useControls } from "leva";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { OverlayUI } from "@/components/OverlayUI";
 import { Scene } from "@/components/Scene";
 
 const Viverse = dynamic(
@@ -21,8 +22,7 @@ export default function Home() {
       <Loader />
       {stats && <Stats />}
 
-      {/* TODO: implement actual overlay UI */}
-      {/* <OverlayUI className="fixed! w-screen! h-screen! pointer-events-none" /> */}
+      <OverlayUI className="z-50 fixed! w-screen! h-screen! pointer-events-none" />
 
       <Viverse clientId={process.env.NEXT_PUBLIC_VIVERSE_APP_ID || undefined}>
         <Canvas
