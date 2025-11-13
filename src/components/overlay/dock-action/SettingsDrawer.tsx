@@ -103,7 +103,6 @@ const SettingsContentClient = () => {
             other players' perspective.
           </p>
         </div>
-        ｓ
       </div>
     </div>
   );
