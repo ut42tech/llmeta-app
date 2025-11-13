@@ -2,7 +2,7 @@
 
 import { Loader, Stats } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
-import { useControls } from "leva";
+import { Leva, useControls } from "leva";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
 import { OverlayUI } from "@/components/overlay/OverlayUI";
@@ -19,6 +19,8 @@ export default function Home() {
 
   return (
     <>
+      <Leva titleBar={{ title: "Debug Panel" }} collapsed />
+
       <Loader />
       {stats && <Stats />}
 
