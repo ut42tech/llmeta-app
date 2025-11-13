@@ -2,6 +2,7 @@
 import { useFrame } from "@react-three/fiber";
 import { Suspense, useEffect, useRef } from "react";
 import type { Group } from "three";
+import { PlayerTag } from "@/components/PlayerTag";
 import { ORIENTATION } from "@/constants";
 import { useGltfCharacterAssets } from "@/hooks/useGltfCharacterAssets";
 import { useRemoteCharacterAnimation } from "@/hooks/useRemoteCharacterAnimation";
@@ -62,7 +63,10 @@ export const RemoteSimpleCharacter = ({
 
   return (
     <Suspense fallback={null}>
-      <group ref={group}>{model && <primitive object={model} />}</group>
+      <group ref={group}>
+        {model && <primitive object={model} />}
+        <PlayerTag displayName={player.username} />
+      </group>
     </Suspense>
   );
 };
