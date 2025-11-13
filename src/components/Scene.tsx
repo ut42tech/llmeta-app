@@ -70,12 +70,14 @@ export const Scene = () => {
 
       {/* Local Player */}
       <Suspense fallback={null}>
-        <SimpleCharacter
-          ref={characterRef}
-          // FPVでもモデルは表示（アニメ取得・ミラー反映のため）
-          model={true}
-          cameraBehavior={isFPV ? FirstPersonCharacterCameraBehavior : true}
-        />
+        <group visible={!isFPV}>
+          <SimpleCharacter
+            ref={characterRef}
+            cameraBehavior={
+              isFPV ? FirstPersonCharacterCameraBehavior : undefined
+            }
+          />
+        </group>
       </Suspense>
 
       {/* Remote Players */}
