@@ -19,6 +19,7 @@ export function AvatarPicker({
     <div className="grid grid-cols-4 gap-3">
       {avatars.map((avatar) => {
         const isSelected = avatar.id === selectedId;
+        const src = avatar.headIconUrl ?? "https://placehold.co/96x96?text=?";
         return (
           <button
             key={avatar.id}
@@ -34,12 +35,13 @@ export function AvatarPicker({
             aria-label={`Select avatar #${avatar.id}`}
           >
             <Image
-              src={avatar.headIconUrl || "https://placehold.co/96x96?text=?"}
+              src={src}
               alt={`Avatar ${avatar.id}`}
               fill
               sizes="(max-width: 640px) 25vw, 96px"
               className="object-cover"
-              priority={false}
+              loading="eager"
+              priority={isSelected}
             />
             {isSelected ? (
               <div className="pointer-events-none absolute inset-0 bg-primary/10" />
