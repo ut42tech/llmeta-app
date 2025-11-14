@@ -78,6 +78,7 @@ export const Scene = () => {
             cameraBehavior={
               isFPV ? FirstPersonCharacterCameraBehavior : undefined
             }
+            useViverseAvatar={false}
             model={avatar ? { type: "vrm", url: avatar.vrmUrl } : undefined}
           />
         </group>

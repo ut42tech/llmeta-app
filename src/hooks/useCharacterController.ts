@@ -2,8 +2,10 @@ import { useFrame } from "@react-three/fiber";
 import type { SimpleCharacterImpl } from "@react-three/viverse";
 import type { Room } from "colyseus.js";
 import type { RefObject } from "react";
+import { useEffect } from "react";
 import { Euler, Vector3 } from "three";
 import { PHYSICS } from "@/constants";
+import { AVATAR_LIST } from "@/constants/avatars";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { MyRoomState } from "@/utils/colyseus";
@@ -27,6 +29,13 @@ export const useCharacterController = (
   );
 
   const isFPV = useLocalPlayerStore((s) => s.isFPV);
+  const setCurrentAvatar = useLocalPlayerStore((s) => s.setCurrentAvatar);
+  const setAvatarList = useLocalPlayerStore((s) => s.setAvatarList);
+
+  useEffect(() => {
+    setAvatarList(AVATAR_LIST);
+    setCurrentAvatar(AVATAR_LIST[0]);
+  }, [setAvatarList, setCurrentAvatar]);
 
   useFrame((state) => {
     const character = characterRef.current;
