@@ -74,6 +74,9 @@ const SettingsContentClient = () => {
             </Button>
           </div>
         </div>
+        {/* Avatar */}
+        {/* TODO: Avatar Choose */}
+
         {/* Position */}
         <div className="space-y-3">
           <h3 className="text-sm font-semibold">Position</h3>

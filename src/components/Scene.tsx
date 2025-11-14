@@ -31,6 +31,8 @@ export const Scene = () => {
 
   const characterRef = useRef<SimpleCharacterImpl>(null);
   const directionalLightRef = useRef<DirectionalLight | null>(null);
+
+  const avatar = useLocalPlayerStore((state) => state.currentAvatar);
   const isFPV = useLocalPlayerStore((s) => s.isFPV);
 
   // Handle character movement, teleport, and sync
@@ -76,6 +78,7 @@ export const Scene = () => {
             cameraBehavior={
               isFPV ? FirstPersonCharacterCameraBehavior : undefined
             }
+            model={avatar ? { type: "vrm", url: avatar.vrmUrl } : undefined}
           />
         </group>
       </Suspense>

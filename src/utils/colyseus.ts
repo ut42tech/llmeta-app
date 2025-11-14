@@ -36,10 +36,20 @@ export type Vec3Data = {
 };
 
 /**
+ * Viverse avatar data
+ */
+export class ViverseAvatar extends Schema {
+  @type("string") headIconUrl = "";
+  @type("number") id = 0;
+  @type("string") vrmUrl = "";
+}
+
+/**
  * Profile update message
  */
 export type ProfileData = {
   username?: string;
+  avatar?: ViverseAvatar;
 };
 
 /**
@@ -56,6 +66,7 @@ export type MoveData = {
  */
 export class Player extends Schema {
   @type("string") username = "Player";
+  @type(ViverseAvatar) avatar = new ViverseAvatar();
   @type(Vec3) position = new Vec3();
   @type(Vec3) rotation = new Vec3();
   @type("string") animation = "idle";

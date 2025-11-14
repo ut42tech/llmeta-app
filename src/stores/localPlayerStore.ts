@@ -3,7 +3,12 @@ import type { Room } from "colyseus.js";
 import { type AnimationAction, Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { PERFORMANCE, PRECISION } from "@/constants";
-import { MessageType, type MoveData, type MyRoomState } from "@/utils/colyseus";
+import {
+  MessageType,
+  type MoveData,
+  type MyRoomState,
+  type ViverseAvatar,
+} from "@/utils/colyseus";
 
 const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
 const INITIAL_PLAYER_ROTATION = new Euler(0, 0, 0);
@@ -63,6 +68,10 @@ type LocalPlayerState = {
   // Player info
   username: string;
 
+  // Avatar
+  currentAvatar?: ViverseAvatar;
+  avatarList?: ViverseAvatar[];
+
   // Position and rotation
   position: Vector3;
   rotation: Euler;
@@ -83,6 +92,8 @@ type LocalPlayerState = {
 type LocalPlayerActions = {
   setSessionId: (sessionId: string) => void;
   setUsername: (username: string) => void;
+  setCurrentAvatar: (avatar: ViverseAvatar) => void;
+  setAvatarList: (avatarList: ViverseAvatar[]) => void;
   setPosition: (position: Vector3) => void;
   setRotation: (rotation: Euler) => void;
   setAnimation: (state: AnimationName) => void;
@@ -117,6 +128,15 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
 
   setUsername: (username: string) => {
     set({ username });
+  },
+
+  // Avatar
+  setCurrentAvatar: (avatar: ViverseAvatar) => {
+    set({ currentAvatar: avatar });
+  },
+
+  setAvatarList: (avatarList: ViverseAvatar[]) => {
+    set({ avatarList });
   },
 
   // Actions
