@@ -29,6 +29,7 @@ const SettingsContentClient = () => {
   const room = useColyseusRoom();
   const username = useLocalPlayerStore((state) => state.username) || "Player";
   const position = useLocalPlayerStore((state) => state.position);
+  const rotation = useLocalPlayerStore((state) => state.rotation);
   const setUsername = useLocalPlayerStore((state) => state.setUsername);
   const teleport = useLocalPlayerStore((state) => state.teleport);
 
@@ -64,7 +65,13 @@ const SettingsContentClient = () => {
   };
 
   const handleSelectAvatar = (avatar: ViverseAvatar) => {
+    const currentPosition = position.clone();
+    const currentRotation = rotation.clone();
+
     setCurrentAvatar(avatar);
+
+    teleport(currentPosition, currentRotation);
+
     if (room) {
       try {
         room.send(MessageType.CHANGE_PROFILE, { avatar: avatar });
