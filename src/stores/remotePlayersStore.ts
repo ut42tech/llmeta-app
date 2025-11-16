@@ -56,7 +56,7 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
         rotation: data.rotation ?? existingPlayer?.rotation ?? new Euler(),
         isRunning: data.isRunning ?? existingPlayer?.isRunning ?? false,
         animation: data.animation ?? existingPlayer?.animation ?? "idle",
-        avatar: data.avatar ?? existingPlayer?.avatar,
+        avatar: data.avatar ?? existingPlayer?.avatar ?? undefined,
       };
 
       newPlayers.set(sessionId, updatedPlayer);

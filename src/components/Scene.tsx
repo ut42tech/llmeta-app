@@ -68,7 +68,7 @@ export const Scene = () => {
       {/* Local Player */}
       <Suspense fallback={null}>
         <group visible={!isFPV}>
-          <LocalCharacter innerRef={characterRef} />
+          <LocalCharacter key={room?.sessionId} innerRef={characterRef} />
         </group>
       </Suspense>
 
