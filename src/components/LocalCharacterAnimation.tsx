@@ -24,6 +24,7 @@ import {
 } from "@react-three/viverse";
 import { useMemo, useRef } from "react";
 import { type AnimationAction, LoopOnce, Vector2, Vector3 } from "three";
+import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { boneMap } from "@/utils/bone-map";
 
 export function LocalCharacterAnimation({
@@ -32,6 +33,9 @@ export function LocalCharacterAnimation({
   physics: BvhCharacterPhysics;
 }) {
   const normalizedDirection = useMemo(() => new Vector2(), []);
+  const setAnimation = useLocalPlayerStore((state) => state.setAnimation);
+  const setIsRunning = useLocalPlayerStore((state) => state.setIsRunning);
+
   useFrame(() =>
     normalizedDirection
       .set(
@@ -49,9 +53,14 @@ export function LocalCharacterAnimation({
   const forwardLeftRef = useRef<AnimationAction>(null);
   const backwardRightRef = useRef<AnimationAction>(null);
   const backwardLeftRef = useRef<AnimationAction>(null);
+  const idleRef = useRef<AnimationAction>(null);
+  const jumpUpRef = useRef<AnimationAction>(null);
+  const jumpLoopRef = useRef<AnimationAction>(null);
+  const jumpDownRef = useRef<AnimationAction>(null);
 
   useFrame(() => {
     const timeScale = RunAction.get() ? 2 : 1;
+    setIsRunning(RunAction.get());
     if (forwardRef.current) {
       forwardRef.current.timeScale = timeScale;
     }
@@ -105,6 +114,7 @@ export function LocalCharacterAnimation({
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardRef}
+                  init={() => setAnimation("forward")}
                   url="animations/jog-forward.glb"
                 />
               </SwitchCase>
@@ -119,6 +129,7 @@ export function LocalCharacterAnimation({
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardRightRef}
+                  init={() => setAnimation("forwardRight")}
                   url="animations/jog-forward-right.glb"
                 />
               </SwitchCase>
@@ -134,6 +145,7 @@ export function LocalCharacterAnimation({
                   scaleTime={0.9}
                   boneMap={boneMap}
                   ref={rightRef}
+                  init={() => setAnimation("right")}
                   url="animations/jog-right.glb"
                 />
               </SwitchCase>
@@ -148,6 +160,7 @@ export function LocalCharacterAnimation({
                   scaleTime={1.3}
                   boneMap={boneMap}
                   ref={backwardRightRef}
+                  init={() => setAnimation("backwardRight")}
                   url="animations/jog-backward-right.glb"
                 />
               </SwitchCase>
@@ -163,6 +176,7 @@ export function LocalCharacterAnimation({
                   scaleTime={1.4}
                   boneMap={boneMap}
                   ref={backwardRef}
+                  init={() => setAnimation("backward")}
                   url="animations/jog-backward.glb"
                 />
               </SwitchCase>
@@ -177,6 +191,7 @@ export function LocalCharacterAnimation({
                   scaleTime={1.3}
                   boneMap={boneMap}
                   ref={backwardLeftRef}
+                  init={() => setAnimation("backwardLeft")}
                   url="animations/jog-backward-left.glb"
                 />
               </SwitchCase>
@@ -192,6 +207,7 @@ export function LocalCharacterAnimation({
                   scaleTime={0.9}
                   boneMap={boneMap}
                   ref={leftRef}
+                  init={() => setAnimation("left")}
                   url="animations/jog-left.glb"
                 />
               </SwitchCase>
@@ -206,11 +222,16 @@ export function LocalCharacterAnimation({
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardLeftRef}
+                  init={() => setAnimation("forwardLeft")}
                   url="animations/jog-forward-left.glb"
                 />
               </SwitchCase>
               <SwitchCase index={8}>
-                <CharacterAnimationAction url={IdleAnimationUrl} />
+                <CharacterAnimationAction
+                  ref={idleRef}
+                  init={() => setAnimation("idle")}
+                  url={IdleAnimationUrl}
+                />
               </SwitchCase>
             </Switch>
           </GrapthState>
@@ -225,6 +246,8 @@ export function LocalCharacterAnimation({
               until={() => timePassed(0.2, "seconds")}
               update={() => void physics.inputVelocity.multiplyScalar(0.3)}
               paused
+              ref={jumpUpRef}
+              init={() => setAnimation("jumpUp")}
               url={JumpUpAnimationUrl}
             />
           </GrapthState>
@@ -234,7 +257,11 @@ export function LocalCharacterAnimation({
               jumpDown: { whenUpdate: () => physics.isGrounded },
             }}
           >
-            <CharacterAnimationAction url={JumpLoopAnimationUrl} />
+            <CharacterAnimationAction
+              ref={jumpLoopRef}
+              init={() => setAnimation("jumpLoop")}
+              url={JumpLoopAnimationUrl}
+            />
           </GrapthState>
           <GrapthState
             name="jumpUp"
@@ -251,14 +278,18 @@ export function LocalCharacterAnimation({
               init={() => {
                 lastJumpTimeRef.current = performance.now() / 1000;
                 physics.applyVelocity(new Vector3(0, 8, 0));
+                setAnimation("jumpUp");
               }}
+              ref={jumpUpRef}
               url={JumpUpAnimationUrl}
             />
           </GrapthState>
           <GrapthState name="jumpDown" transitionTo={{ finally: "move" }}>
             <CharacterAnimationAction
+              ref={jumpDownRef}
               until={() => timePassed(150, "milliseconds")}
               loop={LoopOnce}
+              init={() => setAnimation("jumpDown")}
               url={JumpDownAnimationUrl}
             />
           </GrapthState>

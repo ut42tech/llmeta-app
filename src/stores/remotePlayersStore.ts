@@ -1,7 +1,5 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
-import type { AnimationName } from "@/stores/localPlayerStore";
-import { DEFAULT_ANIMATION } from "@/stores/localPlayerStore";
 import type { ViverseAvatar } from "@/utils/colyseus";
 
 /**
@@ -12,7 +10,8 @@ export type RemotePlayerData = {
   username: string;
   position: Vector3;
   rotation: Euler;
-  animation: AnimationName;
+  isRunning: boolean;
+  animation: string;
   avatar?: ViverseAvatar;
 };
 
@@ -55,8 +54,8 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
         username: data.username ?? existingPlayer?.username ?? "Player",
         position: data.position ?? existingPlayer?.position ?? new Vector3(),
         rotation: data.rotation ?? existingPlayer?.rotation ?? new Euler(),
-        animation:
-          data.animation ?? existingPlayer?.animation ?? DEFAULT_ANIMATION,
+        isRunning: data.isRunning ?? existingPlayer?.isRunning ?? false,
+        animation: data.animation ?? existingPlayer?.animation ?? "idle",
         avatar: data.avatar ?? existingPlayer?.avatar,
       };
 

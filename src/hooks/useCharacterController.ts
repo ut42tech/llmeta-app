@@ -21,7 +21,6 @@ export const useCharacterController = (
   const pendingTeleport = useLocalPlayerStore((state) => state.pendingTeleport);
   const setPosition = useLocalPlayerStore((state) => state.setPosition);
   const setRotation = useLocalPlayerStore((state) => state.setRotation);
-  // const setAction = useLocalPlayerStore((state) => state.setAction); // TODO: Implement action tracking with new API
   const sendMovement = useLocalPlayerStore((state) => state.sendMovement);
   const updateCurrentGridCell = useWorldStore(
     (state) => state.updateCurrentGridCell,
@@ -62,8 +61,6 @@ export const useCharacterController = (
     } else {
       setRotation(character.rotation);
     }
-    // Note: Actions access removed - needs alternative implementation with new API
-    // setAction(character.actions);
 
     // Send movement to server
     if (isConnected && room) {

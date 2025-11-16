@@ -1,7 +1,7 @@
 import type { Room } from "colyseus.js";
-import { type AnimationAction, Euler, Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import { create } from "zustand";
-import { CHARACTER_ANIMATION_NAMES, PERFORMANCE, PRECISION } from "@/constants";
+import { PERFORMANCE, PRECISION } from "@/constants";
 import {
   MessageType,
   type MoveData,
@@ -38,26 +38,30 @@ const roundToDecimals = (value: number, decimals = 2): number => {
 export function createMoveData(
   position: Vector3,
   rotation: Euler,
-  animation: AnimationName,
+  isRunning: boolean,
+  animation: string,
 ): MoveData {
   return {
     position: toPlainVec3(position),
     rotation: { x: rotation.x, y: rotation.y, z: 0 },
-    animation,
+    isRunning: isRunning,
+    animation: animation,
   };
 }
 
-export type AnimationName = (typeof CHARACTER_ANIMATION_NAMES)[number];
-
-const PREFERRED_ANIMATION = "idle";
-
-const FALLBACK_ANIMATION = CHARACTER_ANIMATION_NAMES[0] ?? PREFERRED_ANIMATION;
-
-const SELECTED_DEFAULT = CHARACTER_ANIMATION_NAMES.includes(PREFERRED_ANIMATION)
-  ? PREFERRED_ANIMATION
-  : FALLBACK_ANIMATION;
-
-export const DEFAULT_ANIMATION = SELECTED_DEFAULT as AnimationName;
+export type AnimationState =
+  | "idle"
+  | "forward"
+  | "forwardRight"
+  | "right"
+  | "backwardRight"
+  | "backward"
+  | "backwardLeft"
+  | "left"
+  | "forwardLeft"
+  | "jumpUp"
+  | "jumpLoop"
+  | "jumpDown";
 
 type LocalPlayerState = {
   sessionId: string;
@@ -73,7 +77,8 @@ type LocalPlayerState = {
   rotation: Euler;
 
   // State
-  animationState: AnimationName;
+  isRunning: boolean;
+  animationState: AnimationState;
 
   // View mode
   isFPV: boolean;
@@ -92,8 +97,8 @@ type LocalPlayerActions = {
   setAvatarList: (avatarList: ViverseAvatar[]) => void;
   setPosition: (position: Vector3) => void;
   setRotation: (rotation: Euler) => void;
-  setAnimation: (state: AnimationName) => void;
-  setAction: (actions?: Record<string, AnimationAction | undefined>) => void;
+  setIsRunning: (isRunning: boolean) => void;
+  setAnimation: (state: AnimationState) => void;
   sendMovement: (room: Room<MyRoomState>) => void;
   teleport: (position: Vector3, rotation?: Euler) => void;
   setIsFPV: (isFPV: boolean) => void;
@@ -108,7 +113,8 @@ const initialState: LocalPlayerState = {
   username: "Player",
   position: INITIAL_PLAYER_POSITION.clone(),
   rotation: INITIAL_PLAYER_ROTATION.clone(),
-  animationState: DEFAULT_ANIMATION,
+  isRunning: false,
+  animationState: "idle",
   isFPV: false,
   lastSentTime: 0,
   pendingTeleport: null,
@@ -178,18 +184,12 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
     set({ rotation: normalizedRotation });
   },
 
-  setAnimation: (animationState: AnimationName) => {
-    set({ animationState });
+  setIsRunning: (isRunning: boolean) => {
+    set({ isRunning });
   },
 
-  setAction: (actions) => {
-    const activeAnimationName = actions
-      ? (Object.entries(actions).find(
-          ([, action]) =>
-            action?.isRunning() && (action.getEffectiveWeight?.() ?? 0) > 0,
-        )?.[0] as AnimationName | undefined)
-      : undefined;
-    set({ animationState: activeAnimationName ?? DEFAULT_ANIMATION });
+  setAnimation: (animationState: AnimationState) => {
+    set({ animationState });
   },
 
   sendMovement: (room: Room<MyRoomState>) => {
@@ -203,6 +203,7 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
     const moveData = createMoveData(
       state.position,
       state.rotation,
+      state.isRunning,
       state.animationState,
     );
     room.send(MessageType.MOVE, moveData);

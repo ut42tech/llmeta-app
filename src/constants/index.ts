@@ -33,28 +33,3 @@ export const LIGHTING = {
   DIRECTIONAL_INTENSITY: 1.2,
   AMBIENT_INTENSITY: 1,
 };
-
-// Character animation names
-// Note: This replaces the removed simpleCharacterAnimationNames from @pmndrs/viverse
-export const CHARACTER_ANIMATION_NAMES = [
-  "idle",
-  "walk",
-  "run",
-  "jumpUp",
-  "jumpLoop",
-  "jumpDown",
-  "jumpForward",
-] as const;
-
-// Character animation symbols and utilities (re-exported from @pmndrs/viverse)
-// Note: Use resolveDefaultCharacterAnimationUrl() to get actual URLs from these symbols
-export {
-  IdleAnimationUrl,
-  JumpDownAnimationUrl,
-  JumpForwardAnimationUrl,
-  JumpLoopAnimationUrl,
-  JumpUpAnimationUrl,
-  RunAnimationUrl,
-  resolveDefaultCharacterAnimationUrl,
-  WalkAnimationUrl,
-} from "@pmndrs/viverse";

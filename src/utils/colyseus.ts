@@ -58,6 +58,7 @@ export type ProfileData = {
 export type MoveData = {
   position?: Vec3Data;
   rotation?: Vec3Data;
+  isRunning?: boolean;
   animation?: string;
 };
 
@@ -69,6 +70,7 @@ export class Player extends Schema {
   @type(ViverseAvatar) avatar = new ViverseAvatar();
   @type(Vec3) position = new Vec3();
   @type(Vec3) rotation = new Vec3();
+  @type("boolean") isRunning = false;
   @type("string") animation = "idle";
 }
 
