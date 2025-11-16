@@ -8,10 +8,15 @@ import {
   useKeyboardLocomotionActionBindings,
   usePointerCaptureRotateZoomActionBindings,
 } from "@react-three/viverse";
+import { useEffect } from "react";
+import type { Object3D } from "three";
 import { CharacterAnimation } from "@/components/CharacterAnimation";
 
-export function LocalCharacter() {
-  //load model
+export function LocalCharacter({
+  innerRef,
+}: {
+  innerRef?: React.Ref<Object3D | null>;
+}) {
   const model = useCharacterModelLoader({
     castShadow: true,
     url: "avatar.vrm",
@@ -19,23 +24,33 @@ export function LocalCharacter() {
 
   const physics = useBvhCharacterPhysics(model.scene);
 
-  //action bindings:
   usePointerCaptureRotateZoomActionBindings();
   useKeyboardLocomotionActionBindings();
 
-  //apply the actions to the character physics movement (only movement not jumping) each frame
   useFrame((state) => updateSimpleCharacterVelocity(state.camera, physics));
 
-  //character camera
   useCharacterCameraBehavior(model.scene, {
     zoom: { speed: 0 },
     characterBaseOffset: [0, 1.3, 0],
   });
 
-  //character rotation matches camera rotation on y axis
   useFrame((state) => {
     model.scene.rotation.y = state.camera.rotation.y;
   });
+
+  useEffect(() => {
+    if (!innerRef) return;
+    if (typeof innerRef === "function") {
+      innerRef(model.scene);
+      return () => {
+        innerRef(null);
+      };
+    }
+    (innerRef as React.RefObject<Object3D | null>).current = model.scene;
+    return () => {
+      (innerRef as React.RefObject<Object3D | null>).current = null;
+    };
+  }, [innerRef, model.scene]);
 
   return (
     <CharacterModelProvider model={model}>

@@ -1,13 +1,10 @@
 import { Sky } from "@react-three/drei";
-import {
-  FirstPersonCharacterCameraBehavior,
-  SimpleCharacter,
-} from "@react-three/viverse";
 import type { Room } from "colyseus.js";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import type { DirectionalLight, Object3D } from "three";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
+import { LocalCharacter } from "@/components/LocalCharacter";
 import { RemotePlayers } from "@/components/RemotePlayers";
 import { LIGHTING } from "@/constants";
 import { useCharacterController } from "@/hooks/useCharacterController";
@@ -31,7 +28,6 @@ export const Scene = () => {
   const characterRef = useRef<Object3D>(null);
   const directionalLightRef = useRef<DirectionalLight | null>(null);
 
-  const avatar = useLocalPlayerStore((state) => state.currentAvatar);
   const isFPV = useLocalPlayerStore((s) => s.isFPV);
 
   // Handle character movement, teleport, and sync
@@ -72,14 +68,7 @@ export const Scene = () => {
       {/* Local Player */}
       <Suspense fallback={null}>
         <group visible={!isFPV}>
-          <SimpleCharacter
-            ref={characterRef}
-            cameraBehavior={
-              isFPV ? FirstPersonCharacterCameraBehavior : undefined
-            }
-            useViverseAvatar={false}
-            model={avatar ? { type: "vrm", url: avatar.vrmUrl } : undefined}
-          />
+          <LocalCharacter innerRef={characterRef} />
         </group>
       </Suspense>
 
