@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Euler, Vector3 } from "three";
-import type { AnimationName } from "@/stores/localPlayerStore";
+import type { AnimationState } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import { type Player, useColyseusState } from "@/utils/colyseus";
 
@@ -34,7 +34,8 @@ export function useRemotePlayersSync() {
           player.rotation.y,
           player.rotation.z,
         ),
-        animation: player.animation as AnimationName,
+        isRunning: player.isRunning as boolean,
+        animation: player.animation as AnimationState,
       });
     };
 
@@ -56,7 +57,8 @@ export function useRemotePlayersSync() {
           player.rotation.y,
           player.rotation.z,
         ),
-        animation: player.animation as AnimationName,
+        isRunning: player.isRunning as boolean,
+        animation: player.animation as AnimationState,
       });
     };
 
