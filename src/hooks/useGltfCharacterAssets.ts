@@ -1,5 +1,16 @@
 "use client";
 
+/**
+ * @deprecated This hook is deprecated and replaced by the new API pattern.
+ * Use `useCharacterModelLoader` from '@react-three/viverse' instead.
+ * This file is kept for reference but is no longer used in the codebase.
+ *
+ * Migration guide:
+ * - Replace `useGltfCharacterAssets()` with `useCharacterModelLoader({ useViverseAvatar: true })`
+ * - Use `CharacterModelProvider` + `CharacterAnimationAction` for animations
+ * - See RemoteSimpleCharacter.tsx for a complete example
+ */
+
 import { useEffect, useMemo, useState } from "react";
 import type { AnimationAction, Group } from "three";
 import { type AnimationMixer, LoopOnce } from "three";

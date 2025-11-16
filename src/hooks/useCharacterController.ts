@@ -21,7 +21,7 @@ export const useCharacterController = (
   const pendingTeleport = useLocalPlayerStore((state) => state.pendingTeleport);
   const setPosition = useLocalPlayerStore((state) => state.setPosition);
   const setRotation = useLocalPlayerStore((state) => state.setRotation);
-  const setAction = useLocalPlayerStore((state) => state.setAction);
+  // const setAction = useLocalPlayerStore((state) => state.setAction); // TODO: Implement action tracking with new API
   const sendMovement = useLocalPlayerStore((state) => state.sendMovement);
   const updateCurrentGridCell = useWorldStore(
     (state) => state.updateCurrentGridCell,

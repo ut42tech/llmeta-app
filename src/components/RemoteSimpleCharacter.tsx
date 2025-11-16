@@ -1,11 +1,14 @@
 "use client";
 import { useFrame } from "@react-three/fiber";
-import { Suspense, useEffect, useRef } from "react";
-import type { Group } from "three";
+import {
+  CharacterModelProvider,
+  useCharacterModelLoader,
+} from "@react-three/viverse";
+import { useEffect, useRef } from "react";
+import type { Object3D } from "three";
 import { PlayerTag } from "@/components/PlayerTag";
+import { RemoteCharacterAnimations } from "@/components/RemoteCharacterAnimations";
 import { ORIENTATION } from "@/constants";
-import { useGltfCharacterAssets } from "@/hooks/useGltfCharacterAssets";
-import { useRemoteCharacterAnimation } from "@/hooks/useRemoteCharacterAnimation";
 import {
   usePositionBuffer,
   useRotationBuffer,
@@ -19,36 +22,37 @@ export type RemoteSimpleCharacterProps = {
 export const RemoteSimpleCharacter = ({
   player,
 }: RemoteSimpleCharacterProps) => {
-  const group = useRef<Group>(null);
+  const groupRef = useRef<Object3D>(null);
 
-  const { model, mixer, actions, isLoaded } = useGltfCharacterAssets();
-
-  // Animation blending (fade)
-  useRemoteCharacterAnimation({
-    animation: player.animation,
-    mixer,
-    actions,
-    isModelLoaded: isLoaded,
+  // Load character model using the new API
+  // Note: Using default VRM model for now
+  // TODO: Add support for custom avatars from player.avatar
+  const model = useCharacterModelLoader({
+    useViverseAvatar: true,
+    // url: player.avatar?.vrmUrl, // Uncomment when avatar data is available
+    // type: 'vrm',
   });
 
   // Interpolate position and rotation (snapshot smoothing)
   const smoothPosition = usePositionBuffer(player.position);
   const smoothRotationQuat = useRotationBuffer(player.rotation);
 
-  // Update position/rotation and mixer
-  useFrame((_, delta) => {
-    const g = group.current;
-    if (!g) return;
-    g.position.copy(smoothPosition);
-    if (model) model.quaternion.copy(smoothRotationQuat);
-    mixer?.update(delta);
+  // Update group position and model rotation
+  useFrame(() => {
+    const group = groupRef.current;
+    if (!group || !model) return;
+
+    group.position.copy(smoothPosition);
+    model.scene.quaternion.copy(smoothRotationQuat);
   });
 
+  // Initialize position and rotation
   useEffect(() => {
-    const g = group.current;
-    if (!g || !model) return;
-    g.position.copy(player.position);
-    model.rotation.set(
+    const group = groupRef.current;
+    if (!group || !model) return;
+
+    group.position.copy(player.position);
+    model.scene.rotation.set(
       player.rotation.x,
       player.rotation.y + ORIENTATION.REMOTE_Y_OFFSET,
       player.rotation.z,
@@ -61,12 +65,17 @@ export const RemoteSimpleCharacter = ({
     player.rotation.z,
   ]);
 
+  if (!model) {
+    return null;
+  }
+
   return (
-    <Suspense fallback={null}>
-      <group ref={group}>
-        {model && <primitive object={model} />}
+    <group ref={groupRef}>
+      <CharacterModelProvider model={model}>
+        <RemoteCharacterAnimations currentAnimation={player.animation} />
+        <primitive object={model.scene} />
         <PlayerTag displayName={player.username} />
-      </group>
-    </Suspense>
+      </CharacterModelProvider>
+    </group>
   );
 };

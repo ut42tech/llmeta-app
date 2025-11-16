@@ -1,3 +1,14 @@
+/**
+ * @deprecated This hook is deprecated and replaced by the new API pattern.
+ * Use `CharacterAnimationAction` with `Switch/SwitchCase` from '@react-three/timeline' instead.
+ * This file is kept for reference but is no longer used in the codebase.
+ *
+ * Migration guide:
+ * - Replace manual mixer.update() + fade control with declarative CharacterAnimationAction
+ * - Use Switch/SwitchCase with condition props for animation selection
+ * - See RemoteCharacterAnimations.tsx for a complete example
+ */
+
 import { useEffect, useRef } from "react";
 import type { AnimationAction, AnimationMixer } from "three";
 import { PERFORMANCE } from "@/constants";
