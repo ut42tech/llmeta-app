@@ -10,7 +10,7 @@ import {
 } from "@react-three/viverse";
 import { useEffect } from "react";
 import type { Object3D } from "three";
-import { CharacterAnimation } from "@/components/CharacterAnimation";
+import { LocalCharacterAnimation } from "@/components/LocalCharacterAnimation";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export function LocalCharacter({
@@ -57,7 +57,7 @@ export function LocalCharacter({
 
   return (
     <CharacterModelProvider model={model}>
-      <CharacterAnimation physics={physics} />
+      <LocalCharacterAnimation physics={physics} />
       <primitive object={model.scene} />
     </CharacterModelProvider>
   );

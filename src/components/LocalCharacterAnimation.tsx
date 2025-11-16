@@ -26,7 +26,7 @@ import { useMemo, useRef } from "react";
 import { type AnimationAction, LoopOnce, Vector2, Vector3 } from "three";
 import { boneMap } from "@/utils/bone-map";
 
-export function CharacterAnimation({
+export function LocalCharacterAnimation({
   physics,
 }: {
   physics: BvhCharacterPhysics;
@@ -81,7 +81,7 @@ export function CharacterAnimation({
   const lastJumpTimeRef = useRef(0);
   return (
     <RunTimeline>
-      <CharacterAnimationLayer name="base-layer">
+      <CharacterAnimationLayer name="local-character-layer">
         <Graph enterState="move">
           <GrapthState
             name="move"
