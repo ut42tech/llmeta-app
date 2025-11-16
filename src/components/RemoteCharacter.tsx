@@ -11,6 +11,7 @@ import {
   useRotationBuffer,
 } from "@/hooks/useSnapshotBuffer";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
+import { makeUniqueModelUrl } from "@/utils/model-loader";
 
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   const player = useRemotePlayersStore((state) => state.players.get(sessionId));
@@ -22,7 +23,8 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
 
   const model = useCharacterModelLoader({
     castShadow: true,
-    url: avatarUrl,
+    url: makeUniqueModelUrl(avatarUrl, sessionId),
+    type: "vrm",
   });
 
   // Interpolate position and rotation from server updates

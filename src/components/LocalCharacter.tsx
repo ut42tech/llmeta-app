@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import type { Object3D } from "three";
 import { LocalCharacterAnimation } from "@/components/LocalCharacterAnimation";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { makeUniqueModelUrl } from "@/utils/model-loader";
 
 export function LocalCharacter({
   innerRef,
@@ -19,10 +20,15 @@ export function LocalCharacter({
   innerRef?: React.Ref<Object3D | null>;
 }) {
   const avatar = useLocalPlayerStore((state) => state.currentAvatar);
+  const sessionId = useLocalPlayerStore((state) => state.sessionId);
 
   const model = useCharacterModelLoader({
     castShadow: true,
-    url: avatar?.vrmUrl ?? "models/avatar_01.vrm",
+    url: makeUniqueModelUrl(
+      avatar?.vrmUrl ?? "models/avatar_01.vrm",
+      sessionId || "local",
+    ),
+    type: "vrm",
   });
 
   const physics = useBvhCharacterPhysics(model.scene);
