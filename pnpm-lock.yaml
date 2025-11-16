@@ -15,8 +15,8 @@ importers:
         specifier: ^3.4.4
         version: 3.4.4(three@0.180.0)
       '@pmndrs/viverse':
-        specifier: ^0.1.19
-        version: 0.1.19(three@0.180.0)
+        specifier: ^0.2.3
+        version: 0.2.3(three@0.180.0)
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -42,8 +42,8 @@ importers:
         specifier: ^1.0.58
         version: 1.0.58(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/react@19.2.2)(react@19.2.0)(three@0.180.0)(use-sync-external-store@1.6.0(react@19.2.0))
       '@react-three/viverse':
-        specifier: ^0.1.19
-        version: 0.1.19(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0)(use-sync-external-store@1.6.0(react@19.2.0))
+        specifier: ^0.2.3
+        version: 0.2.3(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0)(use-sync-external-store@1.6.0(react@19.2.0))
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -576,13 +576,8 @@ packages:
   '@pmndrs/pointer-events@6.6.27':
     resolution: {integrity: sha512-3vi+BZQ+Kv63duWf7A4lcPJTFaAGL1Os+SjTO6FDOriZwnOLXTa3XtEuEqC3LFR7wV7Zs/qIY+onTP3TxtXSEQ==}
 
-  '@pmndrs/timeline@0.1.15':
-    resolution: {integrity: sha512-WAhLO0pmAAtFwIUSV81vy/nNI5RhldR5DeSG5/+Cnh8rGyVTzkUyznRN9F8Zr1MDqv2HJ18OxEKlUbUGSZxPHQ==}
-    peerDependencies:
-      three: '*'
-
-  '@pmndrs/timeline@0.2.6':
-    resolution: {integrity: sha512-kZ+vWAen6s0n8C+xGjzmTne+cRG5QQ86OhL2OOZPLlFi4psU+Kypk3aSETQ9EAzlWfL8AtvEA8mz5Ia7zjgyaw==}
+  '@pmndrs/timeline@0.3.7':
+    resolution: {integrity: sha512-0YIrwhmsseeipAY+AzOg/15qo/tdsm3uEAhQcUU19EFgA0YmVrdlMS0nJ7mJPbJ5A13m+Rm3FSUXigntVD+G2Q==}
     peerDependencies:
       three: '*'
 
@@ -594,13 +589,8 @@ packages:
     peerDependencies:
       three: '>=0.162'
 
-  '@pmndrs/viverse@0.1.19':
-    resolution: {integrity: sha512-l29DdD5E/Ypu6DOQwfdPkgSBE6aKRv+zZ86YnDwck5aBtGt9adSVwkrSVwJBZ+Jx3WVjhMxTHV9ILeXsPXeEoQ==}
-    peerDependencies:
-      three: '*'
-
-  '@pmndrs/viverse@0.1.20':
-    resolution: {integrity: sha512-MtaM1tcpL6ri+89CT0QJmaQLretPdeS7oGcXhzqYUNPeUOapmMA/4mTFlAzbqKRk9rq6gkvrKzvt1JCyN+D7dQ==}
+  '@pmndrs/viverse@0.2.3':
+    resolution: {integrity: sha512-lWhCPq1mpbUhc2+nLKtZUD4itjFtRoWM8FH+ugvVosYFVnlVLMnSQCzx2fHOJSrYnfI2dx7rJX2PkpXDysJMTQ==}
     peerDependencies:
       three: '*'
 
@@ -934,14 +924,19 @@ packages:
       react: ^19.0
       three: '>= 0.156.0'
 
+  '@react-three/timeline@0.3.7':
+    resolution: {integrity: sha512-xFYuNo25cJcNiC8kCMfHLZynUdWMdyPkvg+Zr19qPZtSLzAm7Plu3pKkznDsyH5WroJpCKdYO9rC8RLiitiCYA==}
+    peerDependencies:
+      '@react-three/fiber': '*'
+
   '@react-three/uikit@1.0.58':
     resolution: {integrity: sha512-DHCm0k9Lr8qvfavEjZ2S2YZ3ZDMqXO6sMQA5w+kf7ei4Z1DhDFYbFicmhLP9CiDh6eyJG5xNHPTPfpmXUuaGJg==}
     peerDependencies:
       '@react-three/fiber': '>=8'
       react: '>=18'
 
-  '@react-three/viverse@0.1.19':
-    resolution: {integrity: sha512-+0FGhZhXcDUNnMnX2iq9jdOXkrr8zOd/919QWJ/qAWj81Mad7IQTBPL0FxyfkgZepXGi6uHqjGae3dd/6zafuA==}
+  '@react-three/viverse@0.2.3':
+    resolution: {integrity: sha512-u0yHMR/adYHgIYx5JenVkXCADNgr80TIcjMJzGc224+/CjZ9c4zX0VXB8rK6yWw88wnLHo/3zZCz2F4xi+Cb1g==}
     peerDependencies:
       '@react-three/fiber': '*'
 
@@ -2225,11 +2220,7 @@ snapshots:
 
   '@pmndrs/pointer-events@6.6.27': {}
 
-  '@pmndrs/timeline@0.1.15(three@0.180.0)':
-    dependencies:
-      three: 0.180.0
-
-  '@pmndrs/timeline@0.2.6(three@0.180.0)':
+  '@pmndrs/timeline@0.3.7(three@0.180.0)':
     dependencies:
       three: 0.180.0
 
@@ -2245,20 +2236,11 @@ snapshots:
       three: 0.180.0
       yoga-layout: 3.2.1
 
-  '@pmndrs/viverse@0.1.19(three@0.180.0)':
+  '@pmndrs/viverse@0.2.3(three@0.180.0)':
     dependencies:
       '@pixiv/three-vrm': 3.4.4(three@0.180.0)
       '@pixiv/three-vrm-animation': 3.4.4(three@0.180.0)
-      '@pmndrs/timeline': 0.1.15(three@0.180.0)
-      '@viverse/sdk': 1.2.10-alpha.0
-      three: 0.180.0
-      three-mesh-bvh: 0.9.2(three@0.180.0)
-
-  '@pmndrs/viverse@0.1.20(three@0.180.0)':
-    dependencies:
-      '@pixiv/three-vrm': 3.4.4(three@0.180.0)
-      '@pixiv/three-vrm-animation': 3.4.4(three@0.180.0)
-      '@pmndrs/timeline': 0.2.6(three@0.180.0)
+      '@pmndrs/timeline': 0.3.7(three@0.180.0)
       '@viverse/sdk': 1.2.10-alpha.0
       three: 0.180.0
       three-mesh-bvh: 0.9.2(three@0.180.0)
@@ -2585,6 +2567,13 @@ snapshots:
     transitivePeerDependencies:
       - '@types/three'
 
+  '@react-three/timeline@0.3.7(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(three@0.180.0)':
+    dependencies:
+      '@pmndrs/timeline': 0.3.7(three@0.180.0)
+      '@react-three/fiber': 9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0)
+    transitivePeerDependencies:
+      - three
+
   '@react-three/uikit@1.0.58(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/react@19.2.2)(react@19.2.0)(three@0.180.0)(use-sync-external-store@1.6.0(react@19.2.0))':
     dependencies:
       '@pmndrs/uikit': 1.0.58(three@0.180.0)
@@ -2599,11 +2588,12 @@ snapshots:
       - three
       - use-sync-external-store
 
-  '@react-three/viverse@0.1.19(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0)(use-sync-external-store@1.6.0(react@19.2.0))':
+  '@react-three/viverse@0.2.3(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0)(use-sync-external-store@1.6.0(react@19.2.0))':
     dependencies:
       '@pixiv/three-vrm': 3.4.4(three@0.180.0)
-      '@pmndrs/viverse': 0.1.20(three@0.180.0)
+      '@pmndrs/viverse': 0.2.3(three@0.180.0)
       '@react-three/fiber': 9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0)
+      '@react-three/timeline': 0.3.7(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(three@0.180.0)
       '@react-three/xr': 6.6.27(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0)
       '@viverse/sdk': 1.2.10-alpha.0
       suspend-react: 0.1.3(react@19.2.0)
