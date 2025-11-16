@@ -2,11 +2,10 @@ import { Sky } from "@react-three/drei";
 import {
   FirstPersonCharacterCameraBehavior,
   SimpleCharacter,
-  type SimpleCharacterImpl,
 } from "@react-three/viverse";
 import type { Room } from "colyseus.js";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import type { DirectionalLight } from "three";
+import type { DirectionalLight, Object3D } from "three";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { RemotePlayers } from "@/components/RemotePlayers";
@@ -29,7 +28,7 @@ export const Scene = () => {
 
   const setSessionId = useLocalPlayerStore((state) => state.setSessionId);
 
-  const characterRef = useRef<SimpleCharacterImpl>(null);
+  const characterRef = useRef<Object3D>(null);
   const directionalLightRef = useRef<DirectionalLight | null>(null);
 
   const avatar = useLocalPlayerStore((state) => state.currentAvatar);

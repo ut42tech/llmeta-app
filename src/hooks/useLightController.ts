@@ -1,9 +1,7 @@
 import { useFrame, useThree } from "@react-three/fiber";
-import type { SimpleCharacterImpl } from "@react-three/viverse";
 import type { RefObject } from "react";
 import { useEffect } from "react";
-import type { DirectionalLight } from "three";
-import { Vector3 } from "three";
+import { type DirectionalLight, type Object3D, Vector3 } from "three";
 import { LIGHTING } from "@/constants";
 
 const LIGHT_OFFSET = new Vector3(
@@ -18,7 +16,7 @@ const tmpVec = new Vector3();
  * Makes directional light follow the character
  */
 export const useLightController = (
-  characterRef: RefObject<SimpleCharacterImpl | null>,
+  characterRef: RefObject<Object3D | null>,
   lightRef: RefObject<DirectionalLight | null>,
 ) => {
   const { scene } = useThree();

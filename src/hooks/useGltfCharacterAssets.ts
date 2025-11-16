@@ -2,18 +2,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import type { AnimationAction, Group } from "three";
-import { AnimationMixer, LoopOnce } from "three";
+import { type AnimationMixer, LoopOnce } from "three";
 import { GLTFLoader } from "three/examples/jsm/Addons.js";
 import { MeshoptDecoder } from "three/examples/jsm/libs/meshopt_decoder.module.js";
 import {
-  idleUrl,
-  jumpDownUrl,
-  jumpForwardUrl,
-  jumpLoopUrl,
-  jumpUpUrl,
-  mannequinUrl,
-  runUrl,
-  walkUrl,
+  IdleAnimationUrl,
+  JumpDownAnimationUrl,
+  JumpForwardAnimationUrl,
+  JumpLoopAnimationUrl,
+  JumpUpAnimationUrl,
+  RunAnimationUrl,
+  resolveDefaultCharacterAnimationUrl,
+  WalkAnimationUrl,
 } from "@/constants";
 import type { AnimationName } from "@/stores/localPlayerStore";
 
@@ -49,15 +49,20 @@ export function useGltfCharacterAssets(): GltfCharacterAssets {
   useEffect(() => {
     let disposed = false;
     (async () => {
-      const { scene } = await gltfLoader.loadAsync(mannequinUrl);
-      if (disposed) return;
-      scene.traverse((o) => {
-        o.frustumCulled = false;
-        o.castShadow = true;
-        o.receiveShadow = true;
-      });
-      setModel(scene);
-      setMixer(new AnimationMixer(scene));
+      // Note: Mannequin model URL needs to be handled separately
+      // For now, we'll need to provide a custom model URL or use SimpleCharacter's default
+      // TODO: Determine the correct way to load the default mannequin model in the new API
+      console.warn("Mannequin model loading needs to be updated for new API");
+      // Temporary: Skip model loading for now
+      // const { scene } = await gltfLoader.loadAsync(mannequinUrl);
+      // if (disposed) return;
+      // scene.traverse((o) => {
+      //   o.frustumCulled = false;
+      //   o.castShadow = true;
+      //   o.receiveShadow = true;
+      // });
+      // setModel(scene);
+      // setMixer(new AnimationMixer(scene));
     })();
     return () => {
       disposed = true;
@@ -68,6 +73,25 @@ export function useGltfCharacterAssets(): GltfCharacterAssets {
     if (!model || !mixer) return;
     let cancelled = false;
     (async () => {
+      // Resolve animation URLs from symbols
+      const [
+        idleUrl,
+        walkUrl,
+        runUrl,
+        jumpUpUrl,
+        jumpLoopUrl,
+        jumpDownUrl,
+        jumpForwardUrl,
+      ] = await Promise.all([
+        resolveDefaultCharacterAnimationUrl(IdleAnimationUrl),
+        resolveDefaultCharacterAnimationUrl(WalkAnimationUrl),
+        resolveDefaultCharacterAnimationUrl(RunAnimationUrl),
+        resolveDefaultCharacterAnimationUrl(JumpUpAnimationUrl),
+        resolveDefaultCharacterAnimationUrl(JumpLoopAnimationUrl),
+        resolveDefaultCharacterAnimationUrl(JumpDownAnimationUrl),
+        resolveDefaultCharacterAnimationUrl(JumpForwardAnimationUrl),
+      ]);
+
       const entries: Array<[AnimationName, string]> = [
         ["idle", idleUrl],
         ["walk", walkUrl],

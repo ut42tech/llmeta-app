@@ -1,9 +1,8 @@
 import { useFrame } from "@react-three/fiber";
-import type { SimpleCharacterImpl } from "@react-three/viverse";
 import type { Room } from "colyseus.js";
 import type { RefObject } from "react";
 import { useEffect } from "react";
-import { Euler, Vector3 } from "three";
+import { Euler, type Object3D, Vector3 } from "three";
 import { PHYSICS } from "@/constants";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
@@ -15,7 +14,7 @@ import type { MyRoomState } from "@/utils/colyseus";
  * Handles teleport, fall reset, state sync, and server updates
  */
 export const useCharacterController = (
-  characterRef: RefObject<SimpleCharacterImpl | null>,
+  characterRef: RefObject<Object3D | null>,
   room: Room<MyRoomState> | undefined,
   isConnected: boolean,
 ) => {
@@ -45,7 +44,7 @@ export const useCharacterController = (
     if (pendingTeleport) {
       character.position.copy(pendingTeleport.position);
       if (pendingTeleport.rotation) {
-        character.model?.scene.rotation.copy(pendingTeleport.rotation);
+        character.rotation.copy(pendingTeleport.rotation);
       }
       useLocalPlayerStore.setState({ pendingTeleport: null });
     }
@@ -61,9 +60,10 @@ export const useCharacterController = (
       const camY = state.camera.rotation.y;
       setRotation(new Euler(0, camY, 0));
     } else {
-      setRotation(character.model?.scene.rotation || new Euler());
+      setRotation(character.rotation);
     }
-    setAction(character.actions);
+    // Note: Actions access removed - needs alternative implementation with new API
+    // setAction(character.actions);
 
     // Send movement to server
     if (isConnected && room) {

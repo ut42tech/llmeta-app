@@ -1,8 +1,7 @@
-import { simpleCharacterAnimationNames } from "@pmndrs/viverse";
 import type { Room } from "colyseus.js";
 import { type AnimationAction, Euler, Vector3 } from "three";
 import { create } from "zustand";
-import { PERFORMANCE, PRECISION } from "@/constants";
+import { CHARACTER_ANIMATION_NAMES, PERFORMANCE, PRECISION } from "@/constants";
 import {
   MessageType,
   type MoveData,
@@ -48,16 +47,13 @@ export function createMoveData(
   };
 }
 
-export type AnimationName = (typeof simpleCharacterAnimationNames)[number];
+export type AnimationName = (typeof CHARACTER_ANIMATION_NAMES)[number];
 
 const PREFERRED_ANIMATION = "idle";
 
-const FALLBACK_ANIMATION =
-  simpleCharacterAnimationNames[0] ?? PREFERRED_ANIMATION;
+const FALLBACK_ANIMATION = CHARACTER_ANIMATION_NAMES[0] ?? PREFERRED_ANIMATION;
 
-const SELECTED_DEFAULT = simpleCharacterAnimationNames.includes(
-  PREFERRED_ANIMATION,
-)
+const SELECTED_DEFAULT = CHARACTER_ANIMATION_NAMES.includes(PREFERRED_ANIMATION)
   ? PREFERRED_ANIMATION
   : FALLBACK_ANIMATION;
 
