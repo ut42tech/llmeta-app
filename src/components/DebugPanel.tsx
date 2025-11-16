@@ -12,6 +12,7 @@ export const DebugPanel = () => {
   const position = useLocalPlayerStore((state) => state.position);
   const rotation = useLocalPlayerStore((state) => state.rotation);
   const username = useLocalPlayerStore((state) => state.username);
+  const isRunning = useLocalPlayerStore((state) => state.isRunning);
   const animationState = useLocalPlayerStore((state) => state.animationState);
 
   const [, setPlayerControls] = useControls(
@@ -49,6 +50,10 @@ export const DebugPanel = () => {
         value: rotation.z,
         disabled: true,
       },
+      IsRunning: {
+        value: isRunning,
+        disabled: true,
+      },
       Animation: {
         value: animationState,
         disabled: true,
@@ -67,6 +72,7 @@ export const DebugPanel = () => {
       "Rotation X": rotation.x,
       "Rotation Y": rotation.y,
       "Rotation Z": rotation.z,
+      IsRunning: isRunning,
       Animation: animationState,
     });
   }, [
@@ -78,6 +84,7 @@ export const DebugPanel = () => {
     rotation.y,
     rotation.z,
     username,
+    isRunning,
     animationState,
     setPlayerControls,
   ]);
