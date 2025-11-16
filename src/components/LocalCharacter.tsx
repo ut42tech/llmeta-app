@@ -11,15 +11,18 @@ import {
 import { useEffect } from "react";
 import type { Object3D } from "three";
 import { CharacterAnimation } from "@/components/CharacterAnimation";
+import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export function LocalCharacter({
   innerRef,
 }: {
   innerRef?: React.Ref<Object3D | null>;
 }) {
+  const avatar = useLocalPlayerStore((state) => state.currentAvatar);
+
   const model = useCharacterModelLoader({
     castShadow: true,
-    url: "avatar.vrm",
+    url: avatar?.vrmUrl ?? "models/avatar_01.vrm",
   });
 
   const physics = useBvhCharacterPhysics(model.scene);
