@@ -105,7 +105,7 @@ export function CharacterAnimation({
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardRef}
-                  url="jog-forward.glb"
+                  url="animations/jog-forward.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -119,7 +119,7 @@ export function CharacterAnimation({
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardRightRef}
-                  url="jog-forward-right.glb"
+                  url="animations/jog-forward-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -134,7 +134,7 @@ export function CharacterAnimation({
                   scaleTime={0.9}
                   boneMap={boneMap}
                   ref={rightRef}
-                  url="jog-right.glb"
+                  url="animations/jog-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -148,7 +148,7 @@ export function CharacterAnimation({
                   scaleTime={1.3}
                   boneMap={boneMap}
                   ref={backwardRightRef}
-                  url="jog-backward-right.glb"
+                  url="animations/jog-backward-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -163,7 +163,7 @@ export function CharacterAnimation({
                   scaleTime={1.4}
                   boneMap={boneMap}
                   ref={backwardRef}
-                  url="jog-backward.glb"
+                  url="animations/jog-backward.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -177,7 +177,7 @@ export function CharacterAnimation({
                   scaleTime={1.3}
                   boneMap={boneMap}
                   ref={backwardLeftRef}
-                  url="jog-backward-left.glb"
+                  url="animations/jog-backward-left.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -192,7 +192,7 @@ export function CharacterAnimation({
                   scaleTime={0.9}
                   boneMap={boneMap}
                   ref={leftRef}
-                  url="jog-left.glb"
+                  url="animations/jog-left.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -206,7 +206,7 @@ export function CharacterAnimation({
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardLeftRef}
-                  url="jog-forward-left.glb"
+                  url="animations/jog-forward-left.glb"
                 />
               </SwitchCase>
               <SwitchCase index={8}>
