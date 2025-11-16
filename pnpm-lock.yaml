@@ -38,6 +38,9 @@ importers:
       '@react-three/postprocessing':
         specifier: ^3.0.4
         version: 3.0.4(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/three@0.180.0)(react@19.2.0)(three@0.180.0)
+      '@react-three/timeline':
+        specifier: ^0.3.7
+        version: 0.3.7(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(three@0.180.0)
       '@react-three/uikit':
         specifier: ^1.0.58
         version: 1.0.58(@react-three/fiber@9.4.0(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(three@0.180.0))(@types/react@19.2.2)(react@19.2.0)(three@0.180.0)(use-sync-external-store@1.6.0(react@19.2.0))
