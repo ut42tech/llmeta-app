@@ -27,7 +27,8 @@ import { MessageType, useColyseusRoom } from "@/utils/colyseus";
 
 const SettingsContentClient = () => {
   const room = useColyseusRoom();
-  const username = useLocalPlayerStore((state) => state.username) || "Player";
+  const username =
+    useLocalPlayerStore((state) => state.username) || "Anonymous";
   const position = useLocalPlayerStore((state) => state.position);
   const rotation = useLocalPlayerStore((state) => state.rotation);
   const setUsername = useLocalPlayerStore((state) => state.setUsername);

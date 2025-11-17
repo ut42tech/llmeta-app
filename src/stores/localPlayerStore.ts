@@ -110,7 +110,7 @@ type LocalPlayerStore = LocalPlayerState & LocalPlayerActions;
 
 const initialState: LocalPlayerState = {
   sessionId: "",
-  username: "Player",
+  username: "Anonymous",
   position: INITIAL_PLAYER_POSITION.clone(),
   rotation: INITIAL_PLAYER_ROTATION.clone(),
   isRunning: false,

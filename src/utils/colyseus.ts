@@ -66,7 +66,7 @@ export type MoveData = {
  * Player state schema
  */
 export class Player extends Schema {
-  @type("string") username = "Player";
+  @type("string") username = "Anonymous";
   @type(ViverseAvatar) avatar = new ViverseAvatar();
   @type(Vec3) position = new Vec3();
   @type(Vec3) rotation = new Vec3();

@@ -51,7 +51,7 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
       // Create or update player data
       const updatedPlayer: RemotePlayerData = {
         sessionId,
-        username: data.username ?? existingPlayer?.username ?? "Player",
+        username: data.username ?? existingPlayer?.username ?? "Anonymous",
         position: data.position ?? existingPlayer?.position ?? new Vector3(),
         rotation: data.rotation ?? existingPlayer?.rotation ?? new Euler(),
         isRunning: data.isRunning ?? existingPlayer?.isRunning ?? false,
