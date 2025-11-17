@@ -22,6 +22,7 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   }, [player?.avatar?.vrmUrl]);
 
   const model = useCharacterModelLoader({
+    useViverseAvatar: false,
     castShadow: true,
     url: makeUniqueModelUrl(avatarUrl, sessionId),
     type: "vrm",

@@ -37,6 +37,7 @@ export function LocalCharacter({
   previousAvatarUrl.current = avatarUrl;
 
   const model = useCharacterModelLoader({
+    useViverseAvatar: false,
     castShadow: true,
     url: makeUniqueModelUrl(avatarUrl, sessionId || "local"),
     type: "vrm",
