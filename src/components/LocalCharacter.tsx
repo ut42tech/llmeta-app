@@ -8,8 +8,9 @@ import {
   useKeyboardLocomotionActionBindings,
   usePointerCaptureRotateZoomActionBindings,
 } from "@react-three/viverse";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import type { Object3D } from "three";
+import { Euler, Vector3 } from "three";
 import { LocalCharacterAnimation } from "@/components/LocalCharacterAnimation";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { makeUniqueModelUrl } from "@/utils/model-loader";
@@ -21,17 +22,36 @@ export function LocalCharacter({
 }) {
   const avatar = useLocalPlayerStore((state) => state.currentAvatar);
   const sessionId = useLocalPlayerStore((state) => state.sessionId);
+  const currentPosition = useLocalPlayerStore((state) => state.position);
+  const currentRotation = useLocalPlayerStore((state) => state.rotation);
+
+  const savedPosition = useRef<Vector3>(new Vector3());
+  const savedRotation = useRef<Euler>(new Euler());
+  const previousAvatarUrl = useRef<string | undefined>(undefined);
+
+  const avatarUrl = avatar?.vrmUrl ?? "models/avatar_01.vrm";
+  if (previousAvatarUrl.current && previousAvatarUrl.current !== avatarUrl) {
+    savedPosition.current.copy(currentPosition);
+    savedRotation.current.copy(currentRotation);
+  }
+  previousAvatarUrl.current = avatarUrl;
 
   const model = useCharacterModelLoader({
     castShadow: true,
-    url: makeUniqueModelUrl(
-      avatar?.vrmUrl ?? "models/avatar_01.vrm",
-      sessionId || "local",
-    ),
+    url: makeUniqueModelUrl(avatarUrl, sessionId || "local"),
     type: "vrm",
   });
 
   const physics = useBvhCharacterPhysics(model.scene);
+
+  useEffect(() => {
+    if (!model.scene) return;
+
+    if (savedPosition.current.lengthSq() > 0) {
+      model.scene.position.copy(savedPosition.current);
+      model.scene.rotation.copy(savedRotation.current);
+    }
+  }, [model.scene]);
 
   usePointerCaptureRotateZoomActionBindings();
   useKeyboardLocomotionActionBindings();
