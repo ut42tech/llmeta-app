@@ -20,7 +20,7 @@ import {
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export const YourInfoDrawer = () => {
-  const username = useLocalPlayerStore((s) => s.username) || "Player";
+  const username = useLocalPlayerStore((s) => s.username) || "Anonymous";
   const sessionId = useLocalPlayerStore((s) => s.sessionId) || "—";
 
   return (

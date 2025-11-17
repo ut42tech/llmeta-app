@@ -14,7 +14,7 @@ export const PlayerTag = ({ displayName }: PlayerTagProps) => {
     if (ref.current == null) {
       return;
     }
-    ref.current.quaternion.copy(state.camera.quaternion);
+    ref.current.lookAt(state.camera.position);
   });
 
   return (

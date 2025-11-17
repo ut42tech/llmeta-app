@@ -1,5 +1,5 @@
 import { useControls } from "leva";
-import { RemoteSimpleCharacter } from "@/components/RemoteSimpleCharacter";
+import { RemoteCharacter } from "@/components/RemoteCharacter";
 import { useRemotePlayersSync } from "@/hooks/useRemotePlayersSync";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
@@ -34,7 +34,10 @@ export const RemotePlayers = () => {
           showMyRemoteAvatar ? true : player.sessionId !== mySessionId,
         )
         .map((player) => (
-          <RemoteSimpleCharacter key={player.sessionId} player={player} />
+          <RemoteCharacter
+            key={player.sessionId}
+            sessionId={player.sessionId}
+          />
         ))}
     </>
   );

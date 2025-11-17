@@ -3,7 +3,7 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { Euler, Quaternion, Vector3 } from "three";
-import { INTERPOLATION, ORIENTATION, PERFORMANCE } from "@/constants";
+import { INTERPOLATION, PERFORMANCE } from "@/constants";
 
 /**
  * Lightweight client-side buffer to continuously interpolate
@@ -46,7 +46,6 @@ export function usePositionBuffer(
 export function useRotationBuffer(
   targetEuler: Euler,
   baseFactor: number = PERFORMANCE.ROTATION_LERP_FACTOR,
-  yOffset: number = ORIENTATION.REMOTE_Y_OFFSET,
   epsilon: number = INTERPOLATION.ROTATION_EPSILON,
 ) {
   const tmpEuler = useMemo(() => new Euler(), []);
@@ -70,7 +69,7 @@ export function useRotationBuffer(
     ) {
       tmpEuler.set(
         targetRef.current.x,
-        targetRef.current.y + yOffset,
+        targetRef.current.y,
         targetRef.current.z,
       );
       tmpQuatTo.setFromEuler(tmpEuler);

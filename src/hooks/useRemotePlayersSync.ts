@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { Euler, Vector3 } from "three";
-import type { AnimationName } from "@/stores/localPlayerStore";
+import type { AnimationState } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import { type Player, useColyseusState } from "@/utils/colyseus";
 
@@ -23,6 +23,7 @@ export function useRemotePlayersSync() {
       addOrUpdatePlayer(key, {
         sessionId: key,
         username: player.username,
+        avatar: player.avatar,
         position: new Vector3(
           player.position.x,
           player.position.y,
@@ -33,7 +34,8 @@ export function useRemotePlayersSync() {
           player.rotation.y,
           player.rotation.z,
         ),
-        animation: player.animation as AnimationName,
+        isRunning: player.isRunning as boolean,
+        animation: player.animation as AnimationState,
       });
     };
 
@@ -44,6 +46,7 @@ export function useRemotePlayersSync() {
     const onChange = (player: Player, key: string) => {
       if (!player || !player.position || !player.rotation) return;
       addOrUpdatePlayer(key, {
+        avatar: player.avatar,
         position: new Vector3(
           player.position.x,
           player.position.y,
@@ -54,7 +57,8 @@ export function useRemotePlayersSync() {
           player.rotation.y,
           player.rotation.z,
         ),
-        animation: player.animation as AnimationName,
+        isRunning: player.isRunning as boolean,
+        animation: player.animation as AnimationState,
       });
     };
 

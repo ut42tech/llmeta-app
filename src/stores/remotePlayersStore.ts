@@ -1,7 +1,6 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
-import type { AnimationName } from "@/stores/localPlayerStore";
-import { DEFAULT_ANIMATION } from "@/stores/localPlayerStore";
+import type { ViverseAvatar } from "@/utils/colyseus";
 
 /**
  * Remote player state
@@ -11,7 +10,9 @@ export type RemotePlayerData = {
   username: string;
   position: Vector3;
   rotation: Euler;
-  animation: AnimationName;
+  isRunning: boolean;
+  animation: string;
+  avatar?: ViverseAvatar;
 };
 
 type RemotePlayersState = {
@@ -50,11 +51,12 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
       // Create or update player data
       const updatedPlayer: RemotePlayerData = {
         sessionId,
-        username: data.username ?? existingPlayer?.username ?? "Player",
+        username: data.username ?? existingPlayer?.username ?? "Anonymous",
         position: data.position ?? existingPlayer?.position ?? new Vector3(),
         rotation: data.rotation ?? existingPlayer?.rotation ?? new Euler(),
-        animation:
-          data.animation ?? existingPlayer?.animation ?? DEFAULT_ANIMATION,
+        isRunning: data.isRunning ?? existingPlayer?.isRunning ?? false,
+        animation: data.animation ?? existingPlayer?.animation ?? "idle",
+        avatar: data.avatar ?? existingPlayer?.avatar ?? undefined,
       };
 
       newPlayers.set(sessionId, updatedPlayer);

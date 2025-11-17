@@ -3,6 +3,7 @@
 import { Settings } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Euler, Vector3 } from "three";
+import { AvatarPicker } from "@/components/overlay/AvatarPicker";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -19,15 +20,19 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { AVATAR_LIST } from "@/constants/avatars";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import type { ViverseAvatar } from "@/utils/colyseus";
 import { MessageType, useColyseusRoom } from "@/utils/colyseus";
 
 const SettingsContentClient = () => {
   const room = useColyseusRoom();
-  const username = useLocalPlayerStore((s) => s.username) || "Player";
-  const position = useLocalPlayerStore((s) => s.position);
-  const setUsername = useLocalPlayerStore((s) => s.setUsername);
-  const teleport = useLocalPlayerStore((s) => s.teleport);
+  const username =
+    useLocalPlayerStore((state) => state.username) || "Anonymous";
+  const position = useLocalPlayerStore((state) => state.position);
+  const rotation = useLocalPlayerStore((state) => state.rotation);
+  const setUsername = useLocalPlayerStore((state) => state.setUsername);
+  const teleport = useLocalPlayerStore((state) => state.teleport);
 
   const [nameInput, setNameInput] = useState<string>(username);
   const isNameChanged = useMemo(
@@ -35,8 +40,13 @@ const SettingsContentClient = () => {
     [nameInput, username],
   );
 
-  const isFPV = useLocalPlayerStore((s) => s.isFPV);
-  const toggleFPV = useLocalPlayerStore((s) => s.toggleFPV);
+  const isFPV = useLocalPlayerStore((state) => state.isFPV);
+  const toggleFPV = useLocalPlayerStore((state) => state.toggleFPV);
+
+  const currentAvatar = useLocalPlayerStore((state) => state.currentAvatar);
+  const setCurrentAvatar = useLocalPlayerStore(
+    (state) => state.setCurrentAvatar,
+  );
 
   const handleUpdateName = () => {
     const newName = nameInput.trim();
@@ -53,6 +63,23 @@ const SettingsContentClient = () => {
 
   const handleResetPosition = () => {
     teleport(new Vector3(0, 0, 0), new Euler(0, 0, 0));
+  };
+
+  const handleSelectAvatar = (avatar: ViverseAvatar) => {
+    const currentPosition = position.clone();
+    const currentRotation = rotation.clone();
+
+    setCurrentAvatar(avatar);
+
+    teleport(currentPosition, currentRotation);
+
+    if (room) {
+      try {
+        room.send(MessageType.CHANGE_PROFILE, { avatar: avatar });
+      } catch {
+        // no-op
+      }
+    }
   };
 
   return (
@@ -74,6 +101,17 @@ const SettingsContentClient = () => {
             </Button>
           </div>
         </div>
+
+        {/* Avatar */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold">Avatar</h3>
+          <AvatarPicker
+            avatars={AVATAR_LIST}
+            selectedId={currentAvatar?.id}
+            onSelect={handleSelectAvatar}
+          />
+        </div>
+
         {/* Position */}
         <div className="space-y-3">
           <h3 className="text-sm font-semibold">Position</h3>

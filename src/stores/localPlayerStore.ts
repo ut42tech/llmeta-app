@@ -1,9 +1,13 @@
-import { simpleCharacterAnimationNames } from "@pmndrs/viverse";
 import type { Room } from "colyseus.js";
-import { type AnimationAction, Euler, Vector3 } from "three";
+import { Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { PERFORMANCE, PRECISION } from "@/constants";
-import { MessageType, type MoveData, type MyRoomState } from "@/utils/colyseus";
+import {
+  MessageType,
+  type MoveData,
+  type MyRoomState,
+  type ViverseAvatar,
+} from "@/utils/colyseus";
 
 const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
 const INITIAL_PLAYER_ROTATION = new Euler(0, 0, 0);
@@ -34,41 +38,47 @@ const roundToDecimals = (value: number, decimals = 2): number => {
 export function createMoveData(
   position: Vector3,
   rotation: Euler,
-  animation: AnimationName,
+  isRunning: boolean,
+  animation: string,
 ): MoveData {
   return {
     position: toPlainVec3(position),
     rotation: { x: rotation.x, y: rotation.y, z: 0 },
-    animation,
+    isRunning: isRunning,
+    animation: animation,
   };
 }
 
-export type AnimationName = (typeof simpleCharacterAnimationNames)[number];
-
-const PREFERRED_ANIMATION = "idle";
-
-const FALLBACK_ANIMATION =
-  simpleCharacterAnimationNames[0] ?? PREFERRED_ANIMATION;
-
-const SELECTED_DEFAULT = simpleCharacterAnimationNames.includes(
-  PREFERRED_ANIMATION,
-)
-  ? PREFERRED_ANIMATION
-  : FALLBACK_ANIMATION;
-
-export const DEFAULT_ANIMATION = SELECTED_DEFAULT as AnimationName;
+export type AnimationState =
+  | "idle"
+  | "forward"
+  | "forwardRight"
+  | "right"
+  | "backwardRight"
+  | "backward"
+  | "backwardLeft"
+  | "left"
+  | "forwardLeft"
+  | "jumpUp"
+  | "jumpLoop"
+  | "jumpDown";
 
 type LocalPlayerState = {
   sessionId: string;
   // Player info
   username: string;
 
+  // Avatar
+  currentAvatar?: ViverseAvatar;
+  avatarList?: ViverseAvatar[];
+
   // Position and rotation
   position: Vector3;
   rotation: Euler;
 
   // State
-  animationState: AnimationName;
+  isRunning: boolean;
+  animationState: AnimationState;
 
   // View mode
   isFPV: boolean;
@@ -83,10 +93,12 @@ type LocalPlayerState = {
 type LocalPlayerActions = {
   setSessionId: (sessionId: string) => void;
   setUsername: (username: string) => void;
+  setCurrentAvatar: (avatar: ViverseAvatar) => void;
+  setAvatarList: (avatarList: ViverseAvatar[]) => void;
   setPosition: (position: Vector3) => void;
   setRotation: (rotation: Euler) => void;
-  setAnimation: (state: AnimationName) => void;
-  setAction: (actions?: Record<string, AnimationAction | undefined>) => void;
+  setIsRunning: (isRunning: boolean) => void;
+  setAnimation: (state: AnimationState) => void;
   sendMovement: (room: Room<MyRoomState>) => void;
   teleport: (position: Vector3, rotation?: Euler) => void;
   setIsFPV: (isFPV: boolean) => void;
@@ -98,10 +110,11 @@ type LocalPlayerStore = LocalPlayerState & LocalPlayerActions;
 
 const initialState: LocalPlayerState = {
   sessionId: "",
-  username: "Player",
+  username: "Anonymous",
   position: INITIAL_PLAYER_POSITION.clone(),
   rotation: INITIAL_PLAYER_ROTATION.clone(),
-  animationState: DEFAULT_ANIMATION,
+  isRunning: false,
+  animationState: "idle",
   isFPV: false,
   lastSentTime: 0,
   pendingTeleport: null,
@@ -117,6 +130,15 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
 
   setUsername: (username: string) => {
     set({ username });
+  },
+
+  // Avatar
+  setCurrentAvatar: (avatar: ViverseAvatar) => {
+    set({ currentAvatar: avatar });
+  },
+
+  setAvatarList: (avatarList: ViverseAvatar[]) => {
+    set({ avatarList });
   },
 
   // Actions
@@ -162,18 +184,12 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
     set({ rotation: normalizedRotation });
   },
 
-  setAnimation: (animationState: AnimationName) => {
-    set({ animationState });
+  setIsRunning: (isRunning: boolean) => {
+    set({ isRunning });
   },
 
-  setAction: (actions) => {
-    const activeAnimationName = actions
-      ? (Object.entries(actions).find(
-          ([, action]) =>
-            action?.isRunning() && (action.getEffectiveWeight?.() ?? 0) > 0,
-        )?.[0] as AnimationName | undefined)
-      : undefined;
-    set({ animationState: activeAnimationName ?? DEFAULT_ANIMATION });
+  setAnimation: (animationState: AnimationState) => {
+    set({ animationState });
   },
 
   sendMovement: (room: Room<MyRoomState>) => {
@@ -187,6 +203,7 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
     const moveData = createMoveData(
       state.position,
       state.rotation,
+      state.isRunning,
       state.animationState,
     );
     room.send(MessageType.MOVE, moveData);
