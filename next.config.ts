@@ -10,14 +10,6 @@ const nextConfig: NextConfig = {
       "three",
     ],
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "avatar.viverse.com",
-      },
-    ],
-  },
 };
 
 export default nextConfig;
