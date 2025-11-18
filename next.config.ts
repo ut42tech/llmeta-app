@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
       "three",
     ],
   },
+  images: {
+    domains: ["avatar.viverse.com"],
+  },
 };
 
 export default nextConfig;
