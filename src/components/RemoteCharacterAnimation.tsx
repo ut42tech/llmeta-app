@@ -83,7 +83,7 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardRef}
-                  url="animations/jog-forward.glb"
+                  url="/animations/jog-forward.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -95,7 +95,7 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardRightRef}
-                  url="animations/jog-forward-right.glb"
+                  url="/animations/jog-forward-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -107,7 +107,7 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   scaleTime={0.9}
                   boneMap={boneMap}
                   ref={rightRef}
-                  url="animations/jog-right.glb"
+                  url="/animations/jog-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -119,7 +119,7 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   scaleTime={1.3}
                   boneMap={boneMap}
                   ref={backwardRightRef}
-                  url="animations/jog-backward-right.glb"
+                  url="/animations/jog-backward-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -131,7 +131,7 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   scaleTime={1.4}
                   boneMap={boneMap}
                   ref={backwardRef}
-                  url="animations/jog-backward.glb"
+                  url="/animations/jog-backward.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -143,7 +143,7 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   scaleTime={1.3}
                   boneMap={boneMap}
                   ref={backwardLeftRef}
-                  url="animations/jog-backward-left.glb"
+                  url="/animations/jog-backward-left.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -155,7 +155,7 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   scaleTime={0.9}
                   boneMap={boneMap}
                   ref={leftRef}
-                  url="animations/jog-left.glb"
+                  url="/animations/jog-left.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -167,7 +167,7 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   scaleTime={1.5}
                   boneMap={boneMap}
                   ref={forwardLeftRef}
-                  url="animations/jog-forward-left.glb"
+                  url="/animations/jog-forward-left.glb"
                 />
               </SwitchCase>
               <SwitchCase

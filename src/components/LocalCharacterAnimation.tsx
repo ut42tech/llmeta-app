@@ -115,7 +115,7 @@ export function LocalCharacterAnimation({
                   boneMap={boneMap}
                   ref={forwardRef}
                   init={() => setAnimation("forward")}
-                  url="animations/jog-forward.glb"
+                  url="/animations/jog-forward.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -130,7 +130,7 @@ export function LocalCharacterAnimation({
                   boneMap={boneMap}
                   ref={forwardRightRef}
                   init={() => setAnimation("forwardRight")}
-                  url="animations/jog-forward-right.glb"
+                  url="/animations/jog-forward-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -146,7 +146,7 @@ export function LocalCharacterAnimation({
                   boneMap={boneMap}
                   ref={rightRef}
                   init={() => setAnimation("right")}
-                  url="animations/jog-right.glb"
+                  url="/animations/jog-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -161,7 +161,7 @@ export function LocalCharacterAnimation({
                   boneMap={boneMap}
                   ref={backwardRightRef}
                   init={() => setAnimation("backwardRight")}
-                  url="animations/jog-backward-right.glb"
+                  url="/animations/jog-backward-right.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -177,7 +177,7 @@ export function LocalCharacterAnimation({
                   boneMap={boneMap}
                   ref={backwardRef}
                   init={() => setAnimation("backward")}
-                  url="animations/jog-backward.glb"
+                  url="/animations/jog-backward.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -192,7 +192,7 @@ export function LocalCharacterAnimation({
                   boneMap={boneMap}
                   ref={backwardLeftRef}
                   init={() => setAnimation("backwardLeft")}
-                  url="animations/jog-backward-left.glb"
+                  url="/animations/jog-backward-left.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -208,7 +208,7 @@ export function LocalCharacterAnimation({
                   boneMap={boneMap}
                   ref={leftRef}
                   init={() => setAnimation("left")}
-                  url="animations/jog-left.glb"
+                  url="/animations/jog-left.glb"
                 />
               </SwitchCase>
               <SwitchCase
@@ -223,7 +223,7 @@ export function LocalCharacterAnimation({
                   boneMap={boneMap}
                   ref={forwardLeftRef}
                   init={() => setAnimation("forwardLeft")}
-                  url="animations/jog-forward-left.glb"
+                  url="/animations/jog-forward-left.glb"
                 />
               </SwitchCase>
               <SwitchCase index={8}>

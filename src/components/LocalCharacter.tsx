@@ -29,7 +29,7 @@ export function LocalCharacter({
   const savedRotation = useRef<Euler>(new Euler());
   const previousAvatarUrl = useRef<string | undefined>(undefined);
 
-  const avatarUrl = avatar?.vrmUrl ?? "models/avatar_01.vrm";
+  const avatarUrl = avatar?.vrmUrl ?? "/models/avatar_01.vrm";
   if (previousAvatarUrl.current && previousAvatarUrl.current !== avatarUrl) {
     savedPosition.current.copy(currentPosition);
     savedRotation.current.copy(currentRotation);

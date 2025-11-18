@@ -18,7 +18,7 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
 
   const avatarUrl = useMemo(() => {
     const url = player?.avatar?.vrmUrl;
-    return url && url.trim().length > 0 ? url : "models/avatar_01.vrm";
+    return url && url.trim().length > 0 ? url : "/models/avatar_01.vrm";
   }, [player?.avatar?.vrmUrl]);
 
   const model = useCharacterModelLoader({
