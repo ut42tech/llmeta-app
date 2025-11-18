@@ -6,7 +6,7 @@ import { PHYSICS } from "@/constants";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
-import type { MoveData } from "@/utils/colyseus";
+import type { MoveData } from "@/types/multiplayer";
 
 /**
  * Character controller hook

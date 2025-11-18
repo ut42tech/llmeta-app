@@ -2,7 +2,7 @@ import { AccessToken } from "livekit-server-sdk";
 
 const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY;
 const LIVEKIT_API_SECRET = process.env.LIVEKIT_API_SECRET;
-const LIVEKIT_WS_URL = process.env.LIVEKIT_WS_URL;
+const LIVEKIT_URL = process.env.LIVEKIT_URL;
 const LIVEKIT_DEFAULT_ROOM = process.env.LIVEKIT_DEFAULT_ROOM || "playground";
 
 export type LiveKitTokenRequest = {
@@ -20,7 +20,7 @@ export type LiveKitTokenResponse = {
 };
 
 const ensureConfig = () => {
-  if (!LIVEKIT_API_KEY || !LIVEKIT_API_SECRET || !LIVEKIT_WS_URL) {
+  if (!LIVEKIT_API_KEY || !LIVEKIT_API_SECRET || !LIVEKIT_URL) {
     throw new Error(
       "Missing LiveKit server configuration (API key/secret/url)",
     );
@@ -29,7 +29,7 @@ const ensureConfig = () => {
   return {
     apiKey: LIVEKIT_API_KEY,
     apiSecret: LIVEKIT_API_SECRET,
-    serverUrl: LIVEKIT_WS_URL,
+    serverUrl: LIVEKIT_URL,
   };
 };
 

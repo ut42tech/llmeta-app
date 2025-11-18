@@ -7,7 +7,7 @@ import {
   RoomEvent,
 } from "livekit-client";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
-import type { MoveData, ProfileData } from "@/utils/colyseus";
+import type { MoveData, ProfileData } from "@/types/multiplayer";
 
 export type LiveKitSyncMessageType = "MOVE" | "CHANGE_PROFILE";
 

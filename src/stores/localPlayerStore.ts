@@ -1,7 +1,7 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { PERFORMANCE, PRECISION } from "@/constants";
-import type { MoveData, ViverseAvatar } from "@/utils/colyseus";
+import type { MoveData, ViverseAvatar } from "@/types/multiplayer";
 
 const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
 const INITIAL_PLAYER_ROTATION = new Euler(0, 0, 0);

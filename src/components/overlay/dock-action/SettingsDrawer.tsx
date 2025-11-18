@@ -23,7 +23,7 @@ import {
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useSyncClient } from "@/hooks/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { ViverseAvatar } from "@/utils/colyseus";
+import type { ViverseAvatar } from "@/types/multiplayer";
 
 const SettingsContentClient = () => {
   const { sendProfile } = useSyncClient();

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createLiveKitAccessToken } from "@/lib/livekit/server";
+import { createLiveKitAccessToken } from "@/utils/livekit-server";
 
 export const dynamic = "force-dynamic";
 

@@ -8,7 +8,7 @@ import {
   connectToLiveKit,
   disconnectFromLiveKit,
   publishLiveKitProfile,
-} from "@/utils/livekitClient";
+} from "@/utils/livekit-client";
 
 const createIdentity = () => {
   if (typeof crypto !== "undefined" && crypto.randomUUID) {

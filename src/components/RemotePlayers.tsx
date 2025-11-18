@@ -6,7 +6,7 @@ import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 /**
  * Component that manages all remote players.
- * Watches Colyseus room state changes and updates player info.
+ * Mirrors LiveKit data channel updates into the remote player store.
  */
 export const RemotePlayers = () => {
   useRemotePlayersSync();

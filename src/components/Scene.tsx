@@ -6,9 +6,8 @@ import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { LocalCharacter } from "@/components/LocalCharacter";
 import { RemotePlayers } from "@/components/RemotePlayers";
 import { LIGHTING } from "@/constants";
-import { LIVEKIT_CONFIG, SYNC_PROVIDER } from "@/constants/sync";
+import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { useCharacterController } from "@/hooks/useCharacterController";
-import { useColyseusLifecycle } from "@/hooks/useColyseusLifecycle";
 import { useLightController } from "@/hooks/useLightController";
 import { useLiveKitLifecycle } from "@/hooks/useLiveKitLifecycle";
 import { useSyncClient } from "@/hooks/useSyncClient";
@@ -19,12 +18,7 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
  * Manages the local player, remote players, and the world.
  */
 export const Scene = () => {
-  const isLiveKit = SYNC_PROVIDER === "livekit";
-  useColyseusLifecycle(undefined, { enabled: !isLiveKit });
-  useLiveKitLifecycle({
-    enabled: isLiveKit,
-    roomName: LIVEKIT_CONFIG.defaultRoom,
-  });
+  useLiveKitLifecycle({ roomName: LIVEKIT_CONFIG.defaultRoom });
 
   const syncClient = useSyncClient();
 
