@@ -17,7 +17,9 @@ import {
  */
 export function useColyseusLifecycle(
   roomName: string = COLYSEUS_CONFIG.DEFAULT_ROOM_NAME,
+  options?: { enabled?: boolean },
 ) {
+  const enabled = options?.enabled ?? true;
   const setConnecting = useConnectionStore((state) => state.setConnecting);
   const setConnected = useConnectionStore((state) => state.setConnected);
   const setFailed = useConnectionStore((state) => state.setFailed);
@@ -26,14 +28,16 @@ export function useColyseusLifecycle(
   const room = useColyseusRoom();
   const roomRef = useRef(room);
   useEffect(() => {
+    if (!enabled) return;
     roomRef.current = room;
     if (room) {
       setConnected();
       console.log(`[Colyseus] Successfully connected to room: ${roomName}`);
     }
-  }, [room, roomName, setConnected]);
+  }, [enabled, room, roomName, setConnected]);
 
   useEffect(() => {
+    if (!enabled) return;
     let mounted = true;
     let timer: ReturnType<typeof setTimeout> | undefined;
 
@@ -61,5 +65,5 @@ export function useColyseusLifecycle(
       setDisconnected();
       console.log("[Colyseus] Disconnected from room");
     };
-  }, [roomName, setConnecting, setFailed, setDisconnected]);
+  }, [enabled, roomName, setConnecting, setFailed, setDisconnected]);
 }

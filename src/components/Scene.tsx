@@ -1,29 +1,32 @@
 import { Sky } from "@react-three/drei";
-import type { Room } from "colyseus.js";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useMemo, useRef } from "react";
 import type { DirectionalLight, Object3D } from "three";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { LocalCharacter } from "@/components/LocalCharacter";
 import { RemotePlayers } from "@/components/RemotePlayers";
 import { LIGHTING } from "@/constants";
+import { LIVEKIT_CONFIG, SYNC_PROVIDER } from "@/constants/sync";
 import { useCharacterController } from "@/hooks/useCharacterController";
 import { useColyseusLifecycle } from "@/hooks/useColyseusLifecycle";
 import { useLightController } from "@/hooks/useLightController";
+import { useLiveKitLifecycle } from "@/hooks/useLiveKitLifecycle";
+import { useSyncClient } from "@/hooks/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { type MyRoomState, useColyseusRoom } from "@/utils/colyseus";
 
 /**
  * Main scene component.
  * Manages the local player, remote players, and the world.
  */
 export const Scene = () => {
-  useColyseusLifecycle();
+  const isLiveKit = SYNC_PROVIDER === "livekit";
+  useColyseusLifecycle(undefined, { enabled: !isLiveKit });
+  useLiveKitLifecycle({
+    enabled: isLiveKit,
+    roomName: LIVEKIT_CONFIG.defaultRoom,
+  });
 
-  const room = useColyseusRoom() as Room<MyRoomState> | undefined;
-  const [isConnected, setIsConnected] = useState(false);
-
-  const setSessionId = useLocalPlayerStore((state) => state.setSessionId);
+  const syncClient = useSyncClient();
 
   const characterRef = useRef<Object3D>(null);
   const directionalLightRef = useRef<DirectionalLight | null>(null);
@@ -31,19 +34,14 @@ export const Scene = () => {
   const isFPV = useLocalPlayerStore((s) => s.isFPV);
 
   // Handle character movement, teleport, and sync
-  useCharacterController(characterRef, room, isConnected);
+  useCharacterController(
+    characterRef,
+    syncClient.sendMove,
+    syncClient.isConnected,
+  );
 
   // Handle light following character
   useLightController(characterRef, directionalLightRef);
-
-  // Handle session connection
-  useEffect(() => {
-    if (room?.sessionId) {
-      setSessionId(room.sessionId);
-      setIsConnected(true);
-      console.log("[Scene] Colyseus connected, session ID:", room.sessionId);
-    }
-  }, [room?.sessionId, setSessionId]);
 
   // Light settings
   const directionalLightIntensity = useMemo(
@@ -68,7 +66,7 @@ export const Scene = () => {
       {/* Local Player */}
       <Suspense fallback={null}>
         <group visible={!isFPV}>
-          <LocalCharacter key={room?.sessionId} innerRef={characterRef} />
+          <LocalCharacter key={syncClient.sessionId} innerRef={characterRef} />
         </group>
       </Suspense>
 

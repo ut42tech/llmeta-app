@@ -1,5 +1,4 @@
 import { useFrame } from "@react-three/fiber";
-import type { Room } from "colyseus.js";
 import type { RefObject } from "react";
 import { useEffect } from "react";
 import { Euler, type Object3D, Vector3 } from "three";
@@ -7,7 +6,7 @@ import { PHYSICS } from "@/constants";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
-import type { MyRoomState } from "@/utils/colyseus";
+import type { MoveData } from "@/utils/colyseus";
 
 /**
  * Character controller hook
@@ -15,7 +14,7 @@ import type { MyRoomState } from "@/utils/colyseus";
  */
 export const useCharacterController = (
   characterRef: RefObject<Object3D | null>,
-  room: Room<MyRoomState> | undefined,
+  publishMovement: ((data: MoveData) => void) | undefined,
   isConnected: boolean,
 ) => {
   const pendingTeleport = useLocalPlayerStore((state) => state.pendingTeleport);
@@ -63,8 +62,8 @@ export const useCharacterController = (
     }
 
     // Send movement to server
-    if (isConnected && room) {
-      sendMovement(room);
+    if (isConnected && publishMovement) {
+      sendMovement(publishMovement);
     }
 
     // Update grid cell

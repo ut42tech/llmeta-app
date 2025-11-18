@@ -1,13 +1,7 @@
-import type { Room } from "colyseus.js";
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { PERFORMANCE, PRECISION } from "@/constants";
-import {
-  MessageType,
-  type MoveData,
-  type MyRoomState,
-  type ViverseAvatar,
-} from "@/utils/colyseus";
+import type { MoveData, ViverseAvatar } from "@/utils/colyseus";
 
 const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
 const INITIAL_PLAYER_ROTATION = new Euler(0, 0, 0);
@@ -99,7 +93,7 @@ type LocalPlayerActions = {
   setRotation: (rotation: Euler) => void;
   setIsRunning: (isRunning: boolean) => void;
   setAnimation: (state: AnimationState) => void;
-  sendMovement: (room: Room<MyRoomState>) => void;
+  sendMovement: (publisher?: (data: MoveData) => void) => void;
   teleport: (position: Vector3, rotation?: Euler) => void;
   setIsFPV: (isFPV: boolean) => void;
   toggleFPV: () => void;
@@ -192,7 +186,7 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
     set({ animationState });
   },
 
-  sendMovement: (room: Room<MyRoomState>) => {
+  sendMovement: (publisher?: (data: MoveData) => void) => {
     const now = Date.now();
     const state = get();
 
@@ -200,13 +194,15 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
       return;
     }
 
+    if (!publisher) return;
+
     const moveData = createMoveData(
       state.position,
       state.rotation,
       state.isRunning,
       state.animationState,
     );
-    room.send(MessageType.MOVE, moveData);
+    publisher(moveData);
     set({ lastSentTime: now });
   },
 
