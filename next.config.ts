@@ -11,7 +11,12 @@ const nextConfig: NextConfig = {
     ],
   },
   images: {
-    domains: ["avatar.viverse.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "avatar.viverse.com",
+      },
+    ],
   },
 };
 
