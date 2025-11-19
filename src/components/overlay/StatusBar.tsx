@@ -17,7 +17,9 @@ export const StatusBar = () => {
       <div className="absolute left-4 top-4 pointer-events-auto">
         <Badge variant="secondary" className="flex items-center gap-1.5">
           <Users className="size-3.5" />
-          <span className="tabular-nums">{playersCount} Online Player(s)</span>
+          <span className="tabular-nums">
+            {playersCount + 1} Online Player(s)
+          </span>
         </Badge>
       </div>
 
