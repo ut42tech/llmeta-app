@@ -19,8 +19,6 @@ A 3D multiplayer metaverse client built with Next.js, React Three Fiber, and Liv
 2.  **Set up environment variables:**
     Create a `.env.local` file (use `.env.example` as a template) and add your LiveKit credentials:
     ```
-    NEXT_PUBLIC_LIVEKIT_ROOM=playground
-
     LIVEKIT_API_KEY=your_livekit_api_key
     LIVEKIT_API_SECRET=your_livekit_api_secret
     LIVEKIT_URL=wss://your-livekit-host
@@ -38,8 +36,7 @@ A 3D multiplayer metaverse client built with Next.js, React Three Fiber, and Liv
 
 - **Move:** WASD
 - **Camera:** Drag mouse
-- **Jump:** Spacebar
-- **Debug Panel:** Adjust settings via the Leva panel in the top-right corner.
+- **Jump:** Space
 
 ## Available Scripts
 
