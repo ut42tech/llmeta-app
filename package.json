@@ -24,6 +24,7 @@
     "@react-three/postprocessing": "^3.0.4",
     "@react-three/timeline": "^0.3.7",
     "@react-three/uikit": "^1.0.59",
+    "@react-three/uikit-lucide": "^1.0.59",
     "@react-three/viverse": "^0.2.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
