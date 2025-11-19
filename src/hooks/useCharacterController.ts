@@ -12,11 +12,11 @@ import type { MoveData } from "@/types/multiplayer";
  * Character controller hook
  * Handles teleport, fall reset, state sync, and server updates
  */
-export const useCharacterController = (
+export function useCharacterController(
   characterRef: RefObject<Object3D | null>,
   publishMovement: ((data: MoveData) => void) | undefined,
   isConnected: boolean,
-) => {
+) {
   const pendingTeleport = useLocalPlayerStore((state) => state.pendingTeleport);
   const setPosition = useLocalPlayerStore((state) => state.setPosition);
   const setRotation = useLocalPlayerStore((state) => state.setRotation);
@@ -69,4 +69,4 @@ export const useCharacterController = (
     // Update grid cell
     updateCurrentGridCell(character.position);
   });
-};
+}

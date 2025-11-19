@@ -7,7 +7,7 @@ import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
  * Component that manages all remote players.
  * Mirrors LiveKit data channel updates into the remote player store.
  */
-export const RemotePlayers = () => {
+export function RemotePlayers() {
   const players = useRemotePlayersStore((s) => s.players);
   const mySessionId = useLocalPlayerStore((s) => s.sessionId);
   const { showRemotePlayers, showMyRemoteAvatar } = useControls(
@@ -39,4 +39,4 @@ export const RemotePlayers = () => {
         ))}
     </>
   );
-};
+}

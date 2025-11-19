@@ -15,7 +15,7 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
  * Main scene component.
  * Manages the local player, remote players, and the world.
  */
-export const Scene = () => {
+export function Scene() {
   const syncClient = useSyncClient();
 
   const characterRef = useRef<Object3D>(null);
@@ -70,4 +70,4 @@ export const Scene = () => {
       </Suspense>
     </>
   );
-};
+}

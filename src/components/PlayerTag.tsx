@@ -7,7 +7,7 @@ type PlayerTagProps = {
   displayName: string;
 };
 
-export const PlayerTag = ({ displayName }: PlayerTagProps) => {
+export function PlayerTag({ displayName }: PlayerTagProps) {
   const ref = useRef<Object3D>(null);
 
   useFrame((state) => {
@@ -34,4 +34,4 @@ export const PlayerTag = ({ displayName }: PlayerTagProps) => {
       </Suspense>
     </group>
   );
-};
+}
