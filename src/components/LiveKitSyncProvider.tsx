@@ -11,6 +11,7 @@ import {
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
+import { AudioPermissionDialog } from "@/components/AudioPermissionDialog";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { useLiveKitAuth } from "@/hooks/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/useLiveKitConnection";
@@ -66,6 +67,7 @@ export function LiveKitSyncProvider({
       onError={(error) => setFailed(error.message)}
     >
       <RoomAudioRenderer />
+      <AudioPermissionDialog />
       <LiveKitSyncBridge identity={identity}>{children}</LiveKitSyncBridge>
     </LiveKitRoom>
   );
