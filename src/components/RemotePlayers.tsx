@@ -1,15 +1,14 @@
 import { useControls } from "leva";
+import { useMemo } from "react";
 import { RemoteCharacter } from "@/components/RemoteCharacter";
-import { useRemotePlayersSync } from "@/hooks/useRemotePlayersSync";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 /**
  * Component that manages all remote players.
- * Watches Colyseus room state changes and updates player info.
+ * Mirrors LiveKit data channel updates into the remote player store.
  */
-export const RemotePlayers = () => {
-  useRemotePlayersSync();
+export function RemotePlayers() {
   const players = useRemotePlayersStore((s) => s.players);
   const mySessionId = useLocalPlayerStore((s) => s.sessionId);
   const { showRemotePlayers, showMyRemoteAvatar } = useControls(
@@ -25,20 +24,20 @@ export const RemotePlayers = () => {
     { collapsed: true },
   );
 
+  const visiblePlayers = useMemo(() => {
+    if (!showRemotePlayers) return [];
+    return Array.from(players.values()).filter((player) =>
+      showMyRemoteAvatar ? true : player.sessionId !== mySessionId,
+    );
+  }, [players, showRemotePlayers, showMyRemoteAvatar, mySessionId]);
+
   if (!showRemotePlayers) return null;
 
   return (
     <>
-      {Array.from(players.values())
-        .filter((player) =>
-          showMyRemoteAvatar ? true : player.sessionId !== mySessionId,
-        )
-        .map((player) => (
-          <RemoteCharacter
-            key={player.sessionId}
-            sessionId={player.sessionId}
-          />
-        ))}
+      {visiblePlayers.map((player) => (
+        <RemoteCharacter key={player.sessionId} sessionId={player.sessionId} />
+      ))}
     </>
   );
-};
+}

@@ -3,9 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* config options here */
   reactCompiler: true,
-  images: {
-    unoptimized: true,
-  },
   experimental: {
     optimizePackageImports: [
       "@react-three/drei",
@@ -13,7 +10,6 @@ const nextConfig: NextConfig = {
       "three",
     ],
   },
-  output: "export",
 };
 
 export default nextConfig;

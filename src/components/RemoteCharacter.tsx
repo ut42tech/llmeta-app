@@ -3,32 +3,53 @@ import {
   CharacterModelProvider,
   useCharacterModelLoader,
 } from "@react-three/viverse";
-import { useMemo } from "react";
+import {
+  type RemoteAudioTrack,
+  type RemoteTrack,
+  type RemoteTrackPublication,
+  Track,
+  type TrackPublication,
+} from "livekit-client";
+import { useEffect, useMemo, useState } from "react";
 import { PlayerTag } from "@/components/PlayerTag";
 import { RemoteCharacterAnimation } from "@/components/RemoteCharacterAnimation";
+import { useProximityVoice } from "@/hooks/useProximityVoice";
 import {
   usePositionBuffer,
   useRotationBuffer,
 } from "@/hooks/useSnapshotBuffer";
+import { useSyncClient } from "@/hooks/useSyncClient";
+import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
-import { makeUniqueModelUrl } from "@/utils/model-loader";
 
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   const player = useRemotePlayersStore((state) => state.players.get(sessionId));
+  const setPlayerMuteStatus = useRemotePlayersStore(
+    (state) => state.setPlayerMuteStatus,
+  );
+  const { room } = useSyncClient();
 
-  const avatarUrl = useMemo(() => {
-    const url = player?.avatar?.vrmUrl;
-    return url && url.trim().length > 0 ? url : "models/avatar_01.vrm";
-  }, [player?.avatar?.vrmUrl]);
+  const localPosition = useLocalPlayerStore((state) => state.position);
+
+  const [audioTrack, setAudioTrack] = useState<RemoteAudioTrack | null>(null);
+
+  const avatarUrl = player?.avatar?.vrmUrl;
+  const modelUrl = useMemo(() => {
+    const baseUrl =
+      avatarUrl && avatarUrl.trim().length > 0
+        ? avatarUrl
+        : "/models/avatar_01.vrm";
+    const separator = baseUrl.includes("?") ? "&" : "?";
+    return `${baseUrl}${separator}instance=${encodeURIComponent(sessionId)}`;
+  }, [avatarUrl, sessionId]);
 
   const model = useCharacterModelLoader({
     useViverseAvatar: false,
     castShadow: true,
-    url: makeUniqueModelUrl(avatarUrl, sessionId),
+    url: modelUrl,
     type: "vrm",
   });
 
-  // Interpolate position and rotation from server updates
   const smoothPosition = usePositionBuffer(
     player?.position ?? model.scene.position,
   );
@@ -36,13 +57,107 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     player?.rotation ?? model.scene.rotation,
   );
 
-  useFrame(() => {
-    if (!player) return;
+  useProximityVoice(localPosition, smoothPosition, audioTrack);
 
-    // Apply smooth interpolated position and rotation
+  useFrame(() => {
+    if (!player || !model.scene) return;
+
     model.scene.position.copy(smoothPosition);
     model.scene.quaternion.copy(smoothRotation);
   });
+
+  useEffect(() => {
+    if (!room) return;
+
+    const participant = room.remoteParticipants.get(sessionId);
+    if (!participant) {
+      setPlayerMuteStatus(sessionId, true);
+      return;
+    }
+
+    const updateMuteStatus = () => {
+      const audioPublication = participant.getTrackPublication(
+        Track.Source.Microphone,
+      );
+      const isMuted =
+        !audioPublication ||
+        audioPublication.isMuted ||
+        !audioPublication.isSubscribed;
+      setPlayerMuteStatus(sessionId, isMuted);
+
+      // Update audio track state for proximity voice control
+      if (
+        audioPublication &&
+        !audioPublication.isMuted &&
+        audioPublication.isSubscribed &&
+        audioPublication.track
+      ) {
+        setAudioTrack(audioPublication.track as RemoteAudioTrack);
+      } else {
+        setAudioTrack(null);
+      }
+    };
+
+    updateMuteStatus();
+
+    const onTrackMuted = (publication: TrackPublication) => {
+      if (publication.source === Track.Source.Microphone) {
+        updateMuteStatus();
+      }
+    };
+
+    const onTrackUnmuted = (publication: TrackPublication) => {
+      if (publication.source === Track.Source.Microphone) {
+        updateMuteStatus();
+      }
+    };
+
+    const onTrackPublished = (publication: RemoteTrackPublication) => {
+      if (publication.source === Track.Source.Microphone) {
+        updateMuteStatus();
+      }
+    };
+
+    const onTrackUnpublished = (publication: RemoteTrackPublication) => {
+      if (publication.source === Track.Source.Microphone) {
+        setPlayerMuteStatus(sessionId, true);
+      }
+    };
+
+    const onTrackSubscribed = (
+      _track: RemoteTrack,
+      publication: RemoteTrackPublication,
+    ) => {
+      if (publication.source === Track.Source.Microphone) {
+        updateMuteStatus();
+      }
+    };
+
+    const onTrackUnsubscribed = (
+      _track: RemoteTrack,
+      publication: RemoteTrackPublication,
+    ) => {
+      if (publication.source === Track.Source.Microphone) {
+        updateMuteStatus();
+      }
+    };
+
+    participant.on("trackMuted", onTrackMuted);
+    participant.on("trackUnmuted", onTrackUnmuted);
+    participant.on("trackPublished", onTrackPublished);
+    participant.on("trackUnpublished", onTrackUnpublished);
+    participant.on("trackSubscribed", onTrackSubscribed);
+    participant.on("trackUnsubscribed", onTrackUnsubscribed);
+
+    return () => {
+      participant.off("trackMuted", onTrackMuted);
+      participant.off("trackUnmuted", onTrackUnmuted);
+      participant.off("trackPublished", onTrackPublished);
+      participant.off("trackUnpublished", onTrackUnpublished);
+      participant.off("trackSubscribed", onTrackSubscribed);
+      participant.off("trackUnsubscribed", onTrackUnsubscribed);
+    };
+  }, [room, sessionId, setPlayerMuteStatus]);
 
   if (!player) return null;
 
@@ -50,7 +165,7 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     <CharacterModelProvider model={model}>
       <RemoteCharacterAnimation sessionId={sessionId} />
       <primitive object={model.scene}>
-        <PlayerTag displayName={player.username} />
+        <PlayerTag displayName={player.username} isMuted={player.isMuted} />
       </primitive>
     </CharacterModelProvider>
   );

@@ -21,18 +21,24 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { useSyncClient } from "@/hooks/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { ViverseAvatar } from "@/utils/colyseus";
-import { MessageType, useColyseusRoom } from "@/utils/colyseus";
+import { useVoiceChatStore } from "@/stores/voiceChatStore";
+import type { ViverseAvatar } from "@/types/multiplayer";
 
 const SettingsContentClient = () => {
-  const room = useColyseusRoom();
+  const { sendProfile } = useSyncClient();
   const username =
     useLocalPlayerStore((state) => state.username) || "Anonymous";
   const position = useLocalPlayerStore((state) => state.position);
   const rotation = useLocalPlayerStore((state) => state.rotation);
   const setUsername = useLocalPlayerStore((state) => state.setUsername);
   const teleport = useLocalPlayerStore((state) => state.teleport);
+
+  const krispEnabled = useVoiceChatStore((state) => state.krispEnabled);
+  const krispSupported = useVoiceChatStore((state) => state.krispSupported);
+  const setKrispEnabled = useVoiceChatStore((state) => state.setKrispEnabled);
+  const initKrisp = useVoiceChatStore((state) => state.initKrisp);
 
   const [nameInput, setNameInput] = useState<string>(username);
   const isNameChanged = useMemo(
@@ -48,17 +54,16 @@ const SettingsContentClient = () => {
     (state) => state.setCurrentAvatar,
   );
 
+  // Initialize Krisp support check on mount
+  useEffect(() => {
+    void initKrisp();
+  }, [initKrisp]);
+
   const handleUpdateName = () => {
     const newName = nameInput.trim();
     if (!newName) return;
     setUsername(newName);
-    if (room) {
-      try {
-        room.send(MessageType.CHANGE_PROFILE, { username: newName });
-      } catch {
-        // no-op
-      }
-    }
+    sendProfile({ username: newName });
   };
 
   const handleResetPosition = () => {
@@ -73,13 +78,7 @@ const SettingsContentClient = () => {
 
     teleport(currentPosition, currentRotation);
 
-    if (room) {
-      try {
-        room.send(MessageType.CHANGE_PROFILE, { avatar: avatar });
-      } catch {
-        // no-op
-      }
-    }
+    sendProfile({ avatar: avatar });
   };
 
   return (
@@ -141,6 +140,38 @@ const SettingsContentClient = () => {
             other players' perspective.
           </p>
         </div>
+
+        {/* Audio Settings */}
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold">Audio Quality</h3>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between py-3 border rounded-md px-3">
+              <div className="space-y-1">
+                <div className="text-sm font-medium">AI Noise Cancellation</div>
+                <div className="text-xs text-muted-foreground">
+                  Advanced noise removal powered by Krisp
+                </div>
+              </div>
+              <Button
+                variant={krispEnabled ? "default" : "outline"}
+                onClick={() => setKrispEnabled(!krispEnabled)}
+                disabled={!krispSupported}
+              >
+                {krispEnabled ? "Enabled" : "Disabled"}
+              </Button>
+            </div>
+            {!krispSupported && (
+              <p className="text-xs text-amber-600">
+                ⚠️ AI noise cancellation is not supported in this browser. Safari
+                17.4+ or Chrome/Edge is required.
+              </p>
+            )}
+            <p className="text-xs text-muted-foreground">
+              Note: Basic echo cancellation and noise suppression are always
+              enabled.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -163,23 +194,25 @@ export const SettingsDrawer = () => {
         <TooltipContent sideOffset={6}>Settings</TooltipContent>
       </Tooltip>
 
-      <DrawerContent>
-        <div className="mx-auto w-full max-w-md">
-          <DrawerHeader className="text-left">
+      <DrawerContent className="flex flex-col overflow-hidden">
+        <div className="mx-auto w-full max-w-md flex flex-col flex-1 overflow-hidden">
+          <DrawerHeader className="text-left shrink-0">
             <DrawerTitle className="text-2xl font-bold">Settings</DrawerTitle>
             <DrawerDescription className="p-3 bg-neutral-100 rounded-lg">
               ⚙️ Update your preferences
             </DrawerDescription>
           </DrawerHeader>
-          {isClient ? (
-            <SettingsContentClient />
-          ) : (
-            <div className="px-4 pb-6">
-              <div className="h-24 rounded-md border border-dashed bg-muted/30" />
-            </div>
-          )}
+          <div className="overflow-y-auto flex-1 min-h-0">
+            {isClient ? (
+              <SettingsContentClient />
+            ) : (
+              <div className="px-4 pb-6">
+                <div className="h-24 rounded-md border border-dashed bg-muted/30" />
+              </div>
+            )}
+          </div>
 
-          <DrawerFooter className="pt-2">
+          <DrawerFooter className="pt-2 shrink-0">
             <DrawerClose asChild>
               <Button variant="outline" className="w-full">
                 Close

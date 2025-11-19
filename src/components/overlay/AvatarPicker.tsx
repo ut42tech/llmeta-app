@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { ViverseAvatar } from "@/utils/colyseus";
+import type { ViverseAvatar } from "@/types/multiplayer";
 
 type AvatarPickerProps = {
   avatars: ViverseAvatar[];

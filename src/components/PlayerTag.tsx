@@ -1,13 +1,15 @@
 import { useFrame } from "@react-three/fiber";
 import { Container, Text } from "@react-three/uikit";
+import * as Icons from "@react-three/uikit-lucide";
 import { Suspense, useRef } from "react";
 import type { Object3D } from "three";
 
 type PlayerTagProps = {
   displayName: string;
+  isMuted?: boolean;
 };
 
-export const PlayerTag = ({ displayName }: PlayerTagProps) => {
+export function PlayerTag({ displayName, isMuted = false }: PlayerTagProps) {
   const ref = useRef<Object3D>(null);
 
   useFrame((state) => {
@@ -22,16 +24,23 @@ export const PlayerTag = ({ displayName }: PlayerTagProps) => {
       <Suspense fallback={null}>
         <Container
           borderRadius={10}
-          paddingX={2}
+          paddingX={8}
           height={20}
           backgroundColor="rgba(255, 255, 255, 0.5)"
           alignItems="center"
+          flexDirection="row"
+          gap={4}
         >
-          <Text fontWeight="bold" fontSize={8} margin={4}>
+          {isMuted ? (
+            <Icons.VolumeX width={10} color={"red"} />
+          ) : (
+            <Icons.Volume2 width={10} />
+          )}
+          <Text fontWeight="bold" fontSize={8}>
             {displayName}
           </Text>
         </Container>
       </Suspense>
     </group>
   );
-};
+}

@@ -1,6 +1,6 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
-import type { ViverseAvatar } from "@/utils/colyseus";
+import type { ViverseAvatar } from "@/types/multiplayer";
 
 /**
  * Remote player state
@@ -13,6 +13,7 @@ export type RemotePlayerData = {
   isRunning: boolean;
   animation: string;
   avatar?: ViverseAvatar;
+  isMuted: boolean;
 };
 
 type RemotePlayersState = {
@@ -25,6 +26,7 @@ type RemotePlayersActions = {
     data: Partial<RemotePlayerData>,
   ) => void;
   removePlayer: (sessionId: string) => void;
+  setPlayerMuteStatus: (sessionId: string, isMuted: boolean) => void;
   clearAll: () => void;
 };
 
@@ -57,6 +59,7 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
         isRunning: data.isRunning ?? existingPlayer?.isRunning ?? false,
         animation: data.animation ?? existingPlayer?.animation ?? "idle",
         avatar: data.avatar ?? existingPlayer?.avatar ?? undefined,
+        isMuted: data.isMuted ?? existingPlayer?.isMuted ?? true,
       };
 
       newPlayers.set(sessionId, updatedPlayer);
@@ -69,6 +72,17 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
     set((state) => {
       const newPlayers = new Map(state.players);
       newPlayers.delete(sessionId);
+      return { players: newPlayers };
+    });
+  },
+
+  setPlayerMuteStatus: (sessionId: string, isMuted: boolean) => {
+    set((state) => {
+      const newPlayers = new Map(state.players);
+      const existingPlayer = newPlayers.get(sessionId);
+      if (existingPlayer) {
+        newPlayers.set(sessionId, { ...existingPlayer, isMuted });
+      }
       return { players: newPlayers };
     });
   },
