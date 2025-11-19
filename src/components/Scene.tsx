@@ -6,10 +6,8 @@ import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { LocalCharacter } from "@/components/LocalCharacter";
 import { RemotePlayers } from "@/components/RemotePlayers";
 import { LIGHTING } from "@/constants";
-import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { useCharacterController } from "@/hooks/useCharacterController";
 import { useLightController } from "@/hooks/useLightController";
-import { useLiveKitLifecycle } from "@/hooks/useLiveKitLifecycle";
 import { useSyncClient } from "@/hooks/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
@@ -18,8 +16,6 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
  * Manages the local player, remote players, and the world.
  */
 export const Scene = () => {
-  useLiveKitLifecycle({ roomName: LIVEKIT_CONFIG.defaultRoom });
-
   const syncClient = useSyncClient();
 
   const characterRef = useRef<Object3D>(null);

@@ -52,7 +52,7 @@ const SettingsContentClient = () => {
     const newName = nameInput.trim();
     if (!newName) return;
     setUsername(newName);
-    sendProfile?.({ username: newName });
+    sendProfile({ username: newName });
   };
 
   const handleResetPosition = () => {
@@ -67,7 +67,7 @@ const SettingsContentClient = () => {
 
     teleport(currentPosition, currentRotation);
 
-    sendProfile?.({ avatar: avatar });
+    sendProfile({ avatar: avatar });
   };
 
   return (

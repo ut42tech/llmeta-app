@@ -1,13 +1,8 @@
 "use client";
 
-import { useCallback } from "react";
-import { useConnectionStore } from "@/stores/connectionStore";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useContext } from "react";
+import { LiveKitSyncContext } from "@/components/LiveKitSyncProvider";
 import type { MoveData, ProfileData } from "@/types/multiplayer";
-import {
-  publishLiveKitMove,
-  publishLiveKitProfile,
-} from "@/utils/livekit-client";
 
 export type SyncClient = {
   sessionId?: string;
@@ -17,21 +12,5 @@ export type SyncClient = {
 };
 
 export function useSyncClient(): SyncClient {
-  const sessionId = useLocalPlayerStore((state) => state.sessionId);
-  const status = useConnectionStore((state) => state.status);
-
-  const sendMove = useCallback((payload: MoveData) => {
-    publishLiveKitMove(payload);
-  }, []);
-
-  const sendProfile = useCallback((payload: ProfileData) => {
-    publishLiveKitProfile(payload);
-  }, []);
-
-  return {
-    sessionId,
-    isConnected: status === "connected",
-    sendMove,
-    sendProfile,
-  };
+  return useContext(LiveKitSyncContext);
 }

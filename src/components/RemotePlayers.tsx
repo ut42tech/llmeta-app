@@ -1,6 +1,5 @@
 import { useControls } from "leva";
 import { RemoteCharacter } from "@/components/RemoteCharacter";
-import { useRemotePlayersSync } from "@/hooks/useRemotePlayersSync";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
@@ -9,7 +8,6 @@ import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
  * Mirrors LiveKit data channel updates into the remote player store.
  */
 export const RemotePlayers = () => {
-  useRemotePlayersSync();
   const players = useRemotePlayersStore((s) => s.players);
   const mySessionId = useLocalPlayerStore((s) => s.sessionId);
   const { showRemotePlayers, showMyRemoteAvatar } = useControls(
