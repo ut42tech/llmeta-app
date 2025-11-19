@@ -1,23 +1,22 @@
 import { useFrame } from "@react-three/fiber";
-import type { Room } from "colyseus.js";
 import type { RefObject } from "react";
 import { useEffect } from "react";
 import { Euler, type Object3D, Vector3 } from "three";
-import { PHYSICS } from "@/constants";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { PHYSICS } from "@/constants/world";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
-import type { MyRoomState } from "@/utils/colyseus";
+import type { MoveData } from "@/types/multiplayer";
 
 /**
  * Character controller hook
  * Handles teleport, fall reset, state sync, and server updates
  */
-export const useCharacterController = (
+export function useCharacterController(
   characterRef: RefObject<Object3D | null>,
-  room: Room<MyRoomState> | undefined,
+  publishMovement: ((data: MoveData) => void) | undefined,
   isConnected: boolean,
-) => {
+) {
   const pendingTeleport = useLocalPlayerStore((state) => state.pendingTeleport);
   const setPosition = useLocalPlayerStore((state) => state.setPosition);
   const setRotation = useLocalPlayerStore((state) => state.setRotation);
@@ -63,11 +62,11 @@ export const useCharacterController = (
     }
 
     // Send movement to server
-    if (isConnected && room) {
-      sendMovement(room);
+    if (isConnected && publishMovement) {
+      sendMovement(publishMovement);
     }
 
     // Update grid cell
     updateCurrentGridCell(character.position);
   });
-};
+}

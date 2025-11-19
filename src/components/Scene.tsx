@@ -1,56 +1,35 @@
 import { Sky } from "@react-three/drei";
-import type { Room } from "colyseus.js";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useRef } from "react";
 import type { DirectionalLight, Object3D } from "three";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { LocalCharacter } from "@/components/LocalCharacter";
 import { RemotePlayers } from "@/components/RemotePlayers";
-import { LIGHTING } from "@/constants";
+import { LIGHTING } from "@/constants/world";
 import { useCharacterController } from "@/hooks/useCharacterController";
-import { useColyseusLifecycle } from "@/hooks/useColyseusLifecycle";
 import { useLightController } from "@/hooks/useLightController";
+import { useSyncClient } from "@/hooks/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { type MyRoomState, useColyseusRoom } from "@/utils/colyseus";
 
 /**
  * Main scene component.
  * Manages the local player, remote players, and the world.
  */
-export const Scene = () => {
-  useColyseusLifecycle();
-
-  const room = useColyseusRoom() as Room<MyRoomState> | undefined;
-  const [isConnected, setIsConnected] = useState(false);
-
-  const setSessionId = useLocalPlayerStore((state) => state.setSessionId);
+export function Scene() {
+  const syncClient = useSyncClient();
 
   const characterRef = useRef<Object3D>(null);
   const directionalLightRef = useRef<DirectionalLight | null>(null);
 
   const isFPV = useLocalPlayerStore((s) => s.isFPV);
 
-  // Handle character movement, teleport, and sync
-  useCharacterController(characterRef, room, isConnected);
-
-  // Handle light following character
-  useLightController(characterRef, directionalLightRef);
-
-  // Handle session connection
-  useEffect(() => {
-    if (room?.sessionId) {
-      setSessionId(room.sessionId);
-      setIsConnected(true);
-      console.log("[Scene] Colyseus connected, session ID:", room.sessionId);
-    }
-  }, [room?.sessionId, setSessionId]);
-
-  // Light settings
-  const directionalLightIntensity = useMemo(
-    () => LIGHTING.DIRECTIONAL_INTENSITY,
-    [],
+  useCharacterController(
+    characterRef,
+    syncClient.sendMove,
+    syncClient.isConnected,
   );
-  const ambientLightIntensity = useMemo(() => LIGHTING.AMBIENT_INTENSITY, []);
+
+  useLightController(characterRef, directionalLightRef);
 
   return (
     <>
@@ -58,17 +37,17 @@ export const Scene = () => {
 
       <Sky />
       <directionalLight
-        intensity={directionalLightIntensity}
+        intensity={LIGHTING.DIRECTIONAL_INTENSITY}
         position={[-10, 10, -10]}
         castShadow
         ref={directionalLightRef}
       />
-      <ambientLight intensity={ambientLightIntensity} />
+      <ambientLight intensity={LIGHTING.AMBIENT_INTENSITY} />
 
       {/* Local Player */}
       <Suspense fallback={null}>
         <group visible={!isFPV}>
-          <LocalCharacter key={room?.sessionId} innerRef={characterRef} />
+          <LocalCharacter key={syncClient.sessionId} innerRef={characterRef} />
         </group>
       </Suspense>
 
@@ -82,4 +61,4 @@ export const Scene = () => {
       </Suspense>
     </>
   );
-};
+}

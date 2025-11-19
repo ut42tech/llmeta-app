@@ -1,6 +1,6 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
-import type { ViverseAvatar } from "@/utils/colyseus";
+import type { ViverseAvatar } from "@/types/multiplayer";
 
 /**
  * Remote player state

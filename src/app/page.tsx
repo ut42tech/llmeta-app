@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { LiveKitSyncProvider } from "@/components/LiveKitSyncProvider";
 import { OverlayUI } from "@/components/overlay/OverlayUI";
 import { Scene } from "@/components/Scene";
 
@@ -18,7 +19,7 @@ export default function Home() {
   const { stats } = useControls({ stats: false });
 
   return (
-    <>
+    <LiveKitSyncProvider>
       <Leva titleBar={{ title: "Debug Panel" }} collapsed />
 
       <Loader />
@@ -26,7 +27,7 @@ export default function Home() {
 
       <OverlayUI />
 
-      <Viverse clientId={process.env.NEXT_PUBLIC_VIVERSE_APP_ID || undefined}>
+      <Viverse>
         <Canvas
           className="fixed! w-screen! h-screen! touch-none"
           shadows
@@ -43,6 +44,6 @@ export default function Home() {
           </Suspense>
         </Canvas>
       </Viverse>
-    </>
+    </LiveKitSyncProvider>
   );
 }

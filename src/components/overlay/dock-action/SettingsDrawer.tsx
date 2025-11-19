@@ -21,12 +21,12 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { useSyncClient } from "@/hooks/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { ViverseAvatar } from "@/utils/colyseus";
-import { MessageType, useColyseusRoom } from "@/utils/colyseus";
+import type { ViverseAvatar } from "@/types/multiplayer";
 
 const SettingsContentClient = () => {
-  const room = useColyseusRoom();
+  const { sendProfile } = useSyncClient();
   const username =
     useLocalPlayerStore((state) => state.username) || "Anonymous";
   const position = useLocalPlayerStore((state) => state.position);
@@ -52,13 +52,7 @@ const SettingsContentClient = () => {
     const newName = nameInput.trim();
     if (!newName) return;
     setUsername(newName);
-    if (room) {
-      try {
-        room.send(MessageType.CHANGE_PROFILE, { username: newName });
-      } catch {
-        // no-op
-      }
-    }
+    sendProfile({ username: newName });
   };
 
   const handleResetPosition = () => {
@@ -73,13 +67,7 @@ const SettingsContentClient = () => {
 
     teleport(currentPosition, currentRotation);
 
-    if (room) {
-      try {
-        room.send(MessageType.CHANGE_PROFILE, { avatar: avatar });
-      } catch {
-        // no-op
-      }
-    }
+    sendProfile({ avatar: avatar });
   };
 
   return (

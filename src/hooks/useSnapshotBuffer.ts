@@ -3,7 +3,7 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { Euler, Quaternion, Vector3 } from "three";
-import { INTERPOLATION, PERFORMANCE } from "@/constants";
+import { INTERPOLATION, PERFORMANCE } from "@/constants/world";
 
 /**
  * Lightweight client-side buffer to continuously interpolate
