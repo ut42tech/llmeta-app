@@ -1,7 +1,14 @@
 "use client";
 
-import { LiveKitRoom } from "@livekit/components-react";
-import { ConnectionState as LiveKitConnectionState } from "livekit-client";
+import {
+  LiveKitRoom,
+  RoomAudioRenderer,
+  useRoomContext,
+} from "@livekit/components-react";
+import {
+  ConnectionState as LiveKitConnectionState,
+  type Room,
+} from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
@@ -17,6 +24,7 @@ type LiveKitSyncContextValue = {
   isConnected: boolean;
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
+  room?: Room;
 };
 
 const defaultContextValue: LiveKitSyncContextValue = {
@@ -24,6 +32,7 @@ const defaultContextValue: LiveKitSyncContextValue = {
   isConnected: false,
   sendMove: () => void 0,
   sendProfile: () => void 0,
+  room: undefined,
 };
 
 export const LiveKitSyncContext =
@@ -56,6 +65,7 @@ export function LiveKitSyncProvider({
       screen={false}
       onError={(error) => setFailed(error.message)}
     >
+      <RoomAudioRenderer />
       <LiveKitSyncBridge identity={identity}>{children}</LiveKitSyncBridge>
     </LiveKitRoom>
   );
@@ -70,6 +80,7 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const username = useLocalPlayerStore((state) => state.username);
   const currentAvatar = useLocalPlayerStore((state) => state.currentAvatar);
 
+  const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
   const { sendMove, sendProfile } = useLiveKitDataChannels(identity);
 
@@ -90,8 +101,9 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       isConnected: connectionState === LiveKitConnectionState.Connected,
       sendMove,
       sendProfile,
+      room: roomInstance,
     }),
-    [sessionId, connectionState, sendMove, sendProfile],
+    [sessionId, connectionState, sendMove, sendProfile, roomInstance],
   );
 
   return (
