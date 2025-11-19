@@ -12,6 +12,7 @@
   "dependencies": {
     "@bufbuild/protobuf": "^2.10.1",
     "@livekit/components-react": "^2.9.16",
+    "@livekit/krisp-noise-filter": "^0.3.4",
     "@pixiv/three-vrm": "^3.4.4",
     "@pmndrs/viverse": "^0.2.5",
     "@radix-ui/react-dialog": "^1.1.15",
