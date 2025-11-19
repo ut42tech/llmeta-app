@@ -5,7 +5,7 @@ import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { LocalCharacter } from "@/components/LocalCharacter";
 import { RemotePlayers } from "@/components/RemotePlayers";
-import { LIGHTING } from "@/constants";
+import { LIGHTING } from "@/constants/world";
 import { useCharacterController } from "@/hooks/useCharacterController";
 import { useLightController } from "@/hooks/useLightController";
 import { useSyncClient } from "@/hooks/useSyncClient";
