@@ -39,7 +39,6 @@ export function LocalCharacter({
 
   const physics = useBvhCharacterPhysics(model.scene);
 
-  // Restore position and rotation when model is loaded
   useEffect(() => {
     if (!model.scene) return;
 

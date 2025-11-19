@@ -40,7 +40,6 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
   const jumpLoopRef = useRef<AnimationAction>(null);
   const jumpDownRef = useRef<AnimationAction>(null);
 
-  // Apply timeScale based on isRunning state
   useFrame(() => {
     const timeScale = isRunning ? 2 : 1;
 

@@ -23,14 +23,12 @@ export function Scene() {
 
   const isFPV = useLocalPlayerStore((s) => s.isFPV);
 
-  // Handle character movement, teleport, and sync
   useCharacterController(
     characterRef,
     syncClient.sendMove,
     syncClient.isConnected,
   );
 
-  // Handle light following character
   useLightController(characterRef, directionalLightRef);
 
   return (

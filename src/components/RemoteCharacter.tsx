@@ -32,7 +32,6 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     type: "vrm",
   });
 
-  // Interpolate position and rotation from server updates
   const smoothPosition = usePositionBuffer(
     player?.position ?? model.scene.position,
   );
@@ -43,7 +42,6 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   useFrame(() => {
     if (!player || !model.scene) return;
 
-    // Apply smooth interpolated position and rotation
     model.scene.position.copy(smoothPosition);
     model.scene.quaternion.copy(smoothRotation);
   });
