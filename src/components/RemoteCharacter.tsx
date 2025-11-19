@@ -11,7 +11,6 @@ import {
   useRotationBuffer,
 } from "@/hooks/useSnapshotBuffer";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
-import { makeUniqueModelUrl } from "@/utils/model-loader";
 
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   const player = useRemotePlayersStore((state) => state.players.get(sessionId));
@@ -24,7 +23,7 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   const model = useCharacterModelLoader({
     useViverseAvatar: false,
     castShadow: true,
-    url: makeUniqueModelUrl(avatarUrl, sessionId),
+    url: `${avatarUrl}${avatarUrl.includes("?") ? "&" : "?"}instance=${encodeURIComponent(sessionId)}`,
     type: "vrm",
   });
 

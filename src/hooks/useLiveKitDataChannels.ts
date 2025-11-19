@@ -1,16 +1,12 @@
 import { useDataChannel } from "@livekit/components-react";
 import type { Participant } from "livekit-client";
 import { useCallback } from "react";
+import { Euler, Vector3 } from "three";
 import { DATA_TOPICS } from "@/constants/sync";
 import type { AnimationState } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import type { MoveData, ProfileData } from "@/types/multiplayer";
-import {
-  decodePayload,
-  resolveIdentity,
-  toEuler,
-  toVector3,
-} from "@/utils/livekit-client";
+import { decodePayload } from "@/utils/livekit-client";
 
 const encoder = new TextEncoder();
 
@@ -27,7 +23,7 @@ export function useLiveKitDataChannels(identity: string) {
 
   const handleMoveMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.MOVE>) => {
-      const remoteIdentity = resolveIdentity(msg.from);
+      const remoteIdentity = msg.from?.identity || msg.from?.sid || "";
       if (!remoteIdentity || remoteIdentity === identity) {
         return;
       }
@@ -39,8 +35,16 @@ export function useLiveKitDataChannels(identity: string) {
 
       addOrUpdatePlayer(remoteIdentity, {
         sessionId: remoteIdentity,
-        position: toVector3(data.position),
-        rotation: toEuler(data.rotation),
+        position: new Vector3(
+          data.position?.x ?? 0,
+          data.position?.y ?? 0,
+          data.position?.z ?? 0,
+        ),
+        rotation: new Euler(
+          data.rotation?.x ?? 0,
+          data.rotation?.y ?? 0,
+          data.rotation?.z ?? 0,
+        ),
         isRunning: Boolean(data.isRunning),
         animation: (data.animation || "idle") as AnimationState,
       });
@@ -50,7 +54,7 @@ export function useLiveKitDataChannels(identity: string) {
 
   const handleProfileMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.PROFILE>) => {
-      const remoteIdentity = resolveIdentity(msg.from);
+      const remoteIdentity = msg.from?.identity || msg.from?.sid || "";
       if (!remoteIdentity || remoteIdentity === identity) {
         return;
       }

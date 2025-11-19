@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
-import { resolveIdentity } from "@/utils/livekit-client";
 
 export function useLiveKitConnection(identity: string) {
   const room = useRoomContext();
@@ -58,7 +57,7 @@ export function useLiveKitConnection(identity: string) {
 
   useEffect(() => {
     const handleParticipantLeft = (participant: RemoteParticipant) => {
-      const remoteIdentity = resolveIdentity(participant);
+      const remoteIdentity = participant?.identity || participant?.sid || "";
       if (remoteIdentity && remoteIdentity !== identity) {
         removePlayer(remoteIdentity);
       }

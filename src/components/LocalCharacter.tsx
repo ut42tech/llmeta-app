@@ -13,7 +13,6 @@ import type { Object3D } from "three";
 import { Euler, Vector3 } from "three";
 import { LocalCharacterAnimation } from "@/components/LocalCharacterAnimation";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { makeUniqueModelUrl } from "@/utils/model-loader";
 
 export function LocalCharacter({
   innerRef,
@@ -39,7 +38,7 @@ export function LocalCharacter({
   const model = useCharacterModelLoader({
     useViverseAvatar: false,
     castShadow: true,
-    url: makeUniqueModelUrl(avatarUrl, sessionId || "local"),
+    url: `${avatarUrl}${avatarUrl.includes("?") ? "&" : "?"}instance=${encodeURIComponent(sessionId || "local")}`,
     type: "vrm",
   });
 
