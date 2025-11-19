@@ -4,19 +4,22 @@ import {
   useCharacterModelLoader,
 } from "@react-three/viverse";
 import {
+  type RemoteAudioTrack,
   type RemoteTrack,
   type RemoteTrackPublication,
   Track,
   type TrackPublication,
 } from "livekit-client";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PlayerTag } from "@/components/PlayerTag";
 import { RemoteCharacterAnimation } from "@/components/RemoteCharacterAnimation";
+import { useProximityVoice } from "@/hooks/useProximityVoice";
 import {
   usePositionBuffer,
   useRotationBuffer,
 } from "@/hooks/useSnapshotBuffer";
 import { useSyncClient } from "@/hooks/useSyncClient";
+import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
@@ -25,6 +28,10 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     (state) => state.setPlayerMuteStatus,
   );
   const { room } = useSyncClient();
+
+  const localPosition = useLocalPlayerStore((state) => state.position);
+
+  const [audioTrack, setAudioTrack] = useState<RemoteAudioTrack | null>(null);
 
   const avatarUrl = player?.avatar?.vrmUrl;
   const modelUrl = useMemo(() => {
@@ -50,6 +57,8 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     player?.rotation ?? model.scene.rotation,
   );
 
+  useProximityVoice(localPosition, smoothPosition, audioTrack);
+
   useFrame(() => {
     if (!player || !model.scene) return;
 
@@ -67,12 +76,26 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     }
 
     const updateMuteStatus = () => {
-      const audioTrack = participant.getTrackPublication(
+      const audioPublication = participant.getTrackPublication(
         Track.Source.Microphone,
       );
       const isMuted =
-        !audioTrack || audioTrack.isMuted || !audioTrack.isSubscribed;
+        !audioPublication ||
+        audioPublication.isMuted ||
+        !audioPublication.isSubscribed;
       setPlayerMuteStatus(sessionId, isMuted);
+
+      // Update audio track state for proximity voice control
+      if (
+        audioPublication &&
+        !audioPublication.isMuted &&
+        audioPublication.isSubscribed &&
+        audioPublication.track
+      ) {
+        setAudioTrack(audioPublication.track as RemoteAudioTrack);
+      } else {
+        setAudioTrack(null);
+      }
     };
 
     updateMuteStatus();
