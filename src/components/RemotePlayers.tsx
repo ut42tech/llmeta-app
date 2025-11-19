@@ -1,4 +1,5 @@
 import { useControls } from "leva";
+import { useMemo } from "react";
 import { RemoteCharacter } from "@/components/RemoteCharacter";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
@@ -23,20 +24,20 @@ export function RemotePlayers() {
     { collapsed: true },
   );
 
+  const visiblePlayers = useMemo(() => {
+    if (!showRemotePlayers) return [];
+    return Array.from(players.values()).filter((player) =>
+      showMyRemoteAvatar ? true : player.sessionId !== mySessionId,
+    );
+  }, [players, showRemotePlayers, showMyRemoteAvatar, mySessionId]);
+
   if (!showRemotePlayers) return null;
 
   return (
     <>
-      {Array.from(players.values())
-        .filter((player) =>
-          showMyRemoteAvatar ? true : player.sessionId !== mySessionId,
-        )
-        .map((player) => (
-          <RemoteCharacter
-            key={player.sessionId}
-            sessionId={player.sessionId}
-          />
-        ))}
+      {visiblePlayers.map((player) => (
+        <RemoteCharacter key={player.sessionId} sessionId={player.sessionId} />
+      ))}
     </>
   );
 }

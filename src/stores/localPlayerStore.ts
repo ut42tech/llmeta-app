@@ -150,6 +150,16 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
       roundedPosition.z,
       PRECISION.DECIMAL_PLACES,
     );
+
+    const currentPos = get().position;
+    if (
+      currentPos.x === roundedPosition.x &&
+      currentPos.y === roundedPosition.y &&
+      currentPos.z === roundedPosition.z
+    ) {
+      return;
+    }
+
     set({ position: roundedPosition });
   },
 
@@ -175,6 +185,16 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
       normalizedRotation.z,
       PRECISION.DECIMAL_PLACES,
     );
+
+    const currentRot = get().rotation;
+    if (
+      currentRot.x === normalizedRotation.x &&
+      currentRot.y === normalizedRotation.y &&
+      currentRot.z === normalizedRotation.z
+    ) {
+      return;
+    }
+
     set({ rotation: normalizedRotation });
   },
 

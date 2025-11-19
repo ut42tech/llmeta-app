@@ -15,15 +15,20 @@ import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   const player = useRemotePlayersStore((state) => state.players.get(sessionId));
 
-  const avatarUrl = useMemo(() => {
-    const url = player?.avatar?.vrmUrl;
-    return url && url.trim().length > 0 ? url : "/models/avatar_01.vrm";
-  }, [player?.avatar?.vrmUrl]);
+  const avatarUrl = player?.avatar?.vrmUrl;
+  const modelUrl = useMemo(() => {
+    const baseUrl =
+      avatarUrl && avatarUrl.trim().length > 0
+        ? avatarUrl
+        : "/models/avatar_01.vrm";
+    const separator = baseUrl.includes("?") ? "&" : "?";
+    return `${baseUrl}${separator}instance=${encodeURIComponent(sessionId)}`;
+  }, [avatarUrl, sessionId]);
 
   const model = useCharacterModelLoader({
     useViverseAvatar: false,
     castShadow: true,
-    url: `${avatarUrl}${avatarUrl.includes("?") ? "&" : "?"}instance=${encodeURIComponent(sessionId)}`,
+    url: modelUrl,
     type: "vrm",
   });
 
@@ -36,7 +41,7 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   );
 
   useFrame(() => {
-    if (!player) return;
+    if (!player || !model.scene) return;
 
     // Apply smooth interpolated position and rotation
     model.scene.position.copy(smoothPosition);

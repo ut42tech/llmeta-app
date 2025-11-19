@@ -1,5 +1,5 @@
 import { Sky } from "@react-three/drei";
-import { Suspense, useMemo, useRef } from "react";
+import { Suspense, useRef } from "react";
 import type { DirectionalLight, Object3D } from "three";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
@@ -33,25 +33,18 @@ export function Scene() {
   // Handle light following character
   useLightController(characterRef, directionalLightRef);
 
-  // Light settings
-  const directionalLightIntensity = useMemo(
-    () => LIGHTING.DIRECTIONAL_INTENSITY,
-    [],
-  );
-  const ambientLightIntensity = useMemo(() => LIGHTING.AMBIENT_INTENSITY, []);
-
   return (
     <>
       <DebugPanel />
 
       <Sky />
       <directionalLight
-        intensity={directionalLightIntensity}
+        intensity={LIGHTING.DIRECTIONAL_INTENSITY}
         position={[-10, 10, -10]}
         castShadow
         ref={directionalLightRef}
       />
-      <ambientLight intensity={ambientLightIntensity} />
+      <ambientLight intensity={LIGHTING.AMBIENT_INTENSITY} />
 
       {/* Local Player */}
       <Suspense fallback={null}>
