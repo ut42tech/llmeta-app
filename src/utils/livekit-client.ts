@@ -3,13 +3,6 @@ import { Euler, Vector3 } from "three";
 
 const decoder = new TextDecoder();
 
-export const createIdentity = () => {
-  if (typeof crypto !== "undefined" && crypto.randomUUID) {
-    return crypto.randomUUID();
-  }
-  return Math.random().toString(36).slice(2);
-};
-
 export const decodePayload = <T>(payload?: Uint8Array | null): T | null => {
   if (!payload) {
     return null;
