@@ -35,22 +35,20 @@ export const VoiceChatButton = () => {
   };
 
   return (
-    <>
-      <Tooltip>
-        <TooltipTrigger asChild>
-            <Button
-              size="icon-lg"
-              variant={isActive ? "default" : "secondary"}
-              aria-label={isActive ? "Mute microphone" : "Unmute microphone"}
-              aria-pressed={isActive}
-              disabled={disabled}
-              onClick={handleToggle}
-            >
-              {isActive ? <Mic /> : <MicOff />}
-            </Button>
-        </TooltipTrigger>
-        <TooltipContent sideOffset={6}>{tooltipLabel}</TooltipContent>
-      </Tooltip>
-    </>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          size="icon-lg"
+          variant={isActive ? "default" : "secondary"}
+          aria-label={isActive ? "Mute microphone" : "Unmute microphone"}
+          aria-pressed={isActive}
+          disabled={disabled}
+          onClick={handleToggle}
+        >
+          {isActive ? <Mic /> : <MicOff />}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent sideOffset={6}>{tooltipLabel}</TooltipContent>
+    </Tooltip>
   );
 };
