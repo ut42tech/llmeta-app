@@ -12,8 +12,6 @@ import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import type { MoveData, ProfileData } from "@/types/multiplayer";
 
-const noop = () => {};
-
 type LiveKitSyncContextValue = {
   sessionId?: string;
   isConnected: boolean;
@@ -24,8 +22,8 @@ type LiveKitSyncContextValue = {
 const defaultContextValue: LiveKitSyncContextValue = {
   sessionId: undefined,
   isConnected: false,
-  sendMove: noop,
-  sendProfile: noop,
+  sendMove: () => void 0,
+  sendProfile: () => void 0,
 };
 
 export const LiveKitSyncContext =
