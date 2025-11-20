@@ -1,7 +1,8 @@
 import { create } from "zustand";
-import type { ChatMessage, ChatMessageStatus } from "@/types/chat";
+import type { ChatMessage, ChatMessageStatus, TypingUser } from "@/types/chat";
 
 const MAX_CHAT_MESSAGES = 200;
+const TYPING_TIMEOUT_MS = 3000;
 
 const insertMessage = (
   messages: ChatMessage[],
@@ -29,6 +30,8 @@ type ChatState = {
   messages: ChatMessage[];
   unreadCount: number;
   isOpen: boolean;
+  typingUsers: Map<string, TypingUser>;
+  typingTimeouts: Map<string, NodeJS.Timeout>;
 };
 
 type ChatActions = {
@@ -45,6 +48,8 @@ type ChatActions = {
   updateMessageStatus: (id: string, status: ChatMessageStatus) => void;
   setOpen: (isOpen: boolean) => void;
   markAllRead: () => void;
+  addTypingUser: (sessionId: string, username?: string) => void;
+  removeTypingUser: (sessionId: string) => void;
   reset: () => void;
 };
 
@@ -54,6 +59,8 @@ const initialState: ChatState = {
   messages: [],
   unreadCount: 0,
   isOpen: false,
+  typingUsers: new Map(),
+  typingTimeouts: new Map(),
 };
 
 export const useChatStore = create<ChatStore>((set) => ({
@@ -114,7 +121,61 @@ export const useChatStore = create<ChatStore>((set) => ({
     set(() => ({ unreadCount: 0 }));
   },
 
+  addTypingUser: (sessionId, username) => {
+    set((state) => {
+      const existingTimeout = state.typingTimeouts.get(sessionId);
+      if (existingTimeout) {
+        clearTimeout(existingTimeout);
+      }
+
+      const newTimeout = setTimeout(() => {
+        set((s) => {
+          const newTypingUsers = new Map(s.typingUsers);
+          const newTimeouts = new Map(s.typingTimeouts);
+          newTypingUsers.delete(sessionId);
+          newTimeouts.delete(sessionId);
+          return {
+            typingUsers: newTypingUsers,
+            typingTimeouts: newTimeouts,
+          };
+        });
+      }, TYPING_TIMEOUT_MS);
+
+      const newTypingUsers = new Map(state.typingUsers);
+      const newTimeouts = new Map(state.typingTimeouts);
+      newTypingUsers.set(sessionId, { sessionId, username });
+      newTimeouts.set(sessionId, newTimeout);
+
+      return {
+        typingUsers: newTypingUsers,
+        typingTimeouts: newTimeouts,
+      };
+    });
+  },
+
+  removeTypingUser: (sessionId) => {
+    set((state) => {
+      const existingTimeout = state.typingTimeouts.get(sessionId);
+      if (existingTimeout) {
+        clearTimeout(existingTimeout);
+      }
+
+      const newTypingUsers = new Map(state.typingUsers);
+      const newTimeouts = new Map(state.typingTimeouts);
+      newTypingUsers.delete(sessionId);
+      newTimeouts.delete(sessionId);
+
+      return {
+        typingUsers: newTypingUsers,
+        typingTimeouts: newTimeouts,
+      };
+    });
+  },
+
   reset: () => {
-    set(initialState);
+    set((state) => {
+      state.typingTimeouts.forEach((timeout) => clearTimeout(timeout));
+      return initialState;
+    });
   },
 }));

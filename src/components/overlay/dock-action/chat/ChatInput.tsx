@@ -1,5 +1,5 @@
 import { ArrowUp } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -11,15 +11,62 @@ import {
 interface ChatInputProps {
   canSend: boolean;
   onSend: (message: string) => Promise<void>;
+  onTypingChange?: (isTyping: boolean) => void;
 }
 
-export function ChatInput({ canSend, onSend }: ChatInputProps) {
+export function ChatInput({ canSend, onSend, onTypingChange }: ChatInputProps) {
   const [inputValue, setInputValue] = useState("");
   const [isComposing, setIsComposing] = useState(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isTypingRef = useRef(false);
+
+  useEffect(() => {
+    if (!onTypingChange) {
+      return;
+    }
+
+    if (inputValue.trim().length > 0) {
+      if (!isTypingRef.current) {
+        isTypingRef.current = true;
+        onTypingChange(true);
+      }
+
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      typingTimeoutRef.current = setTimeout(() => {
+        isTypingRef.current = false;
+        onTypingChange(false);
+      }, 1500);
+    } else {
+      if (isTypingRef.current) {
+        isTypingRef.current = false;
+        onTypingChange(false);
+      }
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    }
+
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, [inputValue, onTypingChange]);
 
   const handleSend = async () => {
     if (!inputValue.trim() || !canSend) {
       return;
+    }
+
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
+    if (isTypingRef.current && onTypingChange) {
+      isTypingRef.current = false;
+      onTypingChange(false);
     }
 
     await onSend(inputValue.trim());

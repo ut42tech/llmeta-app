@@ -18,3 +18,13 @@ export type ChatMessage = {
   status?: ChatMessageStatus;
   sentAt: number;
 };
+
+export type TypingPacket = {
+  username?: string;
+  isTyping: boolean;
+};
+
+export type TypingUser = {
+  sessionId: string;
+  username?: string;
+};

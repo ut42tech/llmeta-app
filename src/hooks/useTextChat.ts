@@ -5,12 +5,13 @@ import { useSyncClient } from "@/hooks/useSyncClient";
 import { useChatStore } from "@/stores/chatStore";
 
 export function useTextChat() {
-  const { sendChatMessage, isConnected } = useSyncClient();
+  const { sendChatMessage, sendTyping, isConnected } = useSyncClient();
   const messages = useChatStore((state) => state.messages);
   const unreadCount = useChatStore((state) => state.unreadCount);
   const isOpen = useChatStore((state) => state.isOpen);
   const setOpen = useChatStore((state) => state.setOpen);
   const markAllRead = useChatStore((state) => state.markAllRead);
+  const typingUsers = useChatStore((state) => state.typingUsers);
 
   useEffect(() => {
     if (!isOpen) {
@@ -47,5 +48,7 @@ export function useTextChat() {
     canSend: isConnected,
     setOpen: handleOpenChange,
     sendMessage: handleSend,
+    sendTyping,
+    typingUsers,
   } as const;
 }

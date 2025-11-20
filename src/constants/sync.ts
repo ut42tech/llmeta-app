@@ -8,4 +8,5 @@ export const DATA_TOPICS = {
   MOVE: "player/move",
   PROFILE: "player/profile",
   CHAT_MESSAGE: "chat/message",
+  TYPING: "chat/typing",
 };

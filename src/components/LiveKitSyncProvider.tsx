@@ -27,6 +27,7 @@ type LiveKitSyncContextValue = {
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
   sendChatMessage: (content: string) => Promise<void>;
+  sendTyping: (isTyping: boolean) => void;
   room?: Room;
 };
 
@@ -36,6 +37,7 @@ const defaultContextValue: LiveKitSyncContextValue = {
   sendMove: () => void 0,
   sendProfile: () => void 0,
   sendChatMessage: async () => void 0,
+  sendTyping: () => void 0,
   room: undefined,
 };
 
@@ -88,7 +90,7 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
-  const { sendMove, sendProfile, sendChatMessage } =
+  const { sendMove, sendProfile, sendChatMessage, sendTyping } =
     useLiveKitDataChannels(identity);
 
   useEffect(() => {
@@ -113,6 +115,7 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       sendMove,
       sendProfile,
       sendChatMessage,
+      sendTyping,
       room: roomInstance,
     }),
     [
@@ -121,6 +124,7 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       sendMove,
       sendProfile,
       sendChatMessage,
+      sendTyping,
       roomInstance,
     ],
   );

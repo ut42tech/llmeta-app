@@ -1,14 +1,14 @@
 import { useDataChannel } from "@livekit/components-react";
 import type { Participant } from "livekit-client";
 import { nanoid } from "nanoid";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import { Euler, Vector3 } from "three";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useChatStore } from "@/stores/chatStore";
 import type { AnimationState } from "@/stores/localPlayerStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
-import type { ChatMessagePacket } from "@/types/chat";
+import type { ChatMessagePacket, TypingPacket } from "@/types/chat";
 import type { MoveData, ProfileData } from "@/types/multiplayer";
 import { decodePayload } from "@/utils/livekit-client";
 
@@ -31,6 +31,10 @@ export function useLiveKitDataChannels(identity: string) {
   const updateMessageStatus = useChatStore(
     (state) => state.updateMessageStatus,
   );
+  const addTypingUser = useChatStore((state) => state.addTypingUser);
+  const removeTypingUser = useChatStore((state) => state.removeTypingUser);
+
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleMoveMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.MOVE>) => {
@@ -108,6 +112,28 @@ export function useLiveKitDataChannels(identity: string) {
     [addIncomingMessage, identity, localSessionId],
   );
 
+  const handleTypingMessage = useCallback(
+    (msg: ReceivedDataMessage<typeof DATA_TOPICS.TYPING>) => {
+      const remoteIdentity = msg.from?.identity || msg.from?.sid || "";
+      const localIdentity = localSessionId || identity;
+      if (!remoteIdentity || remoteIdentity === localIdentity) {
+        return;
+      }
+
+      const data = decodePayload<TypingPacket>(msg.payload);
+      if (!data) {
+        return;
+      }
+
+      if (data.isTyping) {
+        addTypingUser(remoteIdentity, data.username);
+      } else {
+        removeTypingUser(remoteIdentity);
+      }
+    },
+    [addTypingUser, identity, localSessionId, removeTypingUser],
+  );
+
   const { send: sendMovePacket } = useDataChannel(
     DATA_TOPICS.MOVE,
     handleMoveMessage,
@@ -119,6 +145,10 @@ export function useLiveKitDataChannels(identity: string) {
   const { send: sendChatPacket } = useDataChannel(
     DATA_TOPICS.CHAT_MESSAGE,
     handleChatMessage,
+  );
+  const { send: sendTypingPacket } = useDataChannel(
+    DATA_TOPICS.TYPING,
+    handleTypingMessage,
   );
 
   const sendMove = useCallback(
@@ -192,5 +222,34 @@ export function useLiveKitDataChannels(identity: string) {
     ],
   );
 
-  return { sendMove, sendProfile, sendChatMessage };
+  const sendTyping = useCallback(
+    (isTyping: boolean) => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+        typingTimeoutRef.current = null;
+      }
+
+      const payload: TypingPacket = {
+        username: username || undefined,
+        isTyping,
+      };
+
+      const encoded = encoder.encode(JSON.stringify(payload));
+      void sendTypingPacket(encoded, {
+        topic: DATA_TOPICS.TYPING,
+        reliable: false,
+      }).catch((error) => {
+        console.warn("[LiveKit] Failed to publish typing status", error);
+      });
+
+      if (isTyping) {
+        typingTimeoutRef.current = setTimeout(() => {
+          sendTyping(false);
+        }, 2500);
+      }
+    },
+    [sendTypingPacket, username],
+  );
+
+  return { sendMove, sendProfile, sendChatMessage, sendTyping };
 }

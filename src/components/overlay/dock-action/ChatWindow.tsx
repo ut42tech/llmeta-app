@@ -19,8 +19,16 @@ import { useTextChat } from "@/hooks/useTextChat";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export function ChatWindow() {
-  const { messages, canSend, sendMessage, isOpen, setOpen, unreadCount } =
-    useTextChat();
+  const {
+    messages,
+    canSend,
+    sendMessage,
+    isOpen,
+    setOpen,
+    unreadCount,
+    sendTyping,
+    typingUsers,
+  } = useTextChat();
   const sessionId = useLocalPlayerStore((state) => state.sessionId);
 
   return (
@@ -53,11 +61,19 @@ export function ChatWindow() {
           </CardHeader>
           <Separator />
           <CardContent className="p-4">
-            <ChatLog messages={messages} sessionId={sessionId} />
+            <ChatLog
+              messages={messages}
+              sessionId={sessionId}
+              typingUsers={typingUsers}
+            />
           </CardContent>
           <Separator />
           <CardFooter className="p-4">
-            <ChatInput canSend={canSend} onSend={sendMessage} />
+            <ChatInput
+              canSend={canSend}
+              onSend={sendMessage}
+              onTypingChange={sendTyping}
+            />
           </CardFooter>
         </Card>
       ) : (

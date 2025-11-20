@@ -1,15 +1,17 @@
 import { MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { ChatMessageItem } from "@/components/overlay/dock-action/chat/ChatMessageItem";
+import { TypingIndicator } from "@/components/overlay/dock-action/chat/TypingIndicator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { ChatMessage } from "@/types/chat";
+import type { ChatMessage, TypingUser } from "@/types/chat";
 
 interface ChatLogProps {
   messages: ChatMessage[];
   sessionId: string | null;
+  typingUsers: Map<string, TypingUser>;
 }
 
-export function ChatLog({ messages, sessionId }: ChatLogProps) {
+export function ChatLog({ messages, sessionId, typingUsers }: ChatLogProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prevMessagesLengthRef = useRef(messages.length);
 
@@ -19,6 +21,8 @@ export function ChatLog({ messages, sessionId }: ChatLogProps) {
       prevMessagesLengthRef.current = messages.length;
     }
   }, [messages.length]);
+
+  const typingUsersArray = Array.from(typingUsers.values());
 
   return (
     <div className="h-64">
@@ -38,6 +42,7 @@ export function ChatLog({ messages, sessionId }: ChatLogProps) {
         <ScrollArea className="h-full pr-4">
           <div className="flex flex-col-reverse gap-3 pb-4">
             <div ref={messagesEndRef} />
+            <TypingIndicator typingUsers={typingUsersArray} />
             {messages
               .slice()
               .reverse()
