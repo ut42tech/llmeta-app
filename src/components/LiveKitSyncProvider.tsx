@@ -26,6 +26,7 @@ type LiveKitSyncContextValue = {
   isConnected: boolean;
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
+  sendChatMessage: (content: string) => Promise<void>;
   room?: Room;
 };
 
@@ -34,6 +35,7 @@ const defaultContextValue: LiveKitSyncContextValue = {
   isConnected: false,
   sendMove: () => void 0,
   sendProfile: () => void 0,
+  sendChatMessage: async () => void 0,
   room: undefined,
 };
 
@@ -86,7 +88,8 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
-  const { sendMove, sendProfile } = useLiveKitDataChannels(identity);
+  const { sendMove, sendProfile, sendChatMessage } =
+    useLiveKitDataChannels(identity);
 
   useEffect(() => {
     void initKrisp();
@@ -109,9 +112,17 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       isConnected: connectionState === LiveKitConnectionState.Connected,
       sendMove,
       sendProfile,
+      sendChatMessage,
       room: roomInstance,
     }),
-    [sessionId, connectionState, sendMove, sendProfile, roomInstance],
+    [
+      sessionId,
+      connectionState,
+      sendMove,
+      sendProfile,
+      sendChatMessage,
+      roomInstance,
+    ],
   );
 
   return (

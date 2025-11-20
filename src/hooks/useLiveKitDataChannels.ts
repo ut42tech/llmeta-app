@@ -1,10 +1,14 @@
 import { useDataChannel } from "@livekit/components-react";
 import type { Participant } from "livekit-client";
+import { nanoid } from "nanoid";
 import { useCallback } from "react";
 import { Euler, Vector3 } from "three";
 import { DATA_TOPICS } from "@/constants/sync";
+import { useChatStore } from "@/stores/chatStore";
 import type { AnimationState } from "@/stores/localPlayerStore";
+import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
+import type { ChatMessagePacket } from "@/types/chat";
 import type { MoveData, ProfileData } from "@/types/multiplayer";
 import { decodePayload } from "@/utils/livekit-client";
 
@@ -19,6 +23,13 @@ type ReceivedDataMessage<T extends string> = {
 export function useLiveKitDataChannels(identity: string) {
   const addOrUpdatePlayer = useRemotePlayersStore(
     (state) => state.addOrUpdatePlayer,
+  );
+  const localSessionId = useLocalPlayerStore((state) => state.sessionId);
+  const username = useLocalPlayerStore((state) => state.username);
+  const addIncomingMessage = useChatStore((state) => state.addIncomingMessage);
+  const addOutgoingMessage = useChatStore((state) => state.addOutgoingMessage);
+  const updateMessageStatus = useChatStore(
+    (state) => state.updateMessageStatus,
   );
 
   const handleMoveMessage = useCallback(
@@ -73,6 +84,30 @@ export function useLiveKitDataChannels(identity: string) {
     [addOrUpdatePlayer, identity],
   );
 
+  const handleChatMessage = useCallback(
+    (msg: ReceivedDataMessage<typeof DATA_TOPICS.CHAT_MESSAGE>) => {
+      const remoteIdentity = msg.from?.identity || msg.from?.sid || "";
+      const localIdentity = localSessionId || identity;
+      if (!remoteIdentity || remoteIdentity === localIdentity) {
+        return;
+      }
+
+      const data = decodePayload<ChatMessagePacket>(msg.payload);
+      if (!data || !data.text) {
+        return;
+      }
+
+      addIncomingMessage({
+        id: data.id,
+        sessionId: remoteIdentity,
+        username: data.username,
+        content: data.text,
+        sentAt: data.sentAt ?? Date.now(),
+      });
+    },
+    [addIncomingMessage, identity, localSessionId],
+  );
+
   const { send: sendMovePacket } = useDataChannel(
     DATA_TOPICS.MOVE,
     handleMoveMessage,
@@ -80,6 +115,10 @@ export function useLiveKitDataChannels(identity: string) {
   const { send: sendProfilePacket } = useDataChannel(
     DATA_TOPICS.PROFILE,
     handleProfileMessage,
+  );
+  const { send: sendChatPacket } = useDataChannel(
+    DATA_TOPICS.CHAT_MESSAGE,
+    handleChatMessage,
   );
 
   const sendMove = useCallback(
@@ -108,5 +147,50 @@ export function useLiveKitDataChannels(identity: string) {
     [sendProfilePacket],
   );
 
-  return { sendMove, sendProfile };
+  const sendChatMessage = useCallback(
+    async (content: string) => {
+      const text = content.trim();
+      if (!text) {
+        return;
+      }
+
+      const messageId = nanoid();
+      const payload: ChatMessagePacket = {
+        id: messageId,
+        text,
+        username: username || undefined,
+        sentAt: Date.now(),
+      };
+
+      addOutgoingMessage({
+        id: payload.id,
+        sessionId: localSessionId || identity,
+        username: payload.username,
+        content: payload.text,
+        sentAt: payload.sentAt,
+      });
+
+      const encoded = encoder.encode(JSON.stringify(payload));
+      try {
+        await sendChatPacket(encoded, {
+          topic: DATA_TOPICS.CHAT_MESSAGE,
+          reliable: true,
+        });
+        updateMessageStatus(messageId, "sent");
+      } catch (error) {
+        console.warn("[LiveKit] Failed to publish chat message", error);
+        updateMessageStatus(messageId, "failed");
+      }
+    },
+    [
+      addOutgoingMessage,
+      identity,
+      localSessionId,
+      sendChatPacket,
+      updateMessageStatus,
+      username,
+    ],
+  );
+
+  return { sendMove, sendProfile, sendChatMessage };
 }
