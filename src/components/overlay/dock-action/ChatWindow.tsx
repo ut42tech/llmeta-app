@@ -15,6 +15,11 @@ import {
 } from "@/components/ui/card";
 import { Kbd } from "@/components/ui/kbd";
 import { Separator } from "@/components/ui/separator";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { useTextChat } from "@/hooks/useTextChat";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
@@ -78,14 +83,19 @@ export function ChatWindow() {
         </Card>
       ) : (
         <div className="relative">
-          <Button
-            variant="default"
-            className="gap-2"
-            onClick={() => setOpen(true)}
-          >
-            <MessageSquare />
-            <span>Chat</span>
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size="icon-lg"
+                variant="secondary"
+                aria-label="Chat"
+                onClick={() => setOpen(true)}
+              >
+                <MessageSquare />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent sideOffset={6}>Chat</TooltipContent>
+          </Tooltip>
           {unreadCount > 0 && (
             <Badge
               variant="destructive"
