@@ -27,7 +27,7 @@ export function TypingIndicator({ typingUsers }: TypingIndicatorProps) {
   if (!text) return null;
 
   return (
-    <div className="text-center py-2 text-xs text-muted-foreground">
+    <div className="text-center text-xs text-muted-foreground">
       <span>{text}</span>
     </div>
   );
