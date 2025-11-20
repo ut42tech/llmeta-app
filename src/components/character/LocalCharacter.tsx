@@ -68,7 +68,7 @@ export function LocalCharacter({
     }
 
     return {
-      zoom: { speed: 500 },
+      zoom: { speed: 500, minDistance: 1.5, maxDistance: 5 },
       characterBaseOffset: [0, 1.5, 0] as [number, number, number],
     };
   }, [isFPV]);
