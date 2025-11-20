@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import type { TypingUser } from "@/types/chat";
 
 interface TypingIndicatorProps {
@@ -5,29 +6,29 @@ interface TypingIndicatorProps {
 }
 
 export function TypingIndicator({ typingUsers }: TypingIndicatorProps) {
-  if (typingUsers.length === 0) {
-    return null;
-  }
+  const text = useMemo(() => {
+    const count = typingUsers.length;
+    if (count === 0) return null;
 
-  const getTypingText = () => {
-    if (typingUsers.length === 1) {
-      const user = typingUsers[0];
-      const name = user.username || "Someone";
-      return `${name}が入力中`;
+    if (count === 1) {
+      const name = typingUsers[0].username || "Someone";
+      return `${name} is typing...`;
     }
 
-    if (typingUsers.length === 2) {
+    if (count === 2) {
       const name1 = typingUsers[0].username || "Someone";
       const name2 = typingUsers[1].username || "Someone";
-      return `${name1}と${name2}が入力中`;
+      return `${name1} and ${name2} are typing...`;
     }
 
-    return `${typingUsers.length}人が入力中`;
-  };
+    return `${count} people are typing...`;
+  }, [typingUsers]);
+
+  if (!text) return null;
 
   return (
     <div className="text-center py-2 text-xs text-muted-foreground">
-      <span>{getTypingText()}...</span>
+      <span>{text}</span>
     </div>
   );
 }

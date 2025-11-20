@@ -174,7 +174,9 @@ export const useChatStore = create<ChatStore>((set) => ({
 
   reset: () => {
     set((state) => {
-      state.typingTimeouts.forEach((timeout) => clearTimeout(timeout));
+      state.typingTimeouts.forEach((timeout) => {
+        clearTimeout(timeout);
+      });
       return initialState;
     });
   },

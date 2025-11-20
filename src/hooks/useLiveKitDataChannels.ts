@@ -1,7 +1,7 @@
 import { useDataChannel } from "@livekit/components-react";
 import type { Participant } from "livekit-client";
 import { nanoid } from "nanoid";
-import { useCallback, useRef } from "react";
+import { useCallback } from "react";
 import { Euler, Vector3 } from "three";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useChatStore } from "@/stores/chatStore";
@@ -33,8 +33,6 @@ export function useLiveKitDataChannels(identity: string) {
   );
   const addTypingUser = useChatStore((state) => state.addTypingUser);
   const removeTypingUser = useChatStore((state) => state.removeTypingUser);
-
-  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleMoveMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.MOVE>) => {
@@ -224,11 +222,6 @@ export function useLiveKitDataChannels(identity: string) {
 
   const sendTyping = useCallback(
     (isTyping: boolean) => {
-      if (typingTimeoutRef.current) {
-        clearTimeout(typingTimeoutRef.current);
-        typingTimeoutRef.current = null;
-      }
-
       const payload: TypingPacket = {
         username: username || undefined,
         isTyping,
@@ -241,12 +234,6 @@ export function useLiveKitDataChannels(identity: string) {
       }).catch((error) => {
         console.warn("[LiveKit] Failed to publish typing status", error);
       });
-
-      if (isTyping) {
-        typingTimeoutRef.current = setTimeout(() => {
-          sendTyping(false);
-        }, 2500);
-      }
     },
     [sendTypingPacket, username],
   );
