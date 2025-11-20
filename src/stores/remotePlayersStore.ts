@@ -14,6 +14,7 @@ export type RemotePlayerData = {
   animation: string;
   avatar?: ViverseAvatar;
   isMuted: boolean;
+  isSpeaking: boolean;
 };
 
 type RemotePlayersState = {
@@ -27,6 +28,7 @@ type RemotePlayersActions = {
   ) => void;
   removePlayer: (sessionId: string) => void;
   setPlayerMuteStatus: (sessionId: string, isMuted: boolean) => void;
+  setPlayerSpeakingStatus: (sessionId: string, isSpeaking: boolean) => void;
   clearAll: () => void;
 };
 
@@ -60,6 +62,7 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
         animation: data.animation ?? existingPlayer?.animation ?? "idle",
         avatar: data.avatar ?? existingPlayer?.avatar ?? undefined,
         isMuted: data.isMuted ?? existingPlayer?.isMuted ?? true,
+        isSpeaking: data.isSpeaking ?? existingPlayer?.isSpeaking ?? false,
       };
 
       newPlayers.set(sessionId, updatedPlayer);
@@ -82,6 +85,17 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
       const existingPlayer = newPlayers.get(sessionId);
       if (existingPlayer) {
         newPlayers.set(sessionId, { ...existingPlayer, isMuted });
+      }
+      return { players: newPlayers };
+    });
+  },
+
+  setPlayerSpeakingStatus: (sessionId: string, isSpeaking: boolean) => {
+    set((state) => {
+      const newPlayers = new Map(state.players);
+      const existingPlayer = newPlayers.get(sessionId);
+      if (existingPlayer) {
+        newPlayers.set(sessionId, { ...existingPlayer, isSpeaking });
       }
       return { players: newPlayers };
     });

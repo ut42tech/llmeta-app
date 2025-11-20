@@ -7,9 +7,14 @@ import type { Object3D } from "three";
 type PlayerTagProps = {
   displayName: string;
   isMuted?: boolean;
+  isSpeaking?: boolean;
 };
 
-export function PlayerTag({ displayName, isMuted = false }: PlayerTagProps) {
+export function PlayerTag({
+  displayName,
+  isMuted = false,
+  isSpeaking = false,
+}: PlayerTagProps) {
   const ref = useRef<Object3D>(null);
 
   useFrame((state) => {
@@ -34,7 +39,10 @@ export function PlayerTag({ displayName, isMuted = false }: PlayerTagProps) {
           {isMuted ? (
             <Icons.VolumeX width={10} color={"red"} />
           ) : (
-            <Icons.Volume2 width={10} />
+            <Icons.Volume2
+              width={10}
+              color={isSpeaking ? "green" : undefined}
+            />
           )}
           <Text fontWeight="bold" fontSize={8}>
             {displayName}

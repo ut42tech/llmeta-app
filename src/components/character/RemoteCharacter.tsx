@@ -27,6 +27,9 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   const setPlayerMuteStatus = useRemotePlayersStore(
     (state) => state.setPlayerMuteStatus,
   );
+  const setPlayerSpeakingStatus = useRemotePlayersStore(
+    (state) => state.setPlayerSpeakingStatus,
+  );
   const { room } = useSyncClient();
 
   const localPosition = useLocalPlayerStore((state) => state.position);
@@ -72,6 +75,7 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     const participant = room.remoteParticipants.get(sessionId);
     if (!participant) {
       setPlayerMuteStatus(sessionId, true);
+      setPlayerSpeakingStatus(sessionId, false);
       return;
     }
 
@@ -99,6 +103,11 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     };
 
     updateMuteStatus();
+    setPlayerSpeakingStatus(sessionId, participant.isSpeaking);
+
+    const handleSpeakingChanged = (speaking: boolean) => {
+      setPlayerSpeakingStatus(sessionId, speaking);
+    };
 
     const onTrackMuted = (publication: TrackPublication) => {
       if (publication.source === Track.Source.Microphone) {
@@ -148,6 +157,7 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     participant.on("trackUnpublished", onTrackUnpublished);
     participant.on("trackSubscribed", onTrackSubscribed);
     participant.on("trackUnsubscribed", onTrackUnsubscribed);
+    participant.on("isSpeakingChanged", handleSpeakingChanged);
 
     return () => {
       participant.off("trackMuted", onTrackMuted);
@@ -156,8 +166,9 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
       participant.off("trackUnpublished", onTrackUnpublished);
       participant.off("trackSubscribed", onTrackSubscribed);
       participant.off("trackUnsubscribed", onTrackUnsubscribed);
+      participant.off("isSpeakingChanged", handleSpeakingChanged);
     };
-  }, [room, sessionId, setPlayerMuteStatus]);
+  }, [room, sessionId, setPlayerMuteStatus, setPlayerSpeakingStatus]);
 
   if (!player) return null;
 
@@ -165,7 +176,11 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     <CharacterModelProvider model={model}>
       <RemoteCharacterAnimation sessionId={sessionId} />
       <primitive object={model.scene}>
-        <PlayerTag displayName={player.username} isMuted={player.isMuted} />
+        <PlayerTag
+          displayName={player.username}
+          isMuted={player.isMuted}
+          isSpeaking={player.isSpeaking}
+        />
       </primitive>
     </CharacterModelProvider>
   );
