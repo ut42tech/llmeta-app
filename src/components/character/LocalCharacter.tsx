@@ -1,3 +1,4 @@
+import type { CharacterCameraBehaviorOptions } from "@pmndrs/viverse";
 import { useFrame } from "@react-three/fiber";
 import {
   CharacterModelProvider,
@@ -21,6 +22,7 @@ export function LocalCharacter({
 }) {
   const avatar = useLocalPlayerStore((state) => state.currentAvatar);
   const sessionId = useLocalPlayerStore((state) => state.sessionId);
+  const isFPV = useLocalPlayerStore((state) => state.isFPV);
 
   const avatarUrl = avatar?.vrmUrl ?? "/models/avatar_01.vrm";
 
@@ -42,8 +44,6 @@ export function LocalCharacter({
 
   useEffect(() => {
     if (!model.scene) return;
-
-    // Get latest state directly to avoid dependency cycles and unnecessary re-renders
     const { position, rotation } = useLocalPlayerStore.getState();
     model.scene.position.copy(position);
     model.scene.rotation.copy(rotation);
@@ -59,13 +59,19 @@ export function LocalCharacter({
     }
   });
 
-  const cameraOptions = useMemo(
-    () => ({
-      zoom: { speed: 0 },
-      characterBaseOffset: [0, 1, 0] as [number, number, number],
-    }),
-    [],
-  );
+  const cameraOptions = useMemo<CharacterCameraBehaviorOptions>(() => {
+    if (isFPV) {
+      return {
+        zoom: { minDistance: 0, maxDistance: 0 },
+        characterBaseOffset: [0, 1.5, 0] as [number, number, number],
+      };
+    }
+
+    return {
+      zoom: { speed: 500 },
+      characterBaseOffset: [0, 1.5, 0] as [number, number, number],
+    };
+  }, [isFPV]);
 
   useCharacterCameraBehavior(model.scene, cameraOptions);
   useCameraController();
