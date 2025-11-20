@@ -1,3 +1,4 @@
+import { MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { ChatMessageItem } from "@/components/overlay/dock-action/chat/ChatMessageItem";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -22,13 +23,16 @@ export function ChatLog({ messages, sessionId }: ChatLogProps) {
   return (
     <div className="h-64">
       {messages.length === 0 ? (
-        <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
-          <p className="text-sm font-medium text-muted-foreground">
-            No messages yet
-          </p>
-          <p className="text-xs text-muted-foreground/80">
-            Start the conversation to see replies here.
-          </p>
+        <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
+          <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+            <MessageSquare className="size-5 text-muted-foreground" />
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium">No messages yet</p>
+            <p className="text-xs text-muted-foreground">
+              Start the conversation to see replies here
+            </p>
+          </div>
         </div>
       ) : (
         <ScrollArea className="h-full pr-4">

@@ -7,6 +7,15 @@ interface ChatMessageItemProps {
   isOwnMessage: boolean;
 }
 
+function getStatusBadge(status: ChatMessage["status"]) {
+  if (!status || status === "sent") return null;
+
+  return {
+    label: status === "pending" ? "Sending" : "Failed",
+    variant: status === "failed" ? "destructive" : "outline",
+  } as const;
+}
+
 export function ChatMessageItem({
   message,
   isOwnMessage,
@@ -16,36 +25,31 @@ export function ChatMessageItem({
     minute: "2-digit",
   });
 
-  const statusLabel =
-    message.status && message.status !== "sent"
-      ? message.status === "pending"
-        ? "Sending"
-        : "Failed"
-      : null;
+  const statusBadge = isOwnMessage ? getStatusBadge(message.status) : null;
 
   return (
     <div
       className={cn(
-        "animate-in fade-in slide-in-from-bottom-2 duration-150 flex flex-col gap-1",
+        "animate-in fade-in slide-in-from-bottom-2 flex flex-col gap-1.5",
         isOwnMessage ? "items-end" : "items-start",
       )}
     >
-      <div className="text-muted-foreground flex flex-wrap items-center gap-2 text-[11px]">
+      <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
         {message.username && (
           <Badge
             variant={isOwnMessage ? "default" : "secondary"}
-            className="px-2 py-0"
+            className="h-4 px-1.5 text-[10px]"
           >
             {message.username}
           </Badge>
         )}
         <span>{formattedTime}</span>
-        {isOwnMessage && statusLabel && (
+        {statusBadge && (
           <Badge
-            variant={message.status === "failed" ? "destructive" : "outline"}
-            className="uppercase tracking-wide"
+            variant={statusBadge.variant}
+            className="h-4 px-1.5 text-[10px] uppercase tracking-wide"
           >
-            {statusLabel}
+            {statusBadge.label}
           </Badge>
         )}
       </div>
@@ -53,10 +57,13 @@ export function ChatMessageItem({
       <div
         className={cn(
           "max-w-[85%] rounded-lg border px-3 py-2 text-sm shadow-sm",
-          isOwnMessage ? "bg-primary text-primary-foreground" : "bg-muted",
+          isOwnMessage && "bg-primary text-primary-foreground border-primary",
+          !isOwnMessage && "bg-muted",
         )}
       >
-        <p className="whitespace-pre-wrap break-words">{message.content}</p>
+        <p className="whitespace-pre-wrap wrap-break-word leading-relaxed">
+          {message.content}
+        </p>
       </div>
     </div>
   );

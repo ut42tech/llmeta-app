@@ -2,7 +2,14 @@
 
 import { ChatInput } from "@/components/overlay/dock-action/chat/ChatInput";
 import { ChatLog } from "@/components/overlay/dock-action/chat/ChatLog";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Kbd } from "@/components/ui/kbd";
 import { Separator } from "@/components/ui/separator";
 import { useTextChat } from "@/hooks/useTextChat";
