@@ -56,8 +56,8 @@ export function ChatMessageItem({
 
       <div
         className={cn(
-          "max-w-[85%] rounded-lg border px-3 py-2 text-sm shadow-sm",
-          isOwnMessage && "bg-primary text-primary-foreground border-primary",
+          "max-w-[85%] rounded-lg px-3 py-2 text-sm",
+          isOwnMessage && "bg-primary text-primary-foreground",
           !isOwnMessage && "bg-muted",
         )}
       >
