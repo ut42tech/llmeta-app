@@ -11,6 +11,7 @@ import {
 import { useEffect, useMemo } from "react";
 import type { Object3D } from "three";
 import { LocalCharacterAnimation } from "@/components/character/LocalCharacterAnimation";
+import { useCameraController } from "@/hooks/useCameraController";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export function LocalCharacter({
@@ -61,12 +62,13 @@ export function LocalCharacter({
   const cameraOptions = useMemo(
     () => ({
       zoom: { speed: 0 },
-      characterBaseOffset: [0, 1.3, 0] as [number, number, number],
+      characterBaseOffset: [0, 1, 0] as [number, number, number],
     }),
     [],
   );
 
   useCharacterCameraBehavior(model.scene, cameraOptions);
+  useCameraController();
 
   useEffect(() => {
     if (!innerRef || !model.scene) return;
