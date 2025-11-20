@@ -1,6 +1,6 @@
 import { useControls } from "leva";
 import { useMemo } from "react";
-import { RemoteCharacter } from "@/components/RemoteCharacter";
+import { RemoteCharacter } from "@/components/character/RemoteCharacter";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 

@@ -11,8 +11,8 @@ import {
   type TrackPublication,
 } from "livekit-client";
 import { useEffect, useMemo, useState } from "react";
-import { PlayerTag } from "@/components/PlayerTag";
-import { RemoteCharacterAnimation } from "@/components/RemoteCharacterAnimation";
+import { PlayerTag } from "@/components/character/PlayerTag";
+import { RemoteCharacterAnimation } from "@/components/character/RemoteCharacterAnimation";
 import { useProximityVoice } from "@/hooks/useProximityVoice";
 import {
   usePositionBuffer,

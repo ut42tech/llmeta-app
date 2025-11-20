@@ -10,7 +10,7 @@ import {
 } from "@react-three/viverse";
 import { useEffect, useMemo } from "react";
 import type { Object3D } from "three";
-import { LocalCharacterAnimation } from "@/components/LocalCharacterAnimation";
+import { LocalCharacterAnimation } from "@/components/character/LocalCharacterAnimation";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export function LocalCharacter({

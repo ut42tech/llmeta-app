@@ -1,10 +1,10 @@
 import { Sky } from "@react-three/drei";
 import { Suspense, useRef } from "react";
 import type { DirectionalLight, Object3D } from "three";
+import { LocalCharacter } from "@/components/character/LocalCharacter";
+import { RemotePlayers } from "@/components/character/RemotePlayers";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
-import { LocalCharacter } from "@/components/LocalCharacter";
-import { RemotePlayers } from "@/components/RemotePlayers";
 import { LIGHTING } from "@/constants/world";
 import { useCharacterController } from "@/hooks/useCharacterController";
 import { useLightController } from "@/hooks/useLightController";
