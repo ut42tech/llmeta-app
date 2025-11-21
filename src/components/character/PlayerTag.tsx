@@ -1,6 +1,6 @@
 import { useFrame } from "@react-three/fiber";
 import { Container, Text } from "@react-three/uikit";
-import * as Icons from "@react-three/uikit-lucide";
+import { Volume2, VolumeX } from "@react-three/uikit-lucide";
 import { Suspense, useRef } from "react";
 import type { Object3D } from "three";
 
@@ -37,12 +37,9 @@ export function PlayerTag({
           gap={4}
         >
           {isMuted ? (
-            <Icons.VolumeX width={10} color={"red"} />
+            <VolumeX width={10} color={"red"} />
           ) : (
-            <Icons.Volume2
-              width={10}
-              color={isSpeaking ? "green" : undefined}
-            />
+            <Volume2 width={10} color={isSpeaking ? "green" : undefined} />
           )}
           <Text fontWeight="bold" fontSize={8}>
             {displayName}
