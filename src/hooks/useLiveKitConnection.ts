@@ -5,6 +5,7 @@ import {
   RoomEvent,
 } from "livekit-client";
 import { useEffect, useState } from "react";
+import { useChatStore } from "@/stores/chatStore";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
@@ -18,6 +19,7 @@ export function useLiveKitConnection(identity: string) {
   const setSessionIdStore = useLocalPlayerStore((state) => state.setSessionId);
   const removePlayer = useRemotePlayersStore((state) => state.removePlayer);
   const clearRemotePlayers = useRemotePlayersStore((state) => state.clearAll);
+  const resetChat = useChatStore((state) => state.reset);
 
   const [sessionId, setSessionId] = useState<string | undefined>(identity);
 
@@ -46,6 +48,7 @@ export function useLiveKitConnection(identity: string) {
     } else if (connectionState === LiveKitConnectionState.Disconnected) {
       setDisconnected();
       clearRemotePlayers();
+      resetChat();
     }
   }, [
     connectionState,
@@ -53,6 +56,7 @@ export function useLiveKitConnection(identity: string) {
     setConnected,
     setDisconnected,
     clearRemotePlayers,
+    resetChat,
   ]);
 
   useEffect(() => {

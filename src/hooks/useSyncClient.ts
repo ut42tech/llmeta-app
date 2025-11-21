@@ -10,6 +10,8 @@ export type SyncClient = {
   isConnected: boolean;
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
+  sendChatMessage: (content: string) => Promise<void>;
+  sendTyping: (isTyping: boolean) => void;
   room?: Room;
 };
 
