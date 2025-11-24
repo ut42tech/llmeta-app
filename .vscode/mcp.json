@@ -14,6 +14,9 @@
     },
     "livekit-docs": {
       "url": "https://docs.livekit.io/mcp"
+    },
+    "vercel": {
+      "url": "https://mcp.vercel.com"
     }
   }
 }
