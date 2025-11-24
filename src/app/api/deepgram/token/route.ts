@@ -18,10 +18,12 @@ export async function GET() {
     const deepgram = getClient();
     const { result, error } = await deepgram.auth.grantToken();
 
-    if (error || !result?.access_token) {
-      throw new Error(
-        error?.message ?? "Failed to create Deepgram access token",
-      );
+    if (error) {
+      throw new Error(error.message ?? "Failed to grant Deepgram token");
+    }
+
+    if (!result?.access_token) {
+      throw new Error("Deepgram token response is missing access_token");
     }
 
     return NextResponse.json({
@@ -29,7 +31,8 @@ export async function GET() {
       expiresIn: result.expires_in,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
+    const message = error instanceof Error ? error.message : "Unknown error";
+    console.error("[Deepgram API] Token generation failed:", error);
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }
