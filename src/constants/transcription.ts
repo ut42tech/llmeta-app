@@ -16,10 +16,10 @@ export const DEEPGRAM_LANGUAGE = "ja";
  * - High compression (reduces bandwidth usage)
  * - Wide browser support
  */
-export const MEDIA_CHUNK_INTERVAL_MS = 250;
+export const MEDIA_CHUNK_INTERVAL_MS = 50;
 export const PREFERRED_MIME_TYPE = "audio/webm;codecs=opus";
 
 /**
  * UI configuration
  */
-export const MAX_CAPTION_ENTRIES = 3;
+export const MAX_CAPTION_ENTRIES = 20;
