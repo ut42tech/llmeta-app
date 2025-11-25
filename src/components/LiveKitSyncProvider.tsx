@@ -8,6 +8,7 @@ import {
 import {
   ConnectionState as LiveKitConnectionState,
   type Room,
+  RoomEvent,
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
@@ -107,6 +108,35 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       avatar: currentAvatar,
     });
   }, [sessionId, connectionState, username, currentAvatar, sendProfile]);
+
+  useEffect(() => {
+    if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {
+      return;
+    }
+
+    const handleParticipantConnected = () => {
+      sendProfile({
+        username: username || undefined,
+        avatar: currentAvatar,
+      });
+    };
+
+    roomInstance.on(RoomEvent.ParticipantConnected, handleParticipantConnected);
+
+    return () => {
+      roomInstance.off(
+        RoomEvent.ParticipantConnected,
+        handleParticipantConnected,
+      );
+    };
+  }, [
+    sessionId,
+    connectionState,
+    username,
+    currentAvatar,
+    sendProfile,
+    roomInstance,
+  ]);
 
   const contextValue = useMemo<LiveKitSyncContextValue>(
     () => ({
