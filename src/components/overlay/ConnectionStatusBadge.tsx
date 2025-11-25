@@ -1,6 +1,8 @@
 "use client";
 
+import { Server } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
@@ -40,19 +42,23 @@ export const ConnectionStatusBadge = ({ status, error, className }: Props) => {
           variant="secondary"
           className={cn("flex items-center gap-2", cfg.badgeClass, className)}
         >
+          <Server className="size-3.5" />
+          {cfg.label}
+          {status === "connecting" && (
+            <Spinner aria-label="Connecting" className="size-3.5" />
+          )}
           <span
             className={cn("h-2 w-2 rounded-full shadow-inner", cfg.dotClass)}
           />
-          {cfg.label}
         </Badge>
       </TooltipTrigger>
-      {status === "failed" && (
-        <TooltipContent side="left" className="max-w-xs">
-          <p className="text-xs leading-snug">
-            {error ? String(error) : "Unknown error"}
-          </p>
-        </TooltipContent>
-      )}
+      <TooltipContent>
+        {status === "failed"
+          ? error
+            ? String(error)
+            : "Connection failed due to an unknown error."
+          : "Server connection status"}
+      </TooltipContent>
     </Tooltip>
   );
 };
