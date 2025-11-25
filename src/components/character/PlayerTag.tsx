@@ -35,15 +35,18 @@ export function PlayerTag({
           alignItems="center"
           flexDirection="row"
           gap={4}
+          fontFamilies={{
+            notoSans: {
+              bold: "/fonts/NotoSansJP-Bold.json",
+            },
+          }}
         >
           {isMuted ? (
             <VolumeX width={10} color={"red"} />
           ) : (
             <Volume2 width={10} color={isSpeaking ? "green" : undefined} />
           )}
-          <Text fontWeight="bold" fontSize={8}>
-            {displayName}
-          </Text>
+          <Text fontSize={8}>{displayName}</Text>
         </Container>
       </Suspense>
     </group>
