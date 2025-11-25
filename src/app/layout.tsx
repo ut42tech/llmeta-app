@@ -25,7 +25,7 @@ const robotoMono = Roboto_Mono({
 
 export const metadata: Metadata = {
   title: "Project LLMeta",
-  description: "メタバースにAIエージェントを。",
+  description: "AI-powered Metaverse",
 };
 
 export default function RootLayout({
@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ja">
+    <html lang="en">
       <body
         className={`${notoSans.variable} ${roboto.variable} ${robotoMono.variable} antialiased`}
       >
