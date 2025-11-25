@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <LiveKitSyncProvider>
-      <Leva titleBar={{ title: "Debug Panel" }} collapsed />
+      <Leva titleBar={{ title: "Debug Panel" }} collapsed hidden />
 
       <Loader />
       {stats && <Stats />}

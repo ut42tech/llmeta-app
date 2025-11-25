@@ -20,7 +20,7 @@ export const Caption = () => {
   if (!text && !isStreaming && !error) return null;
 
   return (
-    <div className="absolute right-6 bottom-6 w-56 pointer-events-auto">
+    <div className="absolute right-4 top-4 w-56 pointer-events-auto">
       <div className="rounded-lg border border-white/10 bg-black/80 backdrop-blur p-3 space-y-3">
         <div className="flex items-center justify-between text-xs">
           <span className="text-white/40">Live Caption</span>
