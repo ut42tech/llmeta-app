@@ -1,22 +1,31 @@
 "use client";
 
-import { SettingsDrawer } from "@/components/overlay/dock-action/SettingsDrawer";
-import { VoiceChatButton } from "@/components/overlay/dock-action/VoiceChatButton";
-import { WorldInfoDrawer } from "@/components/overlay/dock-action/WorldInfoDrawer";
-import { YourInfoDrawer } from "@/components/overlay/dock-action/YourInfoDrawer";
+import { ChatButton } from "@/components/overlay/dock/ChatButton";
+import { SettingsDrawer } from "@/components/overlay/dock/SettingsDrawer";
+import { VoiceChatButton } from "@/components/overlay/dock/VoiceChatButton";
+import { WorldInfoDrawer } from "@/components/overlay/dock/WorldInfoDrawer";
+import { YourInfoDrawer } from "@/components/overlay/dock/YourInfoDrawer";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const Dock = () => {
   return (
-    <div className="absolute left-1/2 bottom-6 -translate-x-1/2 pointer-events-auto">
-      <TooltipProvider>
-        <div className="flex items-center gap-3">
+    <TooltipProvider>
+      {/* Dock */}
+      <div className="absolute inset-x-0 bottom-6 flex items-center justify-center pointer-events-auto gap-2">
+        {/* Left: Chat */}
+        <div className="fixed left-6">
+          <ChatButton />
+        </div>
+
+        {/* Center: Main Controls */}
+        <ButtonGroup>
           <WorldInfoDrawer />
           <YourInfoDrawer />
-          <VoiceChatButton />
-          <SettingsDrawer />
-        </div>
-      </TooltipProvider>
-    </div>
+        </ButtonGroup>
+        <VoiceChatButton />
+        <SettingsDrawer />
+      </div>
+    </TooltipProvider>
   );
 };

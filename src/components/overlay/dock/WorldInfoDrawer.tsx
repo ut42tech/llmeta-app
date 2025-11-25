@@ -27,7 +27,7 @@ export const WorldInfoDrawer = () => {
           <DrawerTrigger asChild>
             <Button
               size="icon-lg"
-              variant="secondary"
+              variant="outline"
               aria-label="About this world"
             >
               <Info />
@@ -43,45 +43,34 @@ export const WorldInfoDrawer = () => {
             <DrawerTitle className="text-2xl font-bold">
               About this world
             </DrawerTitle>
-
             <DrawerDescription className="p-3 bg-neutral-100 rounded-lg">
               💫 Explore together with other players in real-time
             </DrawerDescription>
           </DrawerHeader>
 
-          <div className="px-4 pb-6">
-            <div className="space-y-6">
-              <div className="space-y-3">
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  The concept of this world and basic controls will be displayed
-                  here. This is a placeholder for now.
-                </p>
-              </div>
+          <div className="px-4 pb-6 space-y-6">
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              The concept of this world and basic controls will be displayed
+              here. This is a placeholder for now.
+            </p>
 
-              <div className="space-y-3">
-                <h3 className="text-sm font-semibold">Controls</h3>
-                <div className="space-y-2.5">
-                  <div className="flex items-start gap-3">
-                    <div className="flex items-center gap-2 min-w-[120px]">
-                      <Kbd className="px-2 py-1 text-xs font-semibold bg-muted rounded border border-border">
-                        WASD
-                      </Kbd>
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      Move around
-                    </span>
-                  </div>
-                  <div className="flex items-start gap-3">
-                    <div className="flex items-center gap-2 min-w-[120px]">
-                      <Kbd className="px-2 py-1 text-xs font-semibold bg-muted rounded border border-border">
-                        <Mouse />
-                        Mouse
-                      </Kbd>
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      Look around
-                    </span>
-                  </div>
+            <div className="space-y-3">
+              <h3 className="text-sm font-semibold">Controls</h3>
+              <div className="space-y-2.5">
+                <div className="flex items-start gap-3">
+                  <Kbd className="min-w-20 justify-center">WASD</Kbd>
+                  <span className="text-sm text-muted-foreground">
+                    Move around
+                  </span>
+                </div>
+                <div className="flex items-start gap-3">
+                  <Kbd className="min-w-20 justify-center gap-1">
+                    <Mouse className="size-3" />
+                    Mouse
+                  </Kbd>
+                  <span className="text-sm text-muted-foreground">
+                    Look around
+                  </span>
                 </div>
               </div>
             </div>

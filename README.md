@@ -23,6 +23,7 @@ A 3D multiplayer metaverse client built with Next.js, React Three Fiber, and Liv
     LIVEKIT_API_SECRET=your_livekit_api_secret
     LIVEKIT_URL=wss://your-livekit-host
     LIVEKIT_DEFAULT_ROOM=playground
+    DEEPGRAM_API_KEY=your_deepgram_api_key
     ```
     The public variable selects which room to join from the browser, while the server-side values are only read inside the `/api/livekit/token` route when minting access tokens.
 
@@ -37,6 +38,12 @@ A 3D multiplayer metaverse client built with Next.js, React Three Fiber, and Liv
 - **Move:** WASD
 - **Camera:** Drag mouse
 - **Jump:** Space
+
+## Real-time Voice Captions
+
+- When you enable the microphone, the client streams a copy of your voice to Deepgram via `/api/deepgram/token` and renders live captions in the overlay.
+- Make sure `DEEPGRAM_API_KEY` is configured on the server (never expose it directly to the browser); the API route mints short-lived access tokens so the key is never sent to the client.
+- The caption pill appears near the dock once audio is detected; disable the mic to pause transcription.
 
 ## Available Scripts
 

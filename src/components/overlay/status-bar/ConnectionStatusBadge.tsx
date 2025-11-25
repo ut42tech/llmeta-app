@@ -1,6 +1,8 @@
 "use client";
 
+import { Server } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Spinner } from "@/components/ui/spinner";
 import {
   Tooltip,
   TooltipContent,
@@ -9,13 +11,13 @@ import {
 import { cn } from "@/lib/utils";
 import type { ConnectionStatus } from "@/stores/connectionStore";
 
-type Props = {
+type ConnectionStatusBadgeProps = {
   status: ConnectionStatus;
   error?: unknown;
   className?: string;
 };
 
-const statusConfig: Record<
+const STATUS_CONFIG: Record<
   ConnectionStatus,
   { label: string; dotClass: string; badgeClass?: string }
 > = {
@@ -30,29 +32,41 @@ const statusConfig: Record<
   disconnected: { label: "Disconnected", dotClass: "bg-zinc-400" },
 };
 
-export const ConnectionStatusBadge = ({ status, error, className }: Props) => {
-  const cfg = statusConfig[status] ?? statusConfig.idle;
+export const ConnectionStatusBadge = ({
+  status,
+  error,
+  className,
+}: ConnectionStatusBadgeProps) => {
+  const config = STATUS_CONFIG[status] ?? STATUS_CONFIG.idle;
 
   return (
     <Tooltip>
       <TooltipTrigger asChild>
         <Badge
           variant="secondary"
-          className={cn("flex items-center gap-2", cfg.badgeClass, className)}
+          className={cn(
+            "flex items-center gap-2",
+            config.badgeClass,
+            className,
+          )}
         >
+          <Server className="size-3.5" />
+          <span>{config.label}</span>
+          {status === "connecting" && (
+            <Spinner aria-label="Connecting" className="size-3.5" />
+          )}
           <span
-            className={cn("h-2 w-2 rounded-full shadow-inner", cfg.dotClass)}
+            className={cn("size-2 rounded-full shadow-inner", config.dotClass)}
           />
-          {cfg.label}
         </Badge>
       </TooltipTrigger>
-      {status === "failed" && (
-        <TooltipContent side="left" className="max-w-xs">
-          <p className="text-xs leading-snug">
-            {error ? String(error) : "Unknown error"}
-          </p>
-        </TooltipContent>
-      )}
+      <TooltipContent>
+        {status === "failed"
+          ? error
+            ? String(error)
+            : "Connection failed due to an unknown error."
+          : "Server connection status"}
+      </TooltipContent>
     </Tooltip>
   );
 };

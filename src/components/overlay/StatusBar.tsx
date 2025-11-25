@@ -1,36 +1,27 @@
 "use client";
 
-import { Users } from "lucide-react";
-import { ConnectionStatusBadge } from "@/components/overlay/ConnectionStatusBadge";
-import { Badge } from "@/components/ui/badge";
-import { Spinner } from "@/components/ui/spinner";
+import { CaptionStatusBadge } from "@/components/overlay/status-bar/CaptionStatusBadge";
+import { ConnectionStatusBadge } from "@/components/overlay/status-bar/ConnectionStatusBadge";
+import { OnlinePlayersBadge } from "@/components/overlay/status-bar/OnlinePlayersBadge";
 import { useConnectionStore } from "@/stores/connectionStore";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
+import { useTranscriptionStore } from "@/stores/transcriptionStore";
 
 export const StatusBar = () => {
   const status = useConnectionStore((state) => state.status);
   const error = useConnectionStore((state) => state.error);
-  const playersCount = useRemotePlayersStore((state) => state.players.size);
+  const isStreaming = useTranscriptionStore((state) => state.isStreaming);
 
   return (
-    <>
-      <div className="absolute left-4 top-4 pointer-events-auto">
-        <Badge variant="secondary" className="flex items-center gap-1.5">
-          <Users className="size-3.5" />
-          <span className="tabular-nums">
-            {playersCount + 1} Online Player(s)
-          </span>
-        </Badge>
+    <div className="absolute inset-x-4 top-4 grid grid-cols-3 items-start pointer-events-auto">
+      <div className="justify-self-start">
+        <CaptionStatusBadge isStreaming={isStreaming} />
       </div>
-
-      <div className="absolute left-1/2 top-4 -translate-x-1/2 pointer-events-auto">
-        <div className="flex items-center gap-2">
-          {status === "connecting" && (
-            <Spinner aria-label="Connecting" className="size-4" />
-          )}
-          <ConnectionStatusBadge status={status} error={error} />
-        </div>
+      <div className="justify-self-center">
+        <ConnectionStatusBadge status={status} error={error} />
       </div>
-    </>
+      <div className="justify-self-end">
+        <OnlinePlayersBadge />
+      </div>
+    </div>
   );
 };

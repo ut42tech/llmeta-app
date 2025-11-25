@@ -19,16 +19,38 @@ import {
 } from "@/components/ui/tooltip";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
+type InfoRowProps = {
+  label: string;
+  value: string;
+  mono?: boolean;
+};
+
+const InfoRow = ({ label, value, mono }: InfoRowProps) => (
+  <div className="flex items-center justify-between py-3 border-b border-border">
+    <span className="text-sm font-medium text-muted-foreground">{label}</span>
+    <span
+      className={
+        mono
+          ? "font-mono text-xs text-foreground/80 break-all max-w-[200px] text-right"
+          : "text-base font-semibold"
+      }
+    >
+      {value}
+    </span>
+  </div>
+);
+
 export const YourInfoDrawer = () => {
-  const username = useLocalPlayerStore((s) => s.username) || "Anonymous";
-  const sessionId = useLocalPlayerStore((s) => s.sessionId) || "—";
+  const username =
+    useLocalPlayerStore((state) => state.username) || "Anonymous";
+  const sessionId = useLocalPlayerStore((state) => state.sessionId) || "—";
 
   return (
     <Drawer>
       <Tooltip>
         <TooltipTrigger asChild>
           <DrawerTrigger asChild>
-            <Button size="icon-lg" variant="secondary" aria-label="Your info">
+            <Button size="icon-lg" variant="outline" aria-label="Your info">
               <User />
             </Button>
           </DrawerTrigger>
@@ -40,31 +62,16 @@ export const YourInfoDrawer = () => {
         <div className="mx-auto w-full max-w-md">
           <DrawerHeader className="text-left">
             <DrawerTitle className="text-2xl font-bold">Your info</DrawerTitle>
-
             <DrawerDescription className="p-3 bg-neutral-100 rounded-lg">
               🎮 Your session is active and syncing with the server
             </DrawerDescription>
           </DrawerHeader>
-          <div className="px-4 pb-6">
-            <div className="space-y-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between py-3 border-b border-border">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Username
-                  </span>
-                  <span className="text-base font-semibold">{username}</span>
-                </div>
-                <div className="flex items-center justify-between py-3 border-b border-border">
-                  <span className="text-sm font-medium text-muted-foreground">
-                    Session ID
-                  </span>
-                  <span className="font-mono text-xs text-foreground/80 break-all max-w-[200px] text-right">
-                    {sessionId}
-                  </span>
-                </div>
-              </div>
-            </div>
+
+          <div className="px-4 pb-6 space-y-3">
+            <InfoRow label="Username" value={username} />
+            <InfoRow label="Session ID" value={sessionId} mono />
           </div>
+
           <DrawerFooter className="pt-2">
             <DrawerClose asChild>
               <Button variant="outline" className="w-full">
