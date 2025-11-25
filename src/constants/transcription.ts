@@ -23,3 +23,12 @@ export const PREFERRED_MIME_TYPE = "audio/webm;codecs=opus";
  * UI configuration
  */
 export const MAX_CAPTION_ENTRIES = 20;
+
+/**
+ * Auto-send to chat configuration
+ *
+ * Debounce interval: Wait this long after the last transcription entry
+ * before combining and sending accumulated text to chat.
+ * Shorter values feel more real-time but may send fragmented messages.
+ */
+export const AUTO_SEND_DEBOUNCE_MS = 2000;

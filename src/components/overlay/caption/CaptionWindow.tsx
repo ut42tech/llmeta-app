@@ -3,12 +3,14 @@
 import { Waveform } from "@/components/overlay/caption/Waveform";
 import { Badge } from "@/components/ui/badge";
 import { useTranscription } from "@/hooks/useTranscription";
+import { useTranscriptionAutoSend } from "@/hooks/useTranscriptionAutoSend";
 import { cn } from "@/lib/utils";
 import { useTranscriptionStore } from "@/stores/transcriptionStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
 
 export const CaptionWindow = () => {
   useTranscription();
+  useTranscriptionAutoSend();
 
   const entries = useTranscriptionStore((state) => state.entries);
   const partial = useTranscriptionStore((state) => state.partial);
@@ -22,7 +24,7 @@ export const CaptionWindow = () => {
       <Badge
         variant="secondary"
         className={cn(
-          "flex items-start gap-2 px-2.5 py-1.5 max-w-sm",
+          "flex items-center gap-2 px-2.5 py-1.5 max-w-sm",
           "bg-white/50 backdrop-blur-md border-white/20",
           error && "bg-red-500/20 border-red-500/30 text-red-900",
         )}

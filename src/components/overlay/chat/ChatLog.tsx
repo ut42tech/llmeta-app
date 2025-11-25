@@ -2,8 +2,8 @@
 
 import { MessageSquare } from "lucide-react";
 import { useEffect, useRef } from "react";
-import { ChatMessageItem } from "@/components/overlay/dock/chat/ChatMessageItem";
-import { TypingIndicator } from "@/components/overlay/dock/chat/TypingIndicator";
+import { ChatMessageItem } from "@/components/overlay/chat/ChatMessageItem";
+import { TypingIndicator } from "@/components/overlay/chat/TypingIndicator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import type { ChatMessage, TypingUser } from "@/types/chat";
 

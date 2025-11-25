@@ -18,6 +18,8 @@ type TranscriptionState = {
   partial?: string;
   isStreaming: boolean;
   error?: string;
+  autoSendToChat: boolean;
+  pendingAutoSend: string[];
 };
 
 type TranscriptionActions = {
@@ -25,6 +27,8 @@ type TranscriptionActions = {
   setPartial: (text?: string) => void;
   setStreaming: (isStreaming: boolean) => void;
   setError: (message?: string) => void;
+  setAutoSendToChat: (enabled: boolean) => void;
+  consumePendingAutoSend: () => string[];
   reset: () => void;
 };
 
@@ -35,9 +39,11 @@ const initialState: TranscriptionState = {
   partial: undefined,
   isStreaming: false,
   error: undefined,
+  autoSendToChat: false,
+  pendingAutoSend: [],
 };
 
-export const useTranscriptionStore = create<TranscriptionStore>((set) => ({
+export const useTranscriptionStore = create<TranscriptionStore>((set, get) => ({
   ...initialState,
   addEntry: (text) =>
     set((state) => {
@@ -57,7 +63,11 @@ export const useTranscriptionStore = create<TranscriptionStore>((set) => ({
         nextEntries.splice(0, nextEntries.length - MAX_HISTORY);
       }
 
-      return { entries: nextEntries };
+      const nextPending = state.autoSendToChat
+        ? [...state.pendingAutoSend, trimmed]
+        : state.pendingAutoSend;
+
+      return { entries: nextEntries, pendingAutoSend: nextPending };
     }),
   setPartial: (text) => set({ partial: text?.trim() || undefined }),
   setStreaming: (isStreaming) =>
@@ -66,11 +76,18 @@ export const useTranscriptionStore = create<TranscriptionStore>((set) => ({
       partial: isStreaming ? state.partial : undefined,
     })),
   setError: (message) => set({ error: message }),
+  setAutoSendToChat: (enabled) => set({ autoSendToChat: enabled }),
+  consumePendingAutoSend: () => {
+    const pending = get().pendingAutoSend;
+    set({ pendingAutoSend: [] });
+    return pending;
+  },
   reset: () =>
     set(() => ({
       entries: [],
       partial: undefined,
       isStreaming: false,
       error: undefined,
+      pendingAutoSend: [],
     })),
 }));
