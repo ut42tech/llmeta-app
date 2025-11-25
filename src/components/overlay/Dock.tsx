@@ -1,5 +1,6 @@
 "use client";
 
+import { AIChatButton } from "@/components/overlay/dock/AIChatButton";
 import { ChatButton } from "@/components/overlay/dock/ChatButton";
 import { SettingsDrawer } from "@/components/overlay/dock/SettingsDrawer";
 import { VoiceChatButton } from "@/components/overlay/dock/VoiceChatButton";
@@ -16,6 +17,11 @@ export const Dock = () => {
         {/* Left: Chat */}
         <div className="fixed left-6">
           <ChatButton />
+        </div>
+
+        {/* Right: AI Chat */}
+        <div className="fixed right-6">
+          <AIChatButton />
         </div>
 
         {/* Center: Main Controls */}
