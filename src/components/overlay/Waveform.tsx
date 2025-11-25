@@ -12,7 +12,7 @@ interface WaveformProps {
 
 export const Waveform = ({
   track,
-  barCount = 20,
+  barCount = 10,
   className = "",
 }: WaveformProps) => {
   const volumeBands = useMultibandTrackVolume(track, {
@@ -36,7 +36,7 @@ export const Waveform = ({
         return (
           <div
             key={barId}
-            className="w-1 rounded-full bg-primary transition-all duration-75"
+            className="w-0.5 rounded-full bg-primary transition-all duration-75"
             style={{
               height: `${calculateBarHeight(volume)}%`,
             }}

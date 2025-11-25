@@ -16,7 +16,7 @@ export const StatusBar = () => {
 
   return (
     <>
-      <div className="absolute left-4 top-4 pointer-events-auto">
+      <div className="absolute right-4 top-4 pointer-events-auto">
         <Badge variant="secondary" className="flex items-center gap-1.5">
           <Users className="size-3.5" />
           <span className="tabular-nums">
@@ -29,7 +29,7 @@ export const StatusBar = () => {
         <ConnectionStatusBadge status={status} error={error} />
       </div>
 
-      <div className="absolute right-4 top-4 pointer-events-auto">
+      <div className="absolute left-4 top-4 pointer-events-auto">
         <CaptionStatusBadge isStreaming={isStreaming} />
       </div>
     </>
