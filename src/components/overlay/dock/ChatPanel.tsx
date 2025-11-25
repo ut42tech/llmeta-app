@@ -1,8 +1,8 @@
 "use client";
 
 import { MessageSquare, X } from "lucide-react";
-import { ChatInput } from "@/components/overlay/dock-action/chat/ChatInput";
-import { ChatLog } from "@/components/overlay/dock-action/chat/ChatLog";
+import { ChatInput } from "@/components/overlay/dock/chat/ChatInput";
+import { ChatLog } from "@/components/overlay/dock/chat/ChatLog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +23,7 @@ import {
 import { useTextChat } from "@/hooks/useTextChat";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
-export function ChatWindow() {
+export const ChatPanel = () => {
   const {
     messages,
     canSend,
@@ -38,6 +38,7 @@ export function ChatWindow() {
 
   return (
     <div className="pointer-events-auto fixed bottom-6 left-6 z-50">
+      {/* Chat Panel */}
       {isOpen && (
         <div className="absolute bottom-12 left-0">
           <Card className="w-80">
@@ -59,9 +60,9 @@ export function ChatWindow() {
                   size="icon"
                   className="size-8 shrink-0"
                   onClick={() => setOpen(false)}
+                  aria-label="Minimize chat"
                 >
                   <X />
-                  <span className="sr-only">Minimize chat</span>
                 </Button>
               </div>
             </CardHeader>
@@ -85,6 +86,7 @@ export function ChatWindow() {
         </div>
       )}
 
+      {/* Toggle Button */}
       <div className="relative">
         <Tooltip>
           <TooltipTrigger asChild>
@@ -99,10 +101,12 @@ export function ChatWindow() {
           </TooltipTrigger>
           <TooltipContent sideOffset={6}>Chat</TooltipContent>
         </Tooltip>
+
+        {/* Unread Badge */}
         {unreadCount > 0 && (
           <Badge
             variant="destructive"
-            className="absolute -right-2 -top-2 size-6 p-0"
+            className="absolute -right-2 -top-2 size-6 p-0 flex items-center justify-center"
           >
             {unreadCount}
           </Badge>
@@ -110,4 +114,4 @@ export function ChatWindow() {
       </div>
     </div>
   );
-}
+};

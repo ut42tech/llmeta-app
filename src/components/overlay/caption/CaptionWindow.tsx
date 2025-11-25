@@ -1,6 +1,6 @@
 "use client";
 
-import { Waveform } from "@/components/overlay/Waveform";
+import { Waveform } from "@/components/overlay/caption/Waveform";
 import { Badge } from "@/components/ui/badge";
 import { useTranscription } from "@/hooks/useTranscription";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,7 @@ import { useVoiceChatStore } from "@/stores/voiceChatStore";
 
 export const CaptionWindow = () => {
   useTranscription();
+
   const entries = useTranscriptionStore((state) => state.entries);
   const partial = useTranscriptionStore((state) => state.partial);
   const isStreaming = useTranscriptionStore((state) => state.isStreaming);
@@ -39,7 +40,7 @@ export const CaptionWindow = () => {
             !text && "opacity-50 italic",
           )}
         >
-          {error ? error : text || "Waiting for speech..."}
+          {error ?? text ?? "Waiting for speech..."}
         </p>
       </Badge>
     </div>

@@ -11,21 +11,16 @@ import { useVoiceChat } from "@/hooks/useVoiceChat";
 
 export const VoiceChatButton = () => {
   const { status, toggleMic, canPublish } = useVoiceChat();
+
   const isBusy = status.isPublishing;
   const isActive = status.isMicEnabled;
   const permissionDenied = status.permission === "denied";
   const disabled = !canPublish || isBusy || permissionDenied;
 
   const tooltipLabel = (() => {
-    if (status.error) {
-      return status.error;
-    }
-    if (!canPublish) {
-      return "Connect to a room to talk";
-    }
-    if (permissionDenied) {
-      return "Microphone permission denied";
-    }
+    if (status.error) return status.error;
+    if (!canPublish) return "Connect to a room to talk";
+    if (permissionDenied) return "Microphone permission denied";
     return isActive ? "Mute microphone" : "Unmute microphone";
   })();
 

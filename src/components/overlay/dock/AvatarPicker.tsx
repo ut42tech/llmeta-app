@@ -10,16 +10,19 @@ type AvatarPickerProps = {
   onSelect: (avatar: ViverseAvatar) => void;
 };
 
-export function AvatarPicker({
+const PLACEHOLDER_IMAGE = "https://placehold.co/96x96?text=?";
+
+export const AvatarPicker = ({
   avatars,
   selectedId,
   onSelect,
-}: AvatarPickerProps) {
+}: AvatarPickerProps) => {
   return (
     <div className="grid grid-cols-4 gap-3">
       {avatars.map((avatar) => {
         const isSelected = avatar.id === selectedId;
-        const src = avatar.headIconUrl ?? "https://placehold.co/96x96?text=?";
+        const src = avatar.headIconUrl ?? PLACEHOLDER_IMAGE;
+
         return (
           <button
             key={avatar.id}
@@ -43,12 +46,12 @@ export function AvatarPicker({
               loading="eager"
               priority={isSelected}
             />
-            {isSelected ? (
+            {isSelected && (
               <div className="pointer-events-none absolute inset-0 bg-primary/10" />
-            ) : null}
+            )}
           </button>
         );
       })}
     </div>
   );
-}
+};

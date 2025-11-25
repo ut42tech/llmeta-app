@@ -1,3 +1,5 @@
+"use client";
+
 import { ArrowUp } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -9,46 +11,50 @@ import {
 } from "@/components/ui/tooltip";
 import { useTypingDebounce } from "@/hooks/useTypingDebounce";
 
-interface ChatInputProps {
+type ChatInputProps = {
   canSend: boolean;
   onSend: (message: string) => Promise<void>;
   onTypingChange?: (isTyping: boolean) => void;
-}
+};
 
-export function ChatInput({ canSend, onSend, onTypingChange }: ChatInputProps) {
+const MAX_MESSAGE_LENGTH = 500;
+
+export const ChatInput = ({
+  canSend,
+  onSend,
+  onTypingChange,
+}: ChatInputProps) => {
   const [inputValue, setInputValue] = useState("");
   const [isComposing, setIsComposing] = useState(false);
 
   const clearTyping = useTypingDebounce(
     inputValue.trim().length > 0,
-    onTypingChange || (() => {}),
+    onTypingChange ?? (() => {}),
   );
 
   const handleSend = async () => {
-    if (!inputValue.trim() || !canSend) {
-      return;
-    }
+    const trimmedValue = inputValue.trim();
+    if (!trimmedValue || !canSend) return;
 
     clearTyping();
-    await onSend(inputValue.trim());
+    await onSend(trimmedValue);
     setInputValue("");
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && !e.shiftKey && !isComposing) {
       e.preventDefault();
-      handleSend();
+      void handleSend();
     }
   };
 
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    void handleSend();
+  };
+
   return (
-    <form
-      onSubmit={(event) => {
-        event.preventDefault();
-        handleSend();
-      }}
-      className="flex w-full items-center gap-2"
-    >
+    <form onSubmit={handleSubmit} className="flex w-full items-center gap-2">
       <Input
         value={inputValue}
         onChange={(e) => setInputValue(e.target.value)}
@@ -59,7 +65,7 @@ export function ChatInput({ canSend, onSend, onTypingChange }: ChatInputProps) {
         disabled={!canSend}
         aria-label="Chat message"
         className="flex-1"
-        maxLength={500}
+        maxLength={MAX_MESSAGE_LENGTH}
       />
       <Tooltip>
         <TooltipTrigger asChild>
@@ -76,4 +82,4 @@ export function ChatInput({ canSend, onSend, onTypingChange }: ChatInputProps) {
       </Tooltip>
     </form>
   );
-}
+};

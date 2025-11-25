@@ -1,30 +1,42 @@
+"use client";
+
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
 
-interface ChatMessageItemProps {
+type ChatMessageItemProps = {
   message: ChatMessage;
   isOwnMessage: boolean;
-}
+};
 
-function getStatusBadge(status: ChatMessage["status"]) {
+type StatusBadgeInfo = {
+  label: string;
+  variant: "destructive" | "outline";
+};
+
+const getStatusBadge = (
+  status: ChatMessage["status"],
+): StatusBadgeInfo | null => {
   if (!status || status === "sent") return null;
 
   return {
     label: status === "pending" ? "Sending" : "Failed",
     variant: status === "failed" ? "destructive" : "outline",
-  } as const;
-}
+  };
+};
 
-export function ChatMessageItem({
-  message,
-  isOwnMessage,
-}: ChatMessageItemProps) {
-  const formattedTime = new Date(message.sentAt).toLocaleTimeString(undefined, {
+const formatTime = (date: Date): string => {
+  return date.toLocaleTimeString(undefined, {
     hour: "2-digit",
     minute: "2-digit",
   });
+};
 
+export const ChatMessageItem = ({
+  message,
+  isOwnMessage,
+}: ChatMessageItemProps) => {
+  const formattedTime = formatTime(new Date(message.sentAt));
   const statusBadge = isOwnMessage ? getStatusBadge(message.status) : null;
 
   return (
@@ -34,6 +46,7 @@ export function ChatMessageItem({
         isOwnMessage ? "items-end" : "items-start",
       )}
     >
+      {/* Message metadata */}
       <div className="flex flex-wrap items-center gap-1.5 text-[11px] text-muted-foreground">
         {message.username && (
           <Badge
@@ -54,11 +67,11 @@ export function ChatMessageItem({
         )}
       </div>
 
+      {/* Message content */}
       <div
         className={cn(
           "max-w-[85%] rounded-lg px-3 py-2 text-sm",
-          isOwnMessage && "bg-primary text-primary-foreground",
-          !isOwnMessage && "bg-muted",
+          isOwnMessage ? "bg-primary text-primary-foreground" : "bg-muted",
         )}
       >
         <p className="whitespace-pre-wrap wrap-break-word leading-relaxed">
@@ -67,4 +80,4 @@ export function ChatMessageItem({
       </div>
     </div>
   );
-}
+};
