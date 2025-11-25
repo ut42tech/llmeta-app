@@ -27,7 +27,7 @@ export const WorldInfoDrawer = () => {
           <DrawerTrigger asChild>
             <Button
               size="icon-lg"
-              variant="secondary"
+              variant="outline"
               aria-label="About this world"
             >
               <Info />

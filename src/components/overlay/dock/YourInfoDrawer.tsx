@@ -50,7 +50,7 @@ export const YourInfoDrawer = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <DrawerTrigger asChild>
-            <Button size="icon-lg" variant="secondary" aria-label="Your info">
+            <Button size="icon-lg" variant="outline" aria-label="Your info">
               <User />
             </Button>
           </DrawerTrigger>

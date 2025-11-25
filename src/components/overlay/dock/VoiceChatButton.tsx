@@ -34,7 +34,7 @@ export const VoiceChatButton = () => {
       <TooltipTrigger asChild>
         <Button
           size="icon-lg"
-          variant={isActive ? "default" : "secondary"}
+          variant={isActive ? "default" : "outline"}
           aria-label={isActive ? "Mute microphone" : "Unmute microphone"}
           aria-pressed={isActive}
           disabled={disabled}

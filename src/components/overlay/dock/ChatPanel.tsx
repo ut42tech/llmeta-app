@@ -92,7 +92,7 @@ export const ChatPanel = () => {
           <TooltipTrigger asChild>
             <Button
               size="icon-lg"
-              variant="secondary"
+              variant="outline"
               aria-label="Chat"
               onClick={() => setOpen(!isOpen)}
             >

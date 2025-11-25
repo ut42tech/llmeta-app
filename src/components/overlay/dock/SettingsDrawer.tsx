@@ -214,7 +214,7 @@ export const SettingsDrawer = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <DrawerTrigger asChild>
-            <Button size="icon-lg" variant="secondary" aria-label="Settings">
+            <Button size="icon-lg" variant="outline" aria-label="Settings">
               <Settings />
             </Button>
           </DrawerTrigger>
