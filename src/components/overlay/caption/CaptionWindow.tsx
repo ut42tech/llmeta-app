@@ -12,13 +12,10 @@ export const CaptionWindow = () => {
 
   const entries = useTranscriptionStore((state) => state.entries);
   const partial = useTranscriptionStore((state) => state.partial);
-  const isStreaming = useTranscriptionStore((state) => state.isStreaming);
   const error = useTranscriptionStore((state) => state.error);
   const track = useVoiceChatStore((state) => state.track);
 
   const text = partial || entries.at(-1)?.text;
-
-  if (!text && !isStreaming && !error) return null;
 
   return (
     <div className="absolute left-4 top-12 pointer-events-auto">
