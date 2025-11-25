@@ -1,17 +1,24 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useSyncClient } from "@/hooks/useSyncClient";
 import { useChatStore } from "@/stores/chatStore";
 
 export function useTextChat() {
   const { sendChatMessage, sendTyping, isConnected } = useSyncClient();
-  const messages = useChatStore((state) => state.messages);
-  const unreadCount = useChatStore((state) => state.unreadCount);
-  const isOpen = useChatStore((state) => state.isOpen);
+
+  const { messages, unreadCount, isOpen, typingUsers } = useChatStore(
+    useShallow((state) => ({
+      messages: state.messages,
+      unreadCount: state.unreadCount,
+      isOpen: state.isOpen,
+      typingUsers: state.typingUsers,
+    })),
+  );
+
   const setOpen = useChatStore((state) => state.setOpen);
   const markAllRead = useChatStore((state) => state.markAllRead);
-  const typingUsers = useChatStore((state) => state.typingUsers);
 
   useEffect(() => {
     if (!isOpen) {
@@ -50,5 +57,5 @@ export function useTextChat() {
     sendMessage: handleSend,
     sendTyping,
     typingUsers,
-  } as const;
+  };
 }

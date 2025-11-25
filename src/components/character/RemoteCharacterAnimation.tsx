@@ -9,13 +9,18 @@ import {
 import {
   CharacterAnimationAction,
   CharacterAnimationLayer,
+} from "@react-three/viverse";
+import { useRef } from "react";
+import { type AnimationAction, LoopOnce } from "three";
+import {
   IdleAnimationUrl,
   JumpDownAnimationUrl,
   JumpLoopAnimationUrl,
   JumpUpAnimationUrl,
-} from "@react-three/viverse";
-import { useRef } from "react";
-import { type AnimationAction, LoopOnce } from "three";
+  MOVEMENT_ANIMATIONS,
+  RUN_TIME_SCALE,
+  WALK_TIME_SCALE,
+} from "@/constants/animations";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import { boneMap } from "@/utils/bone-map";
 
@@ -40,32 +45,37 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
   const jumpLoopRef = useRef<AnimationAction>(null);
   const jumpDownRef = useRef<AnimationAction>(null);
 
-  useFrame(() => {
-    const timeScale = isRunning ? 2 : 1;
+  // Map animation names to refs for easy lookup
+  const animationRefs: Record<
+    string,
+    React.RefObject<AnimationAction | null>
+  > = {
+    idle: idleRef,
+    forward: forwardRef,
+    forwardRight: forwardRightRef,
+    right: rightRef,
+    backwardRight: backwardRightRef,
+    backward: backwardRef,
+    backwardLeft: backwardLeftRef,
+    left: leftRef,
+    forwardLeft: forwardLeftRef,
+    jumpUp: jumpUpRef,
+    jumpLoop: jumpLoopRef,
+    jumpDown: jumpDownRef,
+  };
 
-    if (forwardRef.current) {
-      forwardRef.current.timeScale = timeScale;
-    }
-    if (backwardRef.current) {
-      backwardRef.current.timeScale = timeScale;
-    }
-    if (leftRef.current) {
-      leftRef.current.timeScale = timeScale;
-    }
-    if (rightRef.current) {
-      rightRef.current.timeScale = timeScale;
-    }
-    if (forwardRightRef.current) {
-      forwardRightRef.current.timeScale = timeScale;
-    }
-    if (forwardLeftRef.current) {
-      forwardLeftRef.current.timeScale = timeScale;
-    }
-    if (backwardRightRef.current) {
-      backwardRightRef.current.timeScale = timeScale;
-    }
-    if (backwardLeftRef.current) {
-      backwardLeftRef.current.timeScale = timeScale;
+  // Get all movement animation refs for time scale update
+  const movementRefs = MOVEMENT_ANIMATIONS.map(
+    (anim) => animationRefs[anim.name],
+  );
+
+  useFrame(() => {
+    const timeScale = isRunning ? RUN_TIME_SCALE : WALK_TIME_SCALE;
+
+    for (const ref of movementRefs) {
+      if (ref.current) {
+        ref.current.timeScale = timeScale;
+      }
     }
   });
 
@@ -75,111 +85,54 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
         <Graph enterState="move">
           <GrapthState name="move">
             <Switch>
-              <SwitchCase index={0} condition={() => animation === "forward"}>
-                <CharacterAnimationAction
-                  sync
-                  scaleTime={1.5}
-                  boneMap={boneMap}
-                  ref={forwardRef}
-                  url="/animations/jog-forward.glb"
-                />
-              </SwitchCase>
+              {/* Movement animations from shared config */}
+              {MOVEMENT_ANIMATIONS.map((anim, index) => (
+                <SwitchCase
+                  key={anim.name}
+                  index={index}
+                  condition={() => animation === anim.name}
+                >
+                  <CharacterAnimationAction
+                    sync
+                    scaleTime={anim.scaleTime}
+                    boneMap={boneMap}
+                    ref={animationRefs[anim.name]}
+                    url={anim.url}
+                  />
+                </SwitchCase>
+              ))}
+              {/* Jump animations */}
               <SwitchCase
-                index={1}
-                condition={() => animation === "forwardRight"}
+                index={MOVEMENT_ANIMATIONS.length}
+                condition={() => animation === "jumpUp"}
               >
-                <CharacterAnimationAction
-                  sync
-                  scaleTime={1.5}
-                  boneMap={boneMap}
-                  ref={forwardRightRef}
-                  url="/animations/jog-forward-right.glb"
-                />
-              </SwitchCase>
-              <SwitchCase index={2} condition={() => animation === "right"}>
-                <CharacterAnimationAction
-                  sync
-                  scaleTime={0.9}
-                  boneMap={boneMap}
-                  ref={rightRef}
-                  url="/animations/jog-right.glb"
-                />
-              </SwitchCase>
-              <SwitchCase
-                index={3}
-                condition={() => animation === "backwardRight"}
-              >
-                <CharacterAnimationAction
-                  sync
-                  scaleTime={1.3}
-                  boneMap={boneMap}
-                  ref={backwardRightRef}
-                  url="/animations/jog-backward-right.glb"
-                />
-              </SwitchCase>
-              <SwitchCase index={4} condition={() => animation === "backward"}>
-                <CharacterAnimationAction
-                  sync
-                  scaleTime={1.4}
-                  boneMap={boneMap}
-                  ref={backwardRef}
-                  url="/animations/jog-backward.glb"
-                />
-              </SwitchCase>
-              <SwitchCase
-                index={5}
-                condition={() => animation === "backwardLeft"}
-              >
-                <CharacterAnimationAction
-                  sync
-                  scaleTime={1.3}
-                  boneMap={boneMap}
-                  ref={backwardLeftRef}
-                  url="/animations/jog-backward-left.glb"
-                />
-              </SwitchCase>
-              <SwitchCase index={6} condition={() => animation === "left"}>
-                <CharacterAnimationAction
-                  sync
-                  scaleTime={0.9}
-                  boneMap={boneMap}
-                  ref={leftRef}
-                  url="/animations/jog-left.glb"
-                />
-              </SwitchCase>
-              <SwitchCase
-                index={7}
-                condition={() => animation === "forwardLeft"}
-              >
-                <CharacterAnimationAction
-                  sync
-                  scaleTime={1.5}
-                  boneMap={boneMap}
-                  ref={forwardLeftRef}
-                  url="/animations/jog-forward-left.glb"
-                />
-              </SwitchCase>
-              <SwitchCase index={8} condition={() => animation === "jumpUp"}>
                 <CharacterAnimationAction
                   loop={LoopOnce}
                   ref={jumpUpRef}
                   url={JumpUpAnimationUrl}
                 />
               </SwitchCase>
-              <SwitchCase index={9} condition={() => animation === "jumpLoop"}>
+              <SwitchCase
+                index={MOVEMENT_ANIMATIONS.length + 1}
+                condition={() => animation === "jumpLoop"}
+              >
                 <CharacterAnimationAction
                   ref={jumpLoopRef}
                   url={JumpLoopAnimationUrl}
                 />
               </SwitchCase>
-              <SwitchCase index={10} condition={() => animation === "jumpDown"}>
+              <SwitchCase
+                index={MOVEMENT_ANIMATIONS.length + 2}
+                condition={() => animation === "jumpDown"}
+              >
                 <CharacterAnimationAction
                   ref={jumpDownRef}
                   loop={LoopOnce}
                   url={JumpDownAnimationUrl}
                 />
               </SwitchCase>
-              <SwitchCase index={11}>
+              {/* Idle (default) */}
+              <SwitchCase index={MOVEMENT_ANIMATIONS.length + 3}>
                 <CharacterAnimationAction
                   ref={idleRef}
                   url={IdleAnimationUrl}

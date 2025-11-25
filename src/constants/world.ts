@@ -1,3 +1,13 @@
+/**
+ * Grid-based world configuration
+ */
+export const GRID = {
+  /** Size of each grid cell in world units */
+  CELL_SIZE: 20,
+  /** Half of the grid cell size (for centering calculations) */
+  HALF_CELL_SIZE: 10,
+};
+
 export const PERFORMANCE = {
   MOVEMENT_UPDATE_THROTTLE: 50, // ms
   POSITION_LERP_FACTOR: 0.2,
@@ -53,4 +63,4 @@ export const PROXIMITY_VOICE = {
    * Higher values create more natural audio spatialization
    */
   ROLLOFF_FACTOR: 2.0,
-} as const;
+};

@@ -2,29 +2,10 @@ import { Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { PERFORMANCE, PRECISION } from "@/constants/world";
 import type { MoveData, ViverseAvatar } from "@/types/multiplayer";
+import { normalizeAngle, roundToDecimals, toPlainVec3 } from "@/utils/math";
 
 const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
 const INITIAL_PLAYER_ROTATION = new Euler(0, 0, 0);
-
-/**
- * Convert a Vector3 to a plain object
- */
-const toPlainVec3 = (
-  v: Vector3 | Euler,
-): { x: number; y: number; z: number } => {
-  return { x: v.x, y: v.y, z: v.z };
-};
-
-/**
- * Round a number to the specified decimal places
- * @param value - The number to round
- * @param decimals - Number of decimal places (default: 2)
- * @returns Rounded number
- */
-const roundToDecimals = (value: number, decimals = 2): number => {
-  const multiplier = 10 ** decimals;
-  return Math.round(value * multiplier) / multiplier;
-};
 
 /**
  * Build movement data from Vector3 and Euler (desktop)
@@ -166,12 +147,9 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
   setRotation: (rotation: Euler) => {
     const normalizedRotation = rotation.clone();
     // Normalize rotation values to [-π, π] range
-    normalizedRotation.x =
-      ((normalizedRotation.x + Math.PI) % (2 * Math.PI)) - Math.PI;
-    normalizedRotation.y =
-      ((normalizedRotation.y + Math.PI) % (2 * Math.PI)) - Math.PI;
-    normalizedRotation.z =
-      ((normalizedRotation.z + Math.PI) % (2 * Math.PI)) - Math.PI;
+    normalizedRotation.x = normalizeAngle(normalizedRotation.x);
+    normalizedRotation.y = normalizeAngle(normalizedRotation.y);
+    normalizedRotation.z = normalizeAngle(normalizedRotation.z);
 
     normalizedRotation.x = roundToDecimals(
       normalizedRotation.x,

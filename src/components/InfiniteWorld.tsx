@@ -1,11 +1,8 @@
 import { Text } from "@react-three/drei";
 import { BvhPhysicsBody, PrototypeBox } from "@react-three/viverse";
 import { memo, useMemo } from "react";
-import {
-  GRID_CELL_SIZE,
-  HALF_GRID_CELL_SIZE,
-  useWorldStore,
-} from "@/stores/worldStore";
+import { GRID } from "@/constants/world";
+import { useWorldStore } from "@/stores/worldStore";
 
 type GridCellProps = {
   gridX: number;
@@ -19,14 +16,14 @@ type GridCellProps = {
  */
 const GridCell = memo(
   ({ gridX, gridY, cellX, cellY }: GridCellProps) => {
-    const positionX = useMemo(() => gridX * GRID_CELL_SIZE, [gridX]);
-    const positionZ = useMemo(() => gridY * GRID_CELL_SIZE, [gridY]);
+    const positionX = useMemo(() => gridX * GRID.CELL_SIZE, [gridX]);
+    const positionZ = useMemo(() => gridY * GRID.CELL_SIZE, [gridY]);
 
     return (
       <group position={[positionX, 0, positionZ]}>
         <BvhPhysicsBody kinematic>
           <PrototypeBox
-            scale={[GRID_CELL_SIZE, 1, GRID_CELL_SIZE]}
+            scale={[GRID.CELL_SIZE, 1, GRID.CELL_SIZE]}
             position={[0, -2, 0]}
           />
         </BvhPhysicsBody>
@@ -69,8 +66,8 @@ export const InfiniteWorld = memo(({ ...props }: InfiniteWorldProps) => {
       const halfWidth = visibleGridSize.x / 2;
       const halfHeight = visibleGridSize.y / 2;
       return {
-        centerOffsetX: -halfWidth * GRID_CELL_SIZE + HALF_GRID_CELL_SIZE,
-        centerOffsetZ: -halfHeight * GRID_CELL_SIZE + HALF_GRID_CELL_SIZE,
+        centerOffsetX: -halfWidth * GRID.CELL_SIZE + GRID.HALF_CELL_SIZE,
+        centerOffsetZ: -halfHeight * GRID.CELL_SIZE + GRID.HALF_CELL_SIZE,
         halfGridWidth: halfWidth,
         halfGridHeight: halfHeight,
       };

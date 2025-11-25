@@ -1,5 +1,9 @@
 import type { VRMHumanBoneName } from "@pixiv/three-vrm";
 
+/**
+ * Mapping from Blender bone names to VRM human bone names
+ * Used for retargeting animations from Blender rigs to VRM avatars
+ */
 export const boneMap: Record<string, VRMHumanBoneName> = {
   "DEF-hips": "hips",
   "DEF-spine001": "spine",

@@ -3,6 +3,7 @@
 import { Settings } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { Euler, Vector3 } from "three";
+import { useShallow } from "zustand/react/shallow";
 import { AvatarPicker } from "@/components/overlay/dock/AvatarPicker";
 import { Button } from "@/components/ui/button";
 import {
@@ -69,24 +70,40 @@ const SettingsContent = () => {
   const { sendProfile } = useSyncClient();
 
   // Local player state
-  const username =
-    useLocalPlayerStore((state) => state.username) || "Anonymous";
-  const position = useLocalPlayerStore((state) => state.position);
-  const rotation = useLocalPlayerStore((state) => state.rotation);
-  const setUsername = useLocalPlayerStore((state) => state.setUsername);
-  const teleport = useLocalPlayerStore((state) => state.teleport);
-  const isFPV = useLocalPlayerStore((state) => state.isFPV);
-  const toggleFPV = useLocalPlayerStore((state) => state.toggleFPV);
-  const currentAvatar = useLocalPlayerStore((state) => state.currentAvatar);
-  const setCurrentAvatar = useLocalPlayerStore(
-    (state) => state.setCurrentAvatar,
+  const {
+    username,
+    position,
+    rotation,
+    setUsername,
+    teleport,
+    isFPV,
+    toggleFPV,
+    currentAvatar,
+    setCurrentAvatar,
+  } = useLocalPlayerStore(
+    useShallow((state) => ({
+      username: state.username || "Anonymous",
+      position: state.position,
+      rotation: state.rotation,
+      setUsername: state.setUsername,
+      teleport: state.teleport,
+      isFPV: state.isFPV,
+      toggleFPV: state.toggleFPV,
+      currentAvatar: state.currentAvatar,
+      setCurrentAvatar: state.setCurrentAvatar,
+    })),
   );
 
   // Voice chat state
-  const krispEnabled = useVoiceChatStore((state) => state.krispEnabled);
-  const krispSupported = useVoiceChatStore((state) => state.krispSupported);
-  const setKrispEnabled = useVoiceChatStore((state) => state.setKrispEnabled);
-  const initKrisp = useVoiceChatStore((state) => state.initKrisp);
+  const { krispEnabled, krispSupported, setKrispEnabled, initKrisp } =
+    useVoiceChatStore(
+      useShallow((state) => ({
+        krispEnabled: state.krispEnabled,
+        krispSupported: state.krispSupported,
+        setKrispEnabled: state.setKrispEnabled,
+        initKrisp: state.initKrisp,
+      })),
+    );
 
   // Local state
   const [nameInput, setNameInput] = useState(username);

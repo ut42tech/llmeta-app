@@ -1,38 +1,47 @@
 import { useDataChannel } from "@livekit/components-react";
-import type { Participant } from "livekit-client";
 import { nanoid } from "nanoid";
 import { useCallback } from "react";
 import { Euler, Vector3 } from "three";
+import { useShallow } from "zustand/react/shallow";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useChatStore } from "@/stores/chatStore";
 import type { AnimationState } from "@/stores/localPlayerStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import type { ChatMessagePacket, TypingPacket } from "@/types/chat";
+import type { ReceivedDataMessage } from "@/types/livekit";
 import type { MoveData, ProfileData } from "@/types/multiplayer";
 import { decodePayload } from "@/utils/livekit-client";
 
 const encoder = new TextEncoder();
 
-type ReceivedDataMessage<T extends string> = {
-  topic?: T;
-  payload: Uint8Array;
-  from?: Participant;
-};
-
 export function useLiveKitDataChannels(identity: string) {
   const addOrUpdatePlayer = useRemotePlayersStore(
     (state) => state.addOrUpdatePlayer,
   );
-  const localSessionId = useLocalPlayerStore((state) => state.sessionId);
-  const username = useLocalPlayerStore((state) => state.username);
-  const addIncomingMessage = useChatStore((state) => state.addIncomingMessage);
-  const addOutgoingMessage = useChatStore((state) => state.addOutgoingMessage);
-  const updateMessageStatus = useChatStore(
-    (state) => state.updateMessageStatus,
+
+  const { localSessionId, username } = useLocalPlayerStore(
+    useShallow((state) => ({
+      localSessionId: state.sessionId,
+      username: state.username,
+    })),
   );
-  const addTypingUser = useChatStore((state) => state.addTypingUser);
-  const removeTypingUser = useChatStore((state) => state.removeTypingUser);
+
+  const {
+    addIncomingMessage,
+    addOutgoingMessage,
+    updateMessageStatus,
+    addTypingUser,
+    removeTypingUser,
+  } = useChatStore(
+    useShallow((state) => ({
+      addIncomingMessage: state.addIncomingMessage,
+      addOutgoingMessage: state.addOutgoingMessage,
+      updateMessageStatus: state.updateMessageStatus,
+      addTypingUser: state.addTypingUser,
+      removeTypingUser: state.removeTypingUser,
+    })),
+  );
 
   const handleMoveMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.MOVE>) => {

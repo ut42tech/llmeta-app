@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useSyncClient } from "@/hooks/useSyncClient";
 import { useConnectionStore } from "@/stores/connectionStore";
 import {
@@ -20,16 +21,25 @@ export function useVoiceChat() {
   const { room } = useSyncClient();
   const connectionStatus = useConnectionStore((state) => state.status);
 
-  const isMicEnabled = useVoiceChatStore((state) => state.isMicEnabled);
-  const isPublishing = useVoiceChatStore((state) => state.isPublishing);
-  const permission = useVoiceChatStore((state) => state.permission);
-  const error = useVoiceChatStore((state) => state.error);
-  const lastActiveAt = useVoiceChatStore((state) => state.lastActiveAt);
+  const { isMicEnabled, isPublishing, permission, error, lastActiveAt } =
+    useVoiceChatStore(
+      useShallow((state) => ({
+        isMicEnabled: state.isMicEnabled,
+        isPublishing: state.isPublishing,
+        permission: state.permission,
+        error: state.error,
+        lastActiveAt: state.lastActiveAt,
+      })),
+    );
 
-  const enableMic = useVoiceChatStore((state) => state.enableMic);
-  const disableMic = useVoiceChatStore((state) => state.disableMic);
-  const toggleMic = useVoiceChatStore((state) => state.toggleMic);
-  const reset = useVoiceChatStore((state) => state.reset);
+  const { enableMic, disableMic, toggleMic, reset } = useVoiceChatStore(
+    useShallow((state) => ({
+      enableMic: state.enableMic,
+      disableMic: state.disableMic,
+      toggleMic: state.toggleMic,
+      reset: state.reset,
+    })),
+  );
 
   useEffect(() => {
     if (connectionStatus === "connected" && room) {
@@ -74,5 +84,5 @@ export function useVoiceChat() {
     disableMic: handleDisable,
     toggleMic: handleToggle,
     canPublish: Boolean(room) && connectionStatus === "connected",
-  } as const;
+  };
 }

@@ -5,6 +5,7 @@ import {
   RoomEvent,
 } from "livekit-client";
 import { useEffect, useState } from "react";
+import { useShallow } from "zustand/react/shallow";
 import { useChatStore } from "@/stores/chatStore";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
@@ -13,9 +14,15 @@ import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 export function useLiveKitConnection(identity: string) {
   const room = useRoomContext();
   const connectionState = useConnectionState(room);
-  const setConnecting = useConnectionStore((state) => state.setConnecting);
-  const setConnected = useConnectionStore((state) => state.setConnected);
-  const setDisconnected = useConnectionStore((state) => state.setDisconnected);
+
+  const { setConnecting, setConnected, setDisconnected } = useConnectionStore(
+    useShallow((state) => ({
+      setConnecting: state.setConnecting,
+      setConnected: state.setConnected,
+      setDisconnected: state.setDisconnected,
+    })),
+  );
+
   const setSessionIdStore = useLocalPlayerStore((state) => state.setSessionId);
   const removePlayer = useRemotePlayersStore((state) => state.removePlayer);
   const clearRemotePlayers = useRemotePlayersStore((state) => state.clearAll);

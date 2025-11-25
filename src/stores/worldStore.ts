@@ -1,9 +1,6 @@
 import type { Vector3 } from "three";
 import { create } from "zustand";
-
-// Grid constants
-export const GRID_CELL_SIZE = 20;
-export const HALF_GRID_CELL_SIZE = GRID_CELL_SIZE / 2;
+import { GRID } from "@/constants/world";
 
 // Types
 type GridCoordinates = {
@@ -28,8 +25,8 @@ const DEFAULT_VISIBLE_GRID_SIZE: GridCoordinates = { x: 3, y: 3 };
 
 // Helper functions
 const calculateGridCell = (position: Vector3): GridCoordinates => ({
-  x: Math.floor((position.x + HALF_GRID_CELL_SIZE) / GRID_CELL_SIZE),
-  y: Math.floor((position.z + HALF_GRID_CELL_SIZE) / GRID_CELL_SIZE),
+  x: Math.floor((position.x + GRID.HALF_CELL_SIZE) / GRID.CELL_SIZE),
+  y: Math.floor((position.z + GRID.HALF_CELL_SIZE) / GRID.CELL_SIZE),
 });
 
 const isGridCellEqual = (

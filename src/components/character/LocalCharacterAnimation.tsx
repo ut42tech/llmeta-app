@@ -11,20 +11,23 @@ import {
   type BvhCharacterPhysics,
   CharacterAnimationAction,
   CharacterAnimationLayer,
-  IdleAnimationUrl,
-  JumpDownAnimationUrl,
-  JumpLoopAnimationUrl,
-  JumpUpAnimationUrl,
   RunAction,
   shouldJump,
 } from "@react-three/viverse";
 import { useRef } from "react";
 import { type AnimationAction, LoopOnce, Vector3 } from "three";
-import { useMovementDirection } from "@/hooks/useMovementDirection";
 import {
-  type AnimationState,
-  useLocalPlayerStore,
-} from "@/stores/localPlayerStore";
+  IdleAnimationUrl,
+  JumpDownAnimationUrl,
+  JumpLoopAnimationUrl,
+  JumpUpAnimationUrl,
+  MOVEMENT_ANIMATIONS,
+  RUN_TIME_SCALE,
+  WALK_TIME_SCALE,
+} from "@/constants/animations";
+import { useMovementDirection } from "@/hooks/useMovementDirection";
+import type { AnimationState } from "@/stores/localPlayerStore";
+import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { boneMap } from "@/utils/bone-map";
 
 export function LocalCharacterAnimation({
@@ -49,82 +52,58 @@ export function LocalCharacterAnimation({
   const jumpLoopRef = useRef<AnimationAction>(null);
   const jumpDownRef = useRef<AnimationAction>(null);
 
-  const moveAnimations: {
-    name: AnimationState;
-    condition: () => boolean;
-    url: string;
-    scaleTime: number;
-    ref: React.RefObject<AnimationAction | null>;
-  }[] = [
-    {
-      name: "forward",
-      condition: () =>
-        Math.abs(normalizedDirection.x) < 0.5 && normalizedDirection.y > 0.5,
-      url: "/animations/jog-forward.glb",
-      scaleTime: 1.5,
-      ref: forwardRef,
+  // Map animation names to refs for easy lookup
+  const animationRefs: Record<
+    AnimationState,
+    React.RefObject<AnimationAction | null>
+  > = {
+    idle: idleRef,
+    forward: forwardRef,
+    forwardRight: forwardRightRef,
+    right: rightRef,
+    backwardRight: backwardRightRef,
+    backward: backwardRef,
+    backwardLeft: backwardLeftRef,
+    left: leftRef,
+    forwardLeft: forwardLeftRef,
+    jumpUp: jumpUpRef,
+    jumpLoop: jumpLoopRef,
+    jumpDown: jumpDownRef,
+  };
+
+  // Build move animations with conditions based on normalized direction
+  const moveAnimations = MOVEMENT_ANIMATIONS.map((anim) => ({
+    ...anim,
+    ref: animationRefs[anim.name],
+    condition: (): boolean => {
+      const { x, y } = normalizedDirection;
+      switch (anim.name) {
+        case "forward":
+          return Math.abs(x) < 0.5 && y > 0.5;
+        case "forwardRight":
+          return x > 0.5 && y > 0.5;
+        case "right":
+          return x > 0.5 && Math.abs(y) < 0.5;
+        case "backwardRight":
+          return x > 0.5 && y < -0.5;
+        case "backward":
+          return Math.abs(x) < 0.5 && y < -0.5;
+        case "backwardLeft":
+          return x < -0.5 && y < -0.5;
+        case "left":
+          return x < -0.5 && Math.abs(y) < 0.5;
+        case "forwardLeft":
+          return x < -0.5 && y > 0.5;
+        default:
+          return false;
+      }
     },
-    {
-      name: "forwardRight",
-      condition: () =>
-        normalizedDirection.x > 0.5 && normalizedDirection.y > 0.5,
-      url: "/animations/jog-forward-right.glb",
-      scaleTime: 1.5,
-      ref: forwardRightRef,
-    },
-    {
-      name: "right",
-      condition: () =>
-        normalizedDirection.x > 0.5 && Math.abs(normalizedDirection.y) < 0.5,
-      url: "/animations/jog-right.glb",
-      scaleTime: 0.9,
-      ref: rightRef,
-    },
-    {
-      name: "backwardRight",
-      condition: () =>
-        normalizedDirection.x > 0.5 && normalizedDirection.y < -0.5,
-      url: "/animations/jog-backward-right.glb",
-      scaleTime: 1.3,
-      ref: backwardRightRef,
-    },
-    {
-      name: "backward",
-      condition: () =>
-        Math.abs(normalizedDirection.x) < 0.5 && normalizedDirection.y < -0.5,
-      url: "/animations/jog-backward.glb",
-      scaleTime: 1.4,
-      ref: backwardRef,
-    },
-    {
-      name: "backwardLeft",
-      condition: () =>
-        normalizedDirection.x < -0.5 && normalizedDirection.y < -0.5,
-      url: "/animations/jog-backward-left.glb",
-      scaleTime: 1.3,
-      ref: backwardLeftRef,
-    },
-    {
-      name: "left",
-      condition: () =>
-        normalizedDirection.x < -0.5 && Math.abs(normalizedDirection.y) < 0.5,
-      url: "/animations/jog-left.glb",
-      scaleTime: 0.9,
-      ref: leftRef,
-    },
-    {
-      name: "forwardLeft",
-      condition: () =>
-        normalizedDirection.x < -0.5 && normalizedDirection.y > 0.5,
-      url: "/animations/jog-forward-left.glb",
-      scaleTime: 1.5,
-      ref: forwardLeftRef,
-    },
-  ];
+  }));
 
   useFrame(() => {
-    const timeScale = RunAction.get() ? 2 : 1;
-    setIsRunning(RunAction.get());
+    const isRunning = RunAction.get();
+    const timeScale = isRunning ? RUN_TIME_SCALE : WALK_TIME_SCALE;
+    setIsRunning(isRunning);
 
     for (const anim of moveAnimations) {
       if (anim.ref.current) {
