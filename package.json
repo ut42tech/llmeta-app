@@ -10,6 +10,7 @@
     "format": "biome format --write"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.73",
     "@ai-sdk/react": "^2.0.101",
     "@bufbuild/protobuf": "^2.10.1",
     "@deepgram/sdk": "^4.11.2",

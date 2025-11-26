@@ -5,10 +5,12 @@ import { DefaultChatTransport } from "ai";
 import {
   BotMessageSquare,
   HistoryIcon,
+  ImageIcon,
   MessageSquareText,
   Minimize2,
   X,
 } from "lucide-react";
+import Image from "next/image";
 import { useRef, useState } from "react";
 import {
   Conversation,
@@ -44,6 +46,7 @@ const SUGGESTIONS = [
   "Summarize this chat",
   "Explain the conversation flow",
   "Are there any misunderstandings?",
+  "Generate an image based on the chat",
 ];
 
 export const AIChatWindow = () => {
@@ -162,14 +165,93 @@ export const AIChatWindow = () => {
               <Message key={message.id} from={message.role}>
                 <MessageContent>
                   {message.parts.map((part, index) => {
-                    if (part.type === "text") {
-                      return (
-                        <MessageResponse key={`${message.id}-${index}`}>
-                          {part.text}
-                        </MessageResponse>
-                      );
+                    switch (part.type) {
+                      case "text":
+                        return (
+                          <MessageResponse key={`${message.id}-${index}`}>
+                            {part.text}
+                          </MessageResponse>
+                        );
+                      case "tool-generateImage": {
+                        const toolPart = part as {
+                          type: string;
+                          toolCallId: string;
+                          state: string;
+                          input?: { prompt?: string };
+                          output?: {
+                            image?: string;
+                            mediaType?: string;
+                            prompt?: string;
+                          };
+                          errorText?: string;
+                        };
+
+                        switch (toolPart.state) {
+                          case "input-streaming":
+                          case "input-available":
+                            return (
+                              <div
+                                key={`${message.id}-${index}`}
+                                className="flex items-center gap-2 rounded-lg bg-muted/50 p-3 text-muted-foreground text-sm"
+                              >
+                                <ImageIcon className="size-4 animate-pulse" />
+                                <span>
+                                  Generating image: {toolPart.input?.prompt}
+                                </span>
+                              </div>
+                            );
+                          case "output-available":
+                            if (toolPart.output?.image) {
+                              return (
+                                <div
+                                  key={`${message.id}-${index}`}
+                                  className="space-y-2"
+                                >
+                                  <Image
+                                    src={`data:${toolPart.output.mediaType || "image/webp"};base64,${toolPart.output.image}`}
+                                    alt={
+                                      toolPart.output.prompt ||
+                                      "Generated image"
+                                    }
+                                    width={512}
+                                    height={512}
+                                    className="h-auto max-w-full overflow-hidden rounded-lg"
+                                    unoptimized
+                                  />
+                                  {toolPart.output.prompt && (
+                                    <p className="text-muted-foreground text-xs">
+                                      {toolPart.output.prompt}
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            }
+                            return null;
+                          case "output-error":
+                            return (
+                              <div
+                                key={`${message.id}-${index}`}
+                                className="rounded-lg bg-red-50 p-3 text-red-600 text-sm"
+                              >
+                                Error generating image: {toolPart.errorText}
+                              </div>
+                            );
+                          default:
+                            console.log(
+                              "Unhandled tool state:",
+                              toolPart.state,
+                              toolPart,
+                            );
+                            return null;
+                        }
+                      }
+                      default:
+                        // Debug: Log unhandled part types
+                        if (part.type !== "step-start") {
+                          console.log("Unhandled part type:", part.type, part);
+                        }
+                        return null;
                     }
-                    return null;
                   })}
                 </MessageContent>
               </Message>
