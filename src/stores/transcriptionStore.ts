@@ -39,7 +39,7 @@ const initialState: TranscriptionState = {
   partial: undefined,
   isStreaming: false,
   error: undefined,
-  autoSendToChat: false,
+  autoSendToChat: true,
   pendingAutoSend: [],
 };
 
