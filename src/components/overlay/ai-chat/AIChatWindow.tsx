@@ -2,8 +2,14 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { BotMessageSquare, HistoryIcon, Minimize2, X } from "lucide-react";
-import { useState } from "react";
+import {
+  BotMessageSquare,
+  HistoryIcon,
+  MessageSquareText,
+  Minimize2,
+  X,
+} from "lucide-react";
+import { useRef, useState } from "react";
 import {
   Conversation,
   ConversationContent,
@@ -32,20 +38,42 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAIChatStore } from "@/stores/aiChatStore";
+import { useChatStore } from "@/stores/chatStore";
 
 const SUGGESTIONS = [
-  "How do I use this app?",
-  "What's the weather today?",
-  "Recommend me a book",
+  "Summarize this chat",
+  "Explain the conversation flow",
+  "Are there any misunderstandings?",
 ];
 
 export const AIChatWindow = () => {
-  const { close } = useAIChatStore();
+  const { close, includeChatHistory, toggleChatHistory } = useAIChatStore();
+  const chatMessages = useChatStore((state) => state.messages);
   const [isMinimized, setIsMinimized] = useState(false);
+
+  const chatMessagesRef = useRef(chatMessages);
+  chatMessagesRef.current = chatMessages;
+  const includeChatHistoryRef = useRef(includeChatHistory);
+  includeChatHistoryRef.current = includeChatHistory;
+
+  const getChatHistoryForContext = () => {
+    if (!includeChatHistoryRef.current) return undefined;
+    return chatMessagesRef.current.map((msg) => ({
+      id: msg.id,
+      sessionId: msg.sessionId,
+      username: msg.username,
+      content: msg.content,
+      direction: msg.direction,
+      sentAt: msg.sentAt,
+    }));
+  };
 
   const { messages, status, sendMessage } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/ai/chat",
+      body: () => ({
+        chatHistory: getChatHistoryForContext(),
+      }),
     }),
   });
 
@@ -86,9 +114,27 @@ export const AIChatWindow = () => {
       <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <BotMessageSquare className="size-4" />
-          <span className="font-medium text-sm">AI Assistant</span>
+          <span className="font-medium text-sm">AI Agent</span>
         </div>
         <div className="flex items-center gap-1">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant={includeChatHistory ? "default" : "ghost"}
+                size="icon-sm"
+                onClick={toggleChatHistory}
+              >
+                <MessageSquareText className="size-4" />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom">
+              <p>
+                {includeChatHistory
+                  ? "Include chat history in context (ON)"
+                  : "Include chat history in context (OFF)"}
+              </p>
+            </TooltipContent>
+          </Tooltip>
           <Button
             variant="ghost"
             size="icon-sm"
