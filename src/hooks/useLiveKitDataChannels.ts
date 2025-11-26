@@ -8,7 +8,11 @@ import { useChatStore } from "@/stores/chatStore";
 import type { AnimationState } from "@/stores/localPlayerStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
-import type { ChatMessagePacket, TypingPacket } from "@/types/chat";
+import type {
+  ChatMessageImage,
+  ChatMessagePacket,
+  TypingPacket,
+} from "@/types/chat";
 import type { ReceivedDataMessage } from "@/types/livekit";
 import type { MoveData, ProfileData } from "@/types/multiplayer";
 import { decodePayload } from "@/utils/livekit-client";
@@ -104,7 +108,7 @@ export function useLiveKitDataChannels(identity: string) {
       }
 
       const data = decodePayload<ChatMessagePacket>(msg.payload);
-      if (!data || !data.text) {
+      if (!data || (!data.text && !data.image)) {
         return;
       }
 
@@ -114,6 +118,7 @@ export function useLiveKitDataChannels(identity: string) {
         username: data.username,
         content: data.text,
         sentAt: data.sentAt ?? Date.now(),
+        image: data.image,
       });
     },
     [addIncomingMessage, identity, localSessionId],
@@ -185,9 +190,9 @@ export function useLiveKitDataChannels(identity: string) {
   );
 
   const sendChatMessage = useCallback(
-    async (content: string) => {
+    async (content: string, image?: ChatMessageImage) => {
       const text = content.trim();
-      if (!text) {
+      if (!text && !image) {
         return;
       }
 
@@ -197,6 +202,7 @@ export function useLiveKitDataChannels(identity: string) {
         text,
         username: username || undefined,
         sentAt: Date.now(),
+        image,
       };
 
       addOutgoingMessage({
@@ -205,6 +211,7 @@ export function useLiveKitDataChannels(identity: string) {
         username: payload.username,
         content: payload.text,
         sentAt: payload.sentAt,
+        image: payload.image,
       });
 
       const encoded = encoder.encode(JSON.stringify(payload));

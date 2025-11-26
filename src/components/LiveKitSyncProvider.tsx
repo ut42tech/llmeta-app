@@ -20,6 +20,7 @@ import { useLiveKitDataChannels } from "@/hooks/useLiveKitDataChannels";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
+import type { ChatMessageImage } from "@/types/chat";
 import type { MoveData, ProfileData } from "@/types/multiplayer";
 
 type LiveKitSyncContextValue = {
@@ -27,7 +28,7 @@ type LiveKitSyncContextValue = {
   isConnected: boolean;
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
-  sendChatMessage: (content: string) => Promise<void>;
+  sendChatMessage: (content: string, image?: ChatMessageImage) => Promise<void>;
   sendTyping: (isTyping: boolean) => void;
   room?: Room;
 };

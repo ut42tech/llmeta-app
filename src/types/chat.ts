@@ -3,11 +3,20 @@ export type ChatMessagePacket = {
   text: string;
   username?: string;
   sentAt: number;
+  image?: {
+    url: string;
+    prompt?: string;
+  };
 };
 
 export type ChatMessageDirection = "incoming" | "outgoing" | "system";
 
 export type ChatMessageStatus = "pending" | "sent" | "failed";
+
+export type ChatMessageImage = {
+  url: string;
+  prompt?: string;
+};
 
 export type ChatMessage = {
   id: string;
@@ -17,6 +26,7 @@ export type ChatMessage = {
   direction: ChatMessageDirection;
   status?: ChatMessageStatus;
   sentAt: number;
+  image?: ChatMessageImage;
 };
 
 export type TypingPacket = {

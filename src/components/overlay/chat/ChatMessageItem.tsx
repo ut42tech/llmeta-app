@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
@@ -38,6 +39,8 @@ export const ChatMessageItem = ({
 }: ChatMessageItemProps) => {
   const formattedTime = formatTime(new Date(message.sentAt));
   const statusBadge = isOwnMessage ? getStatusBadge(message.status) : null;
+  const hasImage = Boolean(message.image?.url);
+  const hasText = Boolean(message.content);
 
   return (
     <div
@@ -70,13 +73,44 @@ export const ChatMessageItem = ({
       {/* Message content */}
       <div
         className={cn(
-          "max-w-[85%] rounded-lg px-3 py-2 text-sm",
+          "max-w-[85%] rounded-lg text-sm",
+          hasImage ? "space-y-2" : "",
+          hasText || !hasImage ? "px-3 py-2" : "p-1",
           isOwnMessage ? "bg-primary text-primary-foreground" : "bg-muted",
         )}
       >
-        <p className="whitespace-pre-wrap wrap-break-word leading-relaxed">
-          {message.content}
-        </p>
+        {/* Image */}
+        {hasImage && message.image && (
+          <div className="overflow-hidden rounded-md">
+            <Image
+              src={message.image.url}
+              alt={message.image.prompt || "Shared image"}
+              width={256}
+              height={256}
+              className="h-auto max-w-full"
+              unoptimized
+            />
+            {message.image.prompt && (
+              <p
+                className={cn(
+                  "mt-1 px-2 pb-1 text-[10px]",
+                  isOwnMessage
+                    ? "text-primary-foreground/70"
+                    : "text-muted-foreground",
+                )}
+              >
+                {message.image.prompt}
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Text content */}
+        {hasText && (
+          <p className="whitespace-pre-wrap wrap-break-word leading-relaxed">
+            {message.content}
+          </p>
+        )}
       </div>
     </div>
   );

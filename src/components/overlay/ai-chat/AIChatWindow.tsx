@@ -8,6 +8,7 @@ import {
   ImageIcon,
   MessageSquareText,
   Minimize2,
+  Send,
   X,
 } from "lucide-react";
 import Image from "next/image";
@@ -39,6 +40,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTextChat } from "@/hooks/useTextChat";
 import { useAIChatStore } from "@/stores/aiChatStore";
 import { useChatStore } from "@/stores/chatStore";
 
@@ -53,6 +55,7 @@ export const AIChatWindow = () => {
   const { close, includeChatHistory, toggleChatHistory } = useAIChatStore();
   const chatMessages = useChatStore((state) => state.messages);
   const [isMinimized, setIsMinimized] = useState(false);
+  const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
 
   const chatMessagesRef = useRef(chatMessages);
   chatMessagesRef.current = chatMessages;
@@ -186,6 +189,45 @@ export const AIChatWindow = () => {
                           errorText?: string;
                         };
 
+                        const handleSendToChat = async () => {
+                          if (!toolPart.output?.image || !canSendToChat) return;
+
+                          try {
+                            const response = await fetch(
+                              "/api/blob/images/upload",
+                              {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                  base64: toolPart.output.image,
+                                  mediaType:
+                                    toolPart.output.mediaType || "image/webp",
+                                  prompt: toolPart.output.prompt,
+                                }),
+                              },
+                            );
+
+                            if (!response.ok) {
+                              throw new Error("Failed to upload image");
+                            }
+
+                            const { url, prompt } = (await response.json()) as {
+                              url: string;
+                              prompt?: string;
+                            };
+
+                            await sendToChat("", {
+                              url,
+                              prompt,
+                            });
+                          } catch (error) {
+                            console.error(
+                              "[AIChatWindow] Failed to send image:",
+                              error,
+                            );
+                          }
+                        };
+
                         switch (toolPart.state) {
                           case "input-streaming":
                           case "input-available":
@@ -223,6 +265,25 @@ export const AIChatWindow = () => {
                                       {toolPart.output.prompt}
                                     </p>
                                   )}
+                                  <Tooltip>
+                                    <TooltipTrigger asChild>
+                                      <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="w-full gap-2"
+                                        onClick={handleSendToChat}
+                                        disabled={!canSendToChat}
+                                      >
+                                        <Send className="size-3" />
+                                        Send to Chat
+                                      </Button>
+                                    </TooltipTrigger>
+                                    {!canSendToChat && (
+                                      <TooltipContent>
+                                        <p>Connect to a room to send images</p>
+                                      </TooltipContent>
+                                    )}
+                                  </Tooltip>
                                 </div>
                               );
                             }

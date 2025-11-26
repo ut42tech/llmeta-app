@@ -4,6 +4,7 @@ import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useSyncClient } from "@/hooks/useSyncClient";
 import { useChatStore } from "@/stores/chatStore";
+import type { ChatMessageImage } from "@/types/chat";
 
 export function useTextChat() {
   const { sendChatMessage, sendTyping, isConnected } = useSyncClient();
@@ -38,12 +39,12 @@ export function useTextChat() {
   );
 
   const handleSend = useCallback(
-    async (content: string) => {
+    async (content: string, image?: ChatMessageImage) => {
       if (!isConnected) {
         return;
       }
 
-      await sendChatMessage(content);
+      await sendChatMessage(content, image);
     },
     [isConnected, sendChatMessage],
   );
