@@ -6,9 +6,9 @@ import { RemotePlayers } from "@/components/character/RemotePlayers";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { LIGHTING } from "@/constants/world";
-import { useCharacterController } from "@/hooks/useCharacterController";
-import { useLightController } from "@/hooks/useLightController";
-import { useSyncClient } from "@/hooks/useSyncClient";
+import { useSyncClient } from "@/hooks/livekit/useSyncClient";
+import { useCharacterController } from "@/hooks/scene/useCharacterController";
+import { useLightController } from "@/hooks/scene/useLightController";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 /**

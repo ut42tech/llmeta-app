@@ -25,9 +25,9 @@ import {
   RUN_TIME_SCALE,
   WALK_TIME_SCALE,
 } from "@/constants/animations";
-import { useMovementDirection } from "@/hooks/useMovementDirection";
-import type { AnimationState } from "@/stores/localPlayerStore";
+import { useMovementDirection } from "@/hooks/scene/useMovementDirection";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import type { AnimationState } from "@/types";
 import { boneMap } from "@/utils/bone-map";
 
 export function LocalCharacterAnimation({

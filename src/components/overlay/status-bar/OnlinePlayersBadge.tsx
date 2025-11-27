@@ -7,10 +7,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { countEntities } from "@/stores/helpers";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 export const OnlinePlayersBadge = () => {
-  const playersCount = useRemotePlayersStore((state) => state.players.size);
+  const playersCount = useRemotePlayersStore((s) => countEntities(s.players));
   const totalCount = playersCount + 1;
 
   return (

@@ -13,22 +13,22 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { PlayerTag } from "@/components/character/PlayerTag";
 import { RemoteCharacterAnimation } from "@/components/character/RemoteCharacterAnimation";
-import { useProximityVoice } from "@/hooks/useProximityVoice";
+import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import {
   usePositionBuffer,
   useRotationBuffer,
-} from "@/hooks/useSnapshotBuffer";
-import { useSyncClient } from "@/hooks/useSyncClient";
+} from "@/hooks/scene/useSnapshotBuffer";
+import { useProximityVoice } from "@/hooks/voice/useProximityVoice";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
-  const player = useRemotePlayersStore((state) => state.players.get(sessionId));
+  const player = useRemotePlayersStore((s) => s.players[sessionId]);
   const setPlayerMuteStatus = useRemotePlayersStore(
-    (state) => state.setPlayerMuteStatus,
+    (s) => s.setPlayerMuteStatus,
   );
   const setPlayerSpeakingStatus = useRemotePlayersStore(
-    (state) => state.setPlayerSpeakingStatus,
+    (s) => s.setPlayerSpeakingStatus,
   );
   const { room } = useSyncClient();
 

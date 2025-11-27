@@ -19,7 +19,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { ViverseAvatar } from "@/types/multiplayer";
+import type { ViverseAvatar } from "@/types";
 
 type Language = "en" | "ja";
 

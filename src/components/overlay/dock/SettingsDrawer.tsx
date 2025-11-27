@@ -23,10 +23,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
-import { useSyncClient } from "@/hooks/useSyncClient";
+import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
-import type { ViverseAvatar } from "@/types/multiplayer";
+import type { ViverseAvatar } from "@/types";
 
 // ---------------------------------------------------------------------------
 // Settings Section Components

@@ -1,4 +1,4 @@
-import type { AnimationState } from "@/stores/localPlayerStore";
+import type { AnimationState } from "@/types";
 
 /**
  * Animation configuration for character movement

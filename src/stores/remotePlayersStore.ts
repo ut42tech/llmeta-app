@@ -1,31 +1,18 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
-import type { ViverseAvatar } from "@/types/multiplayer";
-
-/**
- * Remote player state
- */
-export type RemotePlayerData = {
-  sessionId: string;
-  username: string;
-  position: Vector3;
-  rotation: Euler;
-  isRunning: boolean;
-  animation: string;
-  avatar?: ViverseAvatar;
-  isMuted: boolean;
-  isSpeaking: boolean;
-};
+import {
+  removeEntity,
+  updateEntityField,
+  upsertEntity,
+} from "@/stores/helpers";
+import type { AnimationState, EntityRecord, RemotePlayer } from "@/types";
 
 type RemotePlayersState = {
-  players: Map<string, RemotePlayerData>;
+  players: EntityRecord<RemotePlayer>;
 };
 
 type RemotePlayersActions = {
-  addOrUpdatePlayer: (
-    sessionId: string,
-    data: Partial<RemotePlayerData>,
-  ) => void;
+  upsertPlayer: (sessionId: string, data: Partial<RemotePlayer>) => void;
   removePlayer: (sessionId: string) => void;
   setPlayerMuteStatus: (sessionId: string, isMuted: boolean) => void;
   setPlayerSpeakingStatus: (sessionId: string, isSpeaking: boolean) => void;
@@ -34,8 +21,20 @@ type RemotePlayersActions = {
 
 type RemotePlayersStore = RemotePlayersState & RemotePlayersActions;
 
+const createDefaultPlayer = (sessionId: string): RemotePlayer => ({
+  sessionId,
+  username: "Anonymous",
+  position: new Vector3(),
+  rotation: new Euler(),
+  isRunning: false,
+  animation: "idle" as AnimationState,
+  avatar: undefined,
+  isMuted: true,
+  isSpeaking: false,
+});
+
 const initialState: RemotePlayersState = {
-  players: new Map(),
+  players: {},
 };
 
 /**
@@ -43,65 +42,37 @@ const initialState: RemotePlayersState = {
  * Manages other players in a multiplayer environment.
  */
 export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
-  // State
   ...initialState,
 
-  // Actions
-  addOrUpdatePlayer: (sessionId: string, data: Partial<RemotePlayerData>) => {
-    set((state) => {
-      const newPlayers = new Map(state.players);
-      const existingPlayer = newPlayers.get(sessionId);
-
-      // Create or update player data
-      const updatedPlayer: RemotePlayerData = {
+  upsertPlayer: (sessionId, data) =>
+    set((state) => ({
+      players: upsertEntity(
+        state.players,
         sessionId,
-        username: data.username ?? existingPlayer?.username ?? "Anonymous",
-        position: data.position ?? existingPlayer?.position ?? new Vector3(),
-        rotation: data.rotation ?? existingPlayer?.rotation ?? new Euler(),
-        isRunning: data.isRunning ?? existingPlayer?.isRunning ?? false,
-        animation: data.animation ?? existingPlayer?.animation ?? "idle",
-        avatar: data.avatar ?? existingPlayer?.avatar ?? undefined,
-        isMuted: data.isMuted ?? existingPlayer?.isMuted ?? true,
-        isSpeaking: data.isSpeaking ?? existingPlayer?.isSpeaking ?? false,
-      };
+        { ...data, sessionId },
+        createDefaultPlayer(sessionId),
+      ),
+    })),
 
-      newPlayers.set(sessionId, updatedPlayer);
+  removePlayer: (sessionId) =>
+    set((state) => ({
+      players: removeEntity(state.players, sessionId),
+    })),
 
-      return { players: newPlayers };
-    });
-  },
+  setPlayerMuteStatus: (sessionId, isMuted) =>
+    set((state) => ({
+      players: updateEntityField(state.players, sessionId, "isMuted", isMuted),
+    })),
 
-  removePlayer: (sessionId: string) => {
-    set((state) => {
-      const newPlayers = new Map(state.players);
-      newPlayers.delete(sessionId);
-      return { players: newPlayers };
-    });
-  },
+  setPlayerSpeakingStatus: (sessionId, isSpeaking) =>
+    set((state) => ({
+      players: updateEntityField(
+        state.players,
+        sessionId,
+        "isSpeaking",
+        isSpeaking,
+      ),
+    })),
 
-  setPlayerMuteStatus: (sessionId: string, isMuted: boolean) => {
-    set((state) => {
-      const newPlayers = new Map(state.players);
-      const existingPlayer = newPlayers.get(sessionId);
-      if (existingPlayer) {
-        newPlayers.set(sessionId, { ...existingPlayer, isMuted });
-      }
-      return { players: newPlayers };
-    });
-  },
-
-  setPlayerSpeakingStatus: (sessionId: string, isSpeaking: boolean) => {
-    set((state) => {
-      const newPlayers = new Map(state.players);
-      const existingPlayer = newPlayers.get(sessionId);
-      if (existingPlayer) {
-        newPlayers.set(sessionId, { ...existingPlayer, isSpeaking });
-      }
-      return { players: newPlayers };
-    });
-  },
-
-  clearAll: () => {
-    set({ players: new Map() });
-  },
+  clearAll: () => set({ players: {} }),
 }));

@@ -26,10 +26,10 @@ import { boneMap } from "@/utils/bone-map";
 
 export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
   const isRunning = useRemotePlayersStore(
-    (state) => state.players.get(sessionId)?.isRunning ?? false,
+    (s) => s.players[sessionId]?.isRunning ?? false,
   );
   const animation = useRemotePlayersStore(
-    (state) => state.players.get(sessionId)?.animation ?? "idle",
+    (s) => s.players[sessionId]?.animation ?? "idle",
   );
 
   const forwardRef = useRef<AnimationAction>(null);

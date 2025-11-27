@@ -1,67 +1,24 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { PERFORMANCE, PRECISION } from "@/constants/world";
-import type { MoveData, ViverseAvatar } from "@/types/multiplayer";
-import { normalizeAngle, roundToDecimals, toPlainVec3 } from "@/utils/math";
+import type { AnimationState, MoveData, ViverseAvatar } from "@/types";
+import { normalizeAngle, roundToDecimals } from "@/utils/math";
+import { createMoveData } from "@/utils/player";
 
-const INITIAL_PLAYER_POSITION = new Vector3(0, 0, 0);
-const INITIAL_PLAYER_ROTATION = new Euler(0, 0, 0);
-
-/**
- * Build movement data from Vector3 and Euler (desktop)
- */
-export function createMoveData(
-  position: Vector3,
-  rotation: Euler,
-  isRunning: boolean,
-  animation: string,
-): MoveData {
-  return {
-    position: toPlainVec3(position),
-    rotation: { x: rotation.x, y: rotation.y, z: 0 },
-    isRunning: isRunning,
-    animation: animation,
-  };
-}
-
-export type AnimationState =
-  | "idle"
-  | "forward"
-  | "forwardRight"
-  | "right"
-  | "backwardRight"
-  | "backward"
-  | "backwardLeft"
-  | "left"
-  | "forwardLeft"
-  | "jumpUp"
-  | "jumpLoop"
-  | "jumpDown";
+const INITIAL_POSITION = new Vector3(0, 0, 0);
+const INITIAL_ROTATION = new Euler(0, 0, 0);
 
 type LocalPlayerState = {
   sessionId: string;
-  // Player info
   username: string;
-
-  // Avatar
   currentAvatar?: ViverseAvatar;
   avatarList?: ViverseAvatar[];
-
-  // Position and rotation
   position: Vector3;
   rotation: Euler;
-
-  // State
   isRunning: boolean;
   animationState: AnimationState;
-
-  // View mode
   isFPV: boolean;
-
-  // Teleport request handled by Scene (null = no pending teleport)
   pendingTeleport: { position: Vector3; rotation?: Euler } | null;
-
-  // Last sent time (for throttling)
   lastSentTime: number;
 };
 
@@ -86,8 +43,8 @@ type LocalPlayerStore = LocalPlayerState & LocalPlayerActions;
 const initialState: LocalPlayerState = {
   sessionId: "",
   username: "Anonymous",
-  position: INITIAL_PLAYER_POSITION.clone(),
-  rotation: INITIAL_PLAYER_ROTATION.clone(),
+  position: INITIAL_POSITION.clone(),
+  rotation: INITIAL_ROTATION.clone(),
   isRunning: false,
   animationState: "idle",
   isFPV: false,
@@ -95,103 +52,65 @@ const initialState: LocalPlayerState = {
   pendingTeleport: null,
 };
 
+const roundPosition = (pos: Vector3): Vector3 => {
+  const rounded = pos.clone();
+  rounded.x = roundToDecimals(rounded.x, PRECISION.DECIMAL_PLACES);
+  rounded.y = roundToDecimals(rounded.y, PRECISION.DECIMAL_PLACES);
+  rounded.z = roundToDecimals(rounded.z, PRECISION.DECIMAL_PLACES);
+  return rounded;
+};
+
+const normalizeRotation = (rot: Euler): Euler => {
+  const normalized = rot.clone();
+  normalized.x = roundToDecimals(
+    normalizeAngle(normalized.x),
+    PRECISION.DECIMAL_PLACES,
+  );
+  normalized.y = roundToDecimals(
+    normalizeAngle(normalized.y),
+    PRECISION.DECIMAL_PLACES,
+  );
+  normalized.z = roundToDecimals(
+    normalizeAngle(normalized.z),
+    PRECISION.DECIMAL_PLACES,
+  );
+  return normalized;
+};
+
+const isPositionEqual = (a: Vector3, b: Vector3): boolean =>
+  a.x === b.x && a.y === b.y && a.z === b.z;
+
+const isRotationEqual = (a: Euler, b: Euler): boolean =>
+  a.x === b.x && a.y === b.y && a.z === b.z;
+
 export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
-  // State
   ...initialState,
 
-  setSessionId: (sessionId: string) => {
-    set({ sessionId });
+  setSessionId: (sessionId) => set({ sessionId }),
+  setUsername: (username) => set({ username }),
+  setCurrentAvatar: (currentAvatar) => set({ currentAvatar }),
+  setAvatarList: (avatarList) => set({ avatarList }),
+
+  setPosition: (position) => {
+    const rounded = roundPosition(position);
+    if (isPositionEqual(get().position, rounded)) return;
+    set({ position: rounded });
   },
 
-  setUsername: (username: string) => {
-    set({ username });
+  setRotation: (rotation) => {
+    const normalized = normalizeRotation(rotation);
+    if (isRotationEqual(get().rotation, normalized)) return;
+    set({ rotation: normalized });
   },
 
-  // Avatar
-  setCurrentAvatar: (avatar: ViverseAvatar) => {
-    set({ currentAvatar: avatar });
-  },
+  setIsRunning: (isRunning) => set({ isRunning }),
+  setAnimation: (animationState) => set({ animationState }),
 
-  setAvatarList: (avatarList: ViverseAvatar[]) => {
-    set({ avatarList });
-  },
-
-  // Actions
-  setPosition: (position: Vector3) => {
-    const roundedPosition = position.clone();
-    roundedPosition.x = roundToDecimals(
-      roundedPosition.x,
-      PRECISION.DECIMAL_PLACES,
-    );
-    roundedPosition.y = roundToDecimals(
-      roundedPosition.y,
-      PRECISION.DECIMAL_PLACES,
-    );
-    roundedPosition.z = roundToDecimals(
-      roundedPosition.z,
-      PRECISION.DECIMAL_PLACES,
-    );
-
-    const currentPos = get().position;
-    if (
-      currentPos.x === roundedPosition.x &&
-      currentPos.y === roundedPosition.y &&
-      currentPos.z === roundedPosition.z
-    ) {
-      return;
-    }
-
-    set({ position: roundedPosition });
-  },
-
-  setRotation: (rotation: Euler) => {
-    const normalizedRotation = rotation.clone();
-    // Normalize rotation values to [-π, π] range
-    normalizedRotation.x = normalizeAngle(normalizedRotation.x);
-    normalizedRotation.y = normalizeAngle(normalizedRotation.y);
-    normalizedRotation.z = normalizeAngle(normalizedRotation.z);
-
-    normalizedRotation.x = roundToDecimals(
-      normalizedRotation.x,
-      PRECISION.DECIMAL_PLACES,
-    );
-    normalizedRotation.y = roundToDecimals(
-      normalizedRotation.y,
-      PRECISION.DECIMAL_PLACES,
-    );
-    normalizedRotation.z = roundToDecimals(
-      normalizedRotation.z,
-      PRECISION.DECIMAL_PLACES,
-    );
-
-    const currentRot = get().rotation;
-    if (
-      currentRot.x === normalizedRotation.x &&
-      currentRot.y === normalizedRotation.y &&
-      currentRot.z === normalizedRotation.z
-    ) {
-      return;
-    }
-
-    set({ rotation: normalizedRotation });
-  },
-
-  setIsRunning: (isRunning: boolean) => {
-    set({ isRunning });
-  },
-
-  setAnimation: (animationState: AnimationState) => {
-    set({ animationState });
-  },
-
-  sendMovement: (publisher?: (data: MoveData) => void) => {
+  sendMovement: (publisher) => {
     const now = Date.now();
     const state = get();
 
-    if (now - state.lastSentTime < PERFORMANCE.MOVEMENT_UPDATE_THROTTLE) {
-      return;
-    }
-
+    if (now - state.lastSentTime < PERFORMANCE.MOVEMENT_UPDATE_THROTTLE) return;
     if (!publisher) return;
 
     const moveData = createMoveData(
@@ -204,14 +123,9 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
     set({ lastSentTime: now });
   },
 
-  teleport: (position: Vector3, rotation?: Euler) => {
-    set({ pendingTeleport: { position, rotation } });
-  },
-
-  setIsFPV: (isFPV: boolean) => set({ isFPV }),
+  teleport: (position, rotation) =>
+    set({ pendingTeleport: { position, rotation } }),
+  setIsFPV: (isFPV) => set({ isFPV }),
   toggleFPV: () => set((s) => ({ isFPV: !s.isFPV })),
-
-  reset: () => {
-    set(initialState);
-  },
+  reset: () => set(initialState),
 }));

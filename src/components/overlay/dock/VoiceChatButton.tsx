@@ -7,7 +7,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useVoiceChat } from "@/hooks/useVoiceChat";
+import { useVoiceChat } from "@/hooks/voice/useVoiceChat";
 
 export const VoiceChatButton = () => {
   const { status, toggleMic, canPublish } = useVoiceChat();

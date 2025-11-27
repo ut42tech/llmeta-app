@@ -3,14 +3,14 @@
 import type { Room } from "livekit-client";
 import { useContext } from "react";
 import { LiveKitSyncContext } from "@/components/LiveKitSyncProvider";
-import type { MoveData, ProfileData } from "@/types/multiplayer";
+import type { ChatMessageImage, MoveData, ProfileData } from "@/types";
 
 export type SyncClient = {
   sessionId?: string;
   isConnected: boolean;
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
-  sendChatMessage: (content: string) => Promise<void>;
+  sendChatMessage: (content: string, image?: ChatMessageImage) => Promise<void>;
   sendTyping: (isTyping: boolean) => void;
   room?: Room;
 };
