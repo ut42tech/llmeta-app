@@ -1,6 +1,5 @@
-import { put } from "@vercel/blob";
-import { nanoid } from "nanoid";
 import { type NextRequest, NextResponse } from "next/server";
+import { uploadImageToBlob } from "@/utils/blob";
 
 type UploadRequestBody = {
   base64: string;
@@ -20,24 +19,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!mediaType.startsWith("image/")) {
-      return NextResponse.json(
-        { error: "Invalid mediaType: must be an image type" },
-        { status: 400 },
-      );
-    }
+    const result = await uploadImageToBlob(base64, mediaType, prompt);
 
-    const buffer = Buffer.from(base64, "base64");
-
-    const ext = mediaType.split("/")[1] || "png";
-    const filename = `chat-images/${nanoid()}.${ext}`;
-
-    const blob = await put(filename, buffer, {
-      access: "public",
-      contentType: mediaType,
-    });
-
-    return NextResponse.json({ url: blob.url, prompt });
+    return NextResponse.json(result);
   } catch (error) {
     console.error("[Image Upload] Error:", error);
     return NextResponse.json(

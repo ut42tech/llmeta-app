@@ -9,6 +9,7 @@ import {
   MessageSquareText,
   Minimize2,
   Send,
+  WandSparkles,
   X,
 } from "lucide-react";
 import Image from "next/image";
@@ -56,6 +57,8 @@ export const AIChatWindow = () => {
   const chatMessages = useChatStore((state) => state.messages);
   const [isMinimized, setIsMinimized] = useState(false);
   const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
+  const [refineImageId, setRefineImageId] = useState<string | null>(null);
+  const [refineInput, setRefineInput] = useState("");
 
   const chatMessagesRef = useRef(chatMessages);
   chatMessagesRef.current = chatMessages;
@@ -182,43 +185,20 @@ export const AIChatWindow = () => {
                           state: string;
                           input?: { prompt?: string };
                           output?: {
-                            image?: string;
-                            mediaType?: string;
+                            imageUrl?: string;
                             prompt?: string;
                           };
                           errorText?: string;
                         };
 
                         const handleSendToChat = async () => {
-                          if (!toolPart.output?.image || !canSendToChat) return;
+                          if (!toolPart.output?.imageUrl || !canSendToChat)
+                            return;
 
                           try {
-                            const response = await fetch(
-                              "/api/blob/images/upload",
-                              {
-                                method: "POST",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({
-                                  base64: toolPart.output.image,
-                                  mediaType:
-                                    toolPart.output.mediaType || "image/webp",
-                                  prompt: toolPart.output.prompt,
-                                }),
-                              },
-                            );
-
-                            if (!response.ok) {
-                              throw new Error("Failed to upload image");
-                            }
-
-                            const { url, prompt } = (await response.json()) as {
-                              url: string;
-                              prompt?: string;
-                            };
-
                             await sendToChat("", {
-                              url,
-                              prompt,
+                              url: toolPart.output.imageUrl,
+                              prompt: toolPart.output.prompt,
                             });
                           } catch (error) {
                             console.error(
@@ -243,14 +223,25 @@ export const AIChatWindow = () => {
                               </div>
                             );
                           case "output-available":
-                            if (toolPart.output?.image) {
+                            if (toolPart.output?.imageUrl) {
+                              const imageId = `${message.id}-${index}`;
+                              const isRefining = refineImageId === imageId;
+
+                              const handleRefine = () => {
+                                if (!refineInput.trim()) return;
+                                const originalPrompt =
+                                  toolPart.output?.prompt ||
+                                  "the previous image";
+                                const refineMessage = `Please regenerate the image with these modifications: "${refineInput}". Original prompt was: "${originalPrompt}"`;
+                                sendMessage({ text: refineMessage });
+                                setRefineImageId(null);
+                                setRefineInput("");
+                              };
+
                               return (
-                                <div
-                                  key={`${message.id}-${index}`}
-                                  className="space-y-2"
-                                >
+                                <div key={imageId} className="space-y-2">
                                   <Image
-                                    src={`data:${toolPart.output.mediaType || "image/webp"};base64,${toolPart.output.image}`}
+                                    src={toolPart.output.imageUrl}
                                     alt={
                                       toolPart.output.prompt ||
                                       "Generated image"
@@ -265,25 +256,107 @@ export const AIChatWindow = () => {
                                       {toolPart.output.prompt}
                                     </p>
                                   )}
-                                  <Tooltip>
-                                    <TooltipTrigger asChild>
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        className="w-full gap-2"
-                                        onClick={handleSendToChat}
-                                        disabled={!canSendToChat}
-                                      >
-                                        <Send className="size-3" />
-                                        Send to Chat
-                                      </Button>
-                                    </TooltipTrigger>
-                                    {!canSendToChat && (
-                                      <TooltipContent>
-                                        <p>Connect to a room to send images</p>
-                                      </TooltipContent>
-                                    )}
-                                  </Tooltip>
+
+                                  {isRefining ? (
+                                    <div className="space-y-2">
+                                      <div className="flex gap-2">
+                                        <input
+                                          type="text"
+                                          value={refineInput}
+                                          onChange={(e) =>
+                                            setRefineInput(e.target.value)
+                                          }
+                                          placeholder="e.g., Make it more anime-style"
+                                          className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                                          onKeyDown={(e) => {
+                                            if (
+                                              e.key === "Enter" &&
+                                              !e.shiftKey
+                                            ) {
+                                              e.preventDefault();
+                                              handleRefine();
+                                            }
+                                            if (e.key === "Escape") {
+                                              setRefineImageId(null);
+                                              setRefineInput("");
+                                            }
+                                          }}
+                                          ref={(input) => input?.focus()}
+                                        />
+                                      </div>
+                                      <div className="flex gap-2">
+                                        <Button
+                                          variant="default"
+                                          size="sm"
+                                          className="flex-1 gap-2"
+                                          onClick={handleRefine}
+                                          disabled={
+                                            !refineInput.trim() ||
+                                            status === "streaming"
+                                          }
+                                        >
+                                          <WandSparkles className="size-3" />
+                                          Regenerate
+                                        </Button>
+                                        <Button
+                                          variant="ghost"
+                                          size="sm"
+                                          onClick={() => {
+                                            setRefineImageId(null);
+                                            setRefineInput("");
+                                          }}
+                                        >
+                                          Cancel
+                                        </Button>
+                                      </div>
+                                    </div>
+                                  ) : (
+                                    <div className="flex gap-2">
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="flex-1 gap-2"
+                                            onClick={() =>
+                                              setRefineImageId(imageId)
+                                            }
+                                            disabled={status === "streaming"}
+                                          >
+                                            <WandSparkles className="size-3" />
+                                            Refine
+                                          </Button>
+                                        </TooltipTrigger>
+                                        <TooltipContent>
+                                          <p>
+                                            Add instructions to regenerate the
+                                            image
+                                          </p>
+                                        </TooltipContent>
+                                      </Tooltip>
+                                      <Tooltip>
+                                        <TooltipTrigger asChild>
+                                          <Button
+                                            variant="outline"
+                                            size="sm"
+                                            className="flex-1 gap-2"
+                                            onClick={handleSendToChat}
+                                            disabled={!canSendToChat}
+                                          >
+                                            <Send className="size-3" />
+                                            Send
+                                          </Button>
+                                        </TooltipTrigger>
+                                        {!canSendToChat && (
+                                          <TooltipContent>
+                                            <p>
+                                              Connect to a room to send images
+                                            </p>
+                                          </TooltipContent>
+                                        )}
+                                      </Tooltip>
+                                    </div>
+                                  )}
                                 </div>
                               );
                             }

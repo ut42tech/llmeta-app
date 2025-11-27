@@ -8,6 +8,7 @@ import {
   type UIMessage,
 } from "ai";
 import { z } from "zod";
+import { uploadImageToBlob } from "@/utils/blob";
 
 export const maxDuration = 120;
 
@@ -95,9 +96,10 @@ const imageGenerationTool = tool({
       size: "1024x1024",
     });
 
+    const { url } = await uploadImageToBlob(image.base64, "image/png", prompt);
+
     return {
-      image: image.base64,
-      mediaType: "image/png",
+      imageUrl: url,
       prompt,
     };
   },
