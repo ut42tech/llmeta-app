@@ -1,18 +1,5 @@
 import { AccessToken } from "livekit-server-sdk";
-
-export type LiveKitTokenRequest = {
-  identity: string;
-  name?: string;
-  roomName?: string;
-  metadata?: Record<string, unknown>;
-  ttl?: number;
-};
-
-export type LiveKitTokenResponse = {
-  token: string;
-  serverUrl: string;
-  roomName: string;
-};
+import type { LiveKitTokenRequest, LiveKitTokenResponse } from "@/types";
 
 const ensureConfig = () => {
   const apiKey = process.env.LIVEKIT_API_KEY;

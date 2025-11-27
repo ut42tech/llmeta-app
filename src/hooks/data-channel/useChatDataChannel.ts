@@ -1,29 +1,22 @@
 import { useDataChannel } from "@livekit/components-react";
 import { nanoid } from "nanoid";
 import { useCallback } from "react";
-import { Euler, Vector3 } from "three";
 import { useShallow } from "zustand/react/shallow";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useChatStore } from "@/stores/chatStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import type {
-  AnimationState,
   ChatMessageImage,
   ChatMessagePacket,
-  MoveData,
-  ProfileData,
   ReceivedDataMessage,
   TypingPacket,
 } from "@/types";
 import { decodePayload, encodePayload } from "@/utils/data-channel";
 
 /**
- * Hook to manage all LiveKit data channels
+ * Hook for chat data channels (messages + typing)
  */
-export function useLiveKitDataChannels(identity: string) {
-  const upsertPlayer = useRemotePlayersStore((s) => s.upsertPlayer);
-
+export function useChatDataChannel(identity: string) {
   const { localSessionId, username } = useLocalPlayerStore(
     useShallow((s) => ({ localSessionId: s.sessionId, username: s.username })),
   );
@@ -42,49 +35,6 @@ export function useLiveKitDataChannels(identity: string) {
       addTypingUser: s.addTypingUser,
       removeTypingUser: s.removeTypingUser,
     })),
-  );
-
-  // Message handlers
-  const handleMoveMessage = useCallback(
-    (msg: ReceivedDataMessage<typeof DATA_TOPICS.MOVE>) => {
-      const remoteId = msg.from?.identity || msg.from?.sid || "";
-      if (!remoteId || remoteId === identity) return;
-
-      const data = decodePayload<MoveData>(msg.payload);
-      if (!data) return;
-
-      upsertPlayer(remoteId, {
-        position: new Vector3(
-          data.position?.x ?? 0,
-          data.position?.y ?? 0,
-          data.position?.z ?? 0,
-        ),
-        rotation: new Euler(
-          data.rotation?.x ?? 0,
-          data.rotation?.y ?? 0,
-          data.rotation?.z ?? 0,
-        ),
-        isRunning: Boolean(data.isRunning),
-        animation: (data.animation || "idle") as AnimationState,
-      });
-    },
-    [upsertPlayer, identity],
-  );
-
-  const handleProfileMessage = useCallback(
-    (msg: ReceivedDataMessage<typeof DATA_TOPICS.PROFILE>) => {
-      const remoteId = msg.from?.identity || msg.from?.sid || "";
-      if (!remoteId || remoteId === identity) return;
-
-      const data = decodePayload<ProfileData>(msg.payload);
-      if (!data) return;
-
-      upsertPlayer(remoteId, {
-        username: data.username,
-        avatar: data.avatar,
-      });
-    },
-    [upsertPlayer, identity],
   );
 
   const handleChatMessage = useCallback(
@@ -126,43 +76,14 @@ export function useLiveKitDataChannels(identity: string) {
     [addTypingUser, identity, localSessionId, removeTypingUser],
   );
 
-  // Data channel hooks
-  const { send: sendMovePacket } = useDataChannel(
-    DATA_TOPICS.MOVE,
-    handleMoveMessage,
-  );
-  const { send: sendProfilePacket } = useDataChannel(
-    DATA_TOPICS.PROFILE,
-    handleProfileMessage,
-  );
   const { send: sendChatPacket } = useDataChannel(
     DATA_TOPICS.CHAT_MESSAGE,
     handleChatMessage,
   );
+
   const { send: sendTypingPacket } = useDataChannel(
     DATA_TOPICS.TYPING,
     handleTypingMessage,
-  );
-
-  // Send functions
-  const sendMove = useCallback(
-    (payload: MoveData) => {
-      sendMovePacket(encodePayload(payload), {
-        topic: DATA_TOPICS.MOVE,
-        reliable: false,
-      }).catch((e) => console.warn("[LiveKit] Failed to publish move", e));
-    },
-    [sendMovePacket],
-  );
-
-  const sendProfile = useCallback(
-    (payload: ProfileData) => {
-      sendProfilePacket(encodePayload(payload), {
-        topic: DATA_TOPICS.PROFILE,
-        reliable: true,
-      }).catch((e) => console.warn("[LiveKit] Failed to publish profile", e));
-    },
-    [sendProfilePacket],
   );
 
   const sendChatMessage = useCallback(
@@ -223,5 +144,5 @@ export function useLiveKitDataChannels(identity: string) {
     [sendTypingPacket, username],
   );
 
-  return { sendMove, sendProfile, sendChatMessage, sendTyping };
+  return { sendChatMessage, sendTyping };
 }

@@ -17,7 +17,11 @@ export type {
 export type { EntityRecord, Vec3 } from "@/types/common";
 
 // LiveKit types
-export type { ReceivedDataMessage } from "@/types/livekit";
+export type {
+  LiveKitTokenRequest,
+  LiveKitTokenResponse,
+  ReceivedDataMessage,
+} from "@/types/livekit";
 
 // Player types
 export type {

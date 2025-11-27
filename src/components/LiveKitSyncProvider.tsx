@@ -14,9 +14,10 @@ import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
 import { JoinWorldDialog } from "@/components/JoinWorldDialog";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
+import { useChatDataChannel } from "@/hooks/data-channel/useChatDataChannel";
+import { usePlayerDataChannel } from "@/hooks/data-channel/usePlayerDataChannel";
 import { useLiveKitAuth } from "@/hooks/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/useLiveKitConnection";
-import { useLiveKitDataChannels } from "@/hooks/useLiveKitDataChannels";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
@@ -91,8 +92,8 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
-  const { sendMove, sendProfile, sendChatMessage, sendTyping } =
-    useLiveKitDataChannels(identity);
+  const { sendMove, sendProfile } = usePlayerDataChannel(identity);
+  const { sendChatMessage, sendTyping } = useChatDataChannel(identity);
 
   useEffect(() => {
     void initKrisp();
