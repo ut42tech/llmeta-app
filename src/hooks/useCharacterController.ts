@@ -7,7 +7,7 @@ import { AVATAR_LIST } from "@/constants/avatars";
 import { PHYSICS } from "@/constants/world";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
-import type { MoveData } from "@/types/multiplayer";
+import type { MoveData } from "@/types";
 
 /**
  * Character controller hook

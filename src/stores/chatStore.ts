@@ -1,37 +1,38 @@
 import { create } from "zustand";
-import type { ChatMessage, ChatMessageStatus, TypingUser } from "@/types/chat";
+import { removeEntity, upsertEntity } from "@/stores/helpers";
+import type {
+  ChatMessage,
+  ChatMessageStatus,
+  EntityRecord,
+  TypingUser,
+} from "@/types";
 
 const MAX_CHAT_MESSAGES = 200;
 const TYPING_TIMEOUT_MS = 3000;
 
-const insertMessage = (
+const appendMessage = (
   messages: ChatMessage[],
-  nextMessage: ChatMessage,
+  message: ChatMessage,
 ): ChatMessage[] => {
-  const existingIndex = messages.findIndex((msg) => msg.id === nextMessage.id);
+  const existingIndex = messages.findIndex((msg) => msg.id === message.id);
   if (existingIndex >= 0) {
     const updated = [...messages];
-    updated[existingIndex] = {
-      ...updated[existingIndex],
-      ...nextMessage,
-    };
+    updated[existingIndex] = { ...updated[existingIndex], ...message };
     return updated;
   }
 
-  const appended = [...messages, nextMessage];
-  if (appended.length <= MAX_CHAT_MESSAGES) {
-    return appended;
-  }
-
-  return appended.slice(appended.length - MAX_CHAT_MESSAGES);
+  const appended = [...messages, message];
+  return appended.length > MAX_CHAT_MESSAGES
+    ? appended.slice(-MAX_CHAT_MESSAGES)
+    : appended;
 };
 
 type ChatState = {
   messages: ChatMessage[];
   unreadCount: number;
   isOpen: boolean;
-  typingUsers: Map<string, TypingUser>;
-  typingTimeouts: Map<string, NodeJS.Timeout>;
+  typingUsers: EntityRecord<TypingUser>;
+  typingTimeouts: EntityRecord<NodeJS.Timeout>;
 };
 
 type ChatActions = {
@@ -59,11 +60,11 @@ const initialState: ChatState = {
   messages: [],
   unreadCount: 0,
   isOpen: false,
-  typingUsers: new Map(),
-  typingTimeouts: new Map(),
+  typingUsers: {},
+  typingTimeouts: {},
 };
 
-export const useChatStore = create<ChatStore>((set) => ({
+export const useChatStore = create<ChatStore>((set, get) => ({
   ...initialState,
 
   addIncomingMessage: (message) => {
@@ -73,16 +74,10 @@ export const useChatStore = create<ChatStore>((set) => ({
       status: message.status ?? "sent",
     };
 
-    set((state) => {
-      const nextMessages = insertMessage(state.messages, incoming);
-      const shouldIncrementUnread = !state.isOpen;
-      return {
-        messages: nextMessages,
-        unreadCount: shouldIncrementUnread
-          ? state.unreadCount + 1
-          : state.unreadCount,
-      };
-    });
+    set((state) => ({
+      messages: appendMessage(state.messages, incoming),
+      unreadCount: state.isOpen ? state.unreadCount : state.unreadCount + 1,
+    }));
   },
 
   addOutgoingMessage: (message) => {
@@ -93,16 +88,14 @@ export const useChatStore = create<ChatStore>((set) => ({
     };
 
     set((state) => ({
-      messages: insertMessage(state.messages, outgoing),
+      messages: appendMessage(state.messages, outgoing),
     }));
   },
 
   updateMessageStatus: (id, status) => {
     set((state) => {
       const index = state.messages.findIndex((msg) => msg.id === id);
-      if (index === -1) {
-        return state;
-      }
+      if (index === -1) return state;
 
       const updated = [...state.messages];
       updated[index] = { ...updated[index], status };
@@ -117,67 +110,47 @@ export const useChatStore = create<ChatStore>((set) => ({
     }));
   },
 
-  markAllRead: () => {
-    set(() => ({ unreadCount: 0 }));
-  },
+  markAllRead: () => set({ unreadCount: 0 }),
 
   addTypingUser: (sessionId, username) => {
-    set((state) => {
-      const existingTimeout = state.typingTimeouts.get(sessionId);
-      if (existingTimeout) {
-        clearTimeout(existingTimeout);
-      }
+    const state = get();
 
-      const newTimeout = setTimeout(() => {
-        set((s) => {
-          const newTypingUsers = new Map(s.typingUsers);
-          const newTimeouts = new Map(s.typingTimeouts);
-          newTypingUsers.delete(sessionId);
-          newTimeouts.delete(sessionId);
-          return {
-            typingUsers: newTypingUsers,
-            typingTimeouts: newTimeouts,
-          };
-        });
-      }, TYPING_TIMEOUT_MS);
+    // Clear existing timeout
+    const existingTimeout = state.typingTimeouts[sessionId];
+    if (existingTimeout) clearTimeout(existingTimeout);
 
-      const newTypingUsers = new Map(state.typingUsers);
-      const newTimeouts = new Map(state.typingTimeouts);
-      newTypingUsers.set(sessionId, { sessionId, username });
-      newTimeouts.set(sessionId, newTimeout);
+    // Set new timeout
+    const timeout = setTimeout(() => {
+      get().removeTypingUser(sessionId);
+    }, TYPING_TIMEOUT_MS);
 
-      return {
-        typingUsers: newTypingUsers,
-        typingTimeouts: newTimeouts,
-      };
-    });
+    set((s) => ({
+      typingUsers: upsertEntity(
+        s.typingUsers,
+        sessionId,
+        { sessionId, username },
+        { sessionId, username },
+      ),
+      typingTimeouts: { ...s.typingTimeouts, [sessionId]: timeout },
+    }));
   },
 
   removeTypingUser: (sessionId) => {
-    set((state) => {
-      const existingTimeout = state.typingTimeouts.get(sessionId);
-      if (existingTimeout) {
-        clearTimeout(existingTimeout);
-      }
+    const existingTimeout = get().typingTimeouts[sessionId];
+    if (existingTimeout) clearTimeout(existingTimeout);
 
-      const newTypingUsers = new Map(state.typingUsers);
-      const newTimeouts = new Map(state.typingTimeouts);
-      newTypingUsers.delete(sessionId);
-      newTimeouts.delete(sessionId);
-
-      return {
-        typingUsers: newTypingUsers,
-        typingTimeouts: newTimeouts,
-      };
-    });
+    set((state) => ({
+      typingUsers: removeEntity(state.typingUsers, sessionId),
+      typingTimeouts: removeEntity(state.typingTimeouts, sessionId),
+    }));
   },
 
   reset: () => {
-    set((state) => {
-      state.typingTimeouts.forEach((timeout) => {
-        clearTimeout(timeout);
-      });
-      return initialState;
-    });
+    // Clear all timeouts before reset
+    const timeouts = get().typingTimeouts;
+    for (const timeout of Object.values(timeouts)) {
+      clearTimeout(timeout);
+    }
+    set(initialState);
   },
 }));

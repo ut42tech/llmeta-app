@@ -23,12 +23,12 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
-  const player = useRemotePlayersStore((state) => state.players.get(sessionId));
+  const player = useRemotePlayersStore((s) => s.players[sessionId]);
   const setPlayerMuteStatus = useRemotePlayersStore(
-    (state) => state.setPlayerMuteStatus,
+    (s) => s.setPlayerMuteStatus,
   );
   const setPlayerSpeakingStatus = useRemotePlayersStore(
-    (state) => state.setPlayerSpeakingStatus,
+    (s) => s.setPlayerSpeakingStatus,
   );
   const { room } = useSyncClient();
 

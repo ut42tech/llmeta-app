@@ -5,30 +5,27 @@ import { Euler, Vector3 } from "three";
 import { useShallow } from "zustand/react/shallow";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useChatStore } from "@/stores/chatStore";
-import type { AnimationState } from "@/stores/localPlayerStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import type {
+  AnimationState,
   ChatMessageImage,
   ChatMessagePacket,
+  MoveData,
+  ProfileData,
+  ReceivedDataMessage,
   TypingPacket,
-} from "@/types/chat";
-import type { ReceivedDataMessage } from "@/types/livekit";
-import type { MoveData, ProfileData } from "@/types/multiplayer";
-import { decodePayload } from "@/utils/livekit-client";
+} from "@/types";
+import { decodePayload, encodePayload } from "@/utils/data-channel";
 
-const encoder = new TextEncoder();
-
+/**
+ * Hook to manage all LiveKit data channels
+ */
 export function useLiveKitDataChannels(identity: string) {
-  const addOrUpdatePlayer = useRemotePlayersStore(
-    (state) => state.addOrUpdatePlayer,
-  );
+  const upsertPlayer = useRemotePlayersStore((s) => s.upsertPlayer);
 
   const { localSessionId, username } = useLocalPlayerStore(
-    useShallow((state) => ({
-      localSessionId: state.sessionId,
-      username: state.username,
-    })),
+    useShallow((s) => ({ localSessionId: s.sessionId, username: s.username })),
   );
 
   const {
@@ -38,29 +35,25 @@ export function useLiveKitDataChannels(identity: string) {
     addTypingUser,
     removeTypingUser,
   } = useChatStore(
-    useShallow((state) => ({
-      addIncomingMessage: state.addIncomingMessage,
-      addOutgoingMessage: state.addOutgoingMessage,
-      updateMessageStatus: state.updateMessageStatus,
-      addTypingUser: state.addTypingUser,
-      removeTypingUser: state.removeTypingUser,
+    useShallow((s) => ({
+      addIncomingMessage: s.addIncomingMessage,
+      addOutgoingMessage: s.addOutgoingMessage,
+      updateMessageStatus: s.updateMessageStatus,
+      addTypingUser: s.addTypingUser,
+      removeTypingUser: s.removeTypingUser,
     })),
   );
 
+  // Message handlers
   const handleMoveMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.MOVE>) => {
-      const remoteIdentity = msg.from?.identity || msg.from?.sid || "";
-      if (!remoteIdentity || remoteIdentity === identity) {
-        return;
-      }
+      const remoteId = msg.from?.identity || msg.from?.sid || "";
+      if (!remoteId || remoteId === identity) return;
 
       const data = decodePayload<MoveData>(msg.payload);
-      if (!data) {
-        return;
-      }
+      if (!data) return;
 
-      addOrUpdatePlayer(remoteIdentity, {
-        sessionId: remoteIdentity,
+      upsertPlayer(remoteId, {
         position: new Vector3(
           data.position?.x ?? 0,
           data.position?.y ?? 0,
@@ -75,46 +68,37 @@ export function useLiveKitDataChannels(identity: string) {
         animation: (data.animation || "idle") as AnimationState,
       });
     },
-    [addOrUpdatePlayer, identity],
+    [upsertPlayer, identity],
   );
 
   const handleProfileMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.PROFILE>) => {
-      const remoteIdentity = msg.from?.identity || msg.from?.sid || "";
-      if (!remoteIdentity || remoteIdentity === identity) {
-        return;
-      }
+      const remoteId = msg.from?.identity || msg.from?.sid || "";
+      if (!remoteId || remoteId === identity) return;
 
       const data = decodePayload<ProfileData>(msg.payload);
-      if (!data) {
-        return;
-      }
+      if (!data) return;
 
-      addOrUpdatePlayer(remoteIdentity, {
-        sessionId: remoteIdentity,
+      upsertPlayer(remoteId, {
         username: data.username,
         avatar: data.avatar,
       });
     },
-    [addOrUpdatePlayer, identity],
+    [upsertPlayer, identity],
   );
 
   const handleChatMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.CHAT_MESSAGE>) => {
-      const remoteIdentity = msg.from?.identity || msg.from?.sid || "";
-      const localIdentity = localSessionId || identity;
-      if (!remoteIdentity || remoteIdentity === localIdentity) {
-        return;
-      }
+      const remoteId = msg.from?.identity || msg.from?.sid || "";
+      const localId = localSessionId || identity;
+      if (!remoteId || remoteId === localId) return;
 
       const data = decodePayload<ChatMessagePacket>(msg.payload);
-      if (!data || (!data.text && !data.image)) {
-        return;
-      }
+      if (!data?.text && !data?.image) return;
 
       addIncomingMessage({
         id: data.id,
-        sessionId: remoteIdentity,
+        sessionId: remoteId,
         username: data.username,
         content: data.text,
         sentAt: data.sentAt ?? Date.now(),
@@ -126,26 +110,23 @@ export function useLiveKitDataChannels(identity: string) {
 
   const handleTypingMessage = useCallback(
     (msg: ReceivedDataMessage<typeof DATA_TOPICS.TYPING>) => {
-      const remoteIdentity = msg.from?.identity || msg.from?.sid || "";
-      const localIdentity = localSessionId || identity;
-      if (!remoteIdentity || remoteIdentity === localIdentity) {
-        return;
-      }
+      const remoteId = msg.from?.identity || msg.from?.sid || "";
+      const localId = localSessionId || identity;
+      if (!remoteId || remoteId === localId) return;
 
       const data = decodePayload<TypingPacket>(msg.payload);
-      if (!data) {
-        return;
-      }
+      if (!data) return;
 
       if (data.isTyping) {
-        addTypingUser(remoteIdentity, data.username);
+        addTypingUser(remoteId, data.username);
       } else {
-        removeTypingUser(remoteIdentity);
+        removeTypingUser(remoteId);
       }
     },
     [addTypingUser, identity, localSessionId, removeTypingUser],
   );
 
+  // Data channel hooks
   const { send: sendMovePacket } = useDataChannel(
     DATA_TOPICS.MOVE,
     handleMoveMessage,
@@ -163,28 +144,23 @@ export function useLiveKitDataChannels(identity: string) {
     handleTypingMessage,
   );
 
+  // Send functions
   const sendMove = useCallback(
     (payload: MoveData) => {
-      const encoded = encoder.encode(JSON.stringify(payload));
-      void sendMovePacket(encoded, {
+      sendMovePacket(encodePayload(payload), {
         topic: DATA_TOPICS.MOVE,
         reliable: false,
-      }).catch((error) => {
-        console.warn("[LiveKit] Failed to publish move", error);
-      });
+      }).catch((e) => console.warn("[LiveKit] Failed to publish move", e));
     },
     [sendMovePacket],
   );
 
   const sendProfile = useCallback(
     (payload: ProfileData) => {
-      const encoded = encoder.encode(JSON.stringify(payload));
-      void sendProfilePacket(encoded, {
+      sendProfilePacket(encodePayload(payload), {
         topic: DATA_TOPICS.PROFILE,
         reliable: true,
-      }).catch((error) => {
-        console.warn("[LiveKit] Failed to publish profile", error);
-      });
+      }).catch((e) => console.warn("[LiveKit] Failed to publish profile", e));
     },
     [sendProfilePacket],
   );
@@ -192,9 +168,7 @@ export function useLiveKitDataChannels(identity: string) {
   const sendChatMessage = useCallback(
     async (content: string, image?: ChatMessageImage) => {
       const text = content.trim();
-      if (!text && !image) {
-        return;
-      }
+      if (!text && !image) return;
 
       const messageId = nanoid();
       const payload: ChatMessagePacket = {
@@ -214,9 +188,8 @@ export function useLiveKitDataChannels(identity: string) {
         image: payload.image,
       });
 
-      const encoded = encoder.encode(JSON.stringify(payload));
       try {
-        await sendChatPacket(encoded, {
+        await sendChatPacket(encodePayload(payload), {
           topic: DATA_TOPICS.CHAT_MESSAGE,
           reliable: true,
         });
@@ -242,14 +215,10 @@ export function useLiveKitDataChannels(identity: string) {
         username: username || undefined,
         isTyping,
       };
-
-      const encoded = encoder.encode(JSON.stringify(payload));
-      void sendTypingPacket(encoded, {
+      sendTypingPacket(encodePayload(payload), {
         topic: DATA_TOPICS.TYPING,
         reliable: false,
-      }).catch((error) => {
-        console.warn("[LiveKit] Failed to publish typing status", error);
-      });
+      }).catch((e) => console.warn("[LiveKit] Failed to publish typing", e));
     },
     [sendTypingPacket, username],
   );

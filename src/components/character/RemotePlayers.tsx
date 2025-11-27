@@ -26,7 +26,7 @@ export function RemotePlayers() {
 
   const visiblePlayers = useMemo(() => {
     if (!showRemotePlayers) return [];
-    return Array.from(players.values()).filter((player) =>
+    return Object.values(players).filter((player) =>
       showMyRemoteAvatar ? true : player.sessionId !== mySessionId,
     );
   }, [players, showRemotePlayers, showMyRemoteAvatar, mySessionId]);

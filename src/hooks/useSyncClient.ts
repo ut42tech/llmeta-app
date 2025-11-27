@@ -3,8 +3,7 @@
 import type { Room } from "livekit-client";
 import { useContext } from "react";
 import { LiveKitSyncContext } from "@/components/LiveKitSyncProvider";
-import type { ChatMessageImage } from "@/types/chat";
-import type { MoveData, ProfileData } from "@/types/multiplayer";
+import type { ChatMessageImage, MoveData, ProfileData } from "@/types";
 
 export type SyncClient = {
   sessionId?: string;

@@ -4,7 +4,7 @@ import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useSyncClient } from "@/hooks/useSyncClient";
 import { useChatStore } from "@/stores/chatStore";
-import type { ChatMessageImage } from "@/types/chat";
+import type { ChatMessageImage } from "@/types";
 
 export function useTextChat() {
   const { sendChatMessage, sendTyping, isConnected } = useSyncClient();

@@ -1,3 +1,7 @@
+/**
+ * LiveKit configuration and constants
+ */
+
 export const LIVEKIT_CONFIG = {
   tokenEndpoint: "/api/livekit/token",
   defaultRoom: process.env.LIVEKIT_ROOM || "playground",
@@ -9,4 +13,6 @@ export const DATA_TOPICS = {
   PROFILE: "player/profile",
   CHAT_MESSAGE: "chat/message",
   TYPING: "chat/typing",
-};
+} as const;
+
+export type DataTopic = (typeof DATA_TOPICS)[keyof typeof DATA_TOPICS];

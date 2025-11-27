@@ -1,10 +1,5 @@
 import { AccessToken } from "livekit-server-sdk";
 
-const LIVEKIT_API_KEY = process.env.LIVEKIT_API_KEY;
-const LIVEKIT_API_SECRET = process.env.LIVEKIT_API_SECRET;
-const LIVEKIT_URL = process.env.LIVEKIT_URL;
-const LIVEKIT_DEFAULT_ROOM = process.env.LIVEKIT_DEFAULT_ROOM || "playground";
-
 export type LiveKitTokenRequest = {
   identity: string;
   name?: string;
@@ -20,24 +15,23 @@ export type LiveKitTokenResponse = {
 };
 
 const ensureConfig = () => {
-  if (!LIVEKIT_API_KEY || !LIVEKIT_API_SECRET || !LIVEKIT_URL) {
+  const apiKey = process.env.LIVEKIT_API_KEY;
+  const apiSecret = process.env.LIVEKIT_API_SECRET;
+  const serverUrl = process.env.LIVEKIT_URL;
+  if (!apiKey || !apiSecret || !serverUrl) {
     throw new Error(
       "Missing LiveKit server configuration (API key/secret/url)",
     );
   }
-
-  return {
-    apiKey: LIVEKIT_API_KEY,
-    apiSecret: LIVEKIT_API_SECRET,
-    serverUrl: LIVEKIT_URL,
-  };
+  return { apiKey, apiSecret, serverUrl };
 };
 
 export const createLiveKitAccessToken = async (
   payload: LiveKitTokenRequest,
 ): Promise<LiveKitTokenResponse> => {
   const config = ensureConfig();
-  const roomName = payload.roomName || LIVEKIT_DEFAULT_ROOM;
+  const roomName = payload.roomName || process.env.LIVEKIT_ROOM || "playground";
+
   const token = new AccessToken(config.apiKey, config.apiSecret, {
     ttl: payload.ttl ?? 60 * 60,
     identity: payload.identity,
@@ -53,10 +47,8 @@ export const createLiveKitAccessToken = async (
     canPublishData: true,
   });
 
-  const jwt = await token.toJwt();
-
   return {
-    token: jwt,
+    token: await token.toJwt(),
     serverUrl: config.serverUrl,
     roomName,
   };

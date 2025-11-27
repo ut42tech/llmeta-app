@@ -20,8 +20,7 @@ import { useLiveKitDataChannels } from "@/hooks/useLiveKitDataChannels";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
-import type { ChatMessageImage } from "@/types/chat";
-import type { MoveData, ProfileData } from "@/types/multiplayer";
+import type { ChatMessageImage, MoveData, ProfileData } from "@/types";
 
 type LiveKitSyncContextValue = {
   sessionId?: string;
