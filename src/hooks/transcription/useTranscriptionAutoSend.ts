@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { AUTO_SEND_DEBOUNCE_MS } from "@/constants/transcription";
-import { useTextChat } from "@/hooks/useTextChat";
+import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useTranscriptionStore } from "@/stores/transcriptionStore";
 
 /**

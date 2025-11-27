@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useTypingDebounce } from "@/hooks/useTypingDebounce";
+import { useTypingDebounce } from "@/hooks/chat/useTypingDebounce";
 
 type ChatInputProps = {
   canSend: boolean;

@@ -41,7 +41,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useTextChat } from "@/hooks/useTextChat";
+import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useAIChatStore } from "@/stores/aiChatStore";
 import { useChatStore } from "@/stores/chatStore";
 

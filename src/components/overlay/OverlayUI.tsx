@@ -5,7 +5,7 @@ import { CaptionWindow } from "@/components/overlay/caption/CaptionWindow";
 import { ChatWindow } from "@/components/overlay/chat/ChatWindow";
 import { Dock } from "@/components/overlay/Dock";
 import { StatusBar } from "@/components/overlay/StatusBar";
-import { useTextChat } from "@/hooks/useTextChat";
+import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useAIChatStore } from "@/stores/aiChatStore";
 
 export const OverlayUI = () => {

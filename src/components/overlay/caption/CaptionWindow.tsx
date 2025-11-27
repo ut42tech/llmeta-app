@@ -2,8 +2,8 @@
 
 import { Waveform } from "@/components/overlay/caption/Waveform";
 import { Badge } from "@/components/ui/badge";
-import { useTranscription } from "@/hooks/useTranscription";
-import { useTranscriptionAutoSend } from "@/hooks/useTranscriptionAutoSend";
+import { useTranscription } from "@/hooks/transcription/useTranscription";
+import { useTranscriptionAutoSend } from "@/hooks/transcription/useTranscriptionAutoSend";
 import { cn } from "@/lib/utils";
 import { useTranscriptionStore } from "@/stores/transcriptionStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";

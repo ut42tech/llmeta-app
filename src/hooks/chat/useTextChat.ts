@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useSyncClient } from "@/hooks/useSyncClient";
+import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useChatStore } from "@/stores/chatStore";
 import type { ChatMessageImage } from "@/types";
 
