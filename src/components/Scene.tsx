@@ -5,6 +5,7 @@ import { LocalCharacter } from "@/components/character/LocalCharacter";
 import { RemotePlayers } from "@/components/character/RemotePlayers";
 import { DebugPanel } from "@/components/DebugPanel";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
+import { WorldContent } from "@/components/WorldContent";
 import { LIGHTING } from "@/constants/world";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useCharacterController } from "@/hooks/scene/useCharacterController";
@@ -58,6 +59,11 @@ export function Scene() {
 
       <Suspense fallback={null}>
         <InfiniteWorld />
+      </Suspense>
+
+      {/* World Content */}
+      <Suspense fallback={null}>
+        <WorldContent />
       </Suspense>
     </>
   );

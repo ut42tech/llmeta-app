@@ -8,13 +8,27 @@ type GridCoordinates = {
   y: number;
 };
 
+export type WorldContentItem = {
+  id: string;
+  position: Vector3;
+  image: {
+    url: string;
+    prompt?: string;
+  };
+  username?: string;
+  createdAt: number;
+};
+
 type WorldState = {
   currentGridCell: GridCoordinates;
   visibleGridSize: GridCoordinates;
+  contentItems: WorldContentItem[];
 };
 
 type WorldActions = {
   updateCurrentGridCell: (position: Vector3) => void;
+  addContentItem: (item: Omit<WorldContentItem, "createdAt">) => void;
+  removeContentItem: (id: string) => void;
 };
 
 type WorldStore = WorldState & WorldActions;
@@ -42,6 +56,7 @@ export const useWorldStore = create<WorldStore>((set) => ({
   // State
   currentGridCell: { ...INITIAL_GRID_CELL },
   visibleGridSize: { ...DEFAULT_VISIBLE_GRID_SIZE },
+  contentItems: [],
 
   // Actions
   updateCurrentGridCell: (position: Vector3) => {
@@ -56,5 +71,25 @@ export const useWorldStore = create<WorldStore>((set) => ({
         currentGridCell: newGridCell,
       };
     });
+  },
+
+  addContentItem: (item) => {
+    set((state) => {
+      if (state.contentItems.some((i) => i.id === item.id)) {
+        return state;
+      }
+      return {
+        contentItems: [
+          ...state.contentItems,
+          { ...item, createdAt: Date.now() },
+        ],
+      };
+    });
+  },
+
+  removeContentItem: (id) => {
+    set((state) => ({
+      contentItems: state.contentItems.filter((item) => item.id !== id),
+    }));
   },
 }));
