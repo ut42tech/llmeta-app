@@ -1,6 +1,6 @@
 "use client";
 
-import { Camera, Video } from "lucide-react";
+import { Video } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import {
