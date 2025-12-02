@@ -1,7 +1,9 @@
 "use client";
 
 import { Mic, MicOff } from "lucide-react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import {
   Tooltip,
   TooltipContent,
@@ -17,17 +19,23 @@ export const VoiceChatButton = () => {
   const permissionDenied = status.permission === "denied";
   const disabled = !canPublish || isBusy || permissionDenied;
 
-  const tooltipLabel = (() => {
+  const handleToggle = () => {
+    if (disabled) return;
+    void toggleMic();
+  };
+
+  // Toggle microphone with M key
+  useHotkeys("m", handleToggle, {
+    preventDefault: true,
+    enableOnFormTags: false,
+  });
+
+  const label = (() => {
     if (status.error) return status.error;
     if (!canPublish) return "Connect to a room to talk";
     if (permissionDenied) return "Microphone permission denied";
     return isActive ? "Mute microphone" : "Unmute microphone";
   })();
-
-  const handleToggle = () => {
-    if (disabled) return;
-    void toggleMic();
-  };
 
   return (
     <Tooltip>
@@ -43,7 +51,10 @@ export const VoiceChatButton = () => {
           {isActive ? <Mic /> : <MicOff />}
         </Button>
       </TooltipTrigger>
-      <TooltipContent sideOffset={6}>{tooltipLabel}</TooltipContent>
+      <TooltipContent sideOffset={6} className="flex items-center gap-2">
+        {label}
+        <Kbd>M</Kbd>
+      </TooltipContent>
     </Tooltip>
   );
 };
