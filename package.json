@@ -39,7 +39,6 @@
     "@react-three/uikit": "^1.0.60",
     "@react-three/uikit-lucide": "^1.0.60",
     "@react-three/viverse": "^0.2.10",
-    "@react-three/xr": "^6.6.28",
     "@vercel/blob": "^2.0.0",
     "@xyflow/react": "^12.9.3",
     "ai": "^5.0.106",
