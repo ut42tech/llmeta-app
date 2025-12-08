@@ -4,6 +4,7 @@ import type { DirectionalLight, Object3D } from "three";
 import { LocalCharacter } from "@/components/character/LocalCharacter";
 import { RemotePlayers } from "@/components/character/RemotePlayers";
 import { DebugPanel } from "@/components/DebugPanel";
+import { DefaultMap } from "@/components/DefaultMap";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { WorldContent } from "@/components/WorldContent";
 import { LIGHTING } from "@/constants/world";
@@ -57,8 +58,8 @@ export function Scene() {
         <RemotePlayers />
       </Suspense>
 
-      <Suspense fallback={null}>
-        <InfiniteWorld />
+      <Suspense fallback={<InfiniteWorld />}>
+        <DefaultMap />
       </Suspense>
 
       {/* World Content */}
