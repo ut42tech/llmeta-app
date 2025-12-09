@@ -10,6 +10,13 @@ import {
 } from "@/stores/worldStore";
 import { hasImageContent } from "@/utils/chat";
 
+const formatTime = (timestamp: number): string => {
+  const date = new Date(timestamp);
+  const hours = date.getHours().toString().padStart(2, "0");
+  const minutes = date.getMinutes().toString().padStart(2, "0");
+  return `${hours}:${minutes}`;
+};
+
 const MAX_CONTENT_WIDTH = 200;
 const CONTENT_HEIGHT = 1.5;
 const CONTENT_OFFSET = new Vector3(-2.5, 0, 0);
@@ -131,28 +138,18 @@ function WorldContentItem({ item, position, rotation }: WorldContentItemProps) {
             },
           }}
         >
-          {item.username && (
-            <Text
-              fontSize={5}
-              color="rgba(255, 255, 255, 0.8)"
-              textAlign="center"
-            >
-              {item.username}
-            </Text>
-          )}
           <Image
             src={item.image.url}
             width={MAX_CONTENT_WIDTH - 16}
             borderRadius={4}
           />
-          {item.image.prompt && (
+          {item.username && (
             <Text
               fontSize={5}
               color="rgba(255, 255, 255, 0.7)"
-              wordBreak="break-word"
               textAlign="center"
             >
-              {item.image.prompt}
+              Shared by {item.username} at {formatTime(item.createdAt)}
             </Text>
           )}
         </Container>
