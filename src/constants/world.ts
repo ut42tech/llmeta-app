@@ -3,9 +3,9 @@
  */
 export const GRID = {
   /** Size of each grid cell in world units */
-  CELL_SIZE: 20,
+  CELL_SIZE: 14.88,
   /** Half of the grid cell size (for centering calculations) */
-  HALF_CELL_SIZE: 10,
+  HALF_CELL_SIZE: 14.88 / 2,
 };
 
 export const PERFORMANCE = {
