@@ -3,6 +3,7 @@
 import { AIChatButton } from "@/components/overlay/dock/AIChatButton";
 import { ChatButton } from "@/components/overlay/dock/ChatButton";
 import { SettingsDrawer } from "@/components/overlay/dock/SettingsDrawer";
+import { ViewToggleButton } from "@/components/overlay/dock/ViewToggleButton";
 import { VoiceChatButton } from "@/components/overlay/dock/VoiceChatButton";
 import { WorldInfoDrawer } from "@/components/overlay/dock/WorldInfoDrawer";
 import { YourInfoDrawer } from "@/components/overlay/dock/YourInfoDrawer";
@@ -29,6 +30,7 @@ export const Dock = () => {
           <WorldInfoDrawer />
           <YourInfoDrawer />
         </ButtonGroup>
+        <ViewToggleButton />
         <VoiceChatButton />
         <SettingsDrawer />
       </div>

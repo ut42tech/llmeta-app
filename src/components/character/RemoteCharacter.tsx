@@ -13,6 +13,7 @@ import {
 import { useEffect, useMemo, useState } from "react";
 import { PlayerTag } from "@/components/character/PlayerTag";
 import { RemoteCharacterAnimation } from "@/components/character/RemoteCharacterAnimation";
+import { TextChatBubble } from "@/components/character/TextChatBubble";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import {
   usePositionBuffer,
@@ -181,6 +182,7 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
           isMuted={player.isMuted}
           isSpeaking={player.isSpeaking}
         />
+        <TextChatBubble sessionId={sessionId} />
       </primitive>
     </CharacterModelProvider>
   );

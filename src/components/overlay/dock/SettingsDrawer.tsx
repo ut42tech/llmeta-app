@@ -76,8 +76,6 @@ const SettingsContent = () => {
     rotation,
     setUsername,
     teleport,
-    isFPV,
-    toggleFPV,
     currentAvatar,
     setCurrentAvatar,
   } = useLocalPlayerStore(
@@ -87,8 +85,6 @@ const SettingsContent = () => {
       rotation: state.rotation,
       setUsername: state.setUsername,
       teleport: state.teleport,
-      isFPV: state.isFPV,
-      toggleFPV: state.toggleFPV,
       currentAvatar: state.currentAvatar,
       setCurrentAvatar: state.setCurrentAvatar,
     })),
@@ -171,19 +167,6 @@ const SettingsContent = () => {
             Reset
           </Button>
         </SettingsRow>
-      </SettingsSection>
-
-      {/* View Mode */}
-      <SettingsSection title="View">
-        <SettingsRow label={`Mode: ${isFPV ? "First Person" : "Third Person"}`}>
-          <Button variant="outline" onClick={toggleFPV}>
-            Toggle FPV
-          </Button>
-        </SettingsRow>
-        <p className="text-xs text-muted-foreground">
-          Note: FPV is experimental and animations may appear unnatural from
-          other players' perspective.
-        </p>
       </SettingsSection>
 
       {/* Audio Settings */}

@@ -85,7 +85,7 @@ export const InfiniteWorld = memo(({ ...props }: InfiniteWorldProps) => {
 
         cells.push(
           <GridCell
-            key={`${gridX}-${gridY}`}
+            key={`${x}-${y}`}
             gridX={gridX}
             gridY={gridY}
             cellX={cellX}

@@ -1,10 +1,13 @@
 import { Sky } from "@react-three/drei";
+import { EffectComposer, Vignette } from "@react-three/postprocessing";
 import { Suspense, useRef } from "react";
 import type { DirectionalLight, Object3D } from "three";
 import { LocalCharacter } from "@/components/character/LocalCharacter";
 import { RemotePlayers } from "@/components/character/RemotePlayers";
 import { DebugPanel } from "@/components/DebugPanel";
+import { DefaultMap } from "@/components/DefaultMap";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
+import { WorldContent } from "@/components/WorldContent";
 import { LIGHTING } from "@/constants/world";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useCharacterController } from "@/hooks/scene/useCharacterController";
@@ -34,8 +37,8 @@ export function Scene() {
   return (
     <>
       <DebugPanel />
-
       <Sky />
+
       <directionalLight
         intensity={LIGHTING.DIRECTIONAL_INTENSITY}
         position={[-10, 10, -10]}
@@ -56,9 +59,18 @@ export function Scene() {
         <RemotePlayers />
       </Suspense>
 
-      <Suspense fallback={null}>
-        <InfiniteWorld />
+      <Suspense fallback={<InfiniteWorld />}>
+        <DefaultMap />
       </Suspense>
+
+      {/* World Content */}
+      <Suspense fallback={null}>
+        <WorldContent />
+      </Suspense>
+
+      <EffectComposer multisampling={0}>
+        <Vignette offset={0.1} darkness={0.5} />
+      </EffectComposer>
     </>
   );
 }
