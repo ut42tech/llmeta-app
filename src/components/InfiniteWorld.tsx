@@ -1,7 +1,6 @@
 import { Text } from "@react-three/drei";
-import { BvhPhysicsBody } from "@react-three/viverse";
+import { BvhPhysicsBody, PrototypeBox } from "@react-three/viverse";
 import { memo, useMemo } from "react";
-import { Room } from "@/components/Room";
 import { GRID } from "@/constants/world";
 import { useWorldStore } from "@/stores/worldStore";
 
@@ -23,11 +22,14 @@ const GridCell = memo(
     return (
       <group position={[positionX, 0, positionZ]}>
         <BvhPhysicsBody kinematic>
-          <Room />
+          <PrototypeBox
+            scale={[GRID.CELL_SIZE, 1, GRID.CELL_SIZE]}
+            position={[0, -2, 0]}
+          />
         </BvhPhysicsBody>
         <Text
           fontSize={1}
-          position-y={0.01}
+          position-y={-1.49}
           rotation-x={-Math.PI / 2}
           fontWeight={"bold"}
           textAlign="center"

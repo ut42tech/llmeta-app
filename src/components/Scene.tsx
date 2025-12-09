@@ -1,8 +1,5 @@
 import { Sky } from "@react-three/drei";
-import {
-  EffectComposer,
-  Vignette,
-} from "@react-three/postprocessing";
+import { EffectComposer, Vignette } from "@react-three/postprocessing";
 import { Suspense, useRef } from "react";
 import type { DirectionalLight, Object3D } from "three";
 import { LocalCharacter } from "@/components/character/LocalCharacter";
@@ -73,7 +70,6 @@ export function Scene() {
 
       <EffectComposer multisampling={0}>
         <Vignette offset={0.1} darkness={0.5} />
-        
       </EffectComposer>
     </>
   );
