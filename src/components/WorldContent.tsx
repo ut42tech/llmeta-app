@@ -1,5 +1,6 @@
+import { useFrame } from "@react-three/fiber";
 import { Container, Image, Text } from "@react-three/uikit";
-import { Suspense, useEffect, useMemo, useRef } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Vector3 } from "three";
 import { useChatStore } from "@/stores/chatStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
@@ -121,8 +122,29 @@ type WorldContentItemProps = {
  * Component that displays an individual world content item.
  */
 function WorldContentItem({ item, position, rotation }: WorldContentItemProps) {
+  const elapsedTimeRef = useRef(0);
+  const [opacity, setOpacity] = useState(0);
+  const [scale, setScale] = useState(0.8);
+
+  const TRANSITION_DURATION = 0.3;
+
+  useFrame((_, delta) => {
+    if (elapsedTimeRef.current < TRANSITION_DURATION) {
+      elapsedTimeRef.current += delta;
+      const progress = Math.min(
+        elapsedTimeRef.current / TRANSITION_DURATION,
+        1,
+      );
+
+      const easedProgress = 1 - (1 - progress) ** 3;
+
+      setOpacity(easedProgress);
+      setScale(0.8 + easedProgress * 0.2);
+    }
+  });
+
   return (
-    <group position={position} rotation={rotation}>
+    <group position={position} rotation={rotation} scale={scale}>
       <Suspense fallback={null}>
         <Container
           borderRadius={8}
@@ -132,6 +154,7 @@ function WorldContentItem({ item, position, rotation }: WorldContentItemProps) {
           flexDirection="column"
           gap={4}
           alignItems="center"
+          opacity={opacity}
           fontFamilies={{
             notoSans: {
               bold: "/fonts/NotoSansJP-Bold.json",
