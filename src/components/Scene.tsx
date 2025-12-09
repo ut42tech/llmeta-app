@@ -1,4 +1,4 @@
-import { Bloom, EffectComposer, Vignette } from "@react-three/postprocessing";
+import { EffectComposer, Vignette } from "@react-three/postprocessing";
 import { Suspense, useRef } from "react";
 import type { DirectionalLight, Object3D } from "three";
 import { LocalCharacter } from "@/components/character/LocalCharacter";
@@ -68,12 +68,6 @@ export function Scene() {
       <fog attach={"fog"} args={["#151118", 16, 22]} />
       <color attach="background" args={["#151118"]} />
       <EffectComposer multisampling={0}>
-        <Bloom
-          luminanceThreshold={0}
-          luminanceSmoothing={0.9}
-          height={250}
-          opacity={2.5}
-        />
         <Vignette offset={0.1} darkness={0.5} />
       </EffectComposer>
     </>

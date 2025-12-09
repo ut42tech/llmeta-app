@@ -13,8 +13,8 @@ import {
 import { hasImageContent } from "@/utils/chat";
 
 const MAX_CONTENT_WIDTH = 200;
-const CONTENT_HEIGHT = 0.5;
-const CONTENT_OFFSET = new Vector3(0, 0, 0.5);
+const CONTENT_HEIGHT = 1.5;
+const CONTENT_OFFSET = new Vector3(-2.5, 0, 0);
 
 /**
  * Component that displays image content fixed at world coordinates.

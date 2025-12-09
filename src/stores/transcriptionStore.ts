@@ -5,7 +5,7 @@ import { create } from "zustand";
  * Maximum number of transcript entries to keep in history
  * Older entries are automatically removed to prevent memory bloat
  */
-const MAX_HISTORY = 10;
+const MAX_HISTORY = 50;
 
 type TranscriptEntry = {
   id: string;
