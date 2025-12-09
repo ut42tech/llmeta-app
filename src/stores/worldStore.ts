@@ -74,17 +74,9 @@ export const useWorldStore = create<WorldStore>((set) => ({
   },
 
   addContentItem: (item) => {
-    set((state) => {
-      if (state.contentItems.some((i) => i.id === item.id)) {
-        return state;
-      }
-      return {
-        contentItems: [
-          ...state.contentItems,
-          { ...item, createdAt: Date.now() },
-        ],
-      };
-    });
+    set(() => ({
+      contentItems: [{ ...item, createdAt: Date.now() }],
+    }));
   },
 
   removeContentItem: (id) => {

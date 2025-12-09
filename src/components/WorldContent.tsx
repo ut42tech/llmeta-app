@@ -1,7 +1,5 @@
-import { useFrame } from "@react-three/fiber";
 import { Container, Image, Text } from "@react-three/uikit";
 import { Suspense, useEffect, useMemo, useRef } from "react";
-import type { Object3D } from "three";
 import { Vector3 } from "three";
 import { useChatStore } from "@/stores/chatStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
@@ -15,6 +13,22 @@ import { hasImageContent } from "@/utils/chat";
 const MAX_CONTENT_WIDTH = 200;
 const CONTENT_HEIGHT = 1.5;
 const CONTENT_OFFSET = new Vector3(-2.5, 0, 0);
+
+const BASE_DIRECTIONS = [
+  { position: new Vector3(0, 0, -2), rotation: Math.PI, name: "north" },
+  { position: new Vector3(0, 0, 2), rotation: 0, name: "south" },
+  { position: new Vector3(2, 0, 0), rotation: Math.PI / 2, name: "east" },
+  { position: new Vector3(-2, 0, 0), rotation: -Math.PI / 2, name: "west" },
+];
+
+const DIRECTIONS = BASE_DIRECTIONS.flatMap(({ position, rotation, name }) => [
+  { position, rotation: [0, rotation, 0] as const, name },
+  {
+    position,
+    rotation: [0, rotation + Math.PI, 0] as const,
+    name: `${name}-back`,
+  },
+]);
 
 /**
  * Component that displays image content fixed at world coordinates.
@@ -76,31 +90,32 @@ export function WorldContent() {
 
   return (
     <>
-      {contentItems.map((item) => (
-        <WorldContentItem key={item.id} item={item} />
-      ))}
+      {contentItems.map((item) =>
+        DIRECTIONS.map((direction) => (
+          <WorldContentItem
+            key={`${item.id}-${direction.name}`}
+            item={item}
+            position={direction.position}
+            rotation={direction.rotation}
+          />
+        )),
+      )}
     </>
   );
 }
 
 type WorldContentItemProps = {
   item: WorldContentItemType;
+  position: Vector3;
+  rotation: readonly [number, number, number];
 };
 
 /**
  * Component that displays an individual world content item.
  */
-function WorldContentItem({ item }: WorldContentItemProps) {
-  const ref = useRef<Object3D>(null);
-
-  useFrame((state) => {
-    if (ref.current) {
-      ref.current.lookAt(state.camera.position);
-    }
-  });
-
+function WorldContentItem({ item, position, rotation }: WorldContentItemProps) {
   return (
-    <group ref={ref} position={item.position}>
+    <group position={position} rotation={rotation}>
       <Suspense fallback={null}>
         <Container
           borderRadius={8}
