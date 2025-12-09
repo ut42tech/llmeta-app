@@ -1,9 +1,14 @@
-import { EffectComposer, Vignette } from "@react-three/postprocessing";
+import { Sky } from "@react-three/drei";
+import {
+  EffectComposer,
+  Vignette,
+} from "@react-three/postprocessing";
 import { Suspense, useRef } from "react";
 import type { DirectionalLight, Object3D } from "three";
 import { LocalCharacter } from "@/components/character/LocalCharacter";
 import { RemotePlayers } from "@/components/character/RemotePlayers";
 import { DebugPanel } from "@/components/DebugPanel";
+import { DefaultMap } from "@/components/DefaultMap";
 import { InfiniteWorld } from "@/components/InfiniteWorld";
 import { WorldContent } from "@/components/WorldContent";
 import { LIGHTING } from "@/constants/world";
@@ -35,6 +40,7 @@ export function Scene() {
   return (
     <>
       <DebugPanel />
+      <Sky />
 
       <directionalLight
         intensity={LIGHTING.DIRECTIONAL_INTENSITY}
@@ -56,8 +62,8 @@ export function Scene() {
         <RemotePlayers />
       </Suspense>
 
-      <Suspense fallback={null}>
-        <InfiniteWorld />
+      <Suspense fallback={<InfiniteWorld />}>
+        <DefaultMap />
       </Suspense>
 
       {/* World Content */}
@@ -65,10 +71,9 @@ export function Scene() {
         <WorldContent />
       </Suspense>
 
-      <fog attach={"fog"} args={["#151118", 16, 22]} />
-      <color attach="background" args={["#151118"]} />
       <EffectComposer multisampling={0}>
         <Vignette offset={0.1} darkness={0.5} />
+        
       </EffectComposer>
     </>
   );

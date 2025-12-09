@@ -36,7 +36,7 @@ export const PHYSICS = {
 };
 
 export const LIGHTING = {
-  LIGHT_OFFSET: { x: 2, y: 5, z: 2 },
+  LIGHT_OFFSET: { x: -2, y: 5, z: -2 },
   DIRECTIONAL_INTENSITY: 1.2,
   AMBIENT_INTENSITY: 1,
 };
