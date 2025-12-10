@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { BackgroundCanvas } from "@/components/BackgroundCanvas";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 const fadeIn = (delay = 0) => ({
   initial: { opacity: 0, y: 20 },
@@ -16,29 +17,28 @@ export default function Home() {
   const t = useTranslations("landing");
 
   return (
-    <div className="relative min-h-screen bg-black text-white">
+    <div className="relative min-h-screen bg-black">
       <BackgroundCanvas />
 
       <div className="relative z-10 flex min-h-screen flex-col px-6 md:px-12">
         <motion.header
           {...fadeIn(0.2)}
-          className="flex items-center gap-2 py-8"
+          className="flex items-center justify-between py-8"
         >
-          <div className="h-1.5 w-1.5 rounded-full bg-white/90" />
-          <span className="text-sm text-white/90">{t("tagline")}</span>
+          <div className="flex items-center gap-2">
+            <div className="h-1.5 w-1.5 rounded-full bg-white/90" />
+            <span className="text-sm text-white/90">{t("tagline")}</span>
+          </div>
+          <LanguageSwitcher />
         </motion.header>
 
         <main className="flex flex-1 items-center justify-center">
           <div className="max-w-5xl">
             <motion.h1
               {...fadeIn(0.4)}
-              className="mb-8 text-5xl font-light leading-tight tracking-tight md:text-7xl lg:text-8xl"
+              className="mb-8 text-5xl font-light text-white leading-tight tracking-tight md:text-7xl lg:text-8xl"
             >
-              {t("title1")}{" "}
-              <span className="bg-linear-to-r from-white via-white/80 to-white/60 bg-clip-text text-transparent">
-                {t("title2")}
-              </span>{" "}
-              {t("title3")}
+              {t("title1")} <span>{t("title2")}</span> {t("title3")}
             </motion.h1>
 
             <motion.p
