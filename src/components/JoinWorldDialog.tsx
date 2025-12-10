@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertTriangle, Globe } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { AvatarPicker } from "@/components/overlay/dock/AvatarPicker";
 import { Button } from "@/components/ui/button";
@@ -17,41 +18,13 @@ import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { type Locale, localeNames, locales } from "@/i18n/config";
+import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import type { ViverseAvatar } from "@/types";
 
-type Language = "en" | "ja";
-
-const translations = {
-  en: {
-    title: "Join World",
-    description:
-      "Set up your profile to join the world. Audio permission is required to hear other users.",
-    languageLabel: "Language",
-    warningTitle: "Privacy Notice",
-    warningText:
-      "This app sends data to external services. Please do not share personal or sensitive information.",
-    usernameLabel: "Username",
-    usernamePlaceholder: "Enter your username",
-    avatarLabel: "Choose your avatar",
-    continueButton: "Continue",
-  },
-  ja: {
-    title: "ワールドに参加",
-    description:
-      "ワールドに参加するためにプロフィールを設定してください。他のユーザーの音声を聞くにはオーディオ権限が必要です。",
-    languageLabel: "言語",
-    warningTitle: "プライバシーに関するお知らせ",
-    warningText:
-      "このアプリは外部サービスに情報を送信します。個人情報などの機密情報は送信しないでください。",
-    usernameLabel: "ユーザーネーム",
-    usernamePlaceholder: "ユーザーネームを入力",
-    avatarLabel: "アバターを選択",
-    continueButton: "続ける",
-  },
-};
-
 export const JoinWorldDialog = () => {
+  const t = useTranslations("joinWorld");
   const hasJoinedWorld = useLocalPlayerStore((state) => state.hasJoinedWorld);
   const setUsername = useLocalPlayerStore((state) => state.setUsername);
   const setCurrentAvatar = useLocalPlayerStore(
@@ -60,14 +33,13 @@ export const JoinWorldDialog = () => {
   const setHasJoinedWorld = useLocalPlayerStore(
     (state) => state.setHasJoinedWorld,
   );
+  const { locale, setLocale } = useLanguageStore();
 
-  const [language, setLanguage] = useState<Language>("en");
   const [inputUsername, setInputUsername] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState<ViverseAvatar | null>(
     null,
   );
 
-  const t = translations[language];
   const open = !hasJoinedWorld;
 
   const isFormValid =
@@ -99,42 +71,43 @@ export const JoinWorldDialog = () => {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <Globe className="size-5" />
-            {t.title}
+            {t("title")}
           </DialogTitle>
-          <DialogDescription>{t.description}</DialogDescription>
+          <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
         <ScrollArea className="flex-1 -mx-6 px-6">
           <div className="flex flex-col gap-6 py-2">
             {/* Language Selection */}
             <div className="flex flex-col gap-2">
-              <Label>{t.languageLabel}</Label>
+              <Label>{t("languageLabel")}</Label>
               <ToggleGroup
                 type="single"
-                value={language}
-                onValueChange={(value) =>
-                  value && setLanguage(value as Language)
-                }
+                value={locale}
+                onValueChange={(value) => value && setLocale(value as Locale)}
                 variant="outline"
               >
-                <ToggleGroupItem value="en" aria-label="English">
-                  English
-                </ToggleGroupItem>
-                <ToggleGroupItem value="ja" aria-label="日本語">
-                  日本語
-                </ToggleGroupItem>
+                {locales.map((loc) => (
+                  <ToggleGroupItem
+                    key={loc}
+                    value={loc}
+                    aria-label={localeNames[loc]}
+                  >
+                    {localeNames[loc]}
+                  </ToggleGroupItem>
+                ))}
               </ToggleGroup>
             </div>
 
             {/* Username Input */}
             <div className="flex flex-col gap-2">
               <Label htmlFor="username" className="flex items-center gap-2">
-                {t.usernameLabel}
+                {t("usernameLabel")}
               </Label>
               <Input
                 id="username"
                 type="text"
-                placeholder={t.usernamePlaceholder}
+                placeholder={t("usernamePlaceholder")}
                 value={inputUsername}
                 onChange={(e) => setInputUsername(e.target.value)}
                 maxLength={20}
@@ -143,7 +116,7 @@ export const JoinWorldDialog = () => {
 
             {/* Avatar Selection */}
             <div className="flex flex-col gap-2">
-              <Label>{t.avatarLabel}</Label>
+              <Label>{t("avatarLabel")}</Label>
               <AvatarPicker
                 avatars={AVATAR_LIST}
                 selectedId={selectedAvatar?.id}
@@ -157,10 +130,10 @@ export const JoinWorldDialog = () => {
                 <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />
                 <div className="flex flex-col gap-1">
                   <p className="text-sm font-medium text-amber-500">
-                    {t.warningTitle}
+                    {t("warningTitle")}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {t.warningText}
+                    {t("warningText")}
                   </p>
                 </div>
               </div>
@@ -174,7 +147,7 @@ export const JoinWorldDialog = () => {
             onClick={handleJoinWorld}
             disabled={!isFormValid}
           >
-            {t.continueButton}
+            {t("continueButton")}
           </Button>
         </DialogFooter>
       </DialogContent>

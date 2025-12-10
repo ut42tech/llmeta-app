@@ -1,6 +1,7 @@
 "use client";
 
 import { Info, Mouse } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -20,47 +21,45 @@ import {
 } from "@/components/ui/tooltip";
 
 export const WorldInfoDrawer = () => {
+  const t = useTranslations("worldInfo");
+  const tCommon = useTranslations("common");
+
   return (
     <Drawer>
       <Tooltip>
         <TooltipTrigger asChild>
           <DrawerTrigger asChild>
-            <Button
-              size="icon-lg"
-              variant="outline"
-              aria-label="About this world"
-            >
+            <Button size="icon-lg" variant="outline" aria-label={t("tooltip")}>
               <Info />
             </Button>
           </DrawerTrigger>
         </TooltipTrigger>
-        <TooltipContent sideOffset={6}>About this world</TooltipContent>
+        <TooltipContent sideOffset={6}>{t("tooltip")}</TooltipContent>
       </Tooltip>
 
       <DrawerContent>
         <div className="mx-auto w-full max-w-md">
           <DrawerHeader className="text-left">
             <DrawerTitle className="text-2xl font-bold">
-              About this world
+              {t("title")}
             </DrawerTitle>
             <DrawerDescription className="p-3 bg-neutral-100 rounded-lg">
-              💫 Explore together with other players in real-time
+              {t("description")}
             </DrawerDescription>
           </DrawerHeader>
 
           <div className="px-4 pb-6 space-y-6">
             <p className="text-sm text-muted-foreground leading-relaxed">
-              The concept of this world and basic controls will be displayed
-              here. This is a placeholder for now.
+              {t("placeholder")}
             </p>
 
             <div className="space-y-3">
-              <h3 className="text-sm font-semibold">Controls</h3>
+              <h3 className="text-sm font-semibold">{t("controlsTitle")}</h3>
               <div className="space-y-2.5">
                 <div className="flex items-start gap-3">
                   <Kbd className="min-w-20 justify-center">WASD</Kbd>
                   <span className="text-sm text-muted-foreground">
-                    Move around
+                    {t("moveAround")}
                   </span>
                 </div>
                 <div className="flex items-start gap-3">
@@ -69,7 +68,7 @@ export const WorldInfoDrawer = () => {
                     Mouse
                   </Kbd>
                   <span className="text-sm text-muted-foreground">
-                    Look around
+                    {t("lookAround")}
                   </span>
                 </div>
               </div>
@@ -79,7 +78,7 @@ export const WorldInfoDrawer = () => {
           <DrawerFooter className="pt-2">
             <DrawerClose asChild>
               <Button variant="outline" className="w-full">
-                Close
+                {tCommon("close")}
               </Button>
             </DrawerClose>
           </DrawerFooter>

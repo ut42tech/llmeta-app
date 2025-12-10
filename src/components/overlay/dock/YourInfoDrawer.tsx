@@ -1,6 +1,7 @@
 "use client";
 
 import { User } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -41,6 +42,8 @@ const InfoRow = ({ label, value, mono }: InfoRowProps) => (
 );
 
 export const YourInfoDrawer = () => {
+  const t = useTranslations("yourInfo");
+  const tCommon = useTranslations("common");
   const username =
     useLocalPlayerStore((state) => state.username) || "Anonymous";
   const sessionId = useLocalPlayerStore((state) => state.sessionId) || "—";
@@ -50,32 +53,34 @@ export const YourInfoDrawer = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <DrawerTrigger asChild>
-            <Button size="icon-lg" variant="outline" aria-label="Your info">
+            <Button size="icon-lg" variant="outline" aria-label={t("tooltip")}>
               <User />
             </Button>
           </DrawerTrigger>
         </TooltipTrigger>
-        <TooltipContent sideOffset={6}>Your info</TooltipContent>
+        <TooltipContent sideOffset={6}>{t("tooltip")}</TooltipContent>
       </Tooltip>
 
       <DrawerContent>
         <div className="mx-auto w-full max-w-md">
           <DrawerHeader className="text-left">
-            <DrawerTitle className="text-2xl font-bold">Your info</DrawerTitle>
+            <DrawerTitle className="text-2xl font-bold">
+              {t("title")}
+            </DrawerTitle>
             <DrawerDescription className="p-3 bg-neutral-100 rounded-lg">
-              🎮 Your session is active and syncing with the server
+              {t("description")}
             </DrawerDescription>
           </DrawerHeader>
 
           <div className="px-4 pb-6 space-y-3">
-            <InfoRow label="Username" value={username} />
-            <InfoRow label="Session ID" value={sessionId} mono />
+            <InfoRow label={t("username")} value={username} />
+            <InfoRow label={t("sessionId")} value={sessionId} mono />
           </div>
 
           <DrawerFooter className="pt-2">
             <DrawerClose asChild>
               <Button variant="outline" className="w-full">
-                Close
+                {tCommon("close")}
               </Button>
             </DrawerClose>
           </DrawerFooter>

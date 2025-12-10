@@ -1,6 +1,7 @@
 "use client";
 
 import { BotMessageSquareIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -10,6 +11,7 @@ import {
 import { useAIChatStore } from "@/stores/aiChatStore";
 
 export const AIChatButton = () => {
+  const t = useTranslations("dock");
   const { isOpen, toggle } = useAIChatStore();
 
   return (
@@ -21,11 +23,11 @@ export const AIChatButton = () => {
           onClick={toggle}
         >
           <BotMessageSquareIcon />
-          Agent
+          {t("agent")}
         </Button>
       </TooltipTrigger>
       <TooltipContent>
-        <p>AI Agent</p>
+        <p>{t("aiAgent")}</p>
       </TooltipContent>
     </Tooltip>
   );

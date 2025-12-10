@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowUp } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -24,6 +25,8 @@ export const ChatInput = ({
   onSend,
   onTypingChange,
 }: ChatInputProps) => {
+  const t = useTranslations("chat");
+  const tCommon = useTranslations("common");
   const [inputValue, setInputValue] = useState("");
   const [isComposing, setIsComposing] = useState(false);
 
@@ -61,9 +64,9 @@ export const ChatInput = ({
         onKeyDown={handleKeyDown}
         onCompositionStart={() => setIsComposing(true)}
         onCompositionEnd={() => setIsComposing(false)}
-        placeholder="Type a message"
+        placeholder={t("placeholder")}
         disabled={!canSend}
-        aria-label="Chat message"
+        aria-label={t("inputAriaLabel")}
         className="flex-1"
         maxLength={MAX_MESSAGE_LENGTH}
       />
@@ -73,12 +76,12 @@ export const ChatInput = ({
             type="submit"
             disabled={!canSend || !inputValue.trim()}
             size="icon"
-            aria-label="Send message"
+            aria-label={tCommon("send")}
           >
             <ArrowUp className="size-4" />
           </Button>
         </TooltipTrigger>
-        <TooltipContent side="top">Send message</TooltipContent>
+        <TooltipContent side="top">{tCommon("send")}</TooltipContent>
       </Tooltip>
     </form>
   );

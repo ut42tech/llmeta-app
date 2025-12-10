@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageSquare, MessageSquareShare } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
@@ -13,6 +14,7 @@ import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useTranscriptionStore } from "@/stores/transcriptionStore";
 
 export const ChatButton = () => {
+  const t = useTranslations("chat");
   const { isOpen, setOpen, unreadCount } = useTextChat();
   const autoSendToChat = useTranscriptionStore((state) => state.autoSendToChat);
   const setAutoSendToChat = useTranscriptionStore(
@@ -27,18 +29,14 @@ export const ChatButton = () => {
             <Button
               variant={autoSendToChat ? "default" : "outline"}
               size="icon-lg"
-              aria-label="Auto-send transcription to chat"
+              aria-label={t("toggleAutoSend")}
               aria-pressed={autoSendToChat}
               onClick={() => setAutoSendToChat(!autoSendToChat)}
             >
               <MessageSquareShare />
             </Button>
           </TooltipTrigger>
-          <TooltipContent sideOffset={6}>
-            {autoSendToChat
-              ? "Disable auto-send transcription to chat"
-              : "Enable auto-send transcription to chat"}
-          </TooltipContent>
+          <TooltipContent sideOffset={6}>{t("toggleAutoSend")}</TooltipContent>
         </Tooltip>
 
         <Tooltip>
@@ -46,14 +44,14 @@ export const ChatButton = () => {
             <Button
               variant={isOpen ? "default" : "outline"}
               size="icon-lg"
-              aria-label="Chat"
+              aria-label={t("title")}
               aria-pressed={isOpen}
               onClick={() => setOpen(!isOpen)}
             >
               <MessageSquare />
             </Button>
           </TooltipTrigger>
-          <TooltipContent sideOffset={6}>Chat</TooltipContent>
+          <TooltipContent sideOffset={6}>{t("title")}</TooltipContent>
         </Tooltip>
       </ButtonGroup>
 

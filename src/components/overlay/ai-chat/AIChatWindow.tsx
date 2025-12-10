@@ -13,6 +13,7 @@ import {
   X,
 } from "lucide-react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import {
   Conversation,
@@ -45,20 +46,23 @@ import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useAIChatStore } from "@/stores/aiChatStore";
 import { useChatStore } from "@/stores/chatStore";
 
-const SUGGESTIONS = [
-  "Summarize this chat",
-  "Explain the conversation flow",
-  "Are there any misunderstandings?",
-  "Generate an image based on the chat",
-];
-
 export const AIChatWindow = () => {
+  const t = useTranslations("aiChat");
+  const tChat = useTranslations("chat");
+  const tCommon = useTranslations("common");
   const { close, includeChatHistory, toggleChatHistory } = useAIChatStore();
   const chatMessages = useChatStore((state) => state.messages);
   const [isMinimized, setIsMinimized] = useState(false);
   const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
   const [refineImageId, setRefineImageId] = useState<string | null>(null);
   const [refineInput, setRefineInput] = useState("");
+
+  const SUGGESTIONS = [
+    t("suggestions.summarize"),
+    t("suggestions.explainFlow"),
+    t("suggestions.misunderstandings"),
+    t("suggestions.generateImage"),
+  ];
 
   const chatMessagesRef = useRef(chatMessages);
   chatMessagesRef.current = chatMessages;
@@ -110,7 +114,7 @@ export const AIChatWindow = () => {
             </Button>
           </TooltipTrigger>
           <TooltipContent side="left">
-            <p>Back to Agent Chat</p>
+            <p>{t("backToChat")}</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -123,7 +127,7 @@ export const AIChatWindow = () => {
       <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <BotMessageSquare className="size-4" />
-          <span className="font-medium text-sm">AI Agent</span>
+          <span className="font-medium text-sm">{t("title")}</span>
         </div>
         <div className="flex items-center gap-1">
           <Tooltip>
@@ -139,8 +143,8 @@ export const AIChatWindow = () => {
             <TooltipContent side="bottom">
               <p>
                 {includeChatHistory
-                  ? "Include chat history in context (ON)"
-                  : "Include chat history in context (OFF)"}
+                  ? t("includeChatHistoryOn")
+                  : t("includeChatHistoryOff")}
               </p>
             </TooltipContent>
           </Tooltip>
@@ -162,8 +166,8 @@ export const AIChatWindow = () => {
         <ConversationContent>
           {messages.length === 0 ? (
             <ConversationEmptyState
-              title="AI Agent"
-              description="Ask me anything!"
+              title={t("emptyStateTitle")}
+              description={t("emptyStateDescription")}
               icon={<BotMessageSquare className="size-8" />}
             />
           ) : (
@@ -218,7 +222,9 @@ export const AIChatWindow = () => {
                               >
                                 <ImageIcon className="size-4 animate-pulse" />
                                 <span>
-                                  Generating image: {toolPart.input?.prompt}
+                                  {t("generatingImage", {
+                                    prompt: toolPart.input?.prompt || "",
+                                  })}
                                 </span>
                               </div>
                             );
@@ -266,7 +272,7 @@ export const AIChatWindow = () => {
                                           onChange={(e) =>
                                             setRefineInput(e.target.value)
                                           }
-                                          placeholder="e.g., Make it more anime-style"
+                                          placeholder={t("refinePlaceholder")}
                                           className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                                           onKeyDown={(e) => {
                                             if (
@@ -296,7 +302,7 @@ export const AIChatWindow = () => {
                                           }
                                         >
                                           <WandSparkles className="size-3" />
-                                          Regenerate
+                                          {t("regenerate")}
                                         </Button>
                                         <Button
                                           variant="ghost"
@@ -306,7 +312,7 @@ export const AIChatWindow = () => {
                                             setRefineInput("");
                                           }}
                                         >
-                                          Cancel
+                                          {tCommon("cancel")}
                                         </Button>
                                       </div>
                                     </div>
@@ -324,14 +330,11 @@ export const AIChatWindow = () => {
                                             disabled={status === "streaming"}
                                           >
                                             <WandSparkles className="size-3" />
-                                            Refine
+                                            {t("refine")}
                                           </Button>
                                         </TooltipTrigger>
                                         <TooltipContent>
-                                          <p>
-                                            Add instructions to regenerate the
-                                            image
-                                          </p>
+                                          <p>{t("refineTooltip")}</p>
                                         </TooltipContent>
                                       </Tooltip>
                                       <Tooltip>
@@ -344,14 +347,12 @@ export const AIChatWindow = () => {
                                             disabled={!canSendToChat}
                                           >
                                             <Send className="size-3" />
-                                            Send
+                                            {t("sendToChat")}
                                           </Button>
                                         </TooltipTrigger>
                                         {!canSendToChat && (
                                           <TooltipContent>
-                                            <p>
-                                              Connect to a room to send images
-                                            </p>
+                                            <p>{t("connectToSend")}</p>
                                           </TooltipContent>
                                         )}
                                       </Tooltip>
@@ -367,7 +368,9 @@ export const AIChatWindow = () => {
                                 key={`${message.id}-${index}`}
                                 className="rounded-lg bg-red-50 p-3 text-red-600 text-sm"
                               >
-                                Error generating image: {toolPart.errorText}
+                                {t("errorGeneratingImage", {
+                                  error: toolPart.errorText || "Unknown error",
+                                })}
                               </div>
                             );
                           default:
@@ -426,7 +429,7 @@ export const AIChatWindow = () => {
           className="border-0 shadow-none"
         >
           <PromptInputTextarea
-            placeholder="Type a message..."
+            placeholder={tChat("typePlaceholder")}
             className="min-h-10 max-h-24"
           />
           <PromptInputFooter>

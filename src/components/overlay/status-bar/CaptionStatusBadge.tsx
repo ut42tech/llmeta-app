@@ -1,6 +1,7 @@
 "use client";
 
 import { AudioLines } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
@@ -18,6 +19,8 @@ export const CaptionStatusBadge = ({
   isStreaming,
   className,
 }: CaptionStatusBadgeProps) => {
+  const t = useTranslations("statusBar");
+
   return (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -26,7 +29,7 @@ export const CaptionStatusBadge = ({
           className={cn("flex items-center gap-2", className)}
         >
           <AudioLines className="size-3.5" />
-          <span>Transcription</span>
+          <span>{t("transcription")}</span>
           <span
             className={cn(
               "size-2 rounded-full shadow-inner",
@@ -36,7 +39,7 @@ export const CaptionStatusBadge = ({
         </Badge>
       </TooltipTrigger>
       <TooltipContent>
-        {isStreaming ? "Transcription active" : "Transcription inactive"}
+        {isStreaming ? t("transcriptionActive") : t("transcriptionInactive")}
       </TooltipContent>
     </Tooltip>
   );

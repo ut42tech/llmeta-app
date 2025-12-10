@@ -1,0 +1,136 @@
+{
+  "common": {
+    "close": "Close",
+    "cancel": "Cancel",
+    "update": "Update",
+    "reset": "Reset",
+    "enabled": "Enabled",
+    "disabled": "Disabled",
+    "send": "Send",
+    "loading": "Loading...",
+    "sendMessage": "Send message"
+  },
+  "landing": {
+    "tagline": "PROJECT LLMeta",
+    "title1": "Intelligence",
+    "title2": "Meets",
+    "title3": "Space",
+    "description": "Where AI and the Metaverse converge to redefine communication",
+    "enterWorld": "Enter the World",
+    "learnMore": "Learn More",
+    "copyright": "© 2025 — Takuya Uehara, All Rights Reserved."
+  },
+  "joinWorld": {
+    "title": "Join World",
+    "description": "Set up your profile to join the world. Audio permission is required to hear other users.",
+    "languageLabel": "Language",
+    "warningTitle": "Privacy Notice",
+    "warningText": "This app sends data to external services. Please do not share personal or sensitive information.",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "Enter your username",
+    "avatarLabel": "Choose your avatar",
+    "continueButton": "Continue"
+  },
+  "dock": {
+    "chat": "Chat",
+    "agent": "Agent",
+    "aiAgent": "AI Agent"
+  },
+  "chat": {
+    "title": "Chat",
+    "pressEnterToSend": "Press <key>Enter</key> to send",
+    "typePlaceholder": "Type a message...",
+    "toggleAutoSend": "Auto-send transcription to chat",
+    "openChat": "Open chat window",
+    "placeholder": "Type a message",
+    "inputAriaLabel": "Chat message",
+    "noMessagesYet": "No messages yet",
+    "startConversation": "Start the conversation to see replies here"
+  },
+  "aiChat": {
+    "title": "AI Agent",
+    "emptyStateTitle": "AI Agent",
+    "emptyStateDescription": "Ask me anything!",
+    "includeChatHistoryOn": "Include chat history in context (ON)",
+    "includeChatHistoryOff": "Include chat history in context (OFF)",
+    "backToChat": "Back to Agent Chat",
+    "generatingImage": "Generating image: {prompt}",
+    "errorGeneratingImage": "Error generating image: {error}",
+    "refine": "Refine",
+    "refineTooltip": "Add instructions to regenerate the image",
+    "sendToChat": "Send",
+    "connectToSend": "Connect to a room to send images",
+    "regenerate": "Regenerate",
+    "refinePlaceholder": "e.g., Make it more anime-style",
+    "suggestions": {
+      "summarize": "Summarize this chat",
+      "explainFlow": "Explain the conversation flow",
+      "misunderstandings": "Are there any misunderstandings?",
+      "generateImage": "Generate an image based on the chat"
+    }
+  },
+  "worldInfo": {
+    "title": "About this world",
+    "tooltip": "About this world",
+    "description": "💫 Explore together with other players in real-time",
+    "placeholder": "The concept of this world and basic controls will be displayed here. This is a placeholder for now.",
+    "controlsTitle": "Controls",
+    "moveAround": "Move around",
+    "lookAround": "Look around"
+  },
+  "yourInfo": {
+    "title": "Your info",
+    "tooltip": "Your info",
+    "description": "🎮 Your session is active and syncing with the server",
+    "username": "Username",
+    "sessionId": "Session ID"
+  },
+  "voiceChat": {
+    "mute": "Mute microphone",
+    "unmute": "Unmute microphone",
+    "permissionDenied": "Microphone permission denied",
+    "connectToTalk": "Connect to a room to talk"
+  },
+  "viewToggle": {
+    "firstPerson": "First-person view",
+    "thirdPerson": "Third-person view"
+  },
+  "settings": {
+    "title": "Settings",
+    "tooltip": "Settings",
+    "description": "⚙️ Update your preferences",
+    "username": "Username",
+    "usernamePlaceholder": "Enter your name",
+    "avatar": "Avatar",
+    "position": "Position",
+    "audioQuality": "Audio Quality",
+    "aiNoiseCancellation": "AI Noise Cancellation",
+    "aiNoiseCancellationDescription": "Advanced noise removal powered by Krisp",
+    "krispNotSupported": "⚠️ AI noise cancellation is not supported in this browser. Safari 17.4+ or Chrome/Edge is required.",
+    "basicNoiseNote": "Note: Basic echo cancellation and noise suppression are always enabled."
+  },
+  "language": {
+    "selectLanguage": "Select Language",
+    "english": "English",
+    "japanese": "日本語"
+  },
+  "caption": {
+    "waitingForSpeech": "Waiting for speech..."
+  },
+  "statusBar": {
+    "transcription": "Transcription",
+    "transcriptionActive": "Transcription active",
+    "transcriptionInactive": "Transcription inactive",
+    "connectionStatus": "Server connection status",
+    "connectionFailedUnknown": "Connection failed due to an unknown error.",
+    "idle": "Idle",
+    "connecting": "Connecting…",
+    "connected": "Connected",
+    "failed": "Connection Failed",
+    "disconnected": "Disconnected",
+    "player": "Player",
+    "players": "Players",
+    "onlyPlayerOnline": "You are the only player online",
+    "playersOnline": "{count} players online (including you)"
+  }
+}

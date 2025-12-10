@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Waveform } from "@/components/overlay/caption/Waveform";
 import { Badge } from "@/components/ui/badge";
 import { useTranscription } from "@/hooks/transcription/useTranscription";
@@ -12,6 +13,7 @@ export const CaptionWindow = () => {
   useTranscription();
   useTranscriptionAutoSend();
 
+  const t = useTranslations("caption");
   const entries = useTranscriptionStore((state) => state.entries);
   const partial = useTranscriptionStore((state) => state.partial);
   const error = useTranscriptionStore((state) => state.error);
@@ -39,7 +41,7 @@ export const CaptionWindow = () => {
             !text && "opacity-50 italic",
           )}
         >
-          {error ?? text ?? "Waiting for speech..."}
+          {error ?? text ?? t("waitingForSpeech")}
         </p>
       </Badge>
     </div>

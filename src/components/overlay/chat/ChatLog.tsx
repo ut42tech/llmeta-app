@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageSquare } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { ChatMessageItem } from "@/components/overlay/chat/ChatMessageItem";
 import { TypingIndicator } from "@/components/overlay/chat/TypingIndicator";
@@ -13,19 +14,23 @@ type ChatLogProps = {
   typingUsers: EntityRecord<TypingUser>;
 };
 
-const EmptyState = () => (
-  <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
-    <div className="flex size-12 items-center justify-center rounded-full bg-muted">
-      <MessageSquare className="size-5 text-muted-foreground" />
+const EmptyState = () => {
+  const t = useTranslations("chat");
+
+  return (
+    <div className="flex h-full flex-col items-center justify-center gap-3 text-center">
+      <div className="flex size-12 items-center justify-center rounded-full bg-muted">
+        <MessageSquare className="size-5 text-muted-foreground" />
+      </div>
+      <div className="space-y-1">
+        <p className="text-sm font-medium">{t("noMessagesYet")}</p>
+        <p className="text-xs text-muted-foreground">
+          {t("startConversation")}
+        </p>
+      </div>
     </div>
-    <div className="space-y-1">
-      <p className="text-sm font-medium">No messages yet</p>
-      <p className="text-xs text-muted-foreground">
-        Start the conversation to see replies here
-      </p>
-    </div>
-  </div>
-);
+  );
+};
 
 export const ChatLog = ({ messages, sessionId, typingUsers }: ChatLogProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
