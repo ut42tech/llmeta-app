@@ -1,5 +1,6 @@
 "use client";
 
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { AIChatButton } from "@/components/overlay/dock/AIChatButton";
 import { ChatButton } from "@/components/overlay/dock/ChatButton";
 import { SettingsDrawer } from "@/components/overlay/dock/SettingsDrawer";
@@ -32,6 +33,7 @@ export const Dock = () => {
         </ButtonGroup>
         <ViewToggleButton />
         <VoiceChatButton />
+        <LanguageSwitcher />
         <SettingsDrawer />
       </div>
     </TooltipProvider>

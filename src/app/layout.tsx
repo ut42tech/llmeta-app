@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP, Roboto, Roboto_Mono } from "next/font/google";
+import { getLocale, getMessages } from "next-intl/server";
+import { I18nProvider } from "@/components/I18nProvider";
 import "./globals.css";
 
 const notoSans = Noto_Sans_JP({
@@ -28,17 +30,22 @@ export const metadata: Metadata = {
   description: "AI-powered Metaverse",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${notoSans.variable} ${roboto.variable} ${robotoMono.variable} antialiased`}
       >
-        {children}
+        <I18nProvider messages={messages} locale={locale}>
+          {children}
+        </I18nProvider>
       </body>
     </html>
   );

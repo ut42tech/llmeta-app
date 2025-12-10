@@ -1,6 +1,7 @@
 "use client";
 
 import { Mic, MicOff } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useHotkeys } from "react-hotkeys-hook";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
@@ -12,6 +13,7 @@ import {
 import { useVoiceChat } from "@/hooks/voice/useVoiceChat";
 
 export const VoiceChatButton = () => {
+  const t = useTranslations("voiceChat");
   const { status, toggleMic, canPublish } = useVoiceChat();
 
   const isBusy = status.isPublishing;
@@ -32,9 +34,9 @@ export const VoiceChatButton = () => {
 
   const label = (() => {
     if (status.error) return status.error;
-    if (!canPublish) return "Connect to a room to talk";
-    if (permissionDenied) return "Microphone permission denied";
-    return isActive ? "Mute microphone" : "Unmute microphone";
+    if (!canPublish) return t("connectToTalk");
+    if (permissionDenied) return t("permissionDenied");
+    return isActive ? t("mute") : t("unmute");
   })();
 
   return (
@@ -43,7 +45,7 @@ export const VoiceChatButton = () => {
         <Button
           size="icon-lg"
           variant={isActive ? "default" : "outline"}
-          aria-label={isActive ? "Mute microphone" : "Unmute microphone"}
+          aria-label={isActive ? t("mute") : t("unmute")}
           aria-pressed={isActive}
           disabled={disabled}
           onClick={handleToggle}

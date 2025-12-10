@@ -1,6 +1,7 @@
 "use client";
 
 import { Settings } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { Euler, Vector3 } from "three";
 import { useShallow } from "zustand/react/shallow";
@@ -67,6 +68,8 @@ const SettingsRow = ({ label, description, children }: SettingsRowProps) => (
 // ---------------------------------------------------------------------------
 
 const SettingsContent = () => {
+  const t = useTranslations("settings");
+  const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
 
   // Local player state
@@ -135,22 +138,22 @@ const SettingsContent = () => {
   return (
     <div className="px-4 pb-6 space-y-6">
       {/* Username */}
-      <SettingsSection title="Username">
+      <SettingsSection title={t("username")}>
         <div className="flex items-center gap-2">
           <Input
             value={nameInput}
             onChange={(e) => setNameInput(e.target.value)}
-            placeholder="Enter your name"
+            placeholder={t("usernamePlaceholder")}
             className="flex-1"
           />
           <Button onClick={handleUpdateName} disabled={!isNameChanged}>
-            Update
+            {tCommon("update")}
           </Button>
         </div>
       </SettingsSection>
 
       {/* Avatar */}
-      <SettingsSection title="Avatar">
+      <SettingsSection title={t("avatar")}>
         <AvatarPicker
           avatars={AVATAR_LIST}
           selectedId={currentAvatar?.id}
@@ -159,40 +162,34 @@ const SettingsContent = () => {
       </SettingsSection>
 
       {/* Position */}
-      <SettingsSection title="Position">
+      <SettingsSection title={t("position")}>
         <SettingsRow
           label={`x: ${position.x.toFixed(2)} / y: ${position.y.toFixed(2)} / z: ${position.z.toFixed(2)}`}
         >
           <Button variant="outline" onClick={handleResetPosition}>
-            Reset
+            {tCommon("reset")}
           </Button>
         </SettingsRow>
       </SettingsSection>
 
       {/* Audio Settings */}
-      <SettingsSection title="Audio Quality">
+      <SettingsSection title={t("audioQuality")}>
         <SettingsRow
-          label="AI Noise Cancellation"
-          description="Advanced noise removal powered by Krisp"
+          label={t("aiNoiseCancellation")}
+          description={t("aiNoiseCancellationDescription")}
         >
           <Button
             variant={krispEnabled ? "default" : "outline"}
             onClick={() => setKrispEnabled(!krispEnabled)}
             disabled={!krispSupported}
           >
-            {krispEnabled ? "Enabled" : "Disabled"}
+            {krispEnabled ? tCommon("enabled") : tCommon("disabled")}
           </Button>
         </SettingsRow>
         {!krispSupported && (
-          <p className="text-xs text-amber-600">
-            ⚠️ AI noise cancellation is not supported in this browser. Safari
-            17.4+ or Chrome/Edge is required.
-          </p>
+          <p className="text-xs text-amber-600">{t("krispNotSupported")}</p>
         )}
-        <p className="text-xs text-muted-foreground">
-          Note: Basic echo cancellation and noise suppression are always
-          enabled.
-        </p>
+        <p className="text-xs text-muted-foreground">{t("basicNoiseNote")}</p>
       </SettingsSection>
     </div>
   );
@@ -203,6 +200,8 @@ const SettingsContent = () => {
 // ---------------------------------------------------------------------------
 
 export const SettingsDrawer = () => {
+  const t = useTranslations("settings");
+  const tCommon = useTranslations("common");
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -214,20 +213,22 @@ export const SettingsDrawer = () => {
       <Tooltip>
         <TooltipTrigger asChild>
           <DrawerTrigger asChild>
-            <Button size="icon-lg" variant="outline" aria-label="Settings">
+            <Button size="icon-lg" variant="outline" aria-label={t("tooltip")}>
               <Settings />
             </Button>
           </DrawerTrigger>
         </TooltipTrigger>
-        <TooltipContent sideOffset={6}>Settings</TooltipContent>
+        <TooltipContent sideOffset={6}>{t("tooltip")}</TooltipContent>
       </Tooltip>
 
       <DrawerContent className="flex flex-col overflow-hidden">
         <div className="mx-auto w-full max-w-md flex flex-col flex-1 overflow-hidden">
           <DrawerHeader className="text-left shrink-0">
-            <DrawerTitle className="text-2xl font-bold">Settings</DrawerTitle>
+            <DrawerTitle className="text-2xl font-bold">
+              {t("title")}
+            </DrawerTitle>
             <DrawerDescription className="p-3 bg-neutral-100 rounded-lg">
-              ⚙️ Update your preferences
+              {t("description")}
             </DrawerDescription>
           </DrawerHeader>
 
@@ -244,7 +245,7 @@ export const SettingsDrawer = () => {
           <DrawerFooter className="pt-2 shrink-0">
             <DrawerClose asChild>
               <Button variant="outline" className="w-full">
-                Close
+                {tCommon("close")}
               </Button>
             </DrawerClose>
           </DrawerFooter>

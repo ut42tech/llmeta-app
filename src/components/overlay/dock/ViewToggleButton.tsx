@@ -1,6 +1,7 @@
 "use client";
 
 import { Video } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
 import {
@@ -11,10 +12,11 @@ import {
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export const ViewToggleButton = () => {
+  const t = useTranslations("viewToggle");
   const isFPV = useLocalPlayerStore((state) => state.isFPV);
   const toggleFPV = useLocalPlayerStore((state) => state.toggleFPV);
 
-  const label = isFPV ? "Third-person view" : "First-person view";
+  const label = isFPV ? t("thirdPerson") : t("firstPerson");
 
   return (
     <Tooltip>

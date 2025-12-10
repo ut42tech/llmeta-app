@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageSquare, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { ChatInput } from "@/components/overlay/chat/ChatInput";
 import { ChatLog } from "@/components/overlay/chat/ChatLog";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export const ChatWindow = () => {
+  const t = useTranslations("chat");
   const { messages, canSend, sendMessage, setOpen, sendTyping, typingUsers } =
     useTextChat();
   const sessionId = useLocalPlayerStore((state) => state.sessionId);
@@ -29,12 +31,12 @@ export const ChatWindow = () => {
           <div className="flex-1 space-y-1">
             <CardTitle className="text-base flex items-center gap-2">
               <MessageSquare className="size-4" />
-              Chat
+              {t("title")}
             </CardTitle>
             <CardDescription className="flex flex-wrap items-center gap-1 text-[11px]">
-              <span>Press</span>
-              <Kbd>Enter</Kbd>
-              <span>to send</span>
+              {t.rich("pressEnterToSend", {
+                key: (chunks) => <Kbd>{chunks}</Kbd>,
+              })}
             </CardDescription>
           </div>
           <Button
@@ -42,7 +44,7 @@ export const ChatWindow = () => {
             size="icon"
             className="size-8 shrink-0"
             onClick={() => setOpen(false)}
-            aria-label="Minimize chat"
+            aria-label={t("title")}
           >
             <X />
           </Button>
