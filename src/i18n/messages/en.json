@@ -7,7 +7,18 @@
     "enabled": "Enabled",
     "disabled": "Disabled",
     "send": "Send",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "sendMessage": "Send message"
+  },
+  "landing": {
+    "tagline": "PROJECT LLMeta",
+    "title1": "Intelligence",
+    "title2": "Meets",
+    "title3": "Space",
+    "description": "Where AI and the Metaverse converge to redefine communication",
+    "enterWorld": "Enter the World",
+    "learnMore": "Learn More",
+    "copyright": "© 2025 — Takuya Uehara, All Rights Reserved."
   },
   "joinWorld": {
     "title": "Join World",
@@ -30,7 +41,11 @@
     "pressEnterToSend": "Press <key>Enter</key> to send",
     "typePlaceholder": "Type a message...",
     "toggleAutoSend": "Auto-send transcription to chat",
-    "openChat": "Open chat window"
+    "openChat": "Open chat window",
+    "placeholder": "Type a message",
+    "inputAriaLabel": "Chat message",
+    "noMessagesYet": "No messages yet",
+    "startConversation": "Start the conversation to see replies here"
   },
   "aiChat": {
     "title": "AI Agent",
@@ -98,5 +113,24 @@
     "selectLanguage": "Select Language",
     "english": "English",
     "japanese": "日本語"
+  },
+  "caption": {
+    "waitingForSpeech": "Waiting for speech..."
+  },
+  "statusBar": {
+    "transcription": "Transcription",
+    "transcriptionActive": "Transcription active",
+    "transcriptionInactive": "Transcription inactive",
+    "connectionStatus": "Server connection status",
+    "connectionFailedUnknown": "Connection failed due to an unknown error.",
+    "idle": "Idle",
+    "connecting": "Connecting…",
+    "connected": "Connected",
+    "failed": "Connection Failed",
+    "disconnected": "Disconnected",
+    "player": "Player",
+    "players": "Players",
+    "onlyPlayerOnline": "You are the only player online",
+    "playersOnline": "{count} players online (including you)"
   }
 }

@@ -7,7 +7,18 @@
     "enabled": "有効",
     "disabled": "無効",
     "send": "送信",
-    "loading": "読み込み中..."
+    "loading": "読み込み中...",
+    "sendMessage": "メッセージを送信"
+  },
+  "landing": {
+    "tagline": "PROJECT LLMeta",
+    "title1": "Intelligence",
+    "title2": "Meets",
+    "title3": "Space",
+    "description": "AIとメタバースが融合し、コミュニケーションを再定義する場所",
+    "enterWorld": "ワールドに入る",
+    "learnMore": "もっと詳しく",
+    "copyright": "© 2025 — Takuya Uehara, All Rights Reserved."
   },
   "joinWorld": {
     "title": "ワールドに参加",
@@ -30,7 +41,11 @@
     "pressEnterToSend": "<key>Enter</key>で送信",
     "typePlaceholder": "メッセージを入力...",
     "toggleAutoSend": "文字起こしをチャットに自動送信",
-    "openChat": "チャットウィンドウを開く"
+    "openChat": "チャットウィンドウを開く",
+    "placeholder": "メッセージを入力",
+    "inputAriaLabel": "チャットメッセージ",
+    "noMessagesYet": "メッセージはまだありません",
+    "startConversation": "会話を始めるとここに表示されます"
   },
   "aiChat": {
     "title": "AIエージェント",
@@ -98,5 +113,24 @@
     "selectLanguage": "言語を選択",
     "english": "English",
     "japanese": "日本語"
+  },
+  "caption": {
+    "waitingForSpeech": "文字起こし待機中..."
+  },
+  "statusBar": {
+    "transcription": "ライブキャプション",
+    "transcriptionActive": "文字起こし中",
+    "transcriptionInactive": "文字起こし停止中",
+    "connectionStatus": "サーバー接続状態",
+    "connectionFailedUnknown": "不明なエラーにより接続に失敗しました。",
+    "idle": "待機中",
+    "connecting": "接続中…",
+    "connected": "接続済み",
+    "failed": "接続失敗",
+    "disconnected": "切断済み",
+    "player": "プレイヤー",
+    "players": "プレイヤー",
+    "onlyPlayerOnline": "あなただけがオンラインです",
+    "playersOnline": "{count}人のプレイヤーがオンライン（あなたを含む）"
   }
 }
