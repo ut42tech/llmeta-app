@@ -1,0 +1,49 @@
+"use client";
+
+import { Loader, Stats } from "@react-three/drei";
+import { Canvas } from "@react-three/fiber";
+import { Leva, useControls } from "leva";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { LiveKitSyncProvider } from "@/components/LiveKitSyncProvider";
+import { OverlayUI } from "@/components/overlay/OverlayUI";
+import { Scene } from "@/components/Scene";
+
+const Viverse = dynamic(
+  () => import("@react-three/viverse").then((mod) => mod.Viverse),
+  { ssr: false },
+);
+
+export default function ExperiencePage() {
+  // debug
+  const { stats } = useControls({ stats: false });
+
+  return (
+    <LiveKitSyncProvider>
+      <Leva titleBar={{ title: "Debug Panel" }} collapsed hidden />
+
+      <Loader />
+      {stats && <Stats />}
+
+      <OverlayUI />
+
+      <Viverse>
+        <Canvas
+          className="fixed! w-screen! h-screen! touch-none"
+          shadows
+          camera={{ position: [3, 3, 3], fov: 40 }}
+          gl={{
+            preserveDrawingBuffer: true,
+            antialias: true,
+            powerPreference: "high-performance",
+          }}
+          flat
+        >
+          <Suspense fallback={null}>
+            <Scene />
+          </Suspense>
+        </Canvas>
+      </Viverse>
+    </LiveKitSyncProvider>
+  );
+}
