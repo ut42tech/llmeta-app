@@ -20,6 +20,7 @@ type LocalPlayerState = {
   isFPV: boolean;
   pendingTeleport: { position: Vector3; rotation?: Euler } | null;
   lastSentTime: number;
+  hasJoinedWorld: boolean;
 };
 
 type LocalPlayerActions = {
@@ -35,6 +36,7 @@ type LocalPlayerActions = {
   teleport: (position: Vector3, rotation?: Euler) => void;
   setIsFPV: (isFPV: boolean) => void;
   toggleFPV: () => void;
+  setHasJoinedWorld: (hasJoined: boolean) => void;
   reset: () => void;
 };
 
@@ -50,6 +52,7 @@ const initialState: LocalPlayerState = {
   isFPV: false,
   lastSentTime: 0,
   pendingTeleport: null,
+  hasJoinedWorld: false,
 };
 
 const roundPosition = (pos: Vector3): Vector3 => {
@@ -127,5 +130,6 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
     set({ pendingTeleport: { position, rotation } }),
   setIsFPV: (isFPV) => set({ isFPV }),
   toggleFPV: () => set((s) => ({ isFPV: !s.isFPV })),
+  setHasJoinedWorld: (hasJoinedWorld) => set({ hasJoinedWorld }),
   reset: () => set(initialState),
 }));

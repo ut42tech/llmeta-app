@@ -1,6 +1,5 @@
 "use client";
 
-import { useStartAudio } from "@livekit/components-react";
 import { AlertTriangle, Globe } from "lucide-react";
 import { useState } from "react";
 import { AvatarPicker } from "@/components/overlay/dock/AvatarPicker";
@@ -53,13 +52,13 @@ const translations = {
 };
 
 export const JoinWorldDialog = () => {
-  const { mergedProps, canPlayAudio } = useStartAudio({
-    props: {},
-  });
-
+  const hasJoinedWorld = useLocalPlayerStore((state) => state.hasJoinedWorld);
   const setUsername = useLocalPlayerStore((state) => state.setUsername);
   const setCurrentAvatar = useLocalPlayerStore(
     (state) => state.setCurrentAvatar,
+  );
+  const setHasJoinedWorld = useLocalPlayerStore(
+    (state) => state.setHasJoinedWorld,
   );
 
   const [language, setLanguage] = useState<Language>("en");
@@ -69,12 +68,12 @@ export const JoinWorldDialog = () => {
   );
 
   const t = translations[language];
-  const open = !canPlayAudio;
+  const open = !hasJoinedWorld;
 
   const isFormValid =
     inputUsername.trim().length > 0 && selectedAvatar !== null;
 
-  const handleEnableAudio = () => {
+  const handleJoinWorld = () => {
     if (!isFormValid) return;
 
     // Save to store
@@ -83,8 +82,8 @@ export const JoinWorldDialog = () => {
       setCurrentAvatar(selectedAvatar);
     }
 
-    // Enable audio
-    mergedProps.onClick?.();
+    // Mark as joined
+    setHasJoinedWorld(true);
   };
 
   const handleAvatarSelect = (avatar: ViverseAvatar) => {
@@ -172,7 +171,7 @@ export const JoinWorldDialog = () => {
         <DialogFooter className="mt-4">
           <Button
             type="button"
-            onClick={handleEnableAudio}
+            onClick={handleJoinWorld}
             disabled={!isFormValid}
           >
             {t.continueButton}

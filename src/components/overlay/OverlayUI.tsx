@@ -1,5 +1,6 @@
 "use client";
 
+import { JoinWorldDialog } from "@/components/JoinWorldDialog";
 import { AIChatWindow } from "@/components/overlay/ai-chat/AIChatWindow";
 import { CaptionWindow } from "@/components/overlay/caption/CaptionWindow";
 import { ChatWindow } from "@/components/overlay/chat/ChatWindow";
@@ -14,6 +15,9 @@ export const OverlayUI = () => {
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none flex flex-col">
+      {/* Join World Dialog */}
+      <JoinWorldDialog />
+
       {/* Top Section */}
       <div className="relative flex-none">
         <StatusBar />
