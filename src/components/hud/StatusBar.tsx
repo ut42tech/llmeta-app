@@ -1,8 +1,8 @@
 "use client";
 
-import { CaptionStatusBadge } from "@/components/overlay/status-bar/CaptionStatusBadge";
-import { ConnectionStatusBadge } from "@/components/overlay/status-bar/ConnectionStatusBadge";
-import { OnlinePlayersBadge } from "@/components/overlay/status-bar/OnlinePlayersBadge";
+import { CaptionStatusBadge } from "@/components/hud/status-bar/CaptionStatusBadge";
+import { ConnectionStatusBadge } from "@/components/hud/status-bar/ConnectionStatusBadge";
+import { OnlinePlayersBadge } from "@/components/hud/status-bar/OnlinePlayersBadge";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useTranscriptionStore } from "@/stores/transcriptionStore";
 

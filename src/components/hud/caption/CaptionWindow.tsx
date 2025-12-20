@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Waveform } from "@/components/overlay/caption/Waveform";
+import { Waveform } from "@/components/hud/caption/Waveform";
 import { Badge } from "@/components/ui/badge";
 import { useTranscription } from "@/hooks/transcription/useTranscription";
 import { useTranscriptionAutoSend } from "@/hooks/transcription/useTranscriptionAutoSend";

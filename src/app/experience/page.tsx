@@ -5,8 +5,8 @@ import { Canvas } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import dynamic from "next/dynamic";
 import { Suspense } from "react";
+import { HUD } from "@/components/hud/HUD";
 import { LiveKitSyncProvider } from "@/components/LiveKitSyncProvider";
-import { OverlayUI } from "@/components/overlay/OverlayUI";
 import { Scene } from "@/components/Scene";
 
 const Viverse = dynamic(
@@ -25,7 +25,7 @@ export default function ExperiencePage() {
       <Loader />
       {stats && <Stats />}
 
-      <OverlayUI />
+      <HUD />
 
       <Viverse>
         <Canvas

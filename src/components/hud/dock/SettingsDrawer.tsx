@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { Euler, Vector3 } from "three";
 import { useShallow } from "zustand/react/shallow";
-import { AvatarPicker } from "@/components/overlay/dock/AvatarPicker";
+import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
 import { Button } from "@/components/ui/button";
 import {
   Drawer,
@@ -27,7 +27,7 @@ import { AVATAR_LIST } from "@/constants/avatars";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
-import type { ViverseAvatar } from "@/types";
+import type { ViverseAvatar } from "@/types/player";
 
 // ---------------------------------------------------------------------------
 // Settings Section Components

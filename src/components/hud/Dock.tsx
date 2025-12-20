@@ -1,13 +1,13 @@
 "use client";
 
+import { AIChatButton } from "@/components/hud/dock/AIChatButton";
+import { ChatButton } from "@/components/hud/dock/ChatButton";
+import { SettingsDrawer } from "@/components/hud/dock/SettingsDrawer";
+import { ViewToggleButton } from "@/components/hud/dock/ViewToggleButton";
+import { VoiceChatButton } from "@/components/hud/dock/VoiceChatButton";
+import { WorldInfoDrawer } from "@/components/hud/dock/WorldInfoDrawer";
+import { YourInfoDrawer } from "@/components/hud/dock/YourInfoDrawer";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { AIChatButton } from "@/components/overlay/dock/AIChatButton";
-import { ChatButton } from "@/components/overlay/dock/ChatButton";
-import { SettingsDrawer } from "@/components/overlay/dock/SettingsDrawer";
-import { ViewToggleButton } from "@/components/overlay/dock/ViewToggleButton";
-import { VoiceChatButton } from "@/components/overlay/dock/VoiceChatButton";
-import { WorldInfoDrawer } from "@/components/overlay/dock/WorldInfoDrawer";
-import { YourInfoDrawer } from "@/components/overlay/dock/YourInfoDrawer";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { TooltipProvider } from "@/components/ui/tooltip";
 

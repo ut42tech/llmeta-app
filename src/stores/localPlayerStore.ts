@@ -1,7 +1,7 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { PERFORMANCE, PRECISION } from "@/constants/world";
-import type { AnimationState, MoveData, ViverseAvatar } from "@/types";
+import type { AnimationState, MoveData, ViverseAvatar } from "@/types/player";
 import { normalizeAngle, roundToDecimals } from "@/utils/math";
 import { createMoveData } from "@/utils/player";
 

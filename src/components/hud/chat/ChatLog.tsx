@@ -3,10 +3,11 @@
 import { MessageSquare } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
-import { ChatMessageItem } from "@/components/overlay/chat/ChatMessageItem";
-import { TypingIndicator } from "@/components/overlay/chat/TypingIndicator";
+import { ChatMessageItem } from "@/components/hud/chat/ChatMessageItem";
+import { TypingIndicator } from "@/components/hud/chat/TypingIndicator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { ChatMessage, EntityRecord, TypingUser } from "@/types";
+import type { ChatMessage, TypingUser } from "@/types/chat";
+import type { EntityRecord } from "@/types/common";
 
 type ChatLogProps = {
   messages: ChatMessage[];

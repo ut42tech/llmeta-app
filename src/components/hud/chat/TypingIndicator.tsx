@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { TypingUser } from "@/types";
+import type { TypingUser } from "@/types/chat";
 
 type TypingIndicatorProps = {
   typingUsers: TypingUser[];

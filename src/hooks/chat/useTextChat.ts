@@ -4,7 +4,7 @@ import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useChatStore } from "@/stores/chatStore";
-import type { ChatMessageImage } from "@/types";
+import type { ChatMessageImage } from "@/types/chat";
 
 export function useTextChat() {
   const { sendChatMessage, sendTyping, isConnected } = useSyncClient();

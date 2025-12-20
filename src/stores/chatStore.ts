@@ -1,14 +1,27 @@
 import { create } from "zustand";
-import { removeEntity, upsertEntity } from "@/stores/helpers";
-import type {
-  ChatMessage,
-  ChatMessageStatus,
-  EntityRecord,
-  TypingUser,
-} from "@/types";
+import type { ChatMessage, ChatMessageStatus, TypingUser } from "@/types/chat";
+import type { EntityRecord } from "@/types/common";
 
 const MAX_CHAT_MESSAGES = 200;
 const TYPING_TIMEOUT_MS = 3000;
+
+// Inline helpers (previously in stores/helpers.ts)
+const upsertEntity = <T>(
+  record: EntityRecord<T>,
+  id: string,
+  data: T,
+): EntityRecord<T> => ({
+  ...record,
+  [id]: record[id] ? { ...record[id], ...data } : data,
+});
+
+const removeEntity = <T>(
+  record: EntityRecord<T>,
+  id: string,
+): EntityRecord<T> => {
+  const { [id]: _, ...rest } = record;
+  return rest;
+};
 
 const appendMessage = (
   messages: ChatMessage[],
@@ -115,22 +128,18 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   addTypingUser: (sessionId, username) => {
     const state = get();
 
-    // Clear existing timeout
     const existingTimeout = state.typingTimeouts[sessionId];
     if (existingTimeout) clearTimeout(existingTimeout);
 
-    // Set new timeout
     const timeout = setTimeout(() => {
       get().removeTypingUser(sessionId);
     }, TYPING_TIMEOUT_MS);
 
     set((s) => ({
-      typingUsers: upsertEntity(
-        s.typingUsers,
+      typingUsers: upsertEntity(s.typingUsers, sessionId, {
         sessionId,
-        { sessionId, username },
-        { sessionId, username },
-      ),
+        username,
+      }),
       typingTimeouts: { ...s.typingTimeouts, [sessionId]: timeout },
     }));
   },
@@ -146,7 +155,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
   },
 
   reset: () => {
-    // Clear all timeouts before reset
     const timeouts = get().typingTimeouts;
     for (const timeout of Object.values(timeouts)) {
       clearTimeout(timeout);

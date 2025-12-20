@@ -2,8 +2,8 @@
 
 import { MessageSquare, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { ChatInput } from "@/components/overlay/chat/ChatInput";
-import { ChatLog } from "@/components/overlay/chat/ChatLog";
+import { ChatInput } from "@/components/hud/chat/ChatInput";
+import { ChatLog } from "@/components/hud/chat/ChatLog";
 import { Button } from "@/components/ui/button";
 import {
   Card,

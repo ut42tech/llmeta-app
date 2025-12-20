@@ -1,11 +1,37 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
-import {
-  removeEntity,
-  updateEntityField,
-  upsertEntity,
-} from "@/stores/helpers";
-import type { AnimationState, EntityRecord, RemotePlayer } from "@/types";
+import type { EntityRecord } from "@/types/common";
+import type { AnimationState, RemotePlayer } from "@/types/player";
+
+// Inline helpers (previously in stores/helpers.ts)
+const upsertEntity = <T extends Record<string, unknown>>(
+  record: EntityRecord<T>,
+  id: string,
+  data: Partial<T>,
+  defaults: T,
+): EntityRecord<T> => ({
+  ...record,
+  [id]: record[id] ? { ...record[id], ...data } : { ...defaults, ...data },
+});
+
+const removeEntity = <T>(
+  record: EntityRecord<T>,
+  id: string,
+): EntityRecord<T> => {
+  const { [id]: _, ...rest } = record;
+  return rest;
+};
+
+const updateField = <T, K extends keyof T>(
+  record: EntityRecord<T>,
+  id: string,
+  field: K,
+  value: T[K],
+): EntityRecord<T> => {
+  const existing = record[id];
+  if (!existing) return record;
+  return { ...record, [id]: { ...existing, [field]: value } };
+};
 
 type RemotePlayersState = {
   players: EntityRecord<RemotePlayer>;
@@ -61,17 +87,12 @@ export const useRemotePlayersStore = create<RemotePlayersStore>((set) => ({
 
   setPlayerMuteStatus: (sessionId, isMuted) =>
     set((state) => ({
-      players: updateEntityField(state.players, sessionId, "isMuted", isMuted),
+      players: updateField(state.players, sessionId, "isMuted", isMuted),
     })),
 
   setPlayerSpeakingStatus: (sessionId, isSpeaking) =>
     set((state) => ({
-      players: updateEntityField(
-        state.players,
-        sessionId,
-        "isSpeaking",
-        isSpeaking,
-      ),
+      players: updateField(state.players, sessionId, "isSpeaking", isSpeaking),
     })),
 
   clearAll: () => set({ players: {} }),

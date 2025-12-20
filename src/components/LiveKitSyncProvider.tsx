@@ -14,14 +14,15 @@ import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
 import { JoinWorldDialog } from "@/components/JoinWorldDialog";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
-import { useChatDataChannel } from "@/hooks/livekit/data-channel/useChatDataChannel";
-import { usePlayerDataChannel } from "@/hooks/livekit/data-channel/usePlayerDataChannel";
+import { useChatDataChannel } from "@/hooks/livekit/useChatDataChannel";
 import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
+import { usePlayerDataChannel } from "@/hooks/livekit/usePlayerDataChannel";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
-import type { ChatMessageImage, MoveData, ProfileData } from "@/types";
+import type { ChatMessageImage } from "@/types/chat";
+import type { MoveData, ProfileData } from "@/types/player";
 
 type LiveKitSyncContextValue = {
   sessionId?: string;

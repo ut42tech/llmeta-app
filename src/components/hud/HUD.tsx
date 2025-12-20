@@ -1,15 +1,15 @@
 "use client";
 
+import { AIChatWindow } from "@/components/hud/ai-chat/AIChatWindow";
+import { CaptionWindow } from "@/components/hud/caption/CaptionWindow";
+import { ChatWindow } from "@/components/hud/chat/ChatWindow";
+import { Dock } from "@/components/hud/Dock";
+import { StatusBar } from "@/components/hud/StatusBar";
 import { JoinWorldDialog } from "@/components/JoinWorldDialog";
-import { AIChatWindow } from "@/components/overlay/ai-chat/AIChatWindow";
-import { CaptionWindow } from "@/components/overlay/caption/CaptionWindow";
-import { ChatWindow } from "@/components/overlay/chat/ChatWindow";
-import { Dock } from "@/components/overlay/Dock";
-import { StatusBar } from "@/components/overlay/StatusBar";
 import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useAIChatStore } from "@/stores/aiChatStore";
 
-export const OverlayUI = () => {
+export const HUD = () => {
   const { isOpen: isTextChatOpen } = useTextChat();
   const { isOpen: isAIChatOpen } = useAIChatStore();
 

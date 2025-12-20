@@ -3,7 +3,7 @@
 import { AlertTriangle, Globe } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { AvatarPicker } from "@/components/overlay/dock/AvatarPicker";
+import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -21,7 +21,7 @@ import { AVATAR_LIST } from "@/constants/avatars";
 import { type Locale, localeNames, locales } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { ViverseAvatar } from "@/types";
+import type { ViverseAvatar } from "@/types/player";
 
 export const JoinWorldDialog = () => {
   const t = useTranslations("joinWorld");

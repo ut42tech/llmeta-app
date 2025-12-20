@@ -27,7 +27,7 @@ import {
 } from "@/constants/animations";
 import { useMovementDirection } from "@/hooks/scene/useMovementDirection";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { AnimationState } from "@/types";
+import type { AnimationState } from "@/types/player";
 import { boneMap } from "@/utils/bone-map";
 
 export function LocalCharacterAnimation({

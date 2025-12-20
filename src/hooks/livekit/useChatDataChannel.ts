@@ -1,17 +1,15 @@
-import { useDataChannel } from "@livekit/components-react";
 import { nanoid } from "nanoid";
 import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { DATA_TOPICS } from "@/constants/sync";
+import { useTypedDataChannel } from "@/hooks/livekit/createTypedDataChannel";
 import { useChatStore } from "@/stores/chatStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import type {
   ChatMessageImage,
   ChatMessagePacket,
-  ReceivedDataMessage,
   TypingPacket,
-} from "@/types";
-import { decodePayload, encodePayload } from "@/utils/data-channel";
+} from "@/types/chat";
 
 /**
  * Hook for chat data channels (messages + typing)
@@ -37,54 +35,49 @@ export function useChatDataChannel(identity: string) {
     })),
   );
 
-  const handleChatMessage = useCallback(
-    (msg: ReceivedDataMessage<typeof DATA_TOPICS.CHAT_MESSAGE>) => {
-      const remoteId = msg.from?.identity || msg.from?.sid || "";
-      const localId = localSessionId || identity;
-      if (!remoteId || remoteId === localId) return;
+  const effectiveIdentity = localSessionId || identity;
 
-      const data = decodePayload<ChatMessagePacket>(msg.payload);
+  // Chat message channel
+  const handleChatMessage = useCallback(
+    (data: ChatMessagePacket, senderId: string) => {
       if (!data?.text && !data?.image) return;
 
       addIncomingMessage({
         id: data.id,
-        sessionId: remoteId,
+        sessionId: senderId,
         username: data.username,
         content: data.text,
         sentAt: data.sentAt ?? Date.now(),
         image: data.image,
       });
     },
-    [addIncomingMessage, identity, localSessionId],
+    [addIncomingMessage],
   );
 
-  const handleTypingMessage = useCallback(
-    (msg: ReceivedDataMessage<typeof DATA_TOPICS.TYPING>) => {
-      const remoteId = msg.from?.identity || msg.from?.sid || "";
-      const localId = localSessionId || identity;
-      if (!remoteId || remoteId === localId) return;
+  const { publishAsync: publishChatMessage } =
+    useTypedDataChannel<ChatMessagePacket>({
+      topic: DATA_TOPICS.CHAT_MESSAGE,
+      identity: effectiveIdentity,
+      onMessage: handleChatMessage,
+    });
 
-      const data = decodePayload<TypingPacket>(msg.payload);
-      if (!data) return;
-
+  // Typing indicator channel
+  const handleTyping = useCallback(
+    (data: TypingPacket, senderId: string) => {
       if (data.isTyping) {
-        addTypingUser(remoteId, data.username);
+        addTypingUser(senderId, data.username);
       } else {
-        removeTypingUser(remoteId);
+        removeTypingUser(senderId);
       }
     },
-    [addTypingUser, identity, localSessionId, removeTypingUser],
+    [addTypingUser, removeTypingUser],
   );
 
-  const { send: sendChatPacket } = useDataChannel(
-    DATA_TOPICS.CHAT_MESSAGE,
-    handleChatMessage,
-  );
-
-  const { send: sendTypingPacket } = useDataChannel(
-    DATA_TOPICS.TYPING,
-    handleTypingMessage,
-  );
+  const { publish: publishTyping } = useTypedDataChannel<TypingPacket>({
+    topic: DATA_TOPICS.TYPING,
+    identity: effectiveIdentity,
+    onMessage: handleTyping,
+  });
 
   const sendChatMessage = useCallback(
     async (content: string, image?: ChatMessageImage) => {
@@ -102,7 +95,7 @@ export function useChatDataChannel(identity: string) {
 
       addOutgoingMessage({
         id: payload.id,
-        sessionId: localSessionId || identity,
+        sessionId: effectiveIdentity,
         username: payload.username,
         content: payload.text,
         sentAt: payload.sentAt,
@@ -110,21 +103,17 @@ export function useChatDataChannel(identity: string) {
       });
 
       try {
-        await sendChatPacket(encodePayload(payload), {
-          topic: DATA_TOPICS.CHAT_MESSAGE,
-          reliable: true,
-        });
+        await publishChatMessage(payload, true);
         updateMessageStatus(messageId, "sent");
       } catch (error) {
-        console.warn("[LiveKit] Failed to publish chat message", error);
+        console.warn("[Chat] Failed to send message", error);
         updateMessageStatus(messageId, "failed");
       }
     },
     [
       addOutgoingMessage,
-      identity,
-      localSessionId,
-      sendChatPacket,
+      effectiveIdentity,
+      publishChatMessage,
       updateMessageStatus,
       username,
     ],
@@ -132,16 +121,9 @@ export function useChatDataChannel(identity: string) {
 
   const sendTyping = useCallback(
     (isTyping: boolean) => {
-      const payload: TypingPacket = {
-        username: username || undefined,
-        isTyping,
-      };
-      sendTypingPacket(encodePayload(payload), {
-        topic: DATA_TOPICS.TYPING,
-        reliable: false,
-      }).catch((e) => console.warn("[LiveKit] Failed to publish typing", e));
+      publishTyping({ username: username || undefined, isTyping }, false);
     },
-    [sendTypingPacket, username],
+    [publishTyping, username],
   );
 
   return { sendChatMessage, sendTyping };

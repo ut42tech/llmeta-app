@@ -8,12 +8,13 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { countEntities } from "@/stores/helpers";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 export const OnlinePlayersBadge = () => {
   const t = useTranslations("statusBar");
-  const playersCount = useRemotePlayersStore((s) => countEntities(s.players));
+  const playersCount = useRemotePlayersStore(
+    (s) => Object.keys(s.players).length,
+  );
   const totalCount = playersCount + 1;
 
   return (
