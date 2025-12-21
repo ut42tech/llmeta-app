@@ -10,24 +10,36 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useTypingDebounce } from "@/hooks/chat/useTypingDebounce";
 
 type ChatInputProps = {
   canSend: boolean;
   onSend: (message: string) => Promise<void>;
+  onTypingChange?: (isTyping: boolean) => void;
 };
 
 const MAX_MESSAGE_LENGTH = 500;
 
-export const ChatInput = ({ canSend, onSend }: ChatInputProps) => {
+export const ChatInput = ({
+  canSend,
+  onSend,
+  onTypingChange,
+}: ChatInputProps) => {
   const t = useTranslations("chat");
   const tCommon = useTranslations("common");
   const [inputValue, setInputValue] = useState("");
   const [isComposing, setIsComposing] = useState(false);
 
+  const clearTyping = useTypingDebounce(
+    inputValue.trim().length > 0,
+    onTypingChange ?? (() => {}),
+  );
+
   const handleSend = async () => {
     const trimmedValue = inputValue.trim();
     if (!trimmedValue || !canSend) return;
 
+    clearTyping();
     await onSend(trimmedValue);
     setInputValue("");
   };

@@ -4,12 +4,15 @@ import { MessageSquare } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { ChatMessageItem } from "@/components/hud/chat/ChatMessageItem";
+import { TypingIndicator } from "@/components/hud/chat/TypingIndicator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import type { ChatMessage } from "@/types/chat";
+import type { ChatMessage, TypingUser } from "@/types/chat";
+import type { EntityRecord } from "@/types/common";
 
 type ChatLogProps = {
   messages: ChatMessage[];
   sessionId: string | null;
+  typingUsers: EntityRecord<TypingUser>;
 };
 
 const EmptyState = () => {
@@ -30,7 +33,7 @@ const EmptyState = () => {
   );
 };
 
-export const ChatLog = ({ messages, sessionId }: ChatLogProps) => {
+export const ChatLog = ({ messages, sessionId, typingUsers }: ChatLogProps) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prevMessagesLengthRef = useRef(messages.length);
 
@@ -40,6 +43,8 @@ export const ChatLog = ({ messages, sessionId }: ChatLogProps) => {
       prevMessagesLengthRef.current = messages.length;
     }
   }, [messages.length]);
+
+  const typingUsersArray = Object.values(typingUsers);
 
   if (messages.length === 0) {
     return (
@@ -54,6 +59,7 @@ export const ChatLog = ({ messages, sessionId }: ChatLogProps) => {
       <ScrollArea className="h-full pr-4">
         <div className="flex flex-col-reverse gap-3 pb-4">
           <div ref={messagesEndRef} />
+          <TypingIndicator typingUsers={typingUsersArray} />
           {messages
             .slice()
             .reverse()

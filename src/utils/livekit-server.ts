@@ -35,7 +35,6 @@ export const createLiveKitAccessToken = async (
     canPublish: true,
     canSubscribe: true,
     canPublishData: true,
-    canUpdateOwnMetadata: true,
   });
 
   return {

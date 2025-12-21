@@ -1,4 +1,3 @@
-import { useRoomContext } from "@livekit/components-react";
 import { useCallback } from "react";
 import { Euler, Vector3 } from "three";
 import { DATA_TOPICS } from "@/constants/sync";
@@ -7,11 +6,9 @@ import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import type { AnimationState, MoveData, ProfileData } from "@/types/player";
 
 /**
- * Hook for player synchronization data channels (move only)
- * Profile sync is handled via Participant Attributes
+ * Hook for player synchronization data channels (move + profile)
  */
 export function usePlayerDataChannel(identity: string) {
-  const room = useRoomContext();
   const upsertPlayer = useRemotePlayersStore((s) => s.upsertPlayer);
 
   // Move channel
@@ -41,29 +38,31 @@ export function usePlayerDataChannel(identity: string) {
     onMessage: handleMove,
   });
 
+  // Profile channel
+  const handleProfile = useCallback(
+    (data: ProfileData, senderId: string) => {
+      upsertPlayer(senderId, {
+        username: data.username,
+        avatar: data.avatar,
+      });
+    },
+    [upsertPlayer],
+  );
+
+  const { publish: publishProfile } = useTypedDataChannel<ProfileData>({
+    topic: DATA_TOPICS.PROFILE,
+    identity,
+    onMessage: handleProfile,
+  });
+
   const sendMove = useCallback(
     (payload: MoveData) => publishMove(payload, false),
     [publishMove],
   );
 
-  /**
-   * Update local participant's profile via Participant Attributes.
-   * This data is automatically synced to all participants by LiveKit.
-   */
   const sendProfile = useCallback(
-    (payload: ProfileData) => {
-      const attributes: Record<string, string> = {};
-      if (payload.username !== undefined) {
-        attributes.username = payload.username || "";
-      }
-      if (payload.avatar !== undefined) {
-        attributes.avatar = JSON.stringify(payload.avatar);
-      }
-      room.localParticipant.setAttributes(attributes).catch((e) => {
-        console.warn("[PlayerDataChannel] Failed to set attributes", e);
-      });
-    },
-    [room],
+    (payload: ProfileData) => publishProfile(payload, true),
+    [publishProfile],
   );
 
   return { sendMove, sendProfile };

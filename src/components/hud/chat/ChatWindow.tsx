@@ -20,7 +20,8 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export const ChatWindow = () => {
   const t = useTranslations("chat");
-  const { messages, canSend, sendMessage, setOpen } = useTextChat();
+  const { messages, canSend, sendMessage, setOpen, sendTyping, typingUsers } =
+    useTextChat();
   const sessionId = useLocalPlayerStore((state) => state.sessionId);
 
   return (
@@ -51,11 +52,19 @@ export const ChatWindow = () => {
       </CardHeader>
       <Separator />
       <CardContent className="p-4">
-        <ChatLog messages={messages} sessionId={sessionId} />
+        <ChatLog
+          messages={messages}
+          sessionId={sessionId}
+          typingUsers={typingUsers}
+        />
       </CardContent>
       <Separator />
       <CardFooter className="p-4">
-        <ChatInput canSend={canSend} onSend={sendMessage} />
+        <ChatInput
+          canSend={canSend}
+          onSend={sendMessage}
+          onTypingChange={sendTyping}
+        />
       </CardFooter>
     </Card>
   );

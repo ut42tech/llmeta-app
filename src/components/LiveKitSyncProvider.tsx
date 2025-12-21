@@ -8,18 +8,20 @@ import {
 import {
   ConnectionState as LiveKitConnectionState,
   type Room,
+  RoomEvent,
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
 import { JoinWorldDialog } from "@/components/JoinWorldDialog";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
+import { useChatDataChannel } from "@/hooks/livekit/useChatDataChannel";
 import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
 import { usePlayerDataChannel } from "@/hooks/livekit/usePlayerDataChannel";
-import { useRemoteProfileSync } from "@/hooks/livekit/useRemoteProfileSync";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
+import type { ChatMessageImage } from "@/types/chat";
 import type { MoveData, ProfileData } from "@/types/player";
 
 type LiveKitSyncContextValue = {
@@ -27,6 +29,8 @@ type LiveKitSyncContextValue = {
   isConnected: boolean;
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
+  sendChatMessage: (content: string, image?: ChatMessageImage) => Promise<void>;
+  sendTyping: (isTyping: boolean) => void;
   room?: Room;
 };
 
@@ -35,6 +39,8 @@ const defaultContextValue: LiveKitSyncContextValue = {
   isConnected: false,
   sendMove: () => void 0,
   sendProfile: () => void 0,
+  sendChatMessage: async () => void 0,
+  sendTyping: () => void 0,
   room: undefined,
 };
 
@@ -88,15 +94,12 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
   const { sendMove, sendProfile } = usePlayerDataChannel(identity);
-
-  // Render remote profile sync component
-  const RemoteProfileSyncComponent = useRemoteProfileSync();
+  const { sendChatMessage, sendTyping } = useChatDataChannel(identity);
 
   useEffect(() => {
     void initKrisp();
   }, [initKrisp]);
 
-  // Sync local profile via Participant Attributes when connected or when profile changes
   useEffect(() => {
     if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {
       return;
@@ -108,8 +111,34 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
     });
   }, [sessionId, connectionState, username, currentAvatar, sendProfile]);
 
-  // Note: No need for ParticipantConnected handler anymore
-  // Participant Attributes are automatically synced to new participants by LiveKit
+  useEffect(() => {
+    if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {
+      return;
+    }
+
+    const handleParticipantConnected = () => {
+      sendProfile({
+        username: username || undefined,
+        avatar: currentAvatar,
+      });
+    };
+
+    roomInstance.on(RoomEvent.ParticipantConnected, handleParticipantConnected);
+
+    return () => {
+      roomInstance.off(
+        RoomEvent.ParticipantConnected,
+        handleParticipantConnected,
+      );
+    };
+  }, [
+    sessionId,
+    connectionState,
+    username,
+    currentAvatar,
+    sendProfile,
+    roomInstance,
+  ]);
 
   const contextValue = useMemo<LiveKitSyncContextValue>(
     () => ({
@@ -117,14 +146,23 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       isConnected: connectionState === LiveKitConnectionState.Connected,
       sendMove,
       sendProfile,
+      sendChatMessage,
+      sendTyping,
       room: roomInstance,
     }),
-    [sessionId, connectionState, sendMove, sendProfile, roomInstance],
+    [
+      sessionId,
+      connectionState,
+      sendMove,
+      sendProfile,
+      sendChatMessage,
+      sendTyping,
+      roomInstance,
+    ],
   );
 
   return (
     <LiveKitSyncContext.Provider value={contextValue}>
-      {RemoteProfileSyncComponent}
       {children}
     </LiveKitSyncContext.Provider>
   );
