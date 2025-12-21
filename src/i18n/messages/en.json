@@ -33,7 +33,7 @@
   },
   "lobby": {
     "connecting": "Connecting to server...",
-    "connected": "Connected! Entering world...",
+    "connected": "Connected.",
     "failed": "Connection failed",
     "retry": "Retry",
     "waitingForConnection": "Waiting for connection..."
