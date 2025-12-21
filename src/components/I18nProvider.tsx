@@ -8,12 +8,14 @@ import { useLanguageStore } from "@/stores/languageStore";
 type I18nProviderProps = {
   messages: AbstractIntlMessages;
   locale: string;
+  timeZone: string;
   children: ReactNode;
 };
 
 export function I18nProvider({
   messages: initialMessages,
   locale: initialLocale,
+  timeZone,
   children,
 }: I18nProviderProps) {
   const storedLocale = useLanguageStore((state) => state.locale);
@@ -34,7 +36,11 @@ export function I18nProvider({
   }, [storedLocale, locale]);
 
   return (
-    <NextIntlClientProvider messages={messages} locale={locale}>
+    <NextIntlClientProvider
+      messages={messages}
+      locale={locale}
+      timeZone={timeZone}
+    >
       {children}
     </NextIntlClientProvider>
   );
