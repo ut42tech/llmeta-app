@@ -22,7 +22,7 @@
   },
   "joinWorld": {
     "title": "Join World",
-    "description": "Set up your profile to join the world. Audio permission is required to hear other users.",
+    "description": "Set up your profile to join the world.",
     "languageLabel": "Language",
     "warningTitle": "Privacy Notice",
     "warningText": "This app sends data to external services. Please do not share personal or sensitive information.",
