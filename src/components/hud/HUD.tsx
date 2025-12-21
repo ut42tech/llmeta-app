@@ -6,11 +6,11 @@ import { ChatWindow } from "@/components/hud/chat/ChatWindow";
 import { Dock } from "@/components/hud/Dock";
 import { StatusBar } from "@/components/hud/StatusBar";
 import { JoinWorldDialog } from "@/components/JoinWorldDialog";
-import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useAIChatStore } from "@/stores/aiChatStore";
+import { useChatStore } from "@/stores/chatStore";
 
 export const HUD = () => {
-  const { isOpen: isTextChatOpen } = useTextChat();
+  const isTextChatOpen = useChatStore((state) => state.isOpen);
   const { isOpen: isAIChatOpen } = useAIChatStore();
 
   return (

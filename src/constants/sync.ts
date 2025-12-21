@@ -8,11 +8,13 @@ export const LIVEKIT_CONFIG = {
   wsUrl: process.env.LIVEKIT_URL || "",
 };
 
+/**
+ * Data channel topics.
+ * Note: Profile sync now uses Participant Attributes instead of data channels.
+ * Chat now uses LiveKit's native useChat hook.
+ */
 export const DATA_TOPICS = {
   MOVE: "player/move",
-  PROFILE: "player/profile",
-  CHAT_MESSAGE: "chat/message",
-  TYPING: "chat/typing",
 } as const;
 
 export type DataTopic = (typeof DATA_TOPICS)[keyof typeof DATA_TOPICS];

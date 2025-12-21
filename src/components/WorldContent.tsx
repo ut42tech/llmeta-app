@@ -1,15 +1,17 @@
+"use client";
+
+import { useChat } from "@livekit/components-react";
 import { useFrame } from "@react-three/fiber";
 import { Container, Image, Text } from "@react-three/uikit";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Vector3 } from "three";
-import { useChatStore } from "@/stores/chatStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import {
   useWorldStore,
   type WorldContentItem as WorldContentItemType,
 } from "@/stores/worldStore";
-import { hasImageContent } from "@/utils/chat";
+import type { ChatMessage, ChatMessageImage } from "@/types/chat";
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
@@ -39,11 +41,57 @@ const DIRECTIONS = BASE_DIRECTIONS.flatMap(({ position, rotation, name }) => [
 ]);
 
 /**
+ * Transform LiveKit chat messages to our format, extracting images from JSON
+ */
+function parseImageMessages(
+  chatMessages: {
+    message: string;
+    from?: { identity?: string; name?: string; isLocal?: boolean };
+    timestamp: number;
+  }[],
+): ChatMessage[] {
+  const result: ChatMessage[] = [];
+
+  for (const msg of chatMessages) {
+    let image: ChatMessageImage | undefined;
+
+    // Try to parse as JSON for image messages
+    try {
+      const parsed = JSON.parse(msg.message) as {
+        text?: string;
+        image?: ChatMessageImage;
+      };
+      if (parsed.image?.url) {
+        image = parsed.image;
+      }
+    } catch {
+      // Not JSON, skip
+      continue;
+    }
+
+    if (image) {
+      result.push({
+        id: `${msg.timestamp}-${msg.from?.identity || "unknown"}`,
+        sessionId: msg.from?.identity || "unknown",
+        username: msg.from?.name || undefined,
+        content: "",
+        direction: msg.from?.isLocal ? "outgoing" : "incoming",
+        status: "sent",
+        sentAt: msg.timestamp,
+        image,
+      });
+    }
+  }
+
+  return result;
+}
+
+/**
  * Component that displays image content fixed at world coordinates.
  * Placed at the player's position when the content is sent and displayed for 1 minute.
  */
 export function WorldContent() {
-  const messages = useChatStore((state) => state.messages);
+  const { chatMessages } = useChat();
   const remotePlayers = useRemotePlayersStore((state) => state.players);
   const localPlayerPosition = useLocalPlayerStore((state) => state.position);
   const localPlayerUsername = useLocalPlayerStore((state) => state.username);
@@ -54,8 +102,8 @@ export function WorldContent() {
   const processedMessageIds = useRef<Set<string>>(new Set());
 
   const contentMessages = useMemo(() => {
-    return messages.filter(hasImageContent);
-  }, [messages]);
+    return parseImageMessages(chatMessages);
+  }, [chatMessages]);
 
   useEffect(() => {
     for (const msg of contentMessages) {

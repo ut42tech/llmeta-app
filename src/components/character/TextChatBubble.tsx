@@ -1,9 +1,11 @@
+"use client";
+
+import { useChat } from "@livekit/components-react";
 import { useFrame } from "@react-three/fiber";
 import { Container, Text } from "@react-three/uikit";
 import { Suspense, useMemo, useRef } from "react";
 import type { Object3D } from "three";
-import { useChatStore } from "@/stores/chatStore";
-import { filterTextMessages } from "@/utils/chat";
+import type { ChatMessage } from "@/types/chat";
 
 const TEXT_DISPLAY_DURATION_MS = 10000;
 const MAX_TEXT_MESSAGES_TO_SHOW = 3;
@@ -14,18 +16,65 @@ type TextChatBubbleProps = {
 };
 
 /**
+ * Filter messages that are recent and contain text content
+ */
+function filterRecentTextMessages(
+  messages: ChatMessage[],
+  sessionId: string,
+  durationMs: number,
+): ChatMessage[] {
+  const cutoff = Date.now() - durationMs;
+  return messages
+    .filter(
+      (msg) =>
+        msg.sentAt > cutoff && msg.content && msg.sessionId === sessionId,
+    )
+    .slice(-MAX_TEXT_MESSAGES_TO_SHOW);
+}
+
+/**
  * Component that displays player's text chat above the avatar's head.
  * Text is displayed for 10 seconds.
  * Content such as images is displayed fixed in the world by the WorldContent component.
  */
 export function TextChatBubble({ sessionId }: TextChatBubbleProps) {
   const ref = useRef<Object3D>(null);
-  const messages = useChatStore((state) => state.messages);
+  const { chatMessages } = useChat();
+
+  // Transform LiveKit chat messages to our ChatMessage format
+  const messages: ChatMessage[] = useMemo(() => {
+    return chatMessages.map((msg) => {
+      const isLocal = msg.from?.isLocal ?? false;
+      let content = msg.message;
+
+      // Try to parse as JSON for image messages
+      try {
+        const parsed = JSON.parse(msg.message) as { text?: string };
+        if (parsed.text !== undefined) {
+          content = parsed.text;
+        }
+      } catch {
+        // Not JSON, use as-is
+      }
+
+      return {
+        id: `${msg.timestamp}-${msg.from?.identity || "unknown"}`,
+        sessionId: msg.from?.identity || "unknown",
+        username: msg.from?.name || undefined,
+        content,
+        direction: isLocal ? "outgoing" : "incoming",
+        status: "sent",
+        sentAt: msg.timestamp,
+      };
+    });
+  }, [chatMessages]);
 
   const recentTextMessages = useMemo(() => {
-    return filterTextMessages(messages, TEXT_DISPLAY_DURATION_MS)
-      .filter((msg) => msg.sessionId === sessionId)
-      .slice(-MAX_TEXT_MESSAGES_TO_SHOW);
+    return filterRecentTextMessages(
+      messages,
+      sessionId,
+      TEXT_DISPLAY_DURATION_MS,
+    );
   }, [messages, sessionId]);
 
   useFrame((state) => {

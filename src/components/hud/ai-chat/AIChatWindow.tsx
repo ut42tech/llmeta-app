@@ -1,6 +1,7 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
+import { useChat as useLiveKitChat } from "@livekit/components-react";
 import { DefaultChatTransport } from "ai";
 import {
   BotMessageSquare,
@@ -44,14 +45,13 @@ import {
 } from "@/components/ui/tooltip";
 import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useAIChatStore } from "@/stores/aiChatStore";
-import { useChatStore } from "@/stores/chatStore";
 
 export const AIChatWindow = () => {
   const t = useTranslations("aiChat");
   const tChat = useTranslations("chat");
   const tCommon = useTranslations("common");
   const { close, includeChatHistory, toggleChatHistory } = useAIChatStore();
-  const chatMessages = useChatStore((state) => state.messages);
+  const { chatMessages: liveKitChatMessages } = useLiveKitChat();
   const [isMinimized, setIsMinimized] = useState(false);
   const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
   const [refineImageId, setRefineImageId] = useState<string | null>(null);
@@ -64,20 +64,20 @@ export const AIChatWindow = () => {
     t("suggestions.generateImage"),
   ];
 
-  const chatMessagesRef = useRef(chatMessages);
-  chatMessagesRef.current = chatMessages;
+  const liveKitChatMessagesRef = useRef(liveKitChatMessages);
+  liveKitChatMessagesRef.current = liveKitChatMessages;
   const includeChatHistoryRef = useRef(includeChatHistory);
   includeChatHistoryRef.current = includeChatHistory;
 
   const getChatHistoryForContext = () => {
     if (!includeChatHistoryRef.current) return undefined;
-    return chatMessagesRef.current.map((msg) => ({
-      id: msg.id,
-      sessionId: msg.sessionId,
-      username: msg.username,
-      content: msg.content,
-      direction: msg.direction,
-      sentAt: msg.sentAt,
+    return liveKitChatMessagesRef.current.map((msg) => ({
+      id: `${msg.timestamp}-${msg.from?.identity || "unknown"}`,
+      sessionId: msg.from?.identity || "unknown",
+      username: msg.from?.name || undefined,
+      content: msg.message,
+      direction: msg.from?.isLocal ? "outgoing" : "incoming",
+      sentAt: msg.timestamp,
     }));
   };
 
