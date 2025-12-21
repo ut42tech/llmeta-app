@@ -5,7 +5,6 @@ import { CaptionWindow } from "@/components/hud/caption/CaptionWindow";
 import { ChatWindow } from "@/components/hud/chat/ChatWindow";
 import { Dock } from "@/components/hud/Dock";
 import { StatusBar } from "@/components/hud/StatusBar";
-import { JoinWorldDialog } from "@/components/JoinWorldDialog";
 import { useTextChat } from "@/hooks/chat/useTextChat";
 import { useAIChatStore } from "@/stores/aiChatStore";
 
@@ -15,9 +14,6 @@ export const HUD = () => {
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none flex flex-col">
-      {/* Join World Dialog */}
-      <JoinWorldDialog />
-
       {/* Top Section */}
       <div className="relative flex-none">
         <StatusBar />

@@ -31,6 +31,13 @@
     "avatarLabel": "Choose your avatar",
     "continueButton": "Continue"
   },
+  "lobby": {
+    "connecting": "Connecting to server...",
+    "connected": "Connected! Entering world...",
+    "failed": "Connection failed",
+    "retry": "Retry",
+    "waitingForConnection": "Waiting for connection..."
+  },
   "dock": {
     "chat": "Chat",
     "agent": "Agent",

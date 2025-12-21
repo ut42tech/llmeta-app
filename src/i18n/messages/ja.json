@@ -31,6 +31,13 @@
     "avatarLabel": "アバターを選択",
     "continueButton": "続ける"
   },
+  "lobby": {
+    "connecting": "サーバーに接続中...",
+    "connected": "接続完了！ワールドに入ります...",
+    "failed": "接続に失敗しました",
+    "retry": "再試行",
+    "waitingForConnection": "接続待機中..."
+  },
   "dock": {
     "chat": "チャット",
     "agent": "エージェント",

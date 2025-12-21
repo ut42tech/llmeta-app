@@ -53,7 +53,7 @@ export default function Home() {
               className="flex flex-col gap-4 sm:flex-row"
             >
               <Link
-                href="/experience"
+                href="/lobby"
                 className="group inline-flex items-center justify-center gap-3 rounded bg-linear-to-r from-white/90 to-white/80 px-10 py-4 text-black shadow-2xl shadow-white/20 transition hover:from-white hover:to-white"
               >
                 <span className="font-medium">{t("enterWorld")}</span>

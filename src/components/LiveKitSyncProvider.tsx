@@ -12,7 +12,6 @@ import {
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
-import { JoinWorldDialog } from "@/components/JoinWorldDialog";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { useChatDataChannel } from "@/hooks/livekit/useChatDataChannel";
 import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
@@ -27,6 +26,7 @@ import type { MoveData, ProfileData } from "@/types/player";
 type LiveKitSyncContextValue = {
   sessionId?: string;
   isConnected: boolean;
+  connectionState: LiveKitConnectionState;
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
   sendChatMessage: (content: string, image?: ChatMessageImage) => Promise<void>;
@@ -37,6 +37,7 @@ type LiveKitSyncContextValue = {
 const defaultContextValue: LiveKitSyncContextValue = {
   sessionId: undefined,
   isConnected: false,
+  connectionState: LiveKitConnectionState.Disconnected,
   sendMove: () => void 0,
   sendProfile: () => void 0,
   sendChatMessage: async () => void 0,
@@ -75,7 +76,6 @@ export function LiveKitSyncProvider({
       onError={(error) => setFailed(error.message)}
     >
       <RoomAudioRenderer />
-      <JoinWorldDialog />
       <LiveKitSyncBridge identity={identity}>{children}</LiveKitSyncBridge>
     </LiveKitRoom>
   );
@@ -144,6 +144,7 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
     () => ({
       sessionId,
       isConnected: connectionState === LiveKitConnectionState.Connected,
+      connectionState,
       sendMove,
       sendProfile,
       sendChatMessage,
