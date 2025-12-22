@@ -37,7 +37,7 @@ const parseAvatar = (
 /**
  * Extract ProfileData from participant attributes
  */
-export const getProfileFromAttributes = (
+const getProfileFromAttributes = (
   attributes: Record<string, string>,
 ): ProfileData => ({
   username: attributes[ATTR_KEYS.USERNAME] || undefined,
@@ -47,7 +47,7 @@ export const getProfileFromAttributes = (
 /**
  * Hook to manage local participant's profile via attributes
  */
-export function useLocalProfile() {
+function useLocalProfile() {
   const { localParticipant } = useLocalParticipant();
   const lastSentRef = useRef<{ username?: string; avatar?: string }>({});
 
@@ -92,7 +92,7 @@ export function useLocalProfile() {
  * useRemoteParticipants already re-renders when attributes change,
  * so we don't need manual event listeners.
  */
-export function useRemoteProfileSync() {
+function useRemoteProfileSync() {
   const remoteParticipants = useRemoteParticipants();
   const upsertPlayer = useRemotePlayersStore((s) => s.upsertPlayer);
 

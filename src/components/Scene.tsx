@@ -6,7 +6,6 @@ import { LocalCharacter } from "@/components/character/LocalCharacter";
 import { RemotePlayers } from "@/components/character/RemotePlayers";
 import { DebugPanel } from "@/components/DebugPanel";
 import { DefaultMap } from "@/components/DefaultMap";
-import { SimpleScaffold } from "@/components/SimpleScaffold";
 import { WorldContent } from "@/components/WorldContent";
 import { LIGHTING } from "@/constants/world";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
@@ -59,7 +58,7 @@ export function Scene() {
         <RemotePlayers />
       </Suspense>
 
-      <Suspense fallback={<SimpleScaffold />}>
+      <Suspense fallback={null}>
         <DefaultMap />
       </Suspense>
 

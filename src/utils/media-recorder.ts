@@ -16,7 +16,7 @@ export interface RecorderResult {
  *
  * @returns The preferred MIME type if supported, otherwise undefined
  */
-export const getSupportedMimeType = (): string | undefined => {
+const getSupportedMimeType = (): string | undefined => {
   if (
     typeof MediaRecorder.isTypeSupported === "function" &&
     MediaRecorder.isTypeSupported(PREFERRED_MIME_TYPE)

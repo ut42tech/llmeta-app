@@ -5,7 +5,7 @@ import type { ChatMessage } from "@/types/chat";
  * @param message - Chat message
  * @returns true if the message has text content
  */
-export function hasTextContent(message: ChatMessage): boolean {
+function hasTextContent(message: ChatMessage): boolean {
   return Boolean(message.content && message.content.trim().length > 0);
 }
 
