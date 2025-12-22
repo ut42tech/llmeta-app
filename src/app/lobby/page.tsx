@@ -242,4 +242,3 @@ export default function LobbyPage() {
     </LiveKitSyncProvider>
   );
 }
-
