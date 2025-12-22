@@ -29,8 +29,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useWorldStore } from "@/stores/worldStore";
 import type { ViverseAvatar } from "@/types/player";
 
 function LobbyContent() {
@@ -39,8 +39,8 @@ function LobbyContent() {
   const tLobby = useTranslations("lobby");
 
   const { connectionState } = useSyncClient();
-  const { status: connectionStatus, error: connectionError } =
-    useConnectionStore();
+  const connectionStatus = useWorldStore((state) => state.connection.status);
+  const connectionError = useWorldStore((state) => state.connection.error);
 
   const hasJoinedWorld = useLocalPlayerStore((state) => state.hasJoinedWorld);
   const setUsername = useLocalPlayerStore((state) => state.setUsername);

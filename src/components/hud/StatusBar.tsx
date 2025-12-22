@@ -3,12 +3,12 @@
 import { CaptionStatusBadge } from "@/components/hud/status-bar/CaptionStatusBadge";
 import { ConnectionStatusBadge } from "@/components/hud/status-bar/ConnectionStatusBadge";
 import { OnlinePlayersBadge } from "@/components/hud/status-bar/OnlinePlayersBadge";
-import { useConnectionStore } from "@/stores/connectionStore";
 import { useTranscriptionStore } from "@/stores/transcriptionStore";
+import { useWorldStore } from "@/stores/worldStore";
 
 export const StatusBar = () => {
-  const status = useConnectionStore((state) => state.status);
-  const error = useConnectionStore((state) => state.error);
+  const status = useWorldStore((state) => state.connection.status);
+  const error = useWorldStore((state) => state.connection.error);
   const isStreaming = useTranscriptionStore((state) => state.isStreaming);
 
   return (

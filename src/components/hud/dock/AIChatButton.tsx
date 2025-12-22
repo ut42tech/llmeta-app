@@ -8,11 +8,12 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useAIChatStore } from "@/stores/aiChatStore";
+import { useChatStore } from "@/stores/chatStore";
 
 export const AIChatButton = () => {
   const t = useTranslations("dock");
-  const { isOpen, toggle } = useAIChatStore();
+  const isOpen = useChatStore((state) => state.aiChat.isOpen);
+  const toggle = useChatStore((state) => state.toggleAIChat);
 
   return (
     <Tooltip>

@@ -17,9 +17,9 @@ import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
 import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
 import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
-import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
+import { useWorldStore } from "@/stores/worldStore";
 import type { ChatMessageImage } from "@/types/chat";
 import type { MoveData, ProfileData } from "@/types/player";
 
@@ -52,7 +52,7 @@ export function LiveKitSyncProvider({
   children,
   roomName = LIVEKIT_CONFIG.defaultRoom,
 }: ProviderProps) {
-  const setFailed = useConnectionStore((state) => state.setFailed);
+  const setFailed = useWorldStore((state) => state.setFailed);
   const { authState, identity } = useLiveKitAuth(roomName);
 
   if (!authState.token || !authState.serverUrl) {

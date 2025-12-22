@@ -3,11 +3,11 @@
 import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { useConnectionStore } from "@/stores/connectionStore";
 import {
   useVoiceChatStore,
   type VoicePermissionStatus,
 } from "@/stores/voiceChatStore";
+import { useWorldStore } from "@/stores/worldStore";
 
 export type VoiceChatStatus = {
   isMicEnabled: boolean;
@@ -19,7 +19,7 @@ export type VoiceChatStatus = {
 
 export function useVoiceChat() {
   const { room } = useSyncClient();
-  const connectionStatus = useConnectionStore((state) => state.status);
+  const connectionStatus = useWorldStore((state) => state.connection.status);
 
   const { isMicEnabled, isPublishing, permission, error, lastActiveAt } =
     useVoiceChatStore(

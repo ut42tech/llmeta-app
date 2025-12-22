@@ -5,12 +5,12 @@ import { CaptionWindow } from "@/components/hud/caption/CaptionWindow";
 import { ChatWindow } from "@/components/hud/chat/ChatWindow";
 import { Dock } from "@/components/hud/Dock";
 import { StatusBar } from "@/components/hud/StatusBar";
-import { useTextChat } from "@/hooks/chat/useTextChat";
-import { useAIChatStore } from "@/stores/aiChatStore";
+import { useTextChat } from "@/hooks/useTextChat";
+import { useChatStore } from "@/stores/chatStore";
 
 export const HUD = () => {
   const { isOpen: isTextChatOpen } = useTextChat();
-  const { isOpen: isAIChatOpen } = useAIChatStore();
+  const isAIChatOpen = useChatStore((state) => state.aiChat.isOpen);
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none flex flex-col">

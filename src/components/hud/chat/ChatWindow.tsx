@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Kbd } from "@/components/ui/kbd";
 import { Separator } from "@/components/ui/separator";
-import { useTextChat } from "@/hooks/chat/useTextChat";
+import { useTextChat } from "@/hooks/useTextChat";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export const ChatWindow = () => {

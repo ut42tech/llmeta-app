@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useTextChat } from "@/hooks/chat/useTextChat";
+import { useTextChat } from "@/hooks/useTextChat";
 import { useTranscriptionStore } from "@/stores/transcriptionStore";
 
 export const ChatButton = () => {

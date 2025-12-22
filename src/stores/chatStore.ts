@@ -20,9 +20,15 @@ const appendMessage = (
     : appended;
 };
 
+type AIChatState = {
+  isOpen: boolean;
+  includeChatHistory: boolean;
+};
+
 type ChatState = {
   messages: ChatMessage[];
   isOpen: boolean;
+  aiChat: AIChatState;
 };
 
 type ChatActions = {
@@ -38,6 +44,12 @@ type ChatActions = {
   ) => void;
   updateMessageStatus: (id: string, status: ChatMessageStatus) => void;
   setOpen: (isOpen: boolean) => void;
+  // AI Chat actions (merged from aiChatStore)
+  toggleAIChat: () => void;
+  openAIChat: () => void;
+  closeAIChat: () => void;
+  toggleAIChatHistory: () => void;
+  setAIChatIncludeHistory: (value: boolean) => void;
   reset: () => void;
 };
 
@@ -46,11 +58,15 @@ type ChatStore = ChatState & ChatActions;
 const initialState: ChatState = {
   messages: [],
   isOpen: false,
+  aiChat: {
+    isOpen: false,
+    includeChatHistory: true,
+  },
 };
 
 /**
- * Simplified chat store.
- * Removed: typing indicators, unread count (per user request for simplicity)
+ * Unified chat store.
+ * Includes both text chat and AI chat state.
  */
 export const useChatStore = create<ChatStore>((set) => ({
   ...initialState,
@@ -91,6 +107,35 @@ export const useChatStore = create<ChatStore>((set) => ({
   },
 
   setOpen: (isOpen) => set({ isOpen }),
+
+  // AI Chat actions
+  toggleAIChat: () =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, isOpen: !state.aiChat.isOpen },
+    })),
+
+  openAIChat: () =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, isOpen: true },
+    })),
+
+  closeAIChat: () =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, isOpen: false },
+    })),
+
+  toggleAIChatHistory: () =>
+    set((state) => ({
+      aiChat: {
+        ...state.aiChat,
+        includeChatHistory: !state.aiChat.includeChatHistory,
+      },
+    })),
+
+  setAIChatIncludeHistory: (value) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, includeChatHistory: value },
+    })),
 
   reset: () => set(initialState),
 }));
