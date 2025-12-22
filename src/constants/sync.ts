@@ -10,9 +10,7 @@ export const LIVEKIT_CONFIG = {
 
 export const DATA_TOPICS = {
   MOVE: "player/move",
-  PROFILE: "player/profile",
   CHAT_MESSAGE: "chat/message",
-  TYPING: "chat/typing",
 } as const;
 
 export type DataTopic = (typeof DATA_TOPICS)[keyof typeof DATA_TOPICS];

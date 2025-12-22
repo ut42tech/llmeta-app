@@ -19,16 +19,35 @@ export type WorldContentItem = {
   createdAt: number;
 };
 
+export type ConnectionStatus =
+  | "idle"
+  | "connecting"
+  | "connected"
+  | "failed"
+  | "disconnected";
+
+type ConnectionState = {
+  status: ConnectionStatus;
+  error?: string;
+};
+
 type WorldState = {
   currentGridCell: GridCoordinates;
   visibleGridSize: GridCoordinates;
   contentItems: WorldContentItem[];
+  connection: ConnectionState;
 };
 
 type WorldActions = {
   updateCurrentGridCell: (position: Vector3) => void;
   addContentItem: (item: Omit<WorldContentItem, "createdAt">) => void;
   removeContentItem: (id: string) => void;
+  // Connection actions (merged from connectionStore)
+  setConnecting: () => void;
+  setConnected: () => void;
+  setFailed: (error?: string) => void;
+  setDisconnected: () => void;
+  resetConnection: () => void;
 };
 
 type WorldStore = WorldState & WorldActions;
@@ -36,6 +55,10 @@ type WorldStore = WorldState & WorldActions;
 // Constants
 const INITIAL_GRID_CELL: GridCoordinates = { x: 0, y: 0 };
 const DEFAULT_VISIBLE_GRID_SIZE: GridCoordinates = { x: 3, y: 3 };
+const INITIAL_CONNECTION: ConnectionState = {
+  status: "idle",
+  error: undefined,
+};
 
 // Helper functions
 const calculateGridCell = (position: Vector3): GridCoordinates => ({
@@ -49,16 +72,17 @@ const isGridCellEqual = (
 ): boolean => cell1.x === cell2.x && cell1.y === cell2.y;
 
 /**
- * World state store.
- * Manages a grid-based infinite world system.
+ * Unified world state store.
+ * Manages grid-based world system and connection state.
  */
 export const useWorldStore = create<WorldStore>((set) => ({
   // State
   currentGridCell: { ...INITIAL_GRID_CELL },
   visibleGridSize: { ...DEFAULT_VISIBLE_GRID_SIZE },
   contentItems: [],
+  connection: { ...INITIAL_CONNECTION },
 
-  // Actions
+  // Grid actions
   updateCurrentGridCell: (position: Vector3) => {
     const newGridCell = calculateGridCell(position);
 
@@ -84,4 +108,21 @@ export const useWorldStore = create<WorldStore>((set) => ({
       contentItems: state.contentItems.filter((item) => item.id !== id),
     }));
   },
+
+  // Connection actions
+  setConnecting: () =>
+    set({ connection: { status: "connecting", error: undefined } }),
+
+  setConnected: () =>
+    set({ connection: { status: "connected", error: undefined } }),
+
+  setFailed: (error?: string) =>
+    set({ connection: { status: "failed", error } }),
+
+  setDisconnected: () =>
+    set((state) => ({
+      connection: { ...state.connection, status: "disconnected" },
+    })),
+
+  resetConnection: () => set({ connection: { ...INITIAL_CONNECTION } }),
 }));

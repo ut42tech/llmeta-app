@@ -7,15 +7,15 @@ import {
 import { useEffect, useState } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useChatStore } from "@/stores/chatStore";
-import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
+import { useWorldStore } from "@/stores/worldStore";
 
 export function useLiveKitConnection(identity: string) {
   const room = useRoomContext();
   const connectionState = useConnectionState(room);
 
-  const { setConnecting, setConnected, setDisconnected } = useConnectionStore(
+  const { setConnecting, setConnected, setDisconnected } = useWorldStore(
     useShallow((state) => ({
       setConnecting: state.setConnecting,
       setConnected: state.setConnected,

@@ -1,8 +1,8 @@
 import { nanoid } from "nanoid";
 import { useEffect, useRef, useState } from "react";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
-import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useWorldStore } from "@/stores/worldStore";
 
 type AuthState = {
   token?: string;
@@ -11,7 +11,7 @@ type AuthState = {
 
 export function useLiveKitAuth(roomName: string) {
   const identityRef = useRef<string>(nanoid());
-  const setFailed = useConnectionStore((state) => state.setFailed);
+  const setFailed = useWorldStore((state) => state.setFailed);
   const [authState, setAuthState] = useState<AuthState>(() => ({
     serverUrl: LIVEKIT_CONFIG.wsUrl || undefined,
   }));

@@ -15,13 +15,12 @@ import {
 } from "@/components/ui/card";
 import { Kbd } from "@/components/ui/kbd";
 import { Separator } from "@/components/ui/separator";
-import { useTextChat } from "@/hooks/chat/useTextChat";
+import { useTextChat } from "@/hooks/useTextChat";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 export const ChatWindow = () => {
   const t = useTranslations("chat");
-  const { messages, canSend, sendMessage, setOpen, sendTyping, typingUsers } =
-    useTextChat();
+  const { messages, canSend, sendMessage, setOpen } = useTextChat();
   const sessionId = useLocalPlayerStore((state) => state.sessionId);
 
   return (
@@ -52,19 +51,11 @@ export const ChatWindow = () => {
       </CardHeader>
       <Separator />
       <CardContent className="p-4">
-        <ChatLog
-          messages={messages}
-          sessionId={sessionId}
-          typingUsers={typingUsers}
-        />
+        <ChatLog messages={messages} sessionId={sessionId} />
       </CardContent>
       <Separator />
       <CardFooter className="p-4">
-        <ChatInput
-          canSend={canSend}
-          onSend={sendMessage}
-          onTypingChange={sendTyping}
-        />
+        <ChatInput canSend={canSend} onSend={sendMessage} />
       </CardFooter>
     </Card>
   );

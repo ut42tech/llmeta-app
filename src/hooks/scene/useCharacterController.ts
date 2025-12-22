@@ -24,6 +24,7 @@ export function useCharacterController(
     setRotation,
     sendMovement,
     isFPV,
+    currentAvatar,
     setCurrentAvatar,
     setAvatarList,
   } = useLocalPlayerStore(
@@ -33,6 +34,7 @@ export function useCharacterController(
       setRotation: state.setRotation,
       sendMovement: state.sendMovement,
       isFPV: state.isFPV,
+      currentAvatar: state.currentAvatar,
       setCurrentAvatar: state.setCurrentAvatar,
       setAvatarList: state.setAvatarList,
     })),
@@ -44,8 +46,11 @@ export function useCharacterController(
 
   useEffect(() => {
     setAvatarList(AVATAR_LIST);
-    setCurrentAvatar(AVATAR_LIST[0]);
-  }, [setAvatarList, setCurrentAvatar]);
+    // Only set default avatar if none is selected (preserves lobby selection)
+    if (!currentAvatar) {
+      setCurrentAvatar(AVATAR_LIST[0]);
+    }
+  }, [setAvatarList, setCurrentAvatar, currentAvatar]);
 
   useFrame((state) => {
     const character = characterRef.current;

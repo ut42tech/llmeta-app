@@ -42,15 +42,18 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useTextChat } from "@/hooks/chat/useTextChat";
-import { useAIChatStore } from "@/stores/aiChatStore";
+import { useTextChat } from "@/hooks/useTextChat";
 import { useChatStore } from "@/stores/chatStore";
 
 export const AIChatWindow = () => {
   const t = useTranslations("aiChat");
   const tChat = useTranslations("chat");
   const tCommon = useTranslations("common");
-  const { close, includeChatHistory, toggleChatHistory } = useAIChatStore();
+  const close = useChatStore((state) => state.closeAIChat);
+  const includeChatHistory = useChatStore(
+    (state) => state.aiChat.includeChatHistory,
+  );
+  const toggleChatHistory = useChatStore((state) => state.toggleAIChatHistory);
   const chatMessages = useChatStore((state) => state.messages);
   const [isMinimized, setIsMinimized] = useState(false);
   const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
