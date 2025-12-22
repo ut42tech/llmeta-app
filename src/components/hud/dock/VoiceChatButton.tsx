@@ -10,7 +10,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useVoiceChat } from "@/hooks/voice/useVoiceChat";
+import { useVoiceChat } from "@/hooks/useVoiceChat";
 
 export const VoiceChatButton = () => {
   const t = useTranslations("voiceChat");
