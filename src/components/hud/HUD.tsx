@@ -2,14 +2,12 @@
 
 import { AIChatWindow } from "@/components/hud/ai-chat/AIChatWindow";
 import { CaptionWindow } from "@/components/hud/caption/CaptionWindow";
-import { ChatWindow } from "@/components/hud/chat/ChatWindow";
+import { ChatStream } from "@/components/hud/chat/ChatStream";
 import { Dock } from "@/components/hud/Dock";
 import { StatusBar } from "@/components/hud/StatusBar";
-import { useTextChat } from "@/hooks/useTextChat";
 import { useChatStore } from "@/stores/chatStore";
 
 export const HUD = () => {
-  const { isOpen: isTextChatOpen } = useTextChat();
   const isAIChatOpen = useChatStore((state) => state.aiChat.isOpen);
 
   return (
@@ -25,12 +23,8 @@ export const HUD = () => {
 
       {/* Bottom Section */}
       <div className="relative flex-none">
-        {/* Chat Window */}
-        {isTextChatOpen && (
-          <div className="pointer-events-auto fixed bottom-18 left-6">
-            <ChatWindow />
-          </div>
-        )}
+        {/* Chat Stream */}
+        <ChatStream />
         {/* AI Chat Window */}
         {isAIChatOpen && (
           <div className="pointer-events-auto fixed bottom-18 right-6">

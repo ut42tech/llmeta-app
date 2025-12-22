@@ -11,13 +11,13 @@ const decoder = new TextDecoder();
 /**
  * Encode a payload for sending over data channel
  */
-export const encodePayload = <T>(payload: T): Uint8Array =>
+const encodePayload = <T>(payload: T): Uint8Array =>
   encoder.encode(JSON.stringify(payload));
 
 /**
  * Decode a payload received from data channel
  */
-export const decodePayload = <T>(payload?: Uint8Array | null): T | null => {
+const decodePayload = <T>(payload?: Uint8Array | null): T | null => {
   if (!payload) return null;
   try {
     return JSON.parse(decoder.decode(payload)) as T;

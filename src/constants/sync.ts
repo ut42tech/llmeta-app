@@ -12,5 +12,3 @@ export const DATA_TOPICS = {
   MOVE: "player/move",
   CHAT_MESSAGE: "chat/message",
 } as const;
-
-export type DataTopic = (typeof DATA_TOPICS)[keyof typeof DATA_TOPICS];

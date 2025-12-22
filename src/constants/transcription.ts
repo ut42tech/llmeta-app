@@ -20,11 +20,6 @@ export const MEDIA_CHUNK_INTERVAL_MS = 50;
 export const PREFERRED_MIME_TYPE = "audio/webm;codecs=opus";
 
 /**
- * UI configuration
- */
-export const MAX_CAPTION_ENTRIES = 20;
-
-/**
  * Auto-send to chat configuration
  *
  * Debounce interval: Wait this long after the last transcription entry
