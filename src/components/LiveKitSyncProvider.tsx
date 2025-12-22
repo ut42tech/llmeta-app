@@ -99,8 +99,6 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
     void initKrisp();
   }, [initKrisp]);
 
-  // Sync profile to Participant Attributes when connected or when profile changes
-  // No need to re-broadcast on ParticipantConnected - LiveKit handles this automatically!
   useEffect(() => {
     if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {
       return;
@@ -112,7 +110,6 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
     });
   }, [sessionId, connectionState, username, currentAvatar, setProfile]);
 
-  // Wrap setProfile to match the expected signature for context
   const sendProfile = useMemo(
     () => (payload: ProfileData) => {
       void setProfile(payload);

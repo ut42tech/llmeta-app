@@ -2,7 +2,6 @@ import type { Vector3 } from "three";
 import { create } from "zustand";
 import { GRID } from "@/constants/world";
 
-// Types
 type GridCoordinates = {
   x: number;
   y: number;
@@ -42,7 +41,6 @@ type WorldActions = {
   updateCurrentGridCell: (position: Vector3) => void;
   addContentItem: (item: Omit<WorldContentItem, "createdAt">) => void;
   removeContentItem: (id: string) => void;
-  // Connection actions (merged from connectionStore)
   setConnecting: () => void;
   setConnected: () => void;
   setFailed: (error?: string) => void;
@@ -52,7 +50,6 @@ type WorldActions = {
 
 type WorldStore = WorldState & WorldActions;
 
-// Constants
 const INITIAL_GRID_CELL: GridCoordinates = { x: 0, y: 0 };
 const DEFAULT_VISIBLE_GRID_SIZE: GridCoordinates = { x: 3, y: 3 };
 const INITIAL_CONNECTION: ConnectionState = {
@@ -60,7 +57,6 @@ const INITIAL_CONNECTION: ConnectionState = {
   error: undefined,
 };
 
-// Helper functions
 const calculateGridCell = (position: Vector3): GridCoordinates => ({
   x: Math.floor((position.x + GRID.HALF_CELL_SIZE) / GRID.CELL_SIZE),
   y: Math.floor((position.z + GRID.HALF_CELL_SIZE) / GRID.CELL_SIZE),
@@ -76,13 +72,11 @@ const isGridCellEqual = (
  * Manages grid-based world system and connection state.
  */
 export const useWorldStore = create<WorldStore>((set) => ({
-  // State
   currentGridCell: { ...INITIAL_GRID_CELL },
   visibleGridSize: { ...DEFAULT_VISIBLE_GRID_SIZE },
   contentItems: [],
   connection: { ...INITIAL_CONNECTION },
 
-  // Grid actions
   updateCurrentGridCell: (position: Vector3) => {
     const newGridCell = calculateGridCell(position);
 
@@ -109,7 +103,6 @@ export const useWorldStore = create<WorldStore>((set) => ({
     }));
   },
 
-  // Connection actions
   setConnecting: () =>
     set({ connection: { status: "connecting", error: undefined } }),
 

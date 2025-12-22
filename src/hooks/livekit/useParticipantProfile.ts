@@ -15,7 +15,6 @@ import { useCallback, useEffect, useRef } from "react";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import type { ProfileData, ViverseAvatar } from "@/types/player";
 
-// Attribute keys for participant profile
 const ATTR_KEYS = {
   USERNAME: "profile.username",
   AVATAR: "profile.avatar",
@@ -58,7 +57,6 @@ export function useLocalProfile() {
 
       const updates: Record<string, string> = {};
 
-      // Only update changed fields
       if (
         profile.username !== undefined &&
         profile.username !== lastSentRef.current.username
@@ -98,7 +96,6 @@ export function useRemoteProfileSync() {
   const remoteParticipants = useRemoteParticipants();
   const upsertPlayer = useRemotePlayersStore((s) => s.upsertPlayer);
 
-  // Sync profiles when participants or their attributes change
   useEffect(() => {
     for (const participant of remoteParticipants) {
       const profile = getProfileFromAttributes(participant.attributes);

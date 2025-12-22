@@ -9,20 +9,18 @@ export const GRID = {
 };
 
 export const PERFORMANCE = {
-  MOVEMENT_UPDATE_THROTTLE: 50, // ms
+  MOVEMENT_UPDATE_THROTTLE: 50,
   POSITION_LERP_FACTOR: 0.2,
   ROTATION_LERP_FACTOR: 0.2,
   ANIMATION_FADE_DURATION: 0.1,
 };
 
-// Interpolation and snapping constants
 export const INTERPOLATION = {
   TARGET_FPS: 60,
   POSITION_EPSILON: 1e-4,
   ROTATION_EPSILON: 1e-4,
 };
 
-// Visual rotation offset
 export const ORIENTATION = {
   REMOTE_Y_OFFSET: Math.PI,
 };

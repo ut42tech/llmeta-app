@@ -48,13 +48,11 @@ export const JoinWorldDialog = () => {
   const handleJoinWorld = () => {
     if (!isFormValid) return;
 
-    // Save to store
     setUsername(inputUsername.trim());
     if (selectedAvatar) {
       setCurrentAvatar(selectedAvatar);
     }
 
-    // Mark as joined
     setHasJoinedWorld(true);
   };
 
@@ -78,7 +76,6 @@ export const JoinWorldDialog = () => {
 
         <ScrollArea className="flex-1 -mx-6 px-6">
           <div className="flex flex-col gap-6 py-2">
-            {/* Language Selection */}
             <div className="flex flex-col gap-2">
               <Label>{t("languageLabel")}</Label>
               <ToggleGroup
@@ -99,7 +96,6 @@ export const JoinWorldDialog = () => {
               </ToggleGroup>
             </div>
 
-            {/* Username Input */}
             <div className="flex flex-col gap-2">
               <Label htmlFor="username" className="flex items-center gap-2">
                 {t("usernameLabel")}
@@ -114,7 +110,6 @@ export const JoinWorldDialog = () => {
               />
             </div>
 
-            {/* Avatar Selection */}
             <div className="flex flex-col gap-2">
               <Label>{t("avatarLabel")}</Label>
               <AvatarPicker
@@ -124,7 +119,6 @@ export const JoinWorldDialog = () => {
               />
             </div>
 
-            {/* Privacy Warning */}
             <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
               <div className="flex items-start gap-3">
                 <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />

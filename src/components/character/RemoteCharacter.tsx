@@ -90,7 +90,6 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
         !audioPublication.isSubscribed;
       setPlayerMuteStatus(sessionId, isMuted);
 
-      // Update audio track state for proximity voice control
       if (
         audioPublication &&
         !audioPublication.isMuted &&

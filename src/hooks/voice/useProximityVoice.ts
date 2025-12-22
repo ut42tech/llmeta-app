@@ -23,27 +23,21 @@ export function calculateProximityVolume(distance: number): number {
     ROLLOFF_FACTOR,
   } = PROXIMITY_VOICE;
 
-  // Full volume within fade start distance
   if (distance <= FADE_START_DISTANCE) {
     return MAX_VOLUME;
   }
 
-  // Muted beyond max hearing distance
   if (distance >= MAX_HEARING_DISTANCE) {
     return MIN_VOLUME;
   }
 
-  // Exponential falloff in the fade zone
   const fadeRange = MAX_HEARING_DISTANCE - FADE_START_DISTANCE;
   const distanceInFadeZone = distance - FADE_START_DISTANCE;
   const normalizedDistance = distanceInFadeZone / fadeRange;
 
-  // Apply exponential rolloff: volume = 1 - (normalizedDistance ^ rolloff)
-  // This creates a smooth, natural-sounding attenuation curve
   const attenuationFactor = normalizedDistance ** ROLLOFF_FACTOR;
   const volume = MAX_VOLUME - attenuationFactor * (MAX_VOLUME - MIN_VOLUME);
 
-  // Clamp to valid range
   return Math.max(MIN_VOLUME, Math.min(MAX_VOLUME, volume));
 }
 
@@ -83,13 +77,10 @@ export function useProximityVoice(
     lastUpdateRef.current = now;
 
     try {
-      // Calculate 3D distance
       const distance = listenerPosition.distanceTo(speakerPosition);
 
-      // Calculate appropriate volume
       const volume = calculateProximityVolume(distance);
 
-      // Apply volume to audio track
       audioTrack.setVolume(volume);
     } catch (error) {
       console.error("[ProximityVoice] Failed to update volume:", error);

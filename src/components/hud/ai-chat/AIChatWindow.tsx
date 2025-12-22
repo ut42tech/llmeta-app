@@ -126,7 +126,6 @@ export const AIChatWindow = () => {
 
   return (
     <div className="flex h-[500px] w-[400px] flex-col overflow-hidden rounded-xl border bg-background/95 shadow-2xl backdrop-blur-sm">
-      {/* Header */}
       <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <BotMessageSquare className="size-4" />
@@ -164,7 +163,6 @@ export const AIChatWindow = () => {
         </div>
       </div>
 
-      {/* Messages */}
       <Conversation className="flex-1 overflow-y-auto">
         <ConversationContent>
           {messages.length === 0 ? (
@@ -386,7 +384,6 @@ export const AIChatWindow = () => {
                         }
                       }
                       default:
-                        // Debug: Log unhandled part types
                         if (part.type !== "step-start") {
                           console.log("Unhandled part type:", part.type, part);
                         }
@@ -408,7 +405,6 @@ export const AIChatWindow = () => {
         <ConversationScrollButton />
       </Conversation>
 
-      {/* Suggestions */}
       {messages.length === 0 && (
         <div className="border-t px-4 py-3">
           <Suggestions>
@@ -425,7 +421,6 @@ export const AIChatWindow = () => {
         </div>
       )}
 
-      {/* Input */}
       <div className="border-t">
         <PromptInput
           onSubmit={(message) => handleSubmit(message)}

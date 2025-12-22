@@ -52,7 +52,6 @@ export function LocalCharacterAnimation({
   const jumpLoopRef = useRef<AnimationAction>(null);
   const jumpDownRef = useRef<AnimationAction>(null);
 
-  // Map animation names to refs for easy lookup
   const animationRefs: Record<
     AnimationState,
     React.RefObject<AnimationAction | null>
@@ -71,7 +70,6 @@ export function LocalCharacterAnimation({
     jumpDown: jumpDownRef,
   };
 
-  // Build move animations with conditions based on normalized direction
   const moveAnimations = MOVEMENT_ANIMATIONS.map((anim) => ({
     ...anim,
     ref: animationRefs[anim.name],

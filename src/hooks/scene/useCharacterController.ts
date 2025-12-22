@@ -46,7 +46,6 @@ export function useCharacterController(
 
   useEffect(() => {
     setAvatarList(AVATAR_LIST);
-    // Only set default avatar if none is selected (preserves lobby selection)
     if (!currentAvatar) {
       setCurrentAvatar(AVATAR_LIST[0]);
     }
@@ -56,7 +55,6 @@ export function useCharacterController(
     const character = characterRef.current;
     if (!character) return;
 
-    // Apply pending teleport if present
     if (pendingTeleport) {
       character.position.copy(pendingTeleport.position);
       if (pendingTeleport.rotation) {
@@ -65,12 +63,10 @@ export function useCharacterController(
       useLocalPlayerStore.setState({ pendingTeleport: null });
     }
 
-    // Reset on fall
     if (character.position.y < PHYSICS.RESET_Y_THRESHOLD) {
       character.position.copy(new Vector3());
     }
 
-    // Update player state
     setPosition(character.position);
     if (isFPV) {
       const camY = state.camera.rotation.y;
@@ -79,12 +75,10 @@ export function useCharacterController(
       setRotation(character.rotation);
     }
 
-    // Send movement to server
     if (isConnected && publishMovement) {
       sendMovement(publishMovement);
     }
 
-    // Update grid cell
     updateCurrentGridCell(character.position);
   });
 }

@@ -26,7 +26,6 @@ export const VoiceChatButton = () => {
     void toggleMic();
   };
 
-  // Toggle microphone with M key
   useHotkeys("m", handleToggle, {
     preventDefault: true,
     enableOnFormTags: false,

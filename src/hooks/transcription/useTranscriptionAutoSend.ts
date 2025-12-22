@@ -27,7 +27,6 @@ export const useTranscriptionAutoSend = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Clear timer when can't send
     if (!canSend) {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
@@ -36,12 +35,10 @@ export const useTranscriptionAutoSend = () => {
       return;
     }
 
-    // No pending messages to send
     if (pendingAutoSend.length === 0) {
       return;
     }
 
-    // Reset debounce timer on new pending message
     if (timerRef.current) {
       clearTimeout(timerRef.current);
     }

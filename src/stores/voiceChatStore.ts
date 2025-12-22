@@ -175,7 +175,6 @@ export const useVoiceChatStore = create<VoiceChatStore>((set, get) => ({
     }
 
     try {
-      // Initialize filter if not already done
       if (!krispFilter && enabled) {
         const { KrispNoiseFilter } = await import(
           "@livekit/krisp-noise-filter"

@@ -44,7 +44,6 @@ type ChatActions = {
   ) => void;
   updateMessageStatus: (id: string, status: ChatMessageStatus) => void;
   setOpen: (isOpen: boolean) => void;
-  // AI Chat actions (merged from aiChatStore)
   toggleAIChat: () => void;
   openAIChat: () => void;
   closeAIChat: () => void;
@@ -108,7 +107,6 @@ export const useChatStore = create<ChatStore>((set) => ({
 
   setOpen: (isOpen) => set({ isOpen }),
 
-  // AI Chat actions
   toggleAIChat: () =>
     set((state) => ({
       aiChat: { ...state.aiChat, isOpen: !state.aiChat.isOpen },

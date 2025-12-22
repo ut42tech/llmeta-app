@@ -3,7 +3,6 @@ import { create } from "zustand";
 import type { EntityRecord } from "@/types/common";
 import type { AnimationState, RemotePlayer } from "@/types/player";
 
-// Inline helpers (previously in stores/helpers.ts)
 const upsertEntity = <T extends Record<string, unknown>>(
   record: EntityRecord<T>,
   id: string,

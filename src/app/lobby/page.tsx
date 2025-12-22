@@ -90,7 +90,6 @@ function LobbyContent() {
     setSelectedAvatar(avatar);
   };
 
-  // Connection status indicator
   const ConnectionIndicator = () => {
     if (isFailed) {
       return (
@@ -148,7 +147,6 @@ function LobbyContent() {
     <div className="relative min-h-screen bg-black overflow-hidden">
       <BackgroundCanvas />
 
-      {/* Header */}
       <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
         <div className="flex items-center gap-2">
           <div className="h-1.5 w-1.5 rounded-full bg-white/90" />
@@ -157,7 +155,6 @@ function LobbyContent() {
         <LanguageSwitcher />
       </header>
 
-      {/* Main Content */}
       <main className="relative z-10 flex items-center justify-center px-6 md:px-12 py-8 min-h-[calc(100vh-120px)]">
         <Card className="w-full max-w-lg">
           <CardHeader>
@@ -165,10 +162,8 @@ function LobbyContent() {
             <CardDescription>{t("description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            {/* Connection Status */}
             <ConnectionIndicator />
 
-            {/* Username Input */}
             <div className="space-y-2">
               <Label htmlFor="username">{t("usernameLabel")}</Label>
               <Input
@@ -182,7 +177,6 @@ function LobbyContent() {
               />
             </div>
 
-            {/* Avatar Selection */}
             <div className="space-y-2">
               <Label>{t("avatarLabel")}</Label>
               <div className="p-4 rounded-lg border bg-muted/50">
@@ -195,7 +189,6 @@ function LobbyContent() {
               </div>
             </div>
 
-            {/* Privacy Warning */}
             <div className="flex items-start gap-3 p-4 rounded-lg border border-amber-500/50 bg-amber-500/10">
               <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />
               <div className="flex flex-col gap-1">
@@ -208,7 +201,6 @@ function LobbyContent() {
               </div>
             </div>
 
-            {/* Submit Button */}
             <Button
               type="button"
               onClick={handleJoinWorld}

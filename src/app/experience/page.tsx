@@ -26,14 +26,12 @@ function ExperienceContent() {
 
   const isConnected = connectionState === LiveKitConnectionState.Connected;
 
-  // Redirect to lobby if not connected or hasn't joined
   useEffect(() => {
     if (!hasJoinedWorld) {
       router.replace("/lobby");
     }
   }, [hasJoinedWorld, router]);
 
-  // Don't render 3D content until connected
   if (!isConnected) {
     return (
       <div className="fixed inset-0 bg-black flex items-center justify-center">

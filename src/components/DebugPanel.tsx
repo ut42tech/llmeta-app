@@ -7,7 +7,6 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
  * Visualizes state using Leva.
  */
 export const DebugPanel = () => {
-  // Local Player State
   const sessionId = useLocalPlayerStore((state) => state.sessionId);
   const position = useLocalPlayerStore((state) => state.position);
   const rotation = useLocalPlayerStore((state) => state.rotation);

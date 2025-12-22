@@ -26,7 +26,6 @@ export function useChatDataChannel(identity: string) {
 
   const effectiveIdentity = localSessionId || identity;
 
-  // Chat message channel
   const handleChatMessage = useCallback(
     (data: ChatMessagePacket, senderId: string) => {
       if (!data?.text && !data?.image) return;

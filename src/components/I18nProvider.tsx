@@ -24,7 +24,6 @@ export function I18nProvider({
   const [locale, setLocale] = useState(initialLocale);
 
   useEffect(() => {
-    // Load messages for the stored locale if different from initial
     if (storedLocale && storedLocale !== locale) {
       import(`@/i18n/messages/${storedLocale}.json`)
         .then((module) => {

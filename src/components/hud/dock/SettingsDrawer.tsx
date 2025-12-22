@@ -29,10 +29,6 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
 import type { ViverseAvatar } from "@/types/player";
 
-// ---------------------------------------------------------------------------
-// Settings Section Components
-// ---------------------------------------------------------------------------
-
 type SettingsSectionProps = {
   title: string;
   children: React.ReactNode;
@@ -63,16 +59,11 @@ const SettingsRow = ({ label, description, children }: SettingsRowProps) => (
   </div>
 );
 
-// ---------------------------------------------------------------------------
-// Settings Content (Client-only)
-// ---------------------------------------------------------------------------
-
 const SettingsContent = () => {
   const t = useTranslations("settings");
   const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
 
-  // Local player state
   const {
     username,
     position,
@@ -93,7 +84,6 @@ const SettingsContent = () => {
     })),
   );
 
-  // Voice chat state
   const { krispEnabled, krispSupported, setKrispEnabled, initKrisp } =
     useVoiceChatStore(
       useShallow((state) => ({
@@ -104,7 +94,6 @@ const SettingsContent = () => {
       })),
     );
 
-  // Local state
   const [nameInput, setNameInput] = useState(username);
 
   const isNameChanged = useMemo(
@@ -194,10 +183,6 @@ const SettingsContent = () => {
     </div>
   );
 };
-
-// ---------------------------------------------------------------------------
-// Settings Drawer
-// ---------------------------------------------------------------------------
 
 export const SettingsDrawer = () => {
   const t = useTranslations("settings");

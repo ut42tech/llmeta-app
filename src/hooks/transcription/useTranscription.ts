@@ -41,14 +41,12 @@ export const useTranscription = () => {
     const startTranscription = async () => {
       setError(undefined);
 
-      // Check browser support
       if (!("MediaRecorder" in window)) {
         setError("MediaRecorder is not supported in this browser");
         return;
       }
 
       try {
-        // Step 1: Fetch Deepgram access token from API endpoint
         const response = await fetch(DEEPGRAM_TOKEN_ENDPOINT);
         if (!response.ok) {
           throw new Error(
@@ -71,7 +69,6 @@ export const useTranscription = () => {
 
         if (cancelled) return;
 
-        // Step 2: Establish WebSocket connection to Deepgram
         const client = createClient({ accessToken: data.accessToken });
         const connection = client.listen.live({
           model: DEEPGRAM_MODEL,
@@ -82,7 +79,6 @@ export const useTranscription = () => {
 
         connectionRef.current = connection;
 
-        // Step 3: Start recording when connection is established
         connection.on(LiveTranscriptionEvents.Open, () => {
           if (cancelled) return;
 
@@ -92,7 +88,6 @@ export const useTranscription = () => {
             const { recorder, stream } = createRecorder(
               track.mediaStreamTrack,
               (data) => {
-                // Stream audio chunks to Deepgram
                 if (connection && data.size > 0) {
                   try {
                     connection.send(data);
@@ -119,19 +114,16 @@ export const useTranscription = () => {
           }
         });
 
-        // Step 4: Process transcription results
         connection.on(LiveTranscriptionEvents.Transcript, (event) => {
           const text = event.channel.alternatives[0]?.transcript?.trim();
 
           if (!text) {
-            // Clear interim result if final transcript is empty
             if (event.is_final) {
               setPartial(undefined);
             }
             return;
           }
 
-          // Update state based on result type
           if (event.is_final) {
             addEntry(text);
             setPartial(undefined);
@@ -140,7 +132,6 @@ export const useTranscription = () => {
           }
         });
 
-        // Handle connection errors
         connection.on(LiveTranscriptionEvents.Error, (event) => {
           const message =
             typeof event === "string"
@@ -152,7 +143,6 @@ export const useTranscription = () => {
           setError(message);
         });
 
-        // Handle connection closure
         connection.on(LiveTranscriptionEvents.Close, () => {
           setStreaming(false);
           stopRecorder(recorderRef.current, streamRef.current);
@@ -182,12 +172,10 @@ export const useTranscription = () => {
      * Called when microphone is disabled or component unmounts
      */
     function cleanup() {
-      // Stop MediaRecorder and release tracks
       stopRecorder(recorderRef.current, streamRef.current);
       recorderRef.current = null;
       streamRef.current = null;
 
-      // Close Deepgram WebSocket connection
       const connection = connectionRef.current;
       if (connection) {
         try {
@@ -198,7 +186,6 @@ export const useTranscription = () => {
       }
       connectionRef.current = null;
 
-      // Reset transcription state
       setStreaming(false);
       setPartial(undefined);
     }
