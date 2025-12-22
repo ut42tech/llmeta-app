@@ -24,7 +24,8 @@ type MessageLineProps = {
 
 const MessageLine = ({ message, isOwnMessage }: MessageLineProps) => {
   const displayName = message.username || "???";
-  const content = message.content || (message.image ? "[image]" : "");
+  const hasImage = Boolean(message.image?.url);
+  const hasText = Boolean(message.content);
 
   return (
     <div
@@ -40,15 +41,26 @@ const MessageLine = ({ message, isOwnMessage }: MessageLineProps) => {
       >
         {displayName}
       </Badge>
-      <span
-        className={cn(
-          "text-white/70 drop-shadow-sm leading-5",
-          isOwnMessage && "text-white/90",
+      <div className="flex flex-col gap-1">
+        {hasImage && message.image && (
+          <img
+            src={message.image.url}
+            alt={message.image.prompt || "Shared image"}
+            className="max-w-32 max-h-24 rounded object-cover"
+          />
         )}
-        style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
-      >
-        {content}
-      </span>
+        {hasText && (
+          <span
+            className={cn(
+              "text-white/70 drop-shadow-sm leading-5",
+              isOwnMessage && "text-white/90",
+            )}
+            style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
+          >
+            {message.content}
+          </span>
+        )}
+      </div>
     </div>
   );
 };
