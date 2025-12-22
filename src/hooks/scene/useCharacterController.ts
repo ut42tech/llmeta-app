@@ -6,7 +6,6 @@ import { useShallow } from "zustand/react/shallow";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { PHYSICS } from "@/constants/world";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useWorldStore } from "@/stores/worldStore";
 import type { MoveData } from "@/types/player";
 
 /**
@@ -38,10 +37,6 @@ export function useCharacterController(
       setCurrentAvatar: state.setCurrentAvatar,
       setAvatarList: state.setAvatarList,
     })),
-  );
-
-  const updateCurrentGridCell = useWorldStore(
-    (state) => state.updateCurrentGridCell,
   );
 
   useEffect(() => {
@@ -78,7 +73,5 @@ export function useCharacterController(
     if (isConnected && publishMovement) {
       sendMovement(publishMovement);
     }
-
-    updateCurrentGridCell(character.position);
   });
 }

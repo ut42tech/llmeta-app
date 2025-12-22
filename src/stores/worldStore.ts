@@ -1,11 +1,5 @@
 import type { Vector3 } from "three";
 import { create } from "zustand";
-import { GRID } from "@/constants/world";
-
-type GridCoordinates = {
-  x: number;
-  y: number;
-};
 
 export type WorldContentItem = {
   id: string;
@@ -31,14 +25,11 @@ type ConnectionState = {
 };
 
 type WorldState = {
-  currentGridCell: GridCoordinates;
-  visibleGridSize: GridCoordinates;
   contentItems: WorldContentItem[];
   connection: ConnectionState;
 };
 
 type WorldActions = {
-  updateCurrentGridCell: (position: Vector3) => void;
   addContentItem: (item: Omit<WorldContentItem, "createdAt">) => void;
   removeContentItem: (id: string) => void;
   setConnecting: () => void;
@@ -50,46 +41,18 @@ type WorldActions = {
 
 type WorldStore = WorldState & WorldActions;
 
-const INITIAL_GRID_CELL: GridCoordinates = { x: 0, y: 0 };
-const DEFAULT_VISIBLE_GRID_SIZE: GridCoordinates = { x: 3, y: 3 };
 const INITIAL_CONNECTION: ConnectionState = {
   status: "idle",
   error: undefined,
 };
-
-const calculateGridCell = (position: Vector3): GridCoordinates => ({
-  x: Math.floor((position.x + GRID.HALF_CELL_SIZE) / GRID.CELL_SIZE),
-  y: Math.floor((position.z + GRID.HALF_CELL_SIZE) / GRID.CELL_SIZE),
-});
-
-const isGridCellEqual = (
-  cell1: GridCoordinates,
-  cell2: GridCoordinates,
-): boolean => cell1.x === cell2.x && cell1.y === cell2.y;
 
 /**
  * Unified world state store.
  * Manages grid-based world system and connection state.
  */
 export const useWorldStore = create<WorldStore>((set) => ({
-  currentGridCell: { ...INITIAL_GRID_CELL },
-  visibleGridSize: { ...DEFAULT_VISIBLE_GRID_SIZE },
   contentItems: [],
   connection: { ...INITIAL_CONNECTION },
-
-  updateCurrentGridCell: (position: Vector3) => {
-    const newGridCell = calculateGridCell(position);
-
-    set((state) => {
-      if (isGridCellEqual(state.currentGridCell, newGridCell)) {
-        return state;
-      }
-
-      return {
-        currentGridCell: newGridCell,
-      };
-    });
-  },
 
   addContentItem: (item) => {
     set(() => ({
