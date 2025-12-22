@@ -8,7 +8,6 @@ import {
 import {
   ConnectionState as LiveKitConnectionState,
   type Room,
-  RoomEvent,
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
@@ -16,7 +15,8 @@ import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { useChatDataChannel } from "@/hooks/livekit/useChatDataChannel";
 import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
-import { usePlayerDataChannel } from "@/hooks/livekit/usePlayerDataChannel";
+import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
+import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
 import { useConnectionStore } from "@/stores/connectionStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
@@ -30,7 +30,6 @@ type LiveKitSyncContextValue = {
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
   sendChatMessage: (content: string, image?: ChatMessageImage) => Promise<void>;
-  sendTyping: (isTyping: boolean) => void;
   room?: Room;
 };
 
@@ -41,7 +40,6 @@ const defaultContextValue: LiveKitSyncContextValue = {
   sendMove: () => void 0,
   sendProfile: () => void 0,
   sendChatMessage: async () => void 0,
-  sendTyping: () => void 0,
   room: undefined,
 };
 
@@ -93,52 +91,34 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
-  const { sendMove, sendProfile } = usePlayerDataChannel(identity);
-  const { sendChatMessage, sendTyping } = useChatDataChannel(identity);
+  const { sendMove } = useMovementDataChannel(identity);
+  const { setProfile } = useParticipantProfile();
+  const { sendChatMessage } = useChatDataChannel(identity);
 
   useEffect(() => {
     void initKrisp();
   }, [initKrisp]);
 
+  // Sync profile to Participant Attributes when connected or when profile changes
+  // No need to re-broadcast on ParticipantConnected - LiveKit handles this automatically!
   useEffect(() => {
     if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {
       return;
     }
 
-    sendProfile({
+    void setProfile({
       username: username || undefined,
       avatar: currentAvatar,
     });
-  }, [sessionId, connectionState, username, currentAvatar, sendProfile]);
+  }, [sessionId, connectionState, username, currentAvatar, setProfile]);
 
-  useEffect(() => {
-    if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {
-      return;
-    }
-
-    const handleParticipantConnected = () => {
-      sendProfile({
-        username: username || undefined,
-        avatar: currentAvatar,
-      });
-    };
-
-    roomInstance.on(RoomEvent.ParticipantConnected, handleParticipantConnected);
-
-    return () => {
-      roomInstance.off(
-        RoomEvent.ParticipantConnected,
-        handleParticipantConnected,
-      );
-    };
-  }, [
-    sessionId,
-    connectionState,
-    username,
-    currentAvatar,
-    sendProfile,
-    roomInstance,
-  ]);
+  // Wrap setProfile to match the expected signature for context
+  const sendProfile = useMemo(
+    () => (payload: ProfileData) => {
+      void setProfile(payload);
+    },
+    [setProfile],
+  );
 
   const contextValue = useMemo<LiveKitSyncContextValue>(
     () => ({
@@ -148,7 +128,6 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       sendMove,
       sendProfile,
       sendChatMessage,
-      sendTyping,
       room: roomInstance,
     }),
     [
@@ -157,7 +136,6 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       sendMove,
       sendProfile,
       sendChatMessage,
-      sendTyping,
       roomInstance,
     ],
   );

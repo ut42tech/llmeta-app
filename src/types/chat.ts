@@ -28,13 +28,3 @@ export type ChatMessage = {
   sentAt: number;
   image?: ChatMessageImage;
 };
-
-export type TypingPacket = {
-  username?: string;
-  isTyping: boolean;
-};
-
-export type TypingUser = {
-  sessionId: string;
-  username?: string;
-};

@@ -5,35 +5,24 @@ import { DATA_TOPICS } from "@/constants/sync";
 import { useTypedDataChannel } from "@/hooks/livekit/createTypedDataChannel";
 import { useChatStore } from "@/stores/chatStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type {
-  ChatMessageImage,
-  ChatMessagePacket,
-  TypingPacket,
-} from "@/types/chat";
+import type { ChatMessageImage, ChatMessagePacket } from "@/types/chat";
 
 /**
- * Hook for chat data channels (messages + typing)
+ * Hook for chat data channel (messages only, typing removed for simplicity)
  */
 export function useChatDataChannel(identity: string) {
   const { localSessionId, username } = useLocalPlayerStore(
     useShallow((s) => ({ localSessionId: s.sessionId, username: s.username })),
   );
 
-  const {
-    addIncomingMessage,
-    addOutgoingMessage,
-    updateMessageStatus,
-    addTypingUser,
-    removeTypingUser,
-  } = useChatStore(
-    useShallow((s) => ({
-      addIncomingMessage: s.addIncomingMessage,
-      addOutgoingMessage: s.addOutgoingMessage,
-      updateMessageStatus: s.updateMessageStatus,
-      addTypingUser: s.addTypingUser,
-      removeTypingUser: s.removeTypingUser,
-    })),
-  );
+  const { addIncomingMessage, addOutgoingMessage, updateMessageStatus } =
+    useChatStore(
+      useShallow((s) => ({
+        addIncomingMessage: s.addIncomingMessage,
+        addOutgoingMessage: s.addOutgoingMessage,
+        updateMessageStatus: s.updateMessageStatus,
+      })),
+    );
 
   const effectiveIdentity = localSessionId || identity;
 
@@ -60,24 +49,6 @@ export function useChatDataChannel(identity: string) {
       identity: effectiveIdentity,
       onMessage: handleChatMessage,
     });
-
-  // Typing indicator channel
-  const handleTyping = useCallback(
-    (data: TypingPacket, senderId: string) => {
-      if (data.isTyping) {
-        addTypingUser(senderId, data.username);
-      } else {
-        removeTypingUser(senderId);
-      }
-    },
-    [addTypingUser, removeTypingUser],
-  );
-
-  const { publish: publishTyping } = useTypedDataChannel<TypingPacket>({
-    topic: DATA_TOPICS.TYPING,
-    identity: effectiveIdentity,
-    onMessage: handleTyping,
-  });
 
   const sendChatMessage = useCallback(
     async (content: string, image?: ChatMessageImage) => {
@@ -119,12 +90,5 @@ export function useChatDataChannel(identity: string) {
     ],
   );
 
-  const sendTyping = useCallback(
-    (isTyping: boolean) => {
-      publishTyping({ username: username || undefined, isTyping }, false);
-    },
-    [publishTyping, username],
-  );
-
-  return { sendChatMessage, sendTyping };
+  return { sendChatMessage };
 }

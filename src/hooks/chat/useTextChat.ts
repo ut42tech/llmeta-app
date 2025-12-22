@@ -1,41 +1,32 @@
 "use client";
 
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useChatStore } from "@/stores/chatStore";
 import type { ChatMessageImage } from "@/types/chat";
 
+/**
+ * Simplified text chat hook.
+ * Removed: typing indicator, unread count (per user request for simplicity)
+ */
 export function useTextChat() {
-  const { sendChatMessage, sendTyping, isConnected } = useSyncClient();
+  const { sendChatMessage, isConnected } = useSyncClient();
 
-  const { messages, unreadCount, isOpen, typingUsers } = useChatStore(
+  const { messages, isOpen } = useChatStore(
     useShallow((state) => ({
       messages: state.messages,
-      unreadCount: state.unreadCount,
       isOpen: state.isOpen,
-      typingUsers: state.typingUsers,
     })),
   );
 
   const setOpen = useChatStore((state) => state.setOpen);
-  const markAllRead = useChatStore((state) => state.markAllRead);
-
-  useEffect(() => {
-    if (!isOpen) {
-      return;
-    }
-    markAllRead();
-  }, [isOpen, markAllRead]);
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
       setOpen(open);
-      if (open) {
-        markAllRead();
-      }
     },
-    [markAllRead, setOpen],
+    [setOpen],
   );
 
   const handleSend = useCallback(
@@ -51,12 +42,9 @@ export function useTextChat() {
 
   return {
     messages,
-    unreadCount,
     isOpen,
     canSend: isConnected,
     setOpen: handleOpenChange,
     sendMessage: handleSend,
-    sendTyping,
-    typingUsers,
   };
 }

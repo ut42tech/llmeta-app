@@ -1,17 +1,23 @@
+/**
+ * Hook for movement synchronization via LiveKit DataChannel.
+ * This is optimized for high-frequency updates (every frame).
+ *
+ * Movement data (position, rotation, animation state) requires
+ * DataChannel because Participant Attributes have update frequency limits.
+ */
 import { useCallback } from "react";
 import { Euler, Vector3 } from "three";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useTypedDataChannel } from "@/hooks/livekit/createTypedDataChannel";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
-import type { AnimationState, MoveData, ProfileData } from "@/types/player";
+import type { AnimationState, MoveData } from "@/types/player";
 
 /**
- * Hook for player synchronization data channels (move + profile)
+ * Hook for player movement synchronization via DataChannel
  */
-export function usePlayerDataChannel(identity: string) {
+export function useMovementDataChannel(identity: string) {
   const upsertPlayer = useRemotePlayersStore((s) => s.upsertPlayer);
 
-  // Move channel
   const handleMove = useCallback(
     (data: MoveData, senderId: string) => {
       upsertPlayer(senderId, {
@@ -38,32 +44,10 @@ export function usePlayerDataChannel(identity: string) {
     onMessage: handleMove,
   });
 
-  // Profile channel
-  const handleProfile = useCallback(
-    (data: ProfileData, senderId: string) => {
-      upsertPlayer(senderId, {
-        username: data.username,
-        avatar: data.avatar,
-      });
-    },
-    [upsertPlayer],
-  );
-
-  const { publish: publishProfile } = useTypedDataChannel<ProfileData>({
-    topic: DATA_TOPICS.PROFILE,
-    identity,
-    onMessage: handleProfile,
-  });
-
   const sendMove = useCallback(
     (payload: MoveData) => publishMove(payload, false),
     [publishMove],
   );
 
-  const sendProfile = useCallback(
-    (payload: ProfileData) => publishProfile(payload, true),
-    [publishProfile],
-  );
-
-  return { sendMove, sendProfile };
+  return { sendMove };
 }

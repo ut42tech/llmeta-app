@@ -16,7 +16,6 @@ export type SyncClient = {
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
   sendChatMessage: (content: string, image?: ChatMessageImage) => Promise<void>;
-  sendTyping: (isTyping: boolean) => void;
   room?: Room;
 };
 

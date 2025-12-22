@@ -1,27 +1,7 @@
 import { create } from "zustand";
-import type { ChatMessage, ChatMessageStatus, TypingUser } from "@/types/chat";
-import type { EntityRecord } from "@/types/common";
+import type { ChatMessage, ChatMessageStatus } from "@/types/chat";
 
 const MAX_CHAT_MESSAGES = 200;
-const TYPING_TIMEOUT_MS = 3000;
-
-// Inline helpers (previously in stores/helpers.ts)
-const upsertEntity = <T>(
-  record: EntityRecord<T>,
-  id: string,
-  data: T,
-): EntityRecord<T> => ({
-  ...record,
-  [id]: record[id] ? { ...record[id], ...data } : data,
-});
-
-const removeEntity = <T>(
-  record: EntityRecord<T>,
-  id: string,
-): EntityRecord<T> => {
-  const { [id]: _, ...rest } = record;
-  return rest;
-};
 
 const appendMessage = (
   messages: ChatMessage[],
@@ -42,10 +22,7 @@ const appendMessage = (
 
 type ChatState = {
   messages: ChatMessage[];
-  unreadCount: number;
   isOpen: boolean;
-  typingUsers: EntityRecord<TypingUser>;
-  typingTimeouts: EntityRecord<NodeJS.Timeout>;
 };
 
 type ChatActions = {
@@ -61,9 +38,6 @@ type ChatActions = {
   ) => void;
   updateMessageStatus: (id: string, status: ChatMessageStatus) => void;
   setOpen: (isOpen: boolean) => void;
-  markAllRead: () => void;
-  addTypingUser: (sessionId: string, username?: string) => void;
-  removeTypingUser: (sessionId: string) => void;
   reset: () => void;
 };
 
@@ -71,13 +45,14 @@ type ChatStore = ChatState & ChatActions;
 
 const initialState: ChatState = {
   messages: [],
-  unreadCount: 0,
   isOpen: false,
-  typingUsers: {},
-  typingTimeouts: {},
 };
 
-export const useChatStore = create<ChatStore>((set, get) => ({
+/**
+ * Simplified chat store.
+ * Removed: typing indicators, unread count (per user request for simplicity)
+ */
+export const useChatStore = create<ChatStore>((set) => ({
   ...initialState,
 
   addIncomingMessage: (message) => {
@@ -89,7 +64,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
     set((state) => ({
       messages: appendMessage(state.messages, incoming),
-      unreadCount: state.isOpen ? state.unreadCount : state.unreadCount + 1,
     }));
   },
 
@@ -116,49 +90,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     });
   },
 
-  setOpen: (isOpen) => {
-    set((state) => ({
-      isOpen,
-      unreadCount: isOpen ? 0 : state.unreadCount,
-    }));
-  },
+  setOpen: (isOpen) => set({ isOpen }),
 
-  markAllRead: () => set({ unreadCount: 0 }),
-
-  addTypingUser: (sessionId, username) => {
-    const state = get();
-
-    const existingTimeout = state.typingTimeouts[sessionId];
-    if (existingTimeout) clearTimeout(existingTimeout);
-
-    const timeout = setTimeout(() => {
-      get().removeTypingUser(sessionId);
-    }, TYPING_TIMEOUT_MS);
-
-    set((s) => ({
-      typingUsers: upsertEntity(s.typingUsers, sessionId, {
-        sessionId,
-        username,
-      }),
-      typingTimeouts: { ...s.typingTimeouts, [sessionId]: timeout },
-    }));
-  },
-
-  removeTypingUser: (sessionId) => {
-    const existingTimeout = get().typingTimeouts[sessionId];
-    if (existingTimeout) clearTimeout(existingTimeout);
-
-    set((state) => ({
-      typingUsers: removeEntity(state.typingUsers, sessionId),
-      typingTimeouts: removeEntity(state.typingTimeouts, sessionId),
-    }));
-  },
-
-  reset: () => {
-    const timeouts = get().typingTimeouts;
-    for (const timeout of Object.values(timeouts)) {
-      clearTimeout(timeout);
-    }
-    set(initialState);
-  },
+  reset: () => set(initialState),
 }));
