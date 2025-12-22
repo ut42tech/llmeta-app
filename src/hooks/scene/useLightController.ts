@@ -21,7 +21,6 @@ export function useLightController(
 ) {
   const { scene } = useThree();
 
-  // Add/remove light target from scene
   useEffect(() => {
     const light = lightRef.current;
     if (!light) return;
@@ -32,7 +31,6 @@ export function useLightController(
     };
   }, [scene, lightRef]);
 
-  // Update light position to follow character
   useFrame(() => {
     const character = characterRef.current;
     const light = lightRef.current;

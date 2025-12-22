@@ -27,7 +27,7 @@ import {
 } from "@/constants/animations";
 import { useMovementDirection } from "@/hooks/scene/useMovementDirection";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { AnimationState } from "@/types";
+import type { AnimationState } from "@/types/player";
 import { boneMap } from "@/utils/bone-map";
 
 export function LocalCharacterAnimation({
@@ -52,7 +52,6 @@ export function LocalCharacterAnimation({
   const jumpLoopRef = useRef<AnimationAction>(null);
   const jumpDownRef = useRef<AnimationAction>(null);
 
-  // Map animation names to refs for easy lookup
   const animationRefs: Record<
     AnimationState,
     React.RefObject<AnimationAction | null>
@@ -71,7 +70,6 @@ export function LocalCharacterAnimation({
     jumpDown: jumpDownRef,
   };
 
-  // Build move animations with conditions based on normalized direction
   const moveAnimations = MOVEMENT_ANIMATIONS.map((anim) => ({
     ...anim,
     ref: animationRefs[anim.name],

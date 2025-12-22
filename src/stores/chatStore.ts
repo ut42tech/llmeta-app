@@ -1,14 +1,7 @@
 import { create } from "zustand";
-import { removeEntity, upsertEntity } from "@/stores/helpers";
-import type {
-  ChatMessage,
-  ChatMessageStatus,
-  EntityRecord,
-  TypingUser,
-} from "@/types";
+import type { ChatMessage, ChatMessageStatus } from "@/types/chat";
 
 const MAX_CHAT_MESSAGES = 200;
-const TYPING_TIMEOUT_MS = 3000;
 
 const appendMessage = (
   messages: ChatMessage[],
@@ -27,12 +20,15 @@ const appendMessage = (
     : appended;
 };
 
+type AIChatState = {
+  isOpen: boolean;
+  includeChatHistory: boolean;
+};
+
 type ChatState = {
   messages: ChatMessage[];
-  unreadCount: number;
   isOpen: boolean;
-  typingUsers: EntityRecord<TypingUser>;
-  typingTimeouts: EntityRecord<NodeJS.Timeout>;
+  aiChat: AIChatState;
 };
 
 type ChatActions = {
@@ -48,9 +44,11 @@ type ChatActions = {
   ) => void;
   updateMessageStatus: (id: string, status: ChatMessageStatus) => void;
   setOpen: (isOpen: boolean) => void;
-  markAllRead: () => void;
-  addTypingUser: (sessionId: string, username?: string) => void;
-  removeTypingUser: (sessionId: string) => void;
+  toggleAIChat: () => void;
+  openAIChat: () => void;
+  closeAIChat: () => void;
+  toggleAIChatHistory: () => void;
+  setAIChatIncludeHistory: (value: boolean) => void;
   reset: () => void;
 };
 
@@ -58,13 +56,18 @@ type ChatStore = ChatState & ChatActions;
 
 const initialState: ChatState = {
   messages: [],
-  unreadCount: 0,
   isOpen: false,
-  typingUsers: {},
-  typingTimeouts: {},
+  aiChat: {
+    isOpen: false,
+    includeChatHistory: true,
+  },
 };
 
-export const useChatStore = create<ChatStore>((set, get) => ({
+/**
+ * Unified chat store.
+ * Includes both text chat and AI chat state.
+ */
+export const useChatStore = create<ChatStore>((set) => ({
   ...initialState,
 
   addIncomingMessage: (message) => {
@@ -76,7 +79,6 @@ export const useChatStore = create<ChatStore>((set, get) => ({
 
     set((state) => ({
       messages: appendMessage(state.messages, incoming),
-      unreadCount: state.isOpen ? state.unreadCount : state.unreadCount + 1,
     }));
   },
 
@@ -103,54 +105,35 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     });
   },
 
-  setOpen: (isOpen) => {
+  setOpen: (isOpen) => set({ isOpen }),
+
+  toggleAIChat: () =>
     set((state) => ({
-      isOpen,
-      unreadCount: isOpen ? 0 : state.unreadCount,
-    }));
-  },
+      aiChat: { ...state.aiChat, isOpen: !state.aiChat.isOpen },
+    })),
 
-  markAllRead: () => set({ unreadCount: 0 }),
-
-  addTypingUser: (sessionId, username) => {
-    const state = get();
-
-    // Clear existing timeout
-    const existingTimeout = state.typingTimeouts[sessionId];
-    if (existingTimeout) clearTimeout(existingTimeout);
-
-    // Set new timeout
-    const timeout = setTimeout(() => {
-      get().removeTypingUser(sessionId);
-    }, TYPING_TIMEOUT_MS);
-
-    set((s) => ({
-      typingUsers: upsertEntity(
-        s.typingUsers,
-        sessionId,
-        { sessionId, username },
-        { sessionId, username },
-      ),
-      typingTimeouts: { ...s.typingTimeouts, [sessionId]: timeout },
-    }));
-  },
-
-  removeTypingUser: (sessionId) => {
-    const existingTimeout = get().typingTimeouts[sessionId];
-    if (existingTimeout) clearTimeout(existingTimeout);
-
+  openAIChat: () =>
     set((state) => ({
-      typingUsers: removeEntity(state.typingUsers, sessionId),
-      typingTimeouts: removeEntity(state.typingTimeouts, sessionId),
-    }));
-  },
+      aiChat: { ...state.aiChat, isOpen: true },
+    })),
 
-  reset: () => {
-    // Clear all timeouts before reset
-    const timeouts = get().typingTimeouts;
-    for (const timeout of Object.values(timeouts)) {
-      clearTimeout(timeout);
-    }
-    set(initialState);
-  },
+  closeAIChat: () =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, isOpen: false },
+    })),
+
+  toggleAIChatHistory: () =>
+    set((state) => ({
+      aiChat: {
+        ...state.aiChat,
+        includeChatHistory: !state.aiChat.includeChatHistory,
+      },
+    })),
+
+  setAIChatIncludeHistory: (value) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, includeChatHistory: value },
+    })),
+
+  reset: () => set(initialState),
 }));

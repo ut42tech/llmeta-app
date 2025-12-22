@@ -1,5 +1,8 @@
 import { AccessToken } from "livekit-server-sdk";
-import type { LiveKitTokenRequest, LiveKitTokenResponse } from "@/types";
+import type {
+  LiveKitTokenRequest,
+  LiveKitTokenResponse,
+} from "@/types/livekit";
 
 const ensureConfig = () => {
   const apiKey = process.env.LIVEKIT_API_KEY;
@@ -32,6 +35,7 @@ export const createLiveKitAccessToken = async (
     canPublish: true,
     canSubscribe: true,
     canPublishData: true,
+    canUpdateOwnMetadata: true,
   });
 
   return {

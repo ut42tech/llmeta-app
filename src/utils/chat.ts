@@ -1,4 +1,4 @@
-import type { ChatMessage } from "@/types";
+import type { ChatMessage } from "@/types/chat";
 
 /**
  * Checks if a message has text content.

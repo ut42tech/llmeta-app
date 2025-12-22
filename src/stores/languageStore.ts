@@ -32,7 +32,6 @@ export const useLanguageStore = create<LanguageStore>()(
       setLocale: (locale) => {
         if (locales.includes(locale)) {
           set({ locale });
-          // Set cookie for server-side detection
           setCookie("NEXT_LOCALE", locale, 31536000);
         }
       },

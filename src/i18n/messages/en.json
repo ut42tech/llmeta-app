@@ -22,7 +22,7 @@
   },
   "joinWorld": {
     "title": "Join World",
-    "description": "Set up your profile to join the world. Audio permission is required to hear other users.",
+    "description": "Set up your profile to join the world.",
     "languageLabel": "Language",
     "warningTitle": "Privacy Notice",
     "warningText": "This app sends data to external services. Please do not share personal or sensitive information.",
@@ -30,6 +30,13 @@
     "usernamePlaceholder": "Enter your username",
     "avatarLabel": "Choose your avatar",
     "continueButton": "Continue"
+  },
+  "lobby": {
+    "connecting": "Connecting to server...",
+    "connected": "Connected.",
+    "failed": "Connection failed",
+    "retry": "Retry",
+    "waitingForConnection": "Waiting for connection..."
   },
   "dock": {
     "chat": "Chat",
@@ -40,7 +47,6 @@
     "title": "Chat",
     "pressEnterToSend": "Press <key>Enter</key> to send",
     "typePlaceholder": "Type a message...",
-    "toggleAutoSend": "Auto-send transcription to chat",
     "openChat": "Open chat window",
     "placeholder": "Type a message",
     "inputAriaLabel": "Chat message",

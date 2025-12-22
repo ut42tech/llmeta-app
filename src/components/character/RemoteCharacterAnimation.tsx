@@ -45,7 +45,6 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
   const jumpLoopRef = useRef<AnimationAction>(null);
   const jumpDownRef = useRef<AnimationAction>(null);
 
-  // Map animation names to refs for easy lookup
   const animationRefs: Record<
     string,
     React.RefObject<AnimationAction | null>
@@ -64,7 +63,6 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
     jumpDown: jumpDownRef,
   };
 
-  // Get all movement animation refs for time scale update
   const movementRefs = MOVEMENT_ANIMATIONS.map(
     (anim) => animationRefs[anim.name],
   );
@@ -85,7 +83,6 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
         <Graph enterState="move">
           <GrapthState name="move">
             <Switch>
-              {/* Movement animations from shared config */}
               {MOVEMENT_ANIMATIONS.map((anim, index) => (
                 <SwitchCase
                   key={anim.name}
@@ -101,7 +98,6 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   />
                 </SwitchCase>
               ))}
-              {/* Jump animations */}
               <SwitchCase
                 index={MOVEMENT_ANIMATIONS.length}
                 condition={() => animation === "jumpUp"}
@@ -131,7 +127,6 @@ export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {
                   url={JumpDownAnimationUrl}
                 />
               </SwitchCase>
-              {/* Idle (default) */}
               <SwitchCase index={MOVEMENT_ANIMATIONS.length + 3}>
                 <CharacterAnimationAction
                   ref={idleRef}

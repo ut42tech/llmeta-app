@@ -8,38 +8,38 @@ import {
 import {
   ConnectionState as LiveKitConnectionState,
   type Room,
-  RoomEvent,
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
-import { JoinWorldDialog } from "@/components/JoinWorldDialog";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
-import { useChatDataChannel } from "@/hooks/livekit/data-channel/useChatDataChannel";
-import { usePlayerDataChannel } from "@/hooks/livekit/data-channel/usePlayerDataChannel";
+import { useChatDataChannel } from "@/hooks/livekit/useChatDataChannel";
 import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
-import { useConnectionStore } from "@/stores/connectionStore";
+import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
+import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
-import type { ChatMessageImage, MoveData, ProfileData } from "@/types";
+import { useWorldStore } from "@/stores/worldStore";
+import type { ChatMessageImage } from "@/types/chat";
+import type { MoveData, ProfileData } from "@/types/player";
 
 type LiveKitSyncContextValue = {
   sessionId?: string;
   isConnected: boolean;
+  connectionState: LiveKitConnectionState;
   sendMove: (payload: MoveData) => void;
   sendProfile: (payload: ProfileData) => void;
   sendChatMessage: (content: string, image?: ChatMessageImage) => Promise<void>;
-  sendTyping: (isTyping: boolean) => void;
   room?: Room;
 };
 
 const defaultContextValue: LiveKitSyncContextValue = {
   sessionId: undefined,
   isConnected: false,
+  connectionState: LiveKitConnectionState.Disconnected,
   sendMove: () => void 0,
   sendProfile: () => void 0,
   sendChatMessage: async () => void 0,
-  sendTyping: () => void 0,
   room: undefined,
 };
 
@@ -52,7 +52,7 @@ export function LiveKitSyncProvider({
   children,
   roomName = LIVEKIT_CONFIG.defaultRoom,
 }: ProviderProps) {
-  const setFailed = useConnectionStore((state) => state.setFailed);
+  const setFailed = useWorldStore((state) => state.setFailed);
   const { authState, identity } = useLiveKitAuth(roomName);
 
   if (!authState.token || !authState.serverUrl) {
@@ -74,7 +74,6 @@ export function LiveKitSyncProvider({
       onError={(error) => setFailed(error.message)}
     >
       <RoomAudioRenderer />
-      <JoinWorldDialog />
       <LiveKitSyncBridge identity={identity}>{children}</LiveKitSyncBridge>
     </LiveKitRoom>
   );
@@ -92,8 +91,9 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
-  const { sendMove, sendProfile } = usePlayerDataChannel(identity);
-  const { sendChatMessage, sendTyping } = useChatDataChannel(identity);
+  const { sendMove } = useMovementDataChannel(identity);
+  const { setProfile } = useParticipantProfile();
+  const { sendChatMessage } = useChatDataChannel(identity);
 
   useEffect(() => {
     void initKrisp();
@@ -104,49 +104,27 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       return;
     }
 
-    sendProfile({
+    void setProfile({
       username: username || undefined,
       avatar: currentAvatar,
     });
-  }, [sessionId, connectionState, username, currentAvatar, sendProfile]);
+  }, [sessionId, connectionState, username, currentAvatar, setProfile]);
 
-  useEffect(() => {
-    if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {
-      return;
-    }
-
-    const handleParticipantConnected = () => {
-      sendProfile({
-        username: username || undefined,
-        avatar: currentAvatar,
-      });
-    };
-
-    roomInstance.on(RoomEvent.ParticipantConnected, handleParticipantConnected);
-
-    return () => {
-      roomInstance.off(
-        RoomEvent.ParticipantConnected,
-        handleParticipantConnected,
-      );
-    };
-  }, [
-    sessionId,
-    connectionState,
-    username,
-    currentAvatar,
-    sendProfile,
-    roomInstance,
-  ]);
+  const sendProfile = useMemo(
+    () => (payload: ProfileData) => {
+      void setProfile(payload);
+    },
+    [setProfile],
+  );
 
   const contextValue = useMemo<LiveKitSyncContextValue>(
     () => ({
       sessionId,
       isConnected: connectionState === LiveKitConnectionState.Connected,
+      connectionState,
       sendMove,
       sendProfile,
       sendChatMessage,
-      sendTyping,
       room: roomInstance,
     }),
     [
@@ -155,7 +133,6 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
       sendMove,
       sendProfile,
       sendChatMessage,
-      sendTyping,
       roomInstance,
     ],
   );
