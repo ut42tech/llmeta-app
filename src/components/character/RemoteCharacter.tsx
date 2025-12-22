@@ -4,13 +4,12 @@ import {
   useCharacterModelLoader,
 } from "@react-three/viverse";
 import {
-  type RemoteAudioTrack,
   type RemoteTrack,
   type RemoteTrackPublication,
   Track,
   type TrackPublication,
 } from "livekit-client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { PlayerTag } from "@/components/character/PlayerTag";
 import { RemoteCharacterAnimation } from "@/components/character/RemoteCharacterAnimation";
 import { TextChatBubble } from "@/components/character/TextChatBubble";
@@ -19,8 +18,6 @@ import {
   usePositionBuffer,
   useRotationBuffer,
 } from "@/hooks/scene/useSnapshotBuffer";
-import { useProximityVoice } from "@/hooks/voice/useProximityVoice";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
@@ -32,10 +29,6 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
     (s) => s.setPlayerSpeakingStatus,
   );
   const { room } = useSyncClient();
-
-  const localPosition = useLocalPlayerStore((state) => state.position);
-
-  const [audioTrack, setAudioTrack] = useState<RemoteAudioTrack | null>(null);
 
   const avatarUrl = player?.avatar?.vrmUrl;
   const modelUrl = useMemo(() => {
@@ -60,8 +53,6 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   const smoothRotation = useRotationBuffer(
     player?.rotation ?? model.scene.rotation,
   );
-
-  useProximityVoice(localPosition, smoothPosition, audioTrack);
 
   useFrame(() => {
     if (!player || !model.scene) return;
@@ -89,17 +80,6 @@ export function RemoteCharacter({ sessionId }: { sessionId: string }) {
         audioPublication.isMuted ||
         !audioPublication.isSubscribed;
       setPlayerMuteStatus(sessionId, isMuted);
-
-      if (
-        audioPublication &&
-        !audioPublication.isMuted &&
-        audioPublication.isSubscribed &&
-        audioPublication.track
-      ) {
-        setAudioTrack(audioPublication.track as RemoteAudioTrack);
-      } else {
-        setAudioTrack(null);
-      }
     };
 
     updateMuteStatus();

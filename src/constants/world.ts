@@ -38,27 +38,3 @@ export const LIGHTING = {
   DIRECTIONAL_INTENSITY: 1.2,
   AMBIENT_INTENSITY: 1,
 };
-
-/**
- * Proximity-based voice chat configuration
- */
-export const PROXIMITY_VOICE = {
-  /** Maximum distance to hear another player's voice (world units) */
-  MAX_HEARING_DISTANCE: 30,
-  /** Distance where volume starts to fade out (world units) */
-  FADE_START_DISTANCE: 15,
-  /** Minimum volume level (0 = muted) */
-  MIN_VOLUME: 0,
-  /** Maximum volume level (1 = full volume) */
-  MAX_VOLUME: 1,
-  /** How often to update volume based on distance (milliseconds) */
-  UPDATE_INTERVAL_MS: 100,
-  /**
-   * Rolloff factor for distance-based volume attenuation
-   * - 1.0: Linear falloff
-   * - 2.0: Quadratic falloff (more realistic, similar to inverse square law)
-   * - 3.0: Cubic falloff (very steep)
-   * Higher values create more natural audio spatialization
-   */
-  ROLLOFF_FACTOR: 2.0,
-};
