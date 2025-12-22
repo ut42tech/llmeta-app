@@ -47,7 +47,6 @@
     "title": "Chat",
     "pressEnterToSend": "Press <key>Enter</key> to send",
     "typePlaceholder": "Type a message...",
-    "toggleAutoSend": "Auto-send transcription to chat",
     "openChat": "Open chat window",
     "placeholder": "Type a message",
     "inputAriaLabel": "Chat message",

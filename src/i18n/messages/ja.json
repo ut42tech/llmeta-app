@@ -47,7 +47,6 @@
     "title": "チャット",
     "pressEnterToSend": "<key>Enter</key>で送信",
     "typePlaceholder": "メッセージを入力...",
-    "toggleAutoSend": "文字起こしをチャットに自動送信",
     "openChat": "チャットウィンドウを開く",
     "placeholder": "メッセージを入力",
     "inputAriaLabel": "チャットメッセージ",

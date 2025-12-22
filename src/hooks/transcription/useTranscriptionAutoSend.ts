@@ -8,7 +8,6 @@ import { useTranscriptionStore } from "@/stores/transcriptionStore";
 /**
  * Automatically sends accumulated transcription results to chat after a debounce period.
  *
- * When autoSendToChat is enabled:
  * 1. Each finalized transcription entry is buffered in pendingAutoSend
  * 2. A debounce timer is reset on each new entry
  * 3. After AUTO_SEND_DEBOUNCE_MS of silence, all buffered text is combined and sent to chat
@@ -18,7 +17,6 @@ import { useTranscriptionStore } from "@/stores/transcriptionStore";
 export const useTranscriptionAutoSend = () => {
   const { sendMessage, canSend } = useTextChat();
 
-  const autoSendToChat = useTranscriptionStore((state) => state.autoSendToChat);
   const pendingAutoSend = useTranscriptionStore(
     (state) => state.pendingAutoSend,
   );
@@ -29,8 +27,8 @@ export const useTranscriptionAutoSend = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Clear timer when auto-send is disabled or can't send
-    if (!autoSendToChat || !canSend) {
+    // Clear timer when can't send
+    if (!canSend) {
       if (timerRef.current) {
         clearTimeout(timerRef.current);
         timerRef.current = null;
@@ -63,11 +61,5 @@ export const useTranscriptionAutoSend = () => {
         timerRef.current = null;
       }
     };
-  }, [
-    autoSendToChat,
-    canSend,
-    pendingAutoSend,
-    consumePendingAutoSend,
-    sendMessage,
-  ]);
+  }, [canSend, pendingAutoSend, consumePendingAutoSend, sendMessage]);
 };
