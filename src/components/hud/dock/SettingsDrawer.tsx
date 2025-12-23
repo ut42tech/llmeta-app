@@ -5,7 +5,6 @@ import {
   Gamepad2,
   Globe,
   Languages,
-  MapPin,
   Mouse,
   Settings,
   Smile,
@@ -15,7 +14,6 @@ import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
-import { Euler, Vector3 } from "three";
 import { useShallow } from "zustand/react/shallow";
 import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
 import { Button } from "@/components/ui/button";
@@ -75,28 +73,6 @@ const SettingsSection = ({ title, icon, children }: SettingsSectionProps) => (
       {icon}
       {title}
     </h3>
-    {children}
-  </motion.div>
-);
-
-type SettingsRowProps = {
-  label: string;
-  description?: string;
-  children: React.ReactNode;
-};
-
-const SettingsRow = ({ label, description, children }: SettingsRowProps) => (
-  <motion.div
-    className="flex items-center justify-between py-3 border rounded-md px-3"
-    whileHover={{ scale: 1.01 }}
-    transition={{ type: "spring", stiffness: 400, damping: 25 }}
-  >
-    <div className="space-y-1">
-      <div className="text-sm text-muted-foreground">{label}</div>
-      {description && (
-        <div className="text-xs text-muted-foreground">{description}</div>
-      )}
-    </div>
     {children}
   </motion.div>
 );
@@ -174,10 +150,6 @@ const GeneralTab = () => {
     sendProfile({ username: newName });
   };
 
-  const handleResetPosition = () => {
-    teleport(new Vector3(0, 0, 0), new Euler(0, 0, 0));
-  };
-
   const handleSelectAvatar = (avatar: ViverseAvatar) => {
     const currentPosition = position.clone();
     const currentRotation = rotation.clone();
@@ -219,19 +191,6 @@ const GeneralTab = () => {
           selectedId={currentAvatar?.id}
           onSelect={handleSelectAvatar}
         />
-      </SettingsSection>
-
-      <SettingsSection
-        title={t("position")}
-        icon={<MapPin className="size-4 text-muted-foreground" />}
-      >
-        <SettingsRow
-          label={`x: ${position.x.toFixed(2)} / y: ${position.y.toFixed(2)} / z: ${position.z.toFixed(2)}`}
-        >
-          <Button variant="outline" onClick={handleResetPosition}>
-            {tCommon("reset")}
-          </Button>
-        </SettingsRow>
       </SettingsSection>
 
       <SettingsSection
