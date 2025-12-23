@@ -86,12 +86,26 @@ type BridgeProps = {
 const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const username = useLocalPlayerStore((state) => state.username);
   const currentAvatar = useLocalPlayerStore((state) => state.currentAvatar);
+  const setRoomInfo = useWorldStore((state) => state.setRoomInfo);
+  const clearRoomInfo = useWorldStore((state) => state.clearRoomInfo);
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
   const { sendMove } = useMovementDataChannel(identity);
   const { setProfile } = useParticipantProfile();
   const { sendChatMessage } = useChatDataChannel(identity);
+
+  useEffect(() => {
+    if (connectionState !== LiveKitConnectionState.Connected) {
+      clearRoomInfo();
+      return;
+    }
+
+    setRoomInfo({ roomName: roomInstance.name });
+    roomInstance.getSid().then((sid) => {
+      setRoomInfo({ roomSid: sid });
+    });
+  }, [connectionState, roomInstance, setRoomInfo, clearRoomInfo]);
 
   useEffect(() => {
     if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {

@@ -46,6 +46,7 @@ import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { type Locale, localeNames, locales } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useWorldStore } from "@/stores/worldStore";
 import type { ViverseAvatar } from "@/types/player";
 
 type SettingsSectionProps = {
@@ -89,7 +90,7 @@ type InfoRowProps = {
 };
 
 const InfoRow = ({ label, value, mono }: InfoRowProps) => (
-  <div className="flex items-center justify-between py-3 border-b border-border">
+  <div className="flex items-center justify-between py-1.5">
     <span className="text-sm font-medium text-muted-foreground">{label}</span>
     <span
       className={
@@ -107,6 +108,12 @@ const GeneralTab = () => {
   const t = useTranslations("settings");
   const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
+  const { roomName, roomSid } = useWorldStore(
+    useShallow((state) => ({
+      roomName: state.room.roomName || "—",
+      roomSid: state.room.roomSid || "—",
+    })),
+  );
 
   const {
     username,
@@ -158,7 +165,10 @@ const GeneralTab = () => {
 
   return (
     <div className="space-y-6">
-      <SettingsSection title={t("username")} icon={<User className="size-4 text-muted-foreground" />}>
+      <SettingsSection
+        title={t("username")}
+        icon={<User className="size-4 text-muted-foreground" />}
+      >
         <div className="flex items-center gap-2">
           <Input
             value={nameInput}
@@ -172,7 +182,10 @@ const GeneralTab = () => {
         </div>
       </SettingsSection>
 
-      <SettingsSection title={t("avatar")} icon={<Smile className="size-4 text-muted-foreground" />}>
+      <SettingsSection
+        title={t("avatar")}
+        icon={<Smile className="size-4 text-muted-foreground" />}
+      >
         <AvatarPicker
           avatars={AVATAR_LIST}
           selectedId={currentAvatar?.id}
@@ -180,7 +193,10 @@ const GeneralTab = () => {
         />
       </SettingsSection>
 
-      <SettingsSection title={t("position")} icon={<MapPin className="size-4 text-muted-foreground" />}>
+      <SettingsSection
+        title={t("position")}
+        icon={<MapPin className="size-4 text-muted-foreground" />}
+      >
         <SettingsRow
           label={`x: ${position.x.toFixed(2)} / y: ${position.y.toFixed(2)} / z: ${position.z.toFixed(2)}`}
         >
@@ -190,7 +206,12 @@ const GeneralTab = () => {
         </SettingsRow>
       </SettingsSection>
 
-      <SettingsSection title={t("sessionId")} icon={<Fingerprint className="size-4 text-muted-foreground" />}>
+      <SettingsSection
+        title={t("sessionInfo")}
+        icon={<Fingerprint className="size-4 text-muted-foreground" />}
+      >
+        <InfoRow label={t("roomName")} value={roomName} mono />
+        <InfoRow label={t("roomSid")} value={roomSid} mono />
         <InfoRow label={t("sessionId")} value={sessionId} mono />
       </SettingsSection>
     </div>

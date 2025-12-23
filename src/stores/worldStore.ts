@@ -24,9 +24,15 @@ type ConnectionState = {
   error?: string;
 };
 
+type RoomInfo = {
+  roomName?: string;
+  roomSid?: string;
+};
+
 type WorldState = {
   contentItems: WorldContentItem[];
   connection: ConnectionState;
+  room: RoomInfo;
 };
 
 type WorldActions = {
@@ -37,6 +43,8 @@ type WorldActions = {
   setFailed: (error?: string) => void;
   setDisconnected: () => void;
   resetConnection: () => void;
+  setRoomInfo: (info: RoomInfo) => void;
+  clearRoomInfo: () => void;
 };
 
 type WorldStore = WorldState & WorldActions;
@@ -46,13 +54,15 @@ const INITIAL_CONNECTION: ConnectionState = {
   error: undefined,
 };
 
-/**
- * Unified world state store.
- * Manages grid-based world system and connection state.
- */
+const INITIAL_ROOM: RoomInfo = {
+  roomName: undefined,
+  roomSid: undefined,
+};
+
 export const useWorldStore = create<WorldStore>((set) => ({
   contentItems: [],
   connection: { ...INITIAL_CONNECTION },
+  room: { ...INITIAL_ROOM },
 
   addContentItem: (item) => {
     set(() => ({
@@ -81,4 +91,11 @@ export const useWorldStore = create<WorldStore>((set) => ({
     })),
 
   resetConnection: () => set({ connection: { ...INITIAL_CONNECTION } }),
+
+  setRoomInfo: (info) =>
+    set((state) => ({
+      room: { ...state.room, ...info },
+    })),
+
+  clearRoomInfo: () => set({ room: { ...INITIAL_ROOM } }),
 }));

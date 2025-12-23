@@ -114,6 +114,9 @@
     "usernamePlaceholder": "Enter your name",
     "avatar": "Avatar",
     "position": "Position",
+    "sessionInfo": "Session Info",
+    "roomName": "Room Name",
+    "roomSid": "Room SID",
     "sessionId": "Session ID"
   },
   "language": {
