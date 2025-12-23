@@ -35,7 +35,6 @@ import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { type Locale, localeNames, locales } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useVoiceChatStore } from "@/stores/voiceChatStore";
 import type { ViverseAvatar } from "@/types/player";
 
 type SettingsSectionProps = {
@@ -183,48 +182,6 @@ const GeneralTab = () => {
   );
 };
 
-const AudioTab = () => {
-  const t = useTranslations("settings");
-  const tCommon = useTranslations("common");
-
-  const { krispEnabled, krispSupported, setKrispEnabled, initKrisp } =
-    useVoiceChatStore(
-      useShallow((state) => ({
-        krispEnabled: state.krispEnabled,
-        krispSupported: state.krispSupported,
-        setKrispEnabled: state.setKrispEnabled,
-        initKrisp: state.initKrisp,
-      })),
-    );
-
-  useEffect(() => {
-    void initKrisp();
-  }, [initKrisp]);
-
-  return (
-    <div className="space-y-6">
-      <SettingsSection title={t("audioQuality")}>
-        <SettingsRow
-          label={t("aiNoiseCancellation")}
-          description={t("aiNoiseCancellationDescription")}
-        >
-          <Button
-            variant={krispEnabled ? "default" : "outline"}
-            onClick={() => setKrispEnabled(!krispEnabled)}
-            disabled={!krispSupported}
-          >
-            {krispEnabled ? tCommon("enabled") : tCommon("disabled")}
-          </Button>
-        </SettingsRow>
-        {!krispSupported && (
-          <p className="text-xs text-amber-600">{t("krispNotSupported")}</p>
-        )}
-        <p className="text-xs text-muted-foreground">{t("basicNoiseNote")}</p>
-      </SettingsSection>
-    </div>
-  );
-};
-
 const ControlsTab = () => {
   const t = useTranslations("worldInfo");
 
@@ -297,17 +254,13 @@ const SettingsContent = () => {
 
   return (
     <Tabs defaultValue="general" className="w-full">
-      <TabsList className="grid w-full grid-cols-4">
+      <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="general">{t("tabs.general")}</TabsTrigger>
-        <TabsTrigger value="audio">{t("tabs.audio")}</TabsTrigger>
         <TabsTrigger value="controls">{t("tabs.controls")}</TabsTrigger>
         <TabsTrigger value="language">{t("tabs.language")}</TabsTrigger>
       </TabsList>
       <TabsContent value="general" className="mt-4">
         <GeneralTab />
-      </TabsContent>
-      <TabsContent value="audio" className="mt-4">
-        <AudioTab />
       </TabsContent>
       <TabsContent value="controls" className="mt-4">
         <ControlsTab />

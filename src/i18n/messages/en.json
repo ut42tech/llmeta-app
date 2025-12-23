@@ -107,7 +107,6 @@
     "description": "⚙️ Update your preferences",
     "tabs": {
       "general": "General",
-      "audio": "Audio",
       "controls": "Controls",
       "language": "Language"
     },
@@ -115,12 +114,7 @@
     "usernamePlaceholder": "Enter your name",
     "avatar": "Avatar",
     "position": "Position",
-    "sessionId": "Session ID",
-    "audioQuality": "Audio Quality",
-    "aiNoiseCancellation": "AI Noise Cancellation",
-    "aiNoiseCancellationDescription": "Advanced noise removal powered by Krisp",
-    "krispNotSupported": "⚠️ AI noise cancellation is not supported in this browser. Safari 17.4+ or Chrome/Edge is required.",
-    "basicNoiseNote": "Note: Basic echo cancellation and noise suppression are always enabled."
+    "sessionId": "Session ID"
   },
   "language": {
     "selectLanguage": "Select Language",

@@ -107,7 +107,6 @@
     "description": "⚙️ 設定を更新",
     "tabs": {
       "general": "一般",
-      "audio": "音声",
       "controls": "操作",
       "language": "言語"
     },
@@ -115,12 +114,7 @@
     "usernamePlaceholder": "名前を入力",
     "avatar": "アバター",
     "position": "位置",
-    "sessionId": "セッションID",
-    "audioQuality": "音声品質",
-    "aiNoiseCancellation": "AIノイズキャンセル",
-    "aiNoiseCancellationDescription": "Krisp搭載の高度なノイズ除去",
-    "krispNotSupported": "⚠️ このブラウザではAIノイズキャンセルに対応していません。Safari 17.4以降またはChrome/Edgeが必要です。",
-    "basicNoiseNote": "注: 基本的なエコーキャンセルとノイズ抑制は常に有効です。"
+    "sessionId": "セッションID"
   },
   "language": {
     "selectLanguage": "言語を選択",

@@ -18,7 +18,6 @@ import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
 import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
 import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useVoiceChatStore } from "@/stores/voiceChatStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { ChatMessageImage } from "@/types/chat";
 import type { MoveData, ProfileData } from "@/types/player";
@@ -87,17 +86,12 @@ type BridgeProps = {
 const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const username = useLocalPlayerStore((state) => state.username);
   const currentAvatar = useLocalPlayerStore((state) => state.currentAvatar);
-  const initKrisp = useVoiceChatStore((state) => state.initKrisp);
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
   const { sendMove } = useMovementDataChannel(identity);
   const { setProfile } = useParticipantProfile();
   const { sendChatMessage } = useChatDataChannel(identity);
-
-  useEffect(() => {
-    void initKrisp();
-  }, [initKrisp]);
 
   useEffect(() => {
     if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {
