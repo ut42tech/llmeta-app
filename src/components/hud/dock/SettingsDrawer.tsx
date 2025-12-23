@@ -11,6 +11,7 @@ import {
   Smile,
   User,
 } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -32,7 +33,7 @@ import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
@@ -46,6 +47,22 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { ViverseAvatar } from "@/types/player";
 
+const staggerItem = {
+  hidden: { opacity: 0, y: 12 },
+  visible: { opacity: 1, y: 0 },
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.06,
+      delayChildren: 0.05,
+    },
+  },
+};
+
 type SettingsSectionProps = {
   title: string;
   icon?: React.ReactNode;
@@ -53,13 +70,13 @@ type SettingsSectionProps = {
 };
 
 const SettingsSection = ({ title, icon, children }: SettingsSectionProps) => (
-  <div className="space-y-3">
+  <motion.div className="space-y-3" variants={staggerItem}>
     <h3 className="text-sm font-semibold flex items-center gap-2">
       {icon}
       {title}
     </h3>
     {children}
-  </div>
+  </motion.div>
 );
 
 type SettingsRowProps = {
@@ -69,7 +86,11 @@ type SettingsRowProps = {
 };
 
 const SettingsRow = ({ label, description, children }: SettingsRowProps) => (
-  <div className="flex items-center justify-between py-3 border rounded-md px-3">
+  <motion.div
+    className="flex items-center justify-between py-3 border rounded-md px-3"
+    whileHover={{ scale: 1.01 }}
+    transition={{ type: "spring", stiffness: 400, damping: 25 }}
+  >
     <div className="space-y-1">
       <div className="text-sm text-muted-foreground">{label}</div>
       {description && (
@@ -77,7 +98,7 @@ const SettingsRow = ({ label, description, children }: SettingsRowProps) => (
       )}
     </div>
     {children}
-  </div>
+  </motion.div>
 );
 
 type InfoRowProps = {
@@ -87,7 +108,12 @@ type InfoRowProps = {
 };
 
 const InfoRow = ({ label, value, mono }: InfoRowProps) => (
-  <div className="flex items-center justify-between py-1.5">
+  <motion.div
+    className="flex items-center justify-between py-1.5"
+    initial={{ opacity: 0, x: -8 }}
+    animate={{ opacity: 1, x: 0 }}
+    transition={{ duration: 0.2 }}
+  >
     <span className="text-sm font-medium text-muted-foreground">{label}</span>
     <span
       className={
@@ -98,7 +124,7 @@ const InfoRow = ({ label, value, mono }: InfoRowProps) => (
     >
       {value}
     </span>
-  </div>
+  </motion.div>
 );
 
 const GeneralTab = () => {
@@ -161,7 +187,12 @@ const GeneralTab = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      className="space-y-6"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
       <SettingsSection
         title={t("username")}
         icon={<User className="size-4 text-muted-foreground" />}
@@ -211,7 +242,7 @@ const GeneralTab = () => {
         <InfoRow label={t("roomSid")} value={roomSid} mono />
         <InfoRow label={t("sessionId")} value={sessionId} mono />
       </SettingsSection>
-    </div>
+    </motion.div>
   );
 };
 
@@ -219,21 +250,37 @@ const ControlsTab = () => {
   const t = useTranslations("worldInfo");
 
   return (
-    <div className="space-y-6">
-      <p className="text-sm text-muted-foreground leading-relaxed">
+    <motion.div
+      className="space-y-6"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.p
+        className="text-sm text-muted-foreground leading-relaxed"
+        variants={staggerItem}
+      >
         {t("placeholder")}
-      </p>
+      </motion.p>
 
-      <div className="space-y-3">
+      <motion.div className="space-y-3" variants={staggerItem}>
         <h3 className="text-sm font-semibold">{t("controlsTitle")}</h3>
         <div className="space-y-2.5">
-          <div className="flex items-start gap-3">
+          <motion.div
+            className="flex items-start gap-3"
+            whileHover={{ x: 4 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          >
             <Kbd className="min-w-20 justify-center">WASD</Kbd>
             <span className="text-sm text-muted-foreground">
               {t("moveAround")}
             </span>
-          </div>
-          <div className="flex items-start gap-3">
+          </motion.div>
+          <motion.div
+            className="flex items-start gap-3"
+            whileHover={{ x: 4 }}
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+          >
             <Kbd className="min-w-20 justify-center gap-1">
               <Mouse className="size-3" />
               Mouse
@@ -241,10 +288,10 @@ const ControlsTab = () => {
             <span className="text-sm text-muted-foreground">
               {t("lookAround")}
             </span>
-          </div>
+          </motion.div>
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
@@ -259,38 +306,61 @@ const LanguageTab = () => {
   const { locale, setLocale } = useLanguageStore();
 
   return (
-    <div className="space-y-6">
+    <motion.div
+      className="space-y-6"
+      variants={staggerContainer}
+      initial="hidden"
+      animate="visible"
+    >
       <SettingsSection
         title={t("selectLanguage")}
         icon={<Globe className="size-4 text-muted-foreground" />}
       >
-        <RadioGroup value={locale} onValueChange={(v) => setLocale(v as Locale)}>
-          {languageOptions.map((lang) => (
-            <Label
+        <RadioGroup
+          value={locale}
+          onValueChange={(v) => setLocale(v as Locale)}
+        >
+          {languageOptions.map((lang, index) => (
+            <motion.div
               key={lang.value}
-              htmlFor={`lang-${lang.value}`}
-              className="flex items-center gap-4 p-4 rounded-xl border cursor-pointer hover:bg-muted/50 has-[data-state=checked]:border-primary has-[data-state=checked]:bg-primary/5"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + index * 0.05 }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <RadioGroupItem value={lang.value} id={`lang-${lang.value}`} />
-              <div className="flex-1">
-                <div className="font-semibold">{lang.label}</div>
-                <div className="text-sm text-muted-foreground">
-                  {lang.description}
+              <Label
+                htmlFor={`lang-${lang.value}`}
+                className="flex items-center gap-4 p-4 rounded-xl border cursor-pointer hover:bg-muted/50 has-[data-state=checked]:border-primary has-[data-state=checked]:bg-primary/5 transition-colors"
+              >
+                <RadioGroupItem value={lang.value} id={`lang-${lang.value}`} />
+                <div className="flex-1">
+                  <div className="font-semibold">{lang.label}</div>
+                  <div className="text-sm text-muted-foreground">
+                    {lang.description}
+                  </div>
                 </div>
-              </div>
-            </Label>
+              </Label>
+            </motion.div>
           ))}
         </RadioGroup>
       </SettingsSection>
-    </div>
+    </motion.div>
   );
+};
+
+const tabContentVariants = {
+  hidden: { opacity: 0, x: -16 },
+  visible: { opacity: 1, x: 0 },
+  exit: { opacity: 0, x: 16 },
 };
 
 const SettingsContent = () => {
   const t = useTranslations("settings");
+  const [activeTab, setActiveTab] = useState("general");
 
   return (
-    <Tabs defaultValue="general" className="w-full">
+    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="grid w-full grid-cols-3">
         <TabsTrigger value="general" className="gap-1.5">
           <User className="size-4" />
@@ -305,15 +375,51 @@ const SettingsContent = () => {
           {t("tabs.language")}
         </TabsTrigger>
       </TabsList>
-      <TabsContent value="general" className="mt-4">
-        <GeneralTab />
-      </TabsContent>
-      <TabsContent value="controls" className="mt-4">
-        <ControlsTab />
-      </TabsContent>
-      <TabsContent value="language" className="mt-4">
-        <LanguageTab />
-      </TabsContent>
+
+      <motion.div
+        className="mt-4"
+        layout
+        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+      >
+        <AnimatePresence mode="wait">
+          {activeTab === "general" && (
+            <motion.div
+              key="general"
+              variants={tabContentVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              transition={{ duration: 0.15, ease: "easeOut" }}
+            >
+              <GeneralTab />
+            </motion.div>
+          )}
+          {activeTab === "controls" && (
+            <motion.div
+              key="controls"
+              variants={tabContentVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              transition={{ duration: 0.15, ease: "easeOut" }}
+            >
+              <ControlsTab />
+            </motion.div>
+          )}
+          {activeTab === "language" && (
+            <motion.div
+              key="language"
+              variants={tabContentVariants}
+              initial="hidden"
+              animate="visible"
+              exit="exit"
+              transition={{ duration: 0.15, ease: "easeOut" }}
+            >
+              <LanguageTab />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </Tabs>
   );
 };

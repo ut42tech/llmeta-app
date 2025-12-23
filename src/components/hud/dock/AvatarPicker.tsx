@@ -1,5 +1,6 @@
 "use client";
 
+import { motion } from "motion/react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { ViverseAvatar } from "@/types/player";
@@ -26,18 +27,18 @@ export const AvatarPicker = ({
         disabled && "opacity-50 pointer-events-none",
       )}
     >
-      {avatars.map((avatar) => {
+      {avatars.map((avatar, index) => {
         const isSelected = avatar.id === selectedId;
         const src = avatar.headIconUrl ?? PLACEHOLDER_IMAGE;
 
         return (
-          <button
+          <motion.button
             key={avatar.id}
             type="button"
             onClick={() => onSelect(avatar)}
             disabled={disabled}
             className={cn(
-              "group relative aspect-square overflow-hidden rounded-lg border transition",
+              "group relative aspect-square overflow-hidden rounded-lg border transition-colors",
               isSelected
                 ? "ring-2 ring-primary border-primary/50"
                 : "hover:border-foreground/30",
@@ -45,6 +46,11 @@ export const AvatarPicker = ({
             )}
             aria-pressed={isSelected}
             aria-label={`Select avatar #${avatar.id}`}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.05 + index * 0.03 }}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
           >
             <Image
               src={src}
@@ -56,9 +62,14 @@ export const AvatarPicker = ({
               priority={isSelected}
             />
             {isSelected && (
-              <div className="pointer-events-none absolute inset-0 bg-primary/10" />
+              <motion.div
+                className="pointer-events-none absolute inset-0 bg-primary/10"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.2 }}
+              />
             )}
-          </button>
+          </motion.button>
         );
       })}
     </div>
