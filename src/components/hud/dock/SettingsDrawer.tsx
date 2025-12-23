@@ -1,6 +1,6 @@
 "use client";
 
-import { Settings } from "lucide-react";
+import { Globe, Mouse, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 import { Euler, Vector3 } from "three";
@@ -11,13 +11,20 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
+import { Kbd } from "@/components/ui/kbd";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
   TooltipContent,
@@ -25,6 +32,8 @@ import {
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
+import { type Locale, localeNames, locales } from "@/i18n/config";
+import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useVoiceChatStore } from "@/stores/voiceChatStore";
 import type { ViverseAvatar } from "@/types/player";
@@ -59,13 +68,35 @@ const SettingsRow = ({ label, description, children }: SettingsRowProps) => (
   </div>
 );
 
-const SettingsContent = () => {
+type InfoRowProps = {
+  label: string;
+  value: string;
+  mono?: boolean;
+};
+
+const InfoRow = ({ label, value, mono }: InfoRowProps) => (
+  <div className="flex items-center justify-between py-3 border-b border-border">
+    <span className="text-sm font-medium text-muted-foreground">{label}</span>
+    <span
+      className={
+        mono
+          ? "font-mono text-xs text-foreground/80 break-all max-w-[200px] text-right"
+          : "text-base font-semibold"
+      }
+    >
+      {value}
+    </span>
+  </div>
+);
+
+const GeneralTab = () => {
   const t = useTranslations("settings");
   const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
 
   const {
     username,
+    sessionId,
     position,
     rotation,
     setUsername,
@@ -75,6 +106,7 @@ const SettingsContent = () => {
   } = useLocalPlayerStore(
     useShallow((state) => ({
       username: state.username || "Anonymous",
+      sessionId: state.sessionId || "—",
       position: state.position,
       rotation: state.rotation,
       setUsername: state.setUsername,
@@ -84,26 +116,12 @@ const SettingsContent = () => {
     })),
   );
 
-  const { krispEnabled, krispSupported, setKrispEnabled, initKrisp } =
-    useVoiceChatStore(
-      useShallow((state) => ({
-        krispEnabled: state.krispEnabled,
-        krispSupported: state.krispSupported,
-        setKrispEnabled: state.setKrispEnabled,
-        initKrisp: state.initKrisp,
-      })),
-    );
-
   const [nameInput, setNameInput] = useState(username);
 
   const isNameChanged = useMemo(
     () => nameInput.trim() !== "" && nameInput.trim() !== username,
     [nameInput, username],
   );
-
-  useEffect(() => {
-    void initKrisp();
-  }, [initKrisp]);
 
   const handleUpdateName = () => {
     const newName = nameInput.trim();
@@ -125,8 +143,7 @@ const SettingsContent = () => {
   };
 
   return (
-    <div className="px-4 pb-6 space-y-6">
-      {/* Username */}
+    <div className="space-y-6">
       <SettingsSection title={t("username")}>
         <div className="flex items-center gap-2">
           <Input
@@ -141,7 +158,6 @@ const SettingsContent = () => {
         </div>
       </SettingsSection>
 
-      {/* Avatar */}
       <SettingsSection title={t("avatar")}>
         <AvatarPicker
           avatars={AVATAR_LIST}
@@ -150,7 +166,6 @@ const SettingsContent = () => {
         />
       </SettingsSection>
 
-      {/* Position */}
       <SettingsSection title={t("position")}>
         <SettingsRow
           label={`x: ${position.x.toFixed(2)} / y: ${position.y.toFixed(2)} / z: ${position.z.toFixed(2)}`}
@@ -161,7 +176,33 @@ const SettingsContent = () => {
         </SettingsRow>
       </SettingsSection>
 
-      {/* Audio Settings */}
+      <SettingsSection title={t("sessionId")}>
+        <InfoRow label={t("sessionId")} value={sessionId} mono />
+      </SettingsSection>
+    </div>
+  );
+};
+
+const AudioTab = () => {
+  const t = useTranslations("settings");
+  const tCommon = useTranslations("common");
+
+  const { krispEnabled, krispSupported, setKrispEnabled, initKrisp } =
+    useVoiceChatStore(
+      useShallow((state) => ({
+        krispEnabled: state.krispEnabled,
+        krispSupported: state.krispSupported,
+        setKrispEnabled: state.setKrispEnabled,
+        initKrisp: state.initKrisp,
+      })),
+    );
+
+  useEffect(() => {
+    void initKrisp();
+  }, [initKrisp]);
+
+  return (
+    <div className="space-y-6">
       <SettingsSection title={t("audioQuality")}>
         <SettingsRow
           label={t("aiNoiseCancellation")}
@@ -181,6 +222,100 @@ const SettingsContent = () => {
         <p className="text-xs text-muted-foreground">{t("basicNoiseNote")}</p>
       </SettingsSection>
     </div>
+  );
+};
+
+const ControlsTab = () => {
+  const t = useTranslations("worldInfo");
+
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-muted-foreground leading-relaxed">
+        {t("placeholder")}
+      </p>
+
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold">{t("controlsTitle")}</h3>
+        <div className="space-y-2.5">
+          <div className="flex items-start gap-3">
+            <Kbd className="min-w-20 justify-center">WASD</Kbd>
+            <span className="text-sm text-muted-foreground">
+              {t("moveAround")}
+            </span>
+          </div>
+          <div className="flex items-start gap-3">
+            <Kbd className="min-w-20 justify-center gap-1">
+              <Mouse className="size-3" />
+              Mouse
+            </Kbd>
+            <span className="text-sm text-muted-foreground">
+              {t("lookAround")}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const LanguageTab = () => {
+  const t = useTranslations("language");
+  const { locale, setLocale } = useLanguageStore();
+
+  return (
+    <div className="space-y-6">
+      <div className="space-y-3">
+        <h3 className="text-sm font-semibold">{t("selectLanguage")}</h3>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-full justify-between">
+              <span className="flex items-center gap-2">
+                <Globe className="size-4" />
+                {localeNames[locale as Locale]}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="w-full">
+            {locales.map((loc) => (
+              <DropdownMenuItem
+                key={loc}
+                onClick={() => setLocale(loc)}
+                className={locale === loc ? "bg-accent" : ""}
+              >
+                {localeNames[loc as Locale]}
+              </DropdownMenuItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+    </div>
+  );
+};
+
+const SettingsContent = () => {
+  const t = useTranslations("settings");
+
+  return (
+    <Tabs defaultValue="general" className="w-full">
+      <TabsList className="grid w-full grid-cols-4">
+        <TabsTrigger value="general">{t("tabs.general")}</TabsTrigger>
+        <TabsTrigger value="audio">{t("tabs.audio")}</TabsTrigger>
+        <TabsTrigger value="controls">{t("tabs.controls")}</TabsTrigger>
+        <TabsTrigger value="language">{t("tabs.language")}</TabsTrigger>
+      </TabsList>
+      <TabsContent value="general" className="mt-4">
+        <GeneralTab />
+      </TabsContent>
+      <TabsContent value="audio" className="mt-4">
+        <AudioTab />
+      </TabsContent>
+      <TabsContent value="controls" className="mt-4">
+        <ControlsTab />
+      </TabsContent>
+      <TabsContent value="language" className="mt-4">
+        <LanguageTab />
+      </TabsContent>
+    </Tabs>
   );
 };
 
@@ -212,18 +347,13 @@ export const SettingsDrawer = () => {
             <DrawerTitle className="text-2xl font-bold">
               {t("title")}
             </DrawerTitle>
-            <DrawerDescription className="p-3 bg-neutral-100 rounded-lg">
-              {t("description")}
-            </DrawerDescription>
           </DrawerHeader>
 
-          <div className="overflow-y-auto flex-1 min-h-0">
+          <div className="overflow-y-auto flex-1 min-h-0 px-4 pb-6">
             {isClient ? (
               <SettingsContent />
             ) : (
-              <div className="px-4 pb-6">
-                <div className="h-24 rounded-md border border-dashed bg-muted/30" />
-              </div>
+              <div className="h-24 rounded-md border border-dashed bg-muted/30" />
             )}
           </div>
 

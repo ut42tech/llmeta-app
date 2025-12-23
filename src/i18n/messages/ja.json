@@ -105,10 +105,17 @@
     "title": "設定",
     "tooltip": "設定",
     "description": "⚙️ 設定を更新",
+    "tabs": {
+      "general": "一般",
+      "audio": "音声",
+      "controls": "操作",
+      "language": "言語"
+    },
     "username": "ユーザー名",
     "usernamePlaceholder": "名前を入力",
     "avatar": "アバター",
     "position": "位置",
+    "sessionId": "セッションID",
     "audioQuality": "音声品質",
     "aiNoiseCancellation": "AIノイズキャンセル",
     "aiNoiseCancellationDescription": "Krisp搭載の高度なノイズ除去",

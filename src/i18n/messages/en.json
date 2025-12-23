@@ -105,10 +105,17 @@
     "title": "Settings",
     "tooltip": "Settings",
     "description": "⚙️ Update your preferences",
+    "tabs": {
+      "general": "General",
+      "audio": "Audio",
+      "controls": "Controls",
+      "language": "Language"
+    },
     "username": "Username",
     "usernamePlaceholder": "Enter your name",
     "avatar": "Avatar",
     "position": "Position",
+    "sessionId": "Session ID",
     "audioQuality": "Audio Quality",
     "aiNoiseCancellation": "AI Noise Cancellation",
     "aiNoiseCancellationDescription": "Advanced noise removal powered by Krisp",
