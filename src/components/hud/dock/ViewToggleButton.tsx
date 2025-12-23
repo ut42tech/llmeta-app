@@ -1,6 +1,6 @@
 "use client";
 
-import { Video } from "lucide-react";
+import { Camera } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Kbd } from "@/components/ui/kbd";
@@ -28,7 +28,7 @@ export const ViewToggleButton = () => {
           aria-pressed={isFPV}
           onClick={toggleFPV}
         >
-          <Video />
+          <Camera />
         </Button>
       </TooltipTrigger>
       <TooltipContent sideOffset={6} className="flex items-center gap-2">

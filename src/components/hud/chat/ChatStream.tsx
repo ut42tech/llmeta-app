@@ -1,6 +1,7 @@
 "use client";
 
 import { MessageSquare } from "lucide-react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { ChatInput } from "@/components/hud/chat/ChatInput";
@@ -43,10 +44,13 @@ const MessageLine = ({ message, isOwnMessage }: MessageLineProps) => {
       </Badge>
       <div className="flex flex-col gap-1">
         {hasImage && message.image && (
-          <img
+          <Image
             src={message.image.url}
             alt={message.image.prompt || "Shared image"}
+            width={128}
+            height={96}
             className="max-w-32 max-h-24 rounded object-cover"
+            unoptimized
           />
         )}
         {hasText && (

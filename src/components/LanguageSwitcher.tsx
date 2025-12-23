@@ -9,11 +9,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { type Locale, localeNames, locales } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
 
@@ -23,20 +18,11 @@ export const LanguageSwitcher = () => {
 
   return (
     <DropdownMenu>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon-lg"
-              aria-label={t("selectLanguage")}
-            >
-              <Globe />
-            </Button>
-          </DropdownMenuTrigger>
-        </TooltipTrigger>
-        <TooltipContent sideOffset={6}>{t("selectLanguage")}</TooltipContent>
-      </Tooltip>
+      <DropdownMenuTrigger asChild>
+        <Button variant="ghost" size="icon" aria-label={t("selectLanguage")}>
+          <Globe className="size-5" />
+        </Button>
+      </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         {locales.map((loc) => (
           <DropdownMenuItem

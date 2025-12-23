@@ -4,10 +4,6 @@ import { AIChatButton } from "@/components/hud/dock/AIChatButton";
 import { SettingsDrawer } from "@/components/hud/dock/SettingsDrawer";
 import { ViewToggleButton } from "@/components/hud/dock/ViewToggleButton";
 import { VoiceChatButton } from "@/components/hud/dock/VoiceChatButton";
-import { WorldInfoDrawer } from "@/components/hud/dock/WorldInfoDrawer";
-import { YourInfoDrawer } from "@/components/hud/dock/YourInfoDrawer";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { ButtonGroup } from "@/components/ui/button-group";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 export const Dock = () => {
@@ -21,13 +17,8 @@ export const Dock = () => {
         </div>
 
         {/* Center: Main Controls */}
-        <ButtonGroup>
-          <WorldInfoDrawer />
-          <YourInfoDrawer />
-        </ButtonGroup>
         <ViewToggleButton />
         <VoiceChatButton />
-        <LanguageSwitcher />
         <SettingsDrawer />
       </div>
     </TooltipProvider>

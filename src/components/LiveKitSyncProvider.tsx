@@ -18,7 +18,6 @@ import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
 import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
 import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useVoiceChatStore } from "@/stores/voiceChatStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { ChatMessageImage } from "@/types/chat";
 import type { MoveData, ProfileData } from "@/types/player";
@@ -87,7 +86,8 @@ type BridgeProps = {
 const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const username = useLocalPlayerStore((state) => state.username);
   const currentAvatar = useLocalPlayerStore((state) => state.currentAvatar);
-  const initKrisp = useVoiceChatStore((state) => state.initKrisp);
+  const setRoomInfo = useWorldStore((state) => state.setRoomInfo);
+  const clearRoomInfo = useWorldStore((state) => state.clearRoomInfo);
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
@@ -96,8 +96,16 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const { sendChatMessage } = useChatDataChannel(identity);
 
   useEffect(() => {
-    void initKrisp();
-  }, [initKrisp]);
+    if (connectionState !== LiveKitConnectionState.Connected) {
+      clearRoomInfo();
+      return;
+    }
+
+    setRoomInfo({ roomName: roomInstance.name });
+    roomInstance.getSid().then((sid) => {
+      setRoomInfo({ roomSid: sid });
+    });
+  }, [connectionState, roomInstance, setRoomInfo, clearRoomInfo]);
 
   useEffect(() => {
     if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {

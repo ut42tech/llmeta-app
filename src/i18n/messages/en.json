@@ -102,18 +102,21 @@
     "thirdPerson": "Third-person view"
   },
   "settings": {
-    "title": "Settings",
-    "tooltip": "Settings",
+    "title": "Preferences",
+    "tooltip": "Preferences",
     "description": "⚙️ Update your preferences",
+    "tabs": {
+      "general": "General",
+      "controls": "Controls",
+      "language": "Language"
+    },
     "username": "Username",
     "usernamePlaceholder": "Enter your name",
     "avatar": "Avatar",
-    "position": "Position",
-    "audioQuality": "Audio Quality",
-    "aiNoiseCancellation": "AI Noise Cancellation",
-    "aiNoiseCancellationDescription": "Advanced noise removal powered by Krisp",
-    "krispNotSupported": "⚠️ AI noise cancellation is not supported in this browser. Safari 17.4+ or Chrome/Edge is required.",
-    "basicNoiseNote": "Note: Basic echo cancellation and noise suppression are always enabled."
+    "sessionInfo": "Session Info",
+    "roomName": "Room Name",
+    "roomSid": "Room SID",
+    "sessionId": "Session ID"
   },
   "language": {
     "selectLanguage": "Select Language",

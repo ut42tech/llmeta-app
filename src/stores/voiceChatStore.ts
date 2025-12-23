@@ -21,8 +21,6 @@ type VoiceChatState = {
   error?: string;
   lastActiveAt?: number;
   krispFilter?: KrispNoiseFilterProcessor;
-  krispEnabled: boolean;
-  krispSupported: boolean;
 };
 
 type VoiceChatActions = {
@@ -30,8 +28,6 @@ type VoiceChatActions = {
   enableMic: (room?: Room) => Promise<void>;
   disableMic: (room?: Room) => Promise<void>;
   toggleMic: (room?: Room) => Promise<void>;
-  setKrispEnabled: (enabled: boolean) => Promise<void>;
-  initKrisp: () => Promise<void>;
 };
 
 type VoiceChatStore = VoiceChatState & VoiceChatActions;
@@ -44,8 +40,6 @@ const initialState: VoiceChatState = {
   error: undefined,
   lastActiveAt: undefined,
   krispFilter: undefined,
-  krispEnabled: true,
-  krispSupported: false,
 };
 
 export const useVoiceChatStore = create<VoiceChatStore>((set, get) => ({
@@ -84,19 +78,18 @@ export const useVoiceChatStore = create<VoiceChatStore>((set, get) => ({
         lastActiveAt: Date.now(),
       });
 
-      const { krispEnabled, krispSupported } = get();
-      if (krispEnabled && krispSupported) {
-        try {
-          const { KrispNoiseFilter } = await import(
-            "@livekit/krisp-noise-filter"
-          );
+      try {
+        const { isKrispNoiseFilterSupported, KrispNoiseFilter } = await import(
+          "@livekit/krisp-noise-filter"
+        );
+        if (isKrispNoiseFilterSupported()) {
           const filter = KrispNoiseFilter();
           await createdTrack.setProcessor(filter);
           await filter.setEnabled(true);
           set({ krispFilter: filter });
-        } catch (error) {
-          console.error("[Krisp] Failed to auto-enable filter", error);
         }
+      } catch (error) {
+        console.warn("[Krisp] Failed to enable noise filter", error);
       }
     } catch (error) {
       createdTrack?.stop();
@@ -145,53 +138,6 @@ export const useVoiceChatStore = create<VoiceChatStore>((set, get) => ({
       await get().disableMic(room);
     } else {
       await get().enableMic(room);
-    }
-  },
-
-  initKrisp: async () => {
-    try {
-      const { isKrispNoiseFilterSupported } = await import(
-        "@livekit/krisp-noise-filter"
-      );
-      const supported = isKrispNoiseFilterSupported();
-      set({ krispSupported: supported });
-    } catch (error) {
-      console.error("[Krisp] Failed to check support", error);
-      set({ krispSupported: false });
-    }
-  },
-
-  setKrispEnabled: async (enabled: boolean) => {
-    const { track, krispFilter, krispSupported } = get();
-
-    if (!krispSupported) {
-      console.warn("[Krisp] Krisp is not supported in this browser");
-      return;
-    }
-
-    if (!track) {
-      console.warn("[Krisp] No audio track available");
-      return;
-    }
-
-    try {
-      if (!krispFilter && enabled) {
-        const { KrispNoiseFilter } = await import(
-          "@livekit/krisp-noise-filter"
-        );
-        const filter = KrispNoiseFilter();
-        await track.setProcessor(filter);
-        await filter.setEnabled(true);
-        set({ krispFilter: filter, krispEnabled: true });
-      } else if (krispFilter) {
-        await krispFilter.setEnabled(enabled);
-        set({ krispEnabled: enabled });
-      }
-    } catch (error) {
-      console.error("[Krisp] Failed to toggle filter", error);
-      set({
-        error: error instanceof Error ? error.message : "Krisp filter error",
-      });
     }
   },
 }));
