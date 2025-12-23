@@ -27,14 +27,11 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Input } from "@/components/ui/input";
 import { Kbd } from "@/components/ui/kbd";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Tooltip,
@@ -43,7 +40,7 @@ import {
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { type Locale, localeNames, locales } from "@/i18n/config";
+import type { Locale } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
@@ -251,36 +248,40 @@ const ControlsTab = () => {
   );
 };
 
+const languageOptions: { value: Locale; label: string; description: string }[] =
+  [
+    { value: "en", label: "English", description: "English" },
+    { value: "ja", label: "日本語", description: "Japanese" },
+  ];
+
 const LanguageTab = () => {
   const t = useTranslations("language");
   const { locale, setLocale } = useLanguageStore();
 
   return (
     <div className="space-y-6">
-      <div className="space-y-3">
-        <h3 className="text-sm font-semibold">{t("selectLanguage")}</h3>
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-full justify-between">
-              <span className="flex items-center gap-2">
-                <Globe className="size-4" />
-                {localeNames[locale as Locale]}
-              </span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="w-full">
-            {locales.map((loc) => (
-              <DropdownMenuItem
-                key={loc}
-                onClick={() => setLocale(loc)}
-                className={locale === loc ? "bg-accent" : ""}
-              >
-                {localeNames[loc as Locale]}
-              </DropdownMenuItem>
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      <SettingsSection
+        title={t("selectLanguage")}
+        icon={<Globe className="size-4 text-muted-foreground" />}
+      >
+        <RadioGroup value={locale} onValueChange={(v) => setLocale(v as Locale)}>
+          {languageOptions.map((lang) => (
+            <Label
+              key={lang.value}
+              htmlFor={`lang-${lang.value}`}
+              className="flex items-center gap-4 p-4 rounded-xl border cursor-pointer hover:bg-muted/50 has-[data-state=checked]:border-primary has-[data-state=checked]:bg-primary/5"
+            >
+              <RadioGroupItem value={lang.value} id={`lang-${lang.value}`} />
+              <div className="flex-1">
+                <div className="font-semibold">{lang.label}</div>
+                <div className="text-sm text-muted-foreground">
+                  {lang.description}
+                </div>
+              </div>
+            </Label>
+          ))}
+        </RadioGroup>
+      </SettingsSection>
     </div>
   );
 };
