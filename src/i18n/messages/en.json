@@ -102,8 +102,8 @@
     "thirdPerson": "Third-person view"
   },
   "settings": {
-    "title": "Settings",
-    "tooltip": "Settings",
+    "title": "Preferences",
+    "tooltip": "Preferences",
     "description": "⚙️ Update your preferences",
     "tabs": {
       "general": "General",

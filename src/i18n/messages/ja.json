@@ -102,9 +102,9 @@
     "thirdPerson": "三人称視点"
   },
   "settings": {
-    "title": "設定",
-    "tooltip": "設定",
-    "description": "⚙️ 設定を更新",
+    "title": "環境設定",
+    "tooltip": "環境設定",
+    "description": "⚙️ 環境設定を更新",
     "tabs": {
       "general": "一般",
       "controls": "操作",
