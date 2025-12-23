@@ -2,7 +2,8 @@
 
 import { Globe, Mouse, Settings } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { Euler, Vector3 } from "three";
 import { useShallow } from "zustand/react/shallow";
 import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
@@ -276,13 +277,23 @@ export const SettingsDrawer = () => {
   const t = useTranslations("settings");
   const tCommon = useTranslations("common");
   const [isClient, setIsClient] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  const handleToggle = useCallback(() => {
+    setIsOpen((prev) => !prev);
+  }, []);
+
+  useHotkeys("p", handleToggle, {
+    preventDefault: true,
+    enableOnFormTags: false,
+  });
+
   return (
-    <Drawer>
+    <Drawer open={isOpen} onOpenChange={setIsOpen}>
       <Tooltip>
         <TooltipTrigger asChild>
           <DrawerTrigger asChild>
@@ -291,7 +302,10 @@ export const SettingsDrawer = () => {
             </Button>
           </DrawerTrigger>
         </TooltipTrigger>
-        <TooltipContent sideOffset={6}>{t("tooltip")}</TooltipContent>
+        <TooltipContent sideOffset={6} className="flex items-center gap-2">
+          {t("tooltip")}
+          <Kbd>P</Kbd>
+        </TooltipContent>
       </Tooltip>
 
       <DrawerContent className="flex flex-col overflow-hidden">
