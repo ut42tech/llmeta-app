@@ -1,6 +1,16 @@
 "use client";
 
-import { Globe, Mouse, Settings } from "lucide-react";
+import {
+  Fingerprint,
+  Gamepad2,
+  Globe,
+  Languages,
+  MapPin,
+  Mouse,
+  Settings,
+  Smile,
+  User,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
@@ -40,12 +50,16 @@ import type { ViverseAvatar } from "@/types/player";
 
 type SettingsSectionProps = {
   title: string;
+  icon?: React.ReactNode;
   children: React.ReactNode;
 };
 
-const SettingsSection = ({ title, children }: SettingsSectionProps) => (
+const SettingsSection = ({ title, icon, children }: SettingsSectionProps) => (
   <div className="space-y-3">
-    <h3 className="text-sm font-semibold">{title}</h3>
+    <h3 className="text-sm font-semibold flex items-center gap-2">
+      {icon}
+      {title}
+    </h3>
     {children}
   </div>
 );
@@ -144,7 +158,7 @@ const GeneralTab = () => {
 
   return (
     <div className="space-y-6">
-      <SettingsSection title={t("username")}>
+      <SettingsSection title={t("username")} icon={<User className="size-4 text-muted-foreground" />}>
         <div className="flex items-center gap-2">
           <Input
             value={nameInput}
@@ -158,7 +172,7 @@ const GeneralTab = () => {
         </div>
       </SettingsSection>
 
-      <SettingsSection title={t("avatar")}>
+      <SettingsSection title={t("avatar")} icon={<Smile className="size-4 text-muted-foreground" />}>
         <AvatarPicker
           avatars={AVATAR_LIST}
           selectedId={currentAvatar?.id}
@@ -166,7 +180,7 @@ const GeneralTab = () => {
         />
       </SettingsSection>
 
-      <SettingsSection title={t("position")}>
+      <SettingsSection title={t("position")} icon={<MapPin className="size-4 text-muted-foreground" />}>
         <SettingsRow
           label={`x: ${position.x.toFixed(2)} / y: ${position.y.toFixed(2)} / z: ${position.z.toFixed(2)}`}
         >
@@ -176,7 +190,7 @@ const GeneralTab = () => {
         </SettingsRow>
       </SettingsSection>
 
-      <SettingsSection title={t("sessionId")}>
+      <SettingsSection title={t("sessionId")} icon={<Fingerprint className="size-4 text-muted-foreground" />}>
         <InfoRow label={t("sessionId")} value={sessionId} mono />
       </SettingsSection>
     </div>
@@ -256,9 +270,18 @@ const SettingsContent = () => {
   return (
     <Tabs defaultValue="general" className="w-full">
       <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="general">{t("tabs.general")}</TabsTrigger>
-        <TabsTrigger value="controls">{t("tabs.controls")}</TabsTrigger>
-        <TabsTrigger value="language">{t("tabs.language")}</TabsTrigger>
+        <TabsTrigger value="general" className="gap-1.5">
+          <User className="size-4" />
+          {t("tabs.general")}
+        </TabsTrigger>
+        <TabsTrigger value="controls" className="gap-1.5">
+          <Gamepad2 className="size-4" />
+          {t("tabs.controls")}
+        </TabsTrigger>
+        <TabsTrigger value="language" className="gap-1.5">
+          <Languages className="size-4" />
+          {t("tabs.language")}
+        </TabsTrigger>
       </TabsList>
       <TabsContent value="general" className="mt-4">
         <GeneralTab />
@@ -310,8 +333,9 @@ export const SettingsDrawer = () => {
 
       <DrawerContent className="flex flex-col overflow-hidden">
         <div className="mx-auto w-full max-w-md flex flex-col flex-1 overflow-hidden">
-          <DrawerHeader className="text-left shrink-0">
-            <DrawerTitle className="text-2xl font-bold">
+          <DrawerHeader className="text-center shrink-0">
+            <DrawerTitle className="text-2xl font-bold flex items-center justify-center gap-2">
+              <Settings className="size-6" />
               {t("title")}
             </DrawerTitle>
           </DrawerHeader>
