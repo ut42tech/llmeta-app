@@ -12,7 +12,6 @@ describe("useChatStore", () => {
       expect(state.messages).toEqual([]);
       expect(state.isOpen).toBe(false);
       expect(state.aiChat.isOpen).toBe(false);
-      expect(state.aiChat.includeChatHistory).toBe(true);
     });
   });
 
@@ -148,28 +147,6 @@ describe("useChatStore", () => {
 
       closeAIChat();
       expect(useChatStore.getState().aiChat.isOpen).toBe(false);
-    });
-
-    it("toggles AI chat history setting", () => {
-      const { toggleAIChatHistory } = useChatStore.getState();
-
-      expect(useChatStore.getState().aiChat.includeChatHistory).toBe(true);
-
-      toggleAIChatHistory();
-      expect(useChatStore.getState().aiChat.includeChatHistory).toBe(false);
-
-      toggleAIChatHistory();
-      expect(useChatStore.getState().aiChat.includeChatHistory).toBe(true);
-    });
-
-    it("sets AI chat history setting directly", () => {
-      const { setAIChatIncludeHistory } = useChatStore.getState();
-
-      setAIChatIncludeHistory(false);
-      expect(useChatStore.getState().aiChat.includeChatHistory).toBe(false);
-
-      setAIChatIncludeHistory(true);
-      expect(useChatStore.getState().aiChat.includeChatHistory).toBe(true);
     });
   });
 

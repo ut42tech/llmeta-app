@@ -22,7 +22,6 @@ const appendMessage = (
 
 type AIChatState = {
   isOpen: boolean;
-  includeChatHistory: boolean;
 };
 
 type ChatState = {
@@ -47,8 +46,6 @@ type ChatActions = {
   toggleAIChat: () => void;
   openAIChat: () => void;
   closeAIChat: () => void;
-  toggleAIChatHistory: () => void;
-  setAIChatIncludeHistory: (value: boolean) => void;
   reset: () => void;
 };
 
@@ -59,7 +56,6 @@ const initialState: ChatState = {
   isOpen: false,
   aiChat: {
     isOpen: false,
-    includeChatHistory: true,
   },
 };
 
@@ -120,19 +116,6 @@ export const useChatStore = create<ChatStore>((set) => ({
   closeAIChat: () =>
     set((state) => ({
       aiChat: { ...state.aiChat, isOpen: false },
-    })),
-
-  toggleAIChatHistory: () =>
-    set((state) => ({
-      aiChat: {
-        ...state.aiChat,
-        includeChatHistory: !state.aiChat.includeChatHistory,
-      },
-    })),
-
-  setAIChatIncludeHistory: (value) =>
-    set((state) => ({
-      aiChat: { ...state.aiChat, includeChatHistory: value },
     })),
 
   reset: () => set(initialState),
