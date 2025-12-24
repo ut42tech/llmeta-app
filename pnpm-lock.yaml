@@ -9,11 +9,11 @@ importers:
   .:
     dependencies:
       '@ai-sdk/openai':
-        specifier: ^3.0.0
-        version: 3.0.0(zod@4.2.1)
-      '@ai-sdk/react':
         specifier: ^3.0.1
-        version: 3.0.1(react@19.2.3)(zod@4.2.1)
+        version: 3.0.1(zod@4.2.1)
+      '@ai-sdk/react':
+        specifier: ^3.0.3
+        version: 3.0.3(react@19.2.3)(zod@4.2.1)
       '@bufbuild/protobuf':
         specifier: ^2.10.2
         version: 2.10.2
@@ -22,16 +22,16 @@ importers:
         version: 4.11.3
       '@livekit/components-react':
         specifier: ^2.9.17
-        version: 2.9.17(@livekit/krisp-noise-filter@0.3.4(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22)))(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tslib@2.8.1)
+        version: 2.9.17(@livekit/krisp-noise-filter@0.4.0(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22)))(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tslib@2.8.1)
       '@livekit/krisp-noise-filter':
-        specifier: ^0.3.4
-        version: 0.3.4(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))
+        specifier: ^0.4.0
+        version: 0.4.0(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))
       '@pixiv/three-vrm':
         specifier: ^3.4.4
         version: 3.4.4(three@0.182.0)
       '@pmndrs/viverse':
-        specifier: ^0.2.13
-        version: 0.2.13(three@0.182.0)
+        specifier: ^0.2.15
+        version: 0.2.15(three@0.182.0)
       '@radix-ui/react-collapsible':
         specifier: ^1.1.12
         version: 1.1.12(@types/react-dom@19.2.3(@types/react@19.2.7))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -99,8 +99,8 @@ importers:
         specifier: ^1.0.60
         version: 1.0.60(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0))(@types/react@19.2.7)(react@19.2.3)(three@0.182.0)(use-sync-external-store@1.6.0(react@19.2.3))
       '@react-three/viverse':
-        specifier: ^0.2.13
-        version: 0.2.13(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0)(use-sync-external-store@1.6.0(react@19.2.3))
+        specifier: ^0.2.15
+        version: 0.2.15(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0)(use-sync-external-store@1.6.0(react@19.2.3))
       '@react-three/xr':
         specifier: ^6.6.28
         version: 6.6.28(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0)
@@ -111,8 +111,8 @@ importers:
         specifier: ^12.10.0
         version: 12.10.0(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       ai:
-        specifier: ^6.0.1
-        version: 6.0.1(zod@4.2.1)
+        specifier: ^6.0.3
+        version: 6.0.3(zod@4.2.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -243,20 +243,20 @@ packages:
   '@acemir/cssom@0.9.29':
     resolution: {integrity: sha512-G90x0VW+9nW4dFajtjCoT+NM0scAfH9Mb08IcjgFHYbfiL/lU04dTF9JuVOi3/OH+DJCQdcIseSXkdCB9Ky6JA==}
 
-  '@ai-sdk/gateway@3.0.0':
-    resolution: {integrity: sha512-JcjePYVpbezv+XOxkxPemwnorjWpgDiiKWMYy6FXTCG2rFABIK2Co1bFxIUSDT4vYO6f1448x9rKbn38vbhDiA==}
+  '@ai-sdk/gateway@3.0.2':
+    resolution: {integrity: sha512-giJEg9ob45htbu3iautK+2kvplY2JnTj7ir4wZzYSQWvqGatWfBBfDuNCU5wSJt9BCGjymM5ZS9ziD42JGCZBw==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/openai@3.0.0':
-    resolution: {integrity: sha512-/o2xCQlRA+O0cAXIIBOfMeT35H6Fonzilz9r/IJojPOMQnmIL+0jPQVKOUPr5bouRqCjnwKpwuKEBRqm8jUZkQ==}
+  '@ai-sdk/openai@3.0.1':
+    resolution: {integrity: sha512-P+qxz2diOrh8OrpqLRg+E+XIFVIKM3z2kFjABcCJGHjGbXBK88AJqmuKAi87qLTvTe/xn1fhZBjklZg9bTyigw==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
 
-  '@ai-sdk/provider-utils@4.0.0':
-    resolution: {integrity: sha512-HyCyOls9I3a3e38+gtvOJOEjuw9KRcvbBnCL5GBuSmJvS9Jh9v3fz7pRC6ha1EUo/ZH1zwvLWYXBMtic8MTguA==}
+  '@ai-sdk/provider-utils@4.0.1':
+    resolution: {integrity: sha512-de2v8gH9zj47tRI38oSxhQIewmNc+OZjYIOOaMoVWKL65ERSav2PYYZHPSPCrfOeLMkv+Dyh8Y0QGwkO29wMWQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -265,8 +265,8 @@ packages:
     resolution: {integrity: sha512-m9ka3ptkPQbaHHZHqDXDF9C9B5/Mav0KTdky1k2HZ3/nrW2t1AgObxIVPyGDWQNS9FXT/FS6PIoSjpcP/No8rQ==}
     engines: {node: '>=18'}
 
-  '@ai-sdk/react@3.0.1':
-    resolution: {integrity: sha512-XUPDMFgalNtqBQg+Q3UiiEmWE3PC5pAoc+Drs5Z1Mxqe57za+hKCEwViYADuqeZrc0q6PXTzbcFlQb3pjyGjcQ==}
+  '@ai-sdk/react@3.0.3':
+    resolution: {integrity: sha512-mLIgQuBdIX9gxCYQN3Pv/J8ARoFreIKYr/TVQtI+FwEzejuGFimTyhDln7UIBfrnm3Mpn1xENIWZfDfCRF7wkw==}
     engines: {node: '>=18'}
     peerDependencies:
       react: ^18 || ~19.0.1 || ~19.1.2 || ^19.2.1
@@ -713,6 +713,7 @@ packages:
 
   '@fortawesome/react-fontawesome@0.2.2':
     resolution: {integrity: sha512-EnkrprPNqI6SXJl//m29hpaNzOp1bruISWaOiRtkMi/xSvHJlzc2j2JAYS7egxt/EbjSNV/k6Xy0AQI6vB2+1g==}
+    deprecated: v0.2.x is no longer supported. Unless you are still using FontAwesome 5, please update to v3.1.1 or greater.
     peerDependencies:
       '@fortawesome/fontawesome-svg-core': ~1 || ~6
       react: '>=16.3'
@@ -906,8 +907,8 @@ packages:
       '@livekit/krisp-noise-filter':
         optional: true
 
-  '@livekit/krisp-noise-filter@0.3.4':
-    resolution: {integrity: sha512-gvC0OevzIPBAr8f2S4P/BdUxVJYp7rvDoORHAmU6yppK6NKn+GNbkMosz0NpsI+Te18etBBOjaKmhoD7/PoXVA==}
+  '@livekit/krisp-noise-filter@0.4.0':
+    resolution: {integrity: sha512-daxC5o8qJC0BlG915lpNta2fcbs7v5wdNAA+WqH+i00jy6DEPdhAplxcAQ76VC88eMAxPJ7V641+/voBnMlB2g==}
     peerDependencies:
       livekit-client: ^2.0.8
 
@@ -1160,8 +1161,8 @@ packages:
     peerDependencies:
       three: '>=0.162'
 
-  '@pmndrs/viverse@0.2.13':
-    resolution: {integrity: sha512-pmreI8tl1Ln029/Mr2Bh5YJQaHKhdeUHeLZ9HrsMQjKxj0S8vWaeVlKRbpksZyarjrpdBWkrnvCv5OIbZYPnfA==}
+  '@pmndrs/viverse@0.2.15':
+    resolution: {integrity: sha512-+1imsOZpkoFZAijeY3pV1tBK/AZh0esZ2PJTcbug4fIa68hU1T7rAdJBwlJxGEEaJnnEBivWPBC4K/25PwJ5Zw==}
     peerDependencies:
       three: '*'
 
@@ -1734,8 +1735,8 @@ packages:
       '@react-three/fiber': '>=8'
       react: '>=18'
 
-  '@react-three/viverse@0.2.13':
-    resolution: {integrity: sha512-gl/1JpXM4JCJL9uJnnhC3QG+eBKUD3yoKvwjcl8PwSvEy+aRKFgM9NC62sa0sSTqn/0QZs9nVK6sSG+o6QLN3A==}
+  '@react-three/viverse@0.2.15':
+    resolution: {integrity: sha512-Sct9i7srLCWcE8IMZd+ynLJSv6tA9dLHvKgAnWrLHkZwmuvaoozfWPO/8QdYnG4Vyi+xhMhMLD6bRvdPL0cDMw==}
     peerDependencies:
       '@react-three/fiber': '*'
 
@@ -2365,8 +2366,8 @@ packages:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
 
-  ai@6.0.1:
-    resolution: {integrity: sha512-g/jPakC6h4vUJKDww0d6+VaJmfMC38UqH3kKsngiP+coT0uvCUdQ7lpFDJ0mNmamaOyRMaY2zwEB2RnTAaJU/w==}
+  ai@6.0.3:
+    resolution: {integrity: sha512-OOo+/C+sEyscoLnbY3w42vjQDICioVNyS+F+ogwq6O5RJL/vgWGuiLzFwuP7oHTeni/MkmX8tIge48GTdaV7QQ==}
     engines: {node: '>=18'}
     peerDependencies:
       zod: ^3.25.76 || ^4.1.8
@@ -4468,20 +4469,20 @@ snapshots:
 
   '@acemir/cssom@0.9.29': {}
 
-  '@ai-sdk/gateway@3.0.0(zod@4.2.1)':
+  '@ai-sdk/gateway@3.0.2(zod@4.2.1)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.0(zod@4.2.1)
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.2.1)
       '@vercel/oidc': 3.0.5
       zod: 4.2.1
 
-  '@ai-sdk/openai@3.0.0(zod@4.2.1)':
+  '@ai-sdk/openai@3.0.1(zod@4.2.1)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.0(zod@4.2.1)
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.2.1)
       zod: 4.2.1
 
-  '@ai-sdk/provider-utils@4.0.0(zod@4.2.1)':
+  '@ai-sdk/provider-utils@4.0.1(zod@4.2.1)':
     dependencies:
       '@ai-sdk/provider': 3.0.0
       '@standard-schema/spec': 1.1.0
@@ -4492,10 +4493,10 @@ snapshots:
     dependencies:
       json-schema: 0.4.0
 
-  '@ai-sdk/react@3.0.1(react@19.2.3)(zod@4.2.1)':
+  '@ai-sdk/react@3.0.3(react@19.2.3)(zod@4.2.1)':
     dependencies:
-      '@ai-sdk/provider-utils': 4.0.0(zod@4.2.1)
-      ai: 6.0.1(zod@4.2.1)
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.2.1)
+      ai: 6.0.3(zod@4.2.1)
       react: 19.2.3
       swr: 2.3.8(react@19.2.3)
       throttleit: 2.1.0
@@ -5050,7 +5051,7 @@ snapshots:
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@livekit/components-react@2.9.17(@livekit/krisp-noise-filter@0.3.4(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22)))(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tslib@2.8.1)':
+  '@livekit/components-react@2.9.17(@livekit/krisp-noise-filter@0.4.0(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22)))(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(tslib@2.8.1)':
     dependencies:
       '@livekit/components-core': 0.12.12(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))(tslib@2.8.1)
       clsx: 2.1.1
@@ -5062,9 +5063,9 @@ snapshots:
       tslib: 2.8.1
       usehooks-ts: 3.1.1(react@19.2.3)
     optionalDependencies:
-      '@livekit/krisp-noise-filter': 0.3.4(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))
+      '@livekit/krisp-noise-filter': 0.4.0(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))
 
-  '@livekit/krisp-noise-filter@0.3.4(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))':
+  '@livekit/krisp-noise-filter@0.4.0(livekit-client@2.16.1(@types/dom-mediacapture-record@1.0.22))':
     dependencies:
       '@livekit/mutex': 1.1.1
       livekit-client: 2.16.1(@types/dom-mediacapture-record@1.0.22)
@@ -5285,7 +5286,7 @@ snapshots:
       three: 0.182.0
       yoga-layout: 3.2.1
 
-  '@pmndrs/viverse@0.2.13(three@0.182.0)':
+  '@pmndrs/viverse@0.2.15(three@0.182.0)':
     dependencies:
       '@pixiv/three-vrm': 3.4.4(three@0.182.0)
       '@pixiv/three-vrm-animation': 3.4.4(three@0.182.0)
@@ -5907,10 +5908,10 @@ snapshots:
       - three
       - use-sync-external-store
 
-  '@react-three/viverse@0.2.13(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0)(use-sync-external-store@1.6.0(react@19.2.3))':
+  '@react-three/viverse@0.2.15(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0)(use-sync-external-store@1.6.0(react@19.2.3))':
     dependencies:
       '@pixiv/three-vrm': 3.4.4(three@0.182.0)
-      '@pmndrs/viverse': 0.2.13(three@0.182.0)
+      '@pmndrs/viverse': 0.2.15(three@0.182.0)
       '@react-three/fiber': 9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0)
       '@react-three/timeline': 0.3.7(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0))(three@0.182.0)
       '@react-three/xr': 6.6.28(@react-three/fiber@9.4.2(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0))(@types/react@19.2.7)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(three@0.182.0)
@@ -6547,11 +6548,11 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai@6.0.1(zod@4.2.1):
+  ai@6.0.3(zod@4.2.1):
     dependencies:
-      '@ai-sdk/gateway': 3.0.0(zod@4.2.1)
+      '@ai-sdk/gateway': 3.0.2(zod@4.2.1)
       '@ai-sdk/provider': 3.0.0
-      '@ai-sdk/provider-utils': 4.0.0(zod@4.2.1)
+      '@ai-sdk/provider-utils': 4.0.1(zod@4.2.1)
       '@opentelemetry/api': 1.9.0
       zod: 4.2.1
 
