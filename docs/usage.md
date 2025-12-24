@@ -1,0 +1,231 @@
+# LLMeta Usage Guide
+
+> Your complete guide to navigating and using the LLMeta client application.
+
+## Quick Start
+
+### System Requirements
+
+| Requirement | Details |
+|-------------|---------|
+| **Browser** | Modern web browser (Chrome, Firefox, Safari, Edge) |
+| **Connection** | Stable internet connection |
+| **Audio** | Microphone for voice chat |
+| **Input** | Keyboard and mouse |
+
+### Accessing the Application
+
+Navigate to the application URL in your browser. You'll be greeted by the landing page with the tagline **"Intelligence Meets Space"**.
+
+---
+
+## Getting Started
+
+### 1. Landing Page
+
+The landing page serves as your entry point to the LLMeta metaverse.
+
+- Click **"Enter the World"** to proceed to the lobby
+- Click **"Learn More"** to discover more about the project
+- Use the language switcher in the top-right corner to change between English and Japanese
+
+### 2. Joining a World (Lobby)
+
+The lobby is where you configure your identity before entering the virtual world.
+
+**Steps to Join:**
+
+1. **Wait for Connection** — A connection indicator shows your server status:
+   - 🔄 *Connecting...* — Please wait
+   - ✅ *Connected* — Ready to proceed
+   - ❌ *Failed* — Click "Retry" to reconnect
+
+2. **Enter Username** — Type your display name (maximum 20 characters)
+
+3. **Choose Avatar** — Click on one of the available VRM avatars to select your virtual representation
+
+4. **Click "Continue"** — Once connected and configured, enter the 3D world
+
+> [!WARNING]
+> **Privacy Notice**: This application sends data to external services. Do not share personal or sensitive information.
+
+### 3. The 3D Experience
+
+After joining, you'll be immersed in the 3D metaverse with other users and your personal AI agent.
+
+---
+
+## User Interface
+
+The HUD (Heads-Up Display) provides all essential information and controls while you explore the virtual world.
+
+### Status Bar (Top)
+
+Located at the top of the screen, the status bar displays:
+
+| Element | Description |
+|---------|-------------|
+| **Connection Status** | Current server connection state |
+| **Transcription Status** | Active/inactive indicator for speech-to-text |
+| **Player Count** | Number of users currently online |
+
+### Caption Window (Below Status Bar)
+
+Displays **real-time speech transcriptions** from other users in the world. This helps you follow conversations even without audio.
+
+### Chat Stream (Bottom Left)
+
+Shows **text messages** from all users in the current room. Messages appear in a scrollable stream format with sender information and timestamps.
+
+### Dock (Bottom Center)
+
+The main control bar with three primary buttons:
+
+| Button | Function |
+|--------|----------|
+| 👁️ **View Toggle** | Switch between first-person and third-person camera views |
+| 🎤 **Voice Chat** | Mute/unmute your microphone |
+| ⚙️ **Preferences** | Open the settings panel |
+
+### AI Agent Button (Bottom Right)
+
+A dedicated button to open the **AI Agent chat window** — your personal AI assistant.
+
+---
+
+## Features
+
+### Voice Communication
+
+LLMeta features real-time voice chat powered by LiveKit and Deepgram.
+
+**How to Use:**
+
+- Click the **microphone button** in the dock to toggle mute/unmute
+- When unmuted, your voice is transmitted to all users in the room
+- Your speech is **automatically transcribed** and displayed to others
+
+> [!TIP]
+> Grant microphone permissions when prompted by your browser for voice chat to work.
+
+### Text Chat
+
+Send text messages visible to all users in the room.
+
+- Messages appear in the **Chat Stream** on the bottom-left
+- Type your message and press **Enter** to send
+- All participants can see the chat history
+
+### AI Agent
+
+Your personal AI assistant is always available to help with communication.
+
+**Opening the AI Agent:**
+Click the AI Agent button in the bottom-right corner to open the chat dialog.
+
+**Capabilities:**
+
+| Feature | Description |
+|---------|-------------|
+| 📝 **Conversation Summaries** | Condense long discussions into key points |
+| 🔍 **Flow Explanation** | Understand how the conversation progressed |
+| ⚠️ **Misunderstanding Detection** | Identify potential confusion points |
+| 🎨 **Image Generation** | Create visuals based on chat context |
+
+**Quick Suggestions:**
+- "Summarize this chat"
+- "Explain the conversation flow"
+- "Are there any misunderstandings?"
+- "Generate an image based on the chat"
+
+> [!NOTE]
+> You can refine generated images by adding additional instructions.
+
+### View Toggle
+
+Switch between camera perspectives for different experiences:
+
+| View | Description |
+|------|-------------|
+| **First-Person** | See through your avatar's eyes for immersive experience |
+| **Third-Person** | See your avatar from behind for spatial awareness |
+
+### Preferences
+
+Access settings by clicking the gear icon in the dock or pressing **P**.
+
+**Tabs:**
+
+| Tab | Options |
+|-----|---------|
+| **General** | Update username, view avatar, session information (Room Name, Room SID, Session ID) |
+| **Language** | Switch between English (🇺🇸) and Japanese (🇯🇵) |
+
+---
+
+## Controls
+
+### Movement
+
+Navigate through the 3D world using keyboard controls:
+
+| Key | Action |
+|-----|--------|
+| `W` / `↑` | Move forward |
+| `S` / `↓` | Move backward |
+| `A` / `←` | Strafe left |
+| `D` / `→` | Strafe right |
+
+### Camera
+
+| Input | Action |
+|-------|--------|
+| **Mouse Movement** | Look around / rotate camera |
+
+### Keyboard Shortcuts
+
+| Key | Action |
+|-----|--------|
+| `P` | Open/close Preferences |
+
+---
+
+## Troubleshooting
+
+### Connection Issues
+
+| Symptom | Solution |
+|---------|----------|
+| "Connection failed" message | Click **Retry** button or refresh the page |
+| Perpetual "Connecting..." | Check your internet connection |
+| Players not appearing | Wait a moment for sync, or refresh |
+
+### Voice Chat Issues
+
+| Symptom | Solution |
+|---------|----------|
+| Microphone not working | Ensure browser has microphone permission |
+| "Permission denied" error | Go to browser settings and allow microphone access |
+| Others can't hear you | Check that you're not muted (microphone button) |
+
+### Performance Issues
+
+| Symptom | Solution |
+|---------|----------|
+| Low frame rate | Close other browser tabs and applications |
+| Laggy movement | Check network stability |
+| Avatar not loading | Wait for assets to fully load, or refresh |
+
+---
+
+## Getting Help
+
+If you encounter issues not covered in this guide:
+
+1. Refresh the page to reset the application state
+2. Try a different browser to rule out compatibility issues
+3. Check your network connection stability
+
+---
+
+*LLMeta Client — Where Intelligence Meets Space*

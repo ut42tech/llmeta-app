@@ -1,59 +1,128 @@
-# LLMeta Client Desktop
+# LLMeta Client
 
-A 3D multiplayer metaverse client built with Next.js, React Three Fiber, and LiveKit for real-time state sync.
+> 🎓 **Graduation Research Project (2025)** — Nagasaki University Setozaki Lab.
+
+The web application for **Project LLMeta** — an AI-powered metaverse platform where each user is paired with a dedicated AI agent in an immersive 3D virtual world.
+
+## Concept
+
+**Project LLMeta** is centered on enhancing user-to-user communication through AI assistance.
+
+Each user is paired with a personal AI agent that facilitates communication between users by:
+
+- 📝 **Contextual Explanations** — Providing real-time clarifications based on conversation context
+- 📋 **Summaries** — Condensing discussions to help users stay aligned
+- 🎨 **Image Generation** — Creating visuals to support idea sharing
+- 🤝 **Understanding Enhancement** — Reducing misunderstandings and improving comprehension
+
+## Features
+
+- 🌐 **3D Metaverse** — Immersive virtual world powered by React Three Fiber
+- 🤖 **Personal AI Agent** — Each user is paired with a dedicated AI agent
+- 🎭 **VRM Avatar Support** — 3D character models via @react-three/viverse
+- 🎙️ **Real-time Voice Chat** — WebRTC-based voice communication via LiveKit
+- 💬 **Text Chat** — Real-time messaging with chat bubbles
+- 🌍 **Multi-language Support** — English and Japanese localization
+- ✨ **Modern UI** — Smooth animations with Motion and shadcn/ui components
+
+## Tech Stack
+
+| Category | Technologies |
+|----------|-------------|
+| **Core** | Next.js App Router, TypeScript |
+| **3D/VR** | Three.js, React Three Fiber, @react-three/viverse, @react-three/xr |
+| **Real-time** | LiveKit, Deepgram |
+| **AI** | Vercel AI SDK, OpenAI |
+| **UI** | shadcn/ui, Tailwind CSS, Motion, Lucide Icons |
+| **State** | Zustand |
+| **Testing** | Vitest, Testing Library |
 
 ## Getting Started
 
 ### Prerequisites
 
-- Node.js (v20 or higher)
+- Node.js 18+
 - pnpm
 
-### Installation & Setup
+### Installation
 
-1.  **Install dependencies:**
-    ```bash
-    pnpm install
-    ```
+```bash
+# Clone the repository
+git clone https://github.com/ut42tech/llmeta-client.git
+cd llmeta-client
 
-2.  **Set up environment variables:**
-    Create a `.env.local` file (use `.env.example` as a template) and add your LiveKit credentials:
-    ```
-    LIVEKIT_API_KEY=your_livekit_api_key
-    LIVEKIT_API_SECRET=your_livekit_api_secret
-    LIVEKIT_URL=wss://your-livekit-host
-    LIVEKIT_DEFAULT_ROOM=playground
-    DEEPGRAM_API_KEY=your_deepgram_api_key
-    ```
-    The public variable selects which room to join from the browser, while the server-side values are only read inside the `/api/livekit/token` route when minting access tokens.
+# Install dependencies
+pnpm install
+```
 
-3.  **Run the development server:**
-    ```bash
-    pnpm dev
-    ```
-    Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Environment Variables
 
-## Controls
+Copy `.env.example` to `.env.local` and configure:
 
-- **Move:** WASD
-- **Camera:** Drag mouse
-- **Jump:** Space
+```bash
+cp .env.example .env.local
+```
 
-## Real-time Voice Captions
+| Variable | Description |
+|----------|-------------|
+| `LIVEKIT_API_KEY` | LiveKit API key |
+| `LIVEKIT_API_SECRET` | LiveKit API secret |
+| `LIVEKIT_URL` | LiveKit WebSocket URL |
+| `LIVEKIT_DEFAULT_ROOM` | Default room name |
+| `DEEPGRAM_PROJECT_ID` | Deepgram project ID |
+| `DEEPGRAM_API_KEY` | Deepgram API key |
+| `OPENAI_API_KEY` | OpenAI API key |
+| `AI_GATEWAY_API_KEY` | Vercel AI Gateway key |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob token |
 
-- When you enable the microphone, the client streams a copy of your voice to Deepgram via `/api/deepgram/token` and renders live captions in the overlay.
-- Make sure `DEEPGRAM_API_KEY` is configured on the server (never expose it directly to the browser); the API route mints short-lived access tokens so the key is never sent to the client.
-- The caption pill appears near the dock once audio is detected; disable the mic to pause transcription.
+### Development
 
-## Available Scripts
+```bash
+pnpm dev
+```
 
-- `pnpm dev`: Starts the development server.
-- `pnpm build`: Creates a production build.
-- `pnpm start`: Starts the production server.
-- `pnpm lint`: Runs the linter.
-- `pnpm format`: Formats the code.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## LiveKit Notes
+## Project Structure
 
-- The `/api/livekit/token` Next.js route issues access tokens using the server-side environment variables; ensure this API key/secret pair is never exposed on the client.
-- The LiveKit data channel is responsible for both movement (`MOVE`) and profile (`CHANGE_PROFILE`) broadcasts, so a running LiveKit deployment is required for multiplayer features.
+```
+src/
+├── app/                # Next.js App Router pages
+│   ├── api/            # API routes
+│   ├── experience/     # 3D world experience page
+│   └── lobby/          # Room lobby page
+├── components/
+│   ├── ai-elements/    # AI agent UI components
+│   ├── character/      # VRM character components
+│   ├── hud/            # HUD and UI overlays
+│   └── ui/             # Shared shadcn/ui components
+├── hooks/              # Custom React hooks
+│   ├── livekit/        # LiveKit integration
+│   ├── scene/          # 3D scene hooks
+│   └── transcription/  # Speech-to-text
+├── i18n/               # Internationalization
+├── stores/             # Zustand state stores
+├── types/              # TypeScript types
+└── utils/              # Utility functions
+```
+
+## Scripts
+
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start development server |
+| `pnpm build` | Build for production |
+| `pnpm start` | Start production server |
+| `pnpm lint` | Run Biome linter |
+| `pnpm format` | Format code with Biome |
+| `pnpm test` | Run tests with Vitest |
+
+## License
+
+**Copyright (c) 2025 Takuya UEHARA. All Rights Reserved.**
+
+This project is developed as part of a graduation research project.
+Source code is provided for **review and portfolio purposes only**.
+
+🚫 **No License for Reuse:**
+You may not use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software without explicit written permission from the author.
