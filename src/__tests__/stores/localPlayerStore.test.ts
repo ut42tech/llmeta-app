@@ -1,5 +1,6 @@
 import { Euler, Vector3 } from "three";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 
 describe("useLocalPlayerStore", () => {
@@ -23,6 +24,7 @@ describe("useLocalPlayerStore", () => {
       expect(state.isFPV).toBe(false);
       expect(state.pendingTeleport).toBeNull();
       expect(state.hasJoinedWorld).toBe(false);
+      expect(state.roomName).toBe(LIVEKIT_CONFIG.defaultRoom);
     });
   });
 
@@ -45,6 +47,11 @@ describe("useLocalPlayerStore", () => {
     it("sets animation", () => {
       useLocalPlayerStore.getState().setAnimation("forward");
       expect(useLocalPlayerStore.getState().animationState).toBe("forward");
+    });
+
+    it("sets roomName", () => {
+      useLocalPlayerStore.getState().setRoomName("test-room");
+      expect(useLocalPlayerStore.getState().roomName).toBe("test-room");
     });
   });
 

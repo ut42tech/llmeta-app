@@ -52,10 +52,14 @@ function LobbyContent() {
   );
 
   const [inputUsername, setInputUsername] = useState("");
+  const [inputRoomName, setInputRoomName] = useState(
+    useLocalPlayerStore.getState().roomName,
+  );
   const [selectedAvatar, setSelectedAvatar] = useState<ViverseAvatar | null>(
     null,
   );
   const [isReadyToEnter, setIsReadyToEnter] = useState(false);
+  const setRoomName = useLocalPlayerStore((state) => state.setRoomName);
 
   const isConnected = connectionState === LiveKitConnectionState.Connected;
   const isConnecting =
@@ -69,6 +73,9 @@ function LobbyContent() {
   const handleJoinWorld = () => {
     if (!isFormValid) return;
     setUsername(inputUsername.trim());
+    setRoomName(
+      inputRoomName.trim() || useLocalPlayerStore.getState().roomName,
+    );
     if (selectedAvatar) {
       setCurrentAvatar(selectedAvatar);
     }
@@ -163,6 +170,19 @@ function LobbyContent() {
           </CardHeader>
           <CardContent className="space-y-6">
             <ConnectionIndicator />
+
+            <div className="space-y-2">
+              <Label htmlFor="roomName">{t("roomNameLabel")}</Label>
+              <Input
+                id="roomName"
+                type="text"
+                placeholder={t("roomNamePlaceholder")}
+                value={inputRoomName}
+                onChange={(e) => setInputRoomName(e.target.value)}
+                maxLength={50}
+                disabled={isReadyToEnter}
+              />
+            </div>
 
             <div className="space-y-2">
               <Label htmlFor="username">{t("usernameLabel")}</Label>

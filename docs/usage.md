@@ -42,9 +42,11 @@ The lobby is where you configure your identity before entering the virtual world
 
 2. **Enter Username** — Type your display name (maximum 20 characters)
 
-3. **Choose Avatar** — Click on one of the available VRM avatars to select your virtual representation
+3. **Enter Room Name** — Specify which room to join (defaults to "playground"). Users in the same room can see and interact with each other.
 
-4. **Click "Continue"** — Once connected and configured, enter the 3D world
+4. **Choose Avatar** — Click on one of the available VRM avatars to select your virtual representation
+
+5. **Click "Continue"** — Once connected and configured, enter the 3D world
 
 > [!WARNING]
 > **Privacy Notice**: This application sends data to external services. Do not share personal or sensitive information.
