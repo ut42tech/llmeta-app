@@ -28,6 +28,8 @@
     "warningText": "This app sends data to external services. Please do not share personal or sensitive information.",
     "usernameLabel": "Username",
     "usernamePlaceholder": "Enter your username",
+    "roomNameLabel": "Room Name",
+    "roomNamePlaceholder": "Enter room name",
     "avatarLabel": "Choose your avatar",
     "continueButton": "Continue"
   },

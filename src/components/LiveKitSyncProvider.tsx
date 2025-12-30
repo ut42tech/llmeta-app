@@ -11,7 +11,6 @@ import {
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
-import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { useChatDataChannel } from "@/hooks/livekit/useChatDataChannel";
 import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
@@ -49,8 +48,10 @@ type ProviderProps = PropsWithChildren<{ roomName?: string }>;
 
 export function LiveKitSyncProvider({
   children,
-  roomName = LIVEKIT_CONFIG.defaultRoom,
+  roomName: propRoomName,
 }: ProviderProps) {
+  const storeRoomName = useLocalPlayerStore((state) => state.roomName);
+  const roomName = propRoomName ?? storeRoomName;
   const setFailed = useWorldStore((state) => state.setFailed);
   const { authState, identity } = useLiveKitAuth(roomName);
 
