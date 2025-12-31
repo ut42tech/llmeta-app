@@ -14,119 +14,7 @@ export type Database = {
   };
   public: {
     Tables: {
-      profiles: {
-        Row: {
-          avatar_model: string | null;
-          avatar_url: string | null;
-          created_at: string;
-          display_name: string | null;
-          id: string;
-          updated_at: string;
-          username: string | null;
-        };
-        Insert: {
-          avatar_model?: string | null;
-          avatar_url?: string | null;
-          created_at?: string;
-          display_name?: string | null;
-          id: string;
-          updated_at?: string;
-          username?: string | null;
-        };
-        Update: {
-          avatar_model?: string | null;
-          avatar_url?: string | null;
-          created_at?: string;
-          display_name?: string | null;
-          id?: string;
-          updated_at?: string;
-          username?: string | null;
-        };
-        Relationships: [];
-      };
-      world_participants: {
-        Row: {
-          id: string;
-          joined_at: string;
-          role: Database["public"]["Enums"]["participant_role"];
-          user_id: string;
-          world_id: string;
-        };
-        Insert: {
-          id?: string;
-          joined_at?: string;
-          role?: Database["public"]["Enums"]["participant_role"];
-          user_id: string;
-          world_id: string;
-        };
-        Update: {
-          id?: string;
-          joined_at?: string;
-          role?: Database["public"]["Enums"]["participant_role"];
-          user_id?: string;
-          world_id?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "world_participants_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-          {
-            foreignKeyName: "world_participants_world_id_fkey";
-            columns: ["world_id"];
-            isOneToOne: false;
-            referencedRelation: "worlds";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
-      worlds: {
-        Row: {
-          created_at: string;
-          description: string | null;
-          id: string;
-          is_public: boolean;
-          livekit_room: string | null;
-          max_participants: number;
-          name: string;
-          owner_id: string;
-          updated_at: string;
-        };
-        Insert: {
-          created_at?: string;
-          description?: string | null;
-          id?: string;
-          is_public?: boolean;
-          livekit_room?: string | null;
-          max_participants?: number;
-          name: string;
-          owner_id: string;
-          updated_at?: string;
-        };
-        Update: {
-          created_at?: string;
-          description?: string | null;
-          id?: string;
-          is_public?: boolean;
-          livekit_room?: string | null;
-          max_participants?: number;
-          name?: string;
-          owner_id?: string;
-          updated_at?: string;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "worlds_owner_id_fkey";
-            columns: ["owner_id"];
-            isOneToOne: false;
-            referencedRelation: "profiles";
-            referencedColumns: ["id"];
-          },
-        ];
-      };
+      [_ in never]: never;
     };
     Views: {
       [_ in never]: never;
@@ -135,7 +23,7 @@ export type Database = {
       [_ in never]: never;
     };
     Enums: {
-      participant_role: "owner" | "moderator" | "participant";
+      [_ in never]: never;
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -265,8 +153,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      participant_role: ["owner", "moderator", "participant"],
-    },
+    Enums: {},
   },
 } as const;
