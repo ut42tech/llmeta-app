@@ -140,5 +140,37 @@
     "players": "Players",
     "onlyPlayerOnline": "You are the only player online",
     "playersOnline": "{count} players online (including you)"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome Back",
+      "description": "Sign in to your account to continue",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign In",
+      "loading": "Signing in...",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign up"
+    },
+    "signup": {
+      "title": "Create Account",
+      "description": "Sign up to start your journey",
+      "displayName": "Display Name",
+      "displayNamePlaceholder": "Your display name",
+      "displayNameRequired": "Display name is required",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Create Account",
+      "loading": "Creating account...",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Sign in",
+      "passwordMismatch": "Passwords do not match",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "successTitle": "Check your email",
+      "successMessage": "We've sent you a confirmation link. Please check your email to verify your account.",
+      "goToLogin": "Go to Login"
+    },
+    "logout": "Sign Out"
   }
 }

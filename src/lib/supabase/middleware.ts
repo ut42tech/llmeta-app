@@ -39,24 +39,33 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: DO NOT REMOVE auth.getUser()
   const {
-    data: { user: _user },
+    data: { user },
   } = await supabase.auth.getUser();
 
-  // Optional: Redirect unauthenticated users to login page
-  // Uncomment the following lines if you want to protect routes
-  /*
+  // Redirect unauthenticated users to login page
+  // Protect routes that require authentication
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/lobby') &&
-    request.nextUrl.pathname !== '/'
+    !request.nextUrl.pathname.startsWith("/login") &&
+    !request.nextUrl.pathname.startsWith("/signup") &&
+    !request.nextUrl.pathname.startsWith("/api/auth") &&
+    request.nextUrl.pathname !== "/"
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = '/login';
+    url.pathname = "/login";
     return NextResponse.redirect(url);
   }
-  */
+
+  // Redirect authenticated users away from auth pages
+  if (
+    user &&
+    (request.nextUrl.pathname.startsWith("/login") ||
+      request.nextUrl.pathname.startsWith("/signup"))
+  ) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/lobby";
+    return NextResponse.redirect(url);
+  }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
   return supabaseResponse;
