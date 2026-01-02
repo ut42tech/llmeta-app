@@ -42,28 +42,33 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const pathname = request.nextUrl.pathname;
+
+  // Public paths that don't require authentication
+  const isPublicPath =
+    pathname.startsWith("/login") ||
+    pathname.startsWith("/signup") ||
+    pathname.startsWith("/api/auth");
+
+  // Routes that require authentication
+  const isProtectedPath =
+    pathname === "/" ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/world") ||
+    pathname.startsWith("/instance") ||
+    pathname.startsWith("/experience");
+
   // Redirect unauthenticated users to login page
-  // Protect routes that require authentication
-  if (
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/signup") &&
-    !request.nextUrl.pathname.startsWith("/api/auth") &&
-    request.nextUrl.pathname !== "/"
-  ) {
+  if (!user && isProtectedPath) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
   }
 
-  // Redirect authenticated users away from auth pages
-  if (
-    user &&
-    (request.nextUrl.pathname.startsWith("/login") ||
-      request.nextUrl.pathname.startsWith("/signup"))
-  ) {
+  // Redirect authenticated users away from auth pages to dashboard
+  if (user && isPublicPath) {
     const url = request.nextUrl.clone();
-    url.pathname = "/lobby";
+    url.pathname = "/";
     return NextResponse.redirect(url);
   }
 

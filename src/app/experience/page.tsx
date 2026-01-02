@@ -28,7 +28,7 @@ function ExperienceContent() {
 
   useEffect(() => {
     if (!hasJoinedWorld) {
-      router.replace("/lobby");
+      router.replace("/");
     }
   }, [hasJoinedWorld, router]);
 

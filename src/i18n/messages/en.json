@@ -10,6 +10,54 @@
     "loading": "Loading...",
     "sendMessage": "Send message"
   },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Explore worlds and join instances",
+    "worlds": "Worlds"
+  },
+  "sidebar": {
+    "navigation": "Navigation",
+    "home": "Home",
+    "profile": "Profile",
+    "logout": "Sign Out",
+    "guest": "Guest"
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Manage your account settings",
+    "accountInfo": "Account Information",
+    "accountInfoDescription": "Your personal information and settings",
+    "email": "Email",
+    "emailNote": "Email cannot be changed",
+    "displayName": "Display Name",
+    "displayNamePlaceholder": "Enter your display name",
+    "update": "Update",
+    "dangerZone": "Danger Zone",
+    "dangerZoneDescription": "Irreversible actions",
+    "logout": "Sign Out"
+  },
+  "world": {
+    "back": "Back",
+    "worldInfo": "World Information",
+    "capacity": "Capacity",
+    "players": "players",
+    "createdAt": "Created",
+    "instances": "Instances",
+    "createInstance": "Create Instance",
+    "createInstanceTitle": "Create New Instance",
+    "createInstanceDescription": "Create a new room instance for this world",
+    "roomName": "Room Name",
+    "roomNamePlaceholder": "Enter room name (optional)",
+    "cancel": "Cancel",
+    "create": "Create",
+    "noInstances": "No active instances. Create one to get started!"
+  },
+  "instance": {
+    "back": "Back",
+    "room": "Room",
+    "join": "Join",
+    "hostedBy": "Hosted by {name}"
+  },
   "landing": {
     "tagline": "PROJECT LLMeta",
     "title1": "Intelligence",

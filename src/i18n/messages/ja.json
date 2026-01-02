@@ -10,6 +10,54 @@
     "loading": "読み込み中...",
     "sendMessage": "メッセージを送信"
   },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "description": "ワールドを探索してインスタンスに参加",
+    "worlds": "ワールド"
+  },
+  "sidebar": {
+    "navigation": "ナビゲーション",
+    "home": "ホーム",
+    "profile": "プロフィール",
+    "logout": "サインアウト",
+    "guest": "ゲスト"
+  },
+  "profile": {
+    "title": "プロフィール",
+    "description": "アカウント設定を管理",
+    "accountInfo": "アカウント情報",
+    "accountInfoDescription": "あなたの個人情報と設定",
+    "email": "メールアドレス",
+    "emailNote": "メールアドレスは変更できません",
+    "displayName": "表示名",
+    "displayNamePlaceholder": "表示名を入力",
+    "update": "更新",
+    "dangerZone": "危険な操作",
+    "dangerZoneDescription": "取り消せない操作",
+    "logout": "サインアウト"
+  },
+  "world": {
+    "back": "戻る",
+    "worldInfo": "ワールド情報",
+    "capacity": "定員",
+    "players": "人",
+    "createdAt": "作成日",
+    "instances": "インスタンス",
+    "createInstance": "インスタンスを作成",
+    "createInstanceTitle": "新規インスタンスを作成",
+    "createInstanceDescription": "このワールドの新しいルームインスタンスを作成します",
+    "roomName": "ルーム名",
+    "roomNamePlaceholder": "ルーム名を入力（任意）",
+    "cancel": "キャンセル",
+    "create": "作成",
+    "noInstances": "アクティブなインスタンスがありません。作成して始めましょう！"
+  },
+  "instance": {
+    "back": "戻る",
+    "room": "ルーム",
+    "join": "参加",
+    "hostedBy": "{name} がホスト"
+  },
   "landing": {
     "tagline": "PROJECT LLMeta",
     "title1": "Intelligence",

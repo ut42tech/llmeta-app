@@ -3,20 +3,19 @@
 import { ConnectionState as LiveKitConnectionState } from "livekit-client";
 import {
   AlertTriangle,
+  ArrowLeft,
   ArrowRight,
   CheckCircle2,
   Loader2,
-  LogOut,
   RefreshCw,
   Wifi,
   WifiOff,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { BackgroundCanvas } from "@/components/BackgroundCanvas";
 import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { LiveKitSyncProvider } from "@/components/LiveKitSyncProvider";
 import { Button } from "@/components/ui/button";
 import {
@@ -35,18 +34,14 @@ import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { ViverseAvatar } from "@/types/player";
 
-function LobbyContent() {
+function InstanceContent() {
+  const params = useParams<{ roomSid: string }>();
   const router = useRouter();
   const t = useTranslations("joinWorld");
+  const tInstance = useTranslations("instance");
   const tLobby = useTranslations("lobby");
-  const tAuth = useTranslations("auth");
 
-  const {
-    profile,
-    isLoading: isAuthLoading,
-    updateProfile,
-    signOut,
-  } = useAuth();
+  const { profile, isLoading: isAuthLoading, updateProfile } = useAuth();
 
   const { connectionState } = useSyncClient();
   const connectionStatus = useWorldStore((state) => state.connection.status);
@@ -60,17 +55,21 @@ function LobbyContent() {
   const setHasJoinedWorld = useLocalPlayerStore(
     (state) => state.setHasJoinedWorld,
   );
+  const setRoomName = useLocalPlayerStore((state) => state.setRoomName);
 
   const [inputUsername, setInputUsername] = useState("");
-  const [inputRoomName, setInputRoomName] = useState(
-    useLocalPlayerStore.getState().roomName,
-  );
   const [selectedAvatar, setSelectedAvatar] = useState<ViverseAvatar | null>(
     null,
   );
   const [isReadyToEnter, setIsReadyToEnter] = useState(false);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
-  const setRoomName = useLocalPlayerStore((state) => state.setRoomName);
+
+  // Set room name from URL parameter
+  useEffect(() => {
+    if (params.roomSid) {
+      setRoomName(params.roomSid);
+    }
+  }, [params.roomSid, setRoomName]);
 
   // Load profile data when available
   useEffect(() => {
@@ -105,9 +104,6 @@ function LobbyContent() {
     });
 
     setUsername(inputUsername.trim());
-    setRoomName(
-      inputRoomName.trim() || useLocalPlayerStore.getState().roomName,
-    );
     if (selectedAvatar) {
       setCurrentAvatar(selectedAvatar);
     }
@@ -193,21 +189,22 @@ function LobbyContent() {
       ) : (
         <>
           <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
-            <div className="flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-white/90" />
-              <span className="text-sm text-white/90">PROJECT LLMeta</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <LanguageSwitcher />
+            <div className="flex items-center gap-4">
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={signOut}
+                onClick={() => router.back()}
                 className="text-white/70 hover:text-white hover:bg-white/10"
               >
-                <LogOut className="size-4 mr-2" />
-                {tAuth("logout")}
+                <ArrowLeft className="size-4 mr-2" />
+                {tInstance("back")}
               </Button>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-white/70">
+                {tInstance("room")}:{" "}
+                <span className="font-medium text-white">{params.roomSid}</span>
+              </span>
             </div>
           </header>
 
@@ -219,19 +216,6 @@ function LobbyContent() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <ConnectionIndicator />
-
-                <div className="space-y-2">
-                  <Label htmlFor="roomName">{t("roomNameLabel")}</Label>
-                  <Input
-                    id="roomName"
-                    type="text"
-                    placeholder={t("roomNamePlaceholder")}
-                    value={inputRoomName}
-                    onChange={(e) => setInputRoomName(e.target.value)}
-                    maxLength={50}
-                    disabled={isReadyToEnter}
-                  />
-                </div>
 
                 <div className="space-y-2">
                   <Label htmlFor="username">{t("usernameLabel")}</Label>
@@ -298,10 +282,10 @@ function LobbyContent() {
   );
 }
 
-export default function LobbyPage() {
+export default function InstancePage() {
   return (
     <LiveKitSyncProvider>
-      <LobbyContent />
+      <InstanceContent />
     </LiveKitSyncProvider>
   );
 }
