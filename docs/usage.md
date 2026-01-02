@@ -21,15 +21,7 @@ Navigate to the application URL in your browser. You'll be greeted by the landin
 
 ## Getting Started
 
-### 1. Landing Page
-
-The landing page serves as your entry point to the LLMeta metaverse.
-
-- Click **"Enter the World"** to proceed to the login page
-- Click **"Learn More"** to discover more about the project
-- Use the language switcher in the top-right corner to change between English and Japanese
-
-### 2. Authentication
+### 1. Authentication
 
 LLMeta requires an account to access the virtual world. This ensures your profile and preferences are saved.
 
@@ -39,23 +31,56 @@ LLMeta requires an account to access the virtual world. This ensures your profil
 2. Enter your **Display Name** — This is how other users will see you
 3. Enter your **Email** and **Password**
 4. Confirm your password
-5. Click **"Sign Up"**
+5. Click **"Create Account"**
 6. Check your email for a confirmation link and click it to verify your account
 
 #### Logging In
 
 1. Navigate to the **Login** page (`/login`)
 2. Enter your registered **Email** and **Password**
-3. Click **"Log In"**
-4. You'll be redirected to the lobby
+3. Click **"Sign In"**
+4. You'll be redirected to the Dashboard
 
 #### Logging Out
 
-Click the **Log Out** button in the lobby to sign out of your account.
+Click the **Sign Out** button in the sidebar or profile page to sign out of your account.
 
-### 3. Joining a World (Lobby)
+### 2. Dashboard
 
-The lobby is where you configure your identity before entering the virtual world.
+After logging in, you'll see the **Dashboard** — your central hub for exploring worlds.
+
+**Features:**
+
+- **Sidebar Navigation** — Access Home (Dashboard) and Profile pages
+- **World List** — Browse available metaverse worlds displayed as cards
+- **User Info** — Your display name is shown in the sidebar footer
+
+**To Enter a World:**
+Click on a world card to view its details.
+
+### 3. World Detail Page
+
+The world detail page (`/world/[worldId]`) shows comprehensive information about a specific world.
+
+**What You'll See:**
+
+- **Hero Section** — Large thumbnail image with world name and description
+- **World Info** — Player capacity and creation date
+- **Instance List** — Active rooms you can join
+
+**Creating an Instance:**
+
+1. Click **"Create Instance"** button
+2. Enter a room name (optional — a default name will be generated if left empty)
+3. Click **"Create"**
+4. You'll be redirected to the instance lobby
+
+**Joining an Existing Instance:**
+Click **"Join"** on any instance card to enter that room.
+
+### 4. Instance Lobby
+
+The instance lobby (`/instance/[roomSid]`) is where you configure your identity before entering the virtual world.
 
 **Steps to Join:**
 
@@ -66,11 +91,9 @@ The lobby is where you configure your identity before entering the virtual world
 
 2. **Edit Display Name** — Your display name is loaded from your profile. You can update it here (maximum 20 characters)
 
-3. **Enter Room Name** — Specify which room to join (defaults to "playground"). Users in the same room can see and interact with each other.
+3. **Choose Avatar** — Click on one of the available VRM avatars to select your virtual representation
 
-4. **Choose Avatar** — Click on one of the available VRM avatars to select your virtual representation
-
-5. **Click "Continue"** — Once connected and configured, enter the 3D world
+4. **Click "Continue"** — Once connected and configured, enter the 3D world
 
 > [!NOTE]
 > Your display name and avatar selection are automatically saved to your profile.
@@ -78,9 +101,22 @@ The lobby is where you configure your identity before entering the virtual world
 > [!WARNING]
 > **Privacy Notice**: This application sends data to external services. Do not share personal or sensitive information.
 
-### 4. The 3D Experience
+### 5. Profile Page
 
-After joining, you'll be immersed in the 3D metaverse with other users and your personal AI agent.
+Access your profile settings via the sidebar or navigating to `/profile`.
+
+**Available Settings:**
+
+| Setting | Description |
+|---------|-------------|
+| **Avatar** | Your current avatar initial display |
+| **Email** | Your registered email (read-only) |
+| **Display Name** | Editable — click "Update" to save changes |
+| **Sign Out** | Log out from your account |
+
+### 6. The 3D Experience
+
+After joining an instance, you'll be immersed in the 3D metaverse with other users and your personal AI agent.
 
 ---
 
