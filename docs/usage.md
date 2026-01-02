@@ -25,11 +25,35 @@ Navigate to the application URL in your browser. You'll be greeted by the landin
 
 The landing page serves as your entry point to the LLMeta metaverse.
 
-- Click **"Enter the World"** to proceed to the lobby
+- Click **"Enter the World"** to proceed to the login page
 - Click **"Learn More"** to discover more about the project
 - Use the language switcher in the top-right corner to change between English and Japanese
 
-### 2. Joining a World (Lobby)
+### 2. Authentication
+
+LLMeta requires an account to access the virtual world. This ensures your profile and preferences are saved.
+
+#### Creating an Account
+
+1. Navigate to the **Sign Up** page (`/signup`)
+2. Enter your **Display Name** — This is how other users will see you
+3. Enter your **Email** and **Password**
+4. Confirm your password
+5. Click **"Sign Up"**
+6. Check your email for a confirmation link and click it to verify your account
+
+#### Logging In
+
+1. Navigate to the **Login** page (`/login`)
+2. Enter your registered **Email** and **Password**
+3. Click **"Log In"**
+4. You'll be redirected to the lobby
+
+#### Logging Out
+
+Click the **Log Out** button in the lobby to sign out of your account.
+
+### 3. Joining a World (Lobby)
 
 The lobby is where you configure your identity before entering the virtual world.
 
@@ -40,7 +64,7 @@ The lobby is where you configure your identity before entering the virtual world
    - ✅ *Connected* — Ready to proceed
    - ❌ *Failed* — Click "Retry" to reconnect
 
-2. **Enter Username** — Type your display name (maximum 20 characters)
+2. **Edit Display Name** — Your display name is loaded from your profile. You can update it here (maximum 20 characters)
 
 3. **Enter Room Name** — Specify which room to join (defaults to "playground"). Users in the same room can see and interact with each other.
 
@@ -48,10 +72,13 @@ The lobby is where you configure your identity before entering the virtual world
 
 5. **Click "Continue"** — Once connected and configured, enter the 3D world
 
+> [!NOTE]
+> Your display name and avatar selection are automatically saved to your profile.
+
 > [!WARNING]
 > **Privacy Notice**: This application sends data to external services. Do not share personal or sensitive information.
 
-### 3. The 3D Experience
+### 4. The 3D Experience
 
 After joining, you'll be immersed in the 3D metaverse with other users and your personal AI agent.
 

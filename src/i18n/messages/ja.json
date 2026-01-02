@@ -140,5 +140,37 @@
     "players": "プレイヤー",
     "onlyPlayerOnline": "あなただけがオンラインです",
     "playersOnline": "{count}人のプレイヤーがオンライン（あなたを含む）"
+  },
+  "auth": {
+    "login": {
+      "title": "おかえりなさい",
+      "description": "アカウントにサインインして続行",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "submit": "サインイン",
+      "loading": "サインイン中...",
+      "noAccount": "アカウントをお持ちでないですか？",
+      "signupLink": "新規登録"
+    },
+    "signup": {
+      "title": "アカウント作成",
+      "description": "新規登録して始めましょう",
+      "displayName": "表示名",
+      "displayNamePlaceholder": "表示名を入力",
+      "displayNameRequired": "表示名は必須です",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "confirmPassword": "パスワード（確認）",
+      "submit": "アカウントを作成",
+      "loading": "アカウント作成中...",
+      "hasAccount": "すでにアカウントをお持ちですか？",
+      "loginLink": "サインイン",
+      "passwordMismatch": "パスワードが一致しません",
+      "passwordTooShort": "パスワードは6文字以上である必要があります",
+      "successTitle": "メールを確認してください",
+      "successMessage": "確認リンクを送信しました。メールを確認してアカウントを認証してください。",
+      "goToLogin": "ログインへ"
+    },
+    "logout": "サインアウト"
   }
 }
