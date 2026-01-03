@@ -15,8 +15,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 
-export default function ProfilePage() {
-  const t = useTranslations("profile");
+export default function SettingsPage() {
+  const t = useTranslations("settingsPage");
   const { user, profile, updateProfile, signOut } = useAuth();
 
   const [displayName, setDisplayName] = useState("");

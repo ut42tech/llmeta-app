@@ -18,13 +18,13 @@
   "sidebar": {
     "navigation": "ナビゲーション",
     "home": "ホーム",
-    "profile": "プロフィール",
+    "settings": "設定",
     "logout": "サインアウト",
     "guest": "ゲスト"
   },
-  "profile": {
-    "title": "プロフィール",
-    "description": "アカウント設定を管理",
+  "settingsPage": {
+    "title": "設定",
+    "description": "アカウントと環境設定を管理",
     "accountInfo": "アカウント情報",
     "accountInfoDescription": "あなたの個人情報と設定",
     "email": "メールアドレス",

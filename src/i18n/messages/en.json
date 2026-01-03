@@ -18,13 +18,13 @@
   "sidebar": {
     "navigation": "Navigation",
     "home": "Home",
-    "profile": "Profile",
+    "settings": "Settings",
     "logout": "Sign Out",
     "guest": "Guest"
   },
-  "profile": {
-    "title": "Profile",
-    "description": "Manage your account settings",
+  "settingsPage": {
+    "title": "Settings",
+    "description": "Manage your account and preferences",
     "accountInfo": "Account Information",
     "accountInfoDescription": "Your personal information and settings",
     "email": "Email",
