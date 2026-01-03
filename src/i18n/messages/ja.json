@@ -32,6 +32,8 @@
     "displayName": "表示名",
     "displayNamePlaceholder": "表示名を入力",
     "update": "更新",
+    "language": "言語",
+    "languageDescription": "インターフェースの表示言語を選択",
     "dangerZone": "危険な操作",
     "dangerZoneDescription": "取り消せない操作",
     "logout": "サインアウト"

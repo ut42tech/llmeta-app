@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle2, Loader2, Mail, User } from "lucide-react";
+import { CheckCircle2, Globe, Loader2, Mail, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -13,11 +13,22 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useAuth } from "@/hooks/useAuth";
+import { type Locale, localeNames, locales } from "@/i18n/config";
+import { useLanguageStore } from "@/stores/languageStore";
 
 export default function SettingsPage() {
   const t = useTranslations("settingsPage");
+  const tLanguage = useTranslations("language");
   const { user, profile, updateProfile, signOut } = useAuth();
+  const { locale, setLocale } = useLanguageStore();
 
   const [displayName, setDisplayName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -117,6 +128,36 @@ export default function SettingsPage() {
                   )}
                 </Button>
               </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="size-5" />
+              {t("language")}
+            </CardTitle>
+            <CardDescription>{t("languageDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <Label htmlFor="language">{tLanguage("selectLanguage")}</Label>
+              <Select
+                value={locale}
+                onValueChange={(value) => setLocale(value as Locale)}
+              >
+                <SelectTrigger id="language" className="w-full max-w-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {locales.map((loc) => (
+                    <SelectItem key={loc} value={loc}>
+                      {localeNames[loc as Locale]}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
           </CardContent>
         </Card>
