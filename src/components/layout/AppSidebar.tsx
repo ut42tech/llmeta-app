@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronUp, Globe, Home, LogOut, Settings } from "lucide-react";
+import { ChevronUp, Home, LogOut, Settings, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -53,7 +53,7 @@ export function AppSidebar() {
             <SidebarMenuButton size="lg" asChild>
               <Link href="/">
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                  <Globe className="size-4" />
+                  <Sparkles className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">LLMeta</span>

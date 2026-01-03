@@ -1,5 +1,7 @@
 {
   "common": {
+    "appName": "Project LLMeta",
+    "copyright": "Takuya Uehara, All Rights Reserved.",
     "close": "Close",
     "cancel": "Cancel",
     "update": "Update",

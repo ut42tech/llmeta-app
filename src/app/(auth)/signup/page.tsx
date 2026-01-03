@@ -1,12 +1,10 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import { CheckCircle, Loader2, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
-import { BackgroundCanvas } from "@/components/BackgroundCanvas";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -81,126 +79,114 @@ export default function SignupPage() {
 
   if (success) {
     return (
-      <div className="relative min-h-dvh">
-        <BackgroundCanvas />
-
-        <div className="relative z-10 flex min-h-dvh items-center justify-center p-4">
-          <Card className="w-full max-w-md bg-background/80 backdrop-blur-md">
-            <CardHeader className="text-center">
-              <CardTitle className="text-2xl">
-                {t("signup.successTitle")}
-              </CardTitle>
-              <CardDescription>{t("signup.successMessage")}</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button className="w-full" onClick={() => router.push("/login")}>
-                {t("signup.goToLogin")}
-              </Button>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <Card className="w-full max-w-md bg-background/80 backdrop-blur-md">
+        <CardHeader className="text-center">
+          <div className="mx-auto mb-2 flex size-12 items-center justify-center rounded-full bg-green-500/10">
+            <CheckCircle className="size-6 text-green-500" />
+          </div>
+          <CardTitle className="text-2xl">{t("signup.successTitle")}</CardTitle>
+          <CardDescription>{t("signup.successMessage")}</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Button className="w-full" onClick={() => router.push("/login")}>
+            {t("signup.goToLogin")}
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className="relative min-h-dvh">
-      <BackgroundCanvas />
+    <Card className="w-full max-w-md bg-background/80 backdrop-blur-md">
+      <CardHeader className="text-center">
+        <div className="mx-auto mb-2 flex size-12 items-center justify-center">
+          <UserPlus className="size-6 text-primary" />
+        </div>
+        <CardTitle className="text-2xl">{t("signup.title")}</CardTitle>
+        <CardDescription>{t("signup.description")}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSignup} className="space-y-4">
+          {error && (
+            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+              {error}
+            </div>
+          )}
 
-      <div className="absolute top-4 right-4 z-10">
-        <LanguageSwitcher />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="displayName">{t("signup.displayName")}</Label>
+            <Input
+              id="displayName"
+              type="text"
+              placeholder={t("signup.displayNamePlaceholder")}
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
 
-      <div className="relative z-10 flex min-h-dvh items-center justify-center p-4">
-        <Card className="w-full max-w-md bg-background/80 backdrop-blur-md">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl">{t("signup.title")}</CardTitle>
-            <CardDescription>{t("signup.description")}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSignup} className="space-y-4">
-              {error && (
-                <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
-                  {error}
-                </div>
-              )}
+          <div className="space-y-2">
+            <Label htmlFor="email">{t("signup.email")}</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="displayName">{t("signup.displayName")}</Label>
-                <Input
-                  id="displayName"
-                  type="text"
-                  placeholder={t("signup.displayNamePlaceholder")}
-                  value={displayName}
-                  onChange={(e) => setDisplayName(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">{t("signup.password")}</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">{t("signup.email")}</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="you@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+          <div className="space-y-2">
+            <Label htmlFor="confirmPassword">
+              {t("signup.confirmPassword")}
+            </Label>
+            <Input
+              id="confirmPassword"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="password">{t("signup.password")}</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
+          <Button type="submit" className="w-full" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <Loader2 className="animate-spin" />
+                {t("signup.loading")}
+              </>
+            ) : (
+              t("signup.submit")
+            )}
+          </Button>
 
-              <div className="space-y-2">
-                <Label htmlFor="confirmPassword">
-                  {t("signup.confirmPassword")}
-                </Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                  disabled={isLoading}
-                />
-              </div>
-
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? (
-                  <>
-                    <Loader2 className="animate-spin" />
-                    {t("signup.loading")}
-                  </>
-                ) : (
-                  t("signup.submit")
-                )}
-              </Button>
-
-              <p className="text-center text-sm text-muted-foreground">
-                {t("signup.hasAccount")}{" "}
-                <Link
-                  href="/login"
-                  className="text-primary underline-offset-4 hover:underline"
-                >
-                  {t("signup.loginLink")}
-                </Link>
-              </p>
-            </form>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+          <p className="text-center text-sm text-muted-foreground">
+            {t("signup.hasAccount")}{" "}
+            <Link
+              href="/login"
+              className="text-primary underline-offset-4 hover:underline"
+            >
+              {t("signup.loginLink")}
+            </Link>
+          </p>
+        </form>
+      </CardContent>
+    </Card>
   );
 }
