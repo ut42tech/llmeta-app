@@ -14,6 +14,47 @@ export type Database = {
   };
   public: {
     Tables: {
+      instances: {
+        Row: {
+          created_at: string;
+          host_id: string | null;
+          id: string;
+          max_players: number;
+          name: string;
+          player_count: number;
+          updated_at: string;
+          world_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          host_id?: string | null;
+          id?: string;
+          max_players?: number;
+          name: string;
+          player_count?: number;
+          updated_at?: string;
+          world_id: string;
+        };
+        Update: {
+          created_at?: string;
+          host_id?: string | null;
+          id?: string;
+          max_players?: number;
+          name?: string;
+          player_count?: number;
+          updated_at?: string;
+          world_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "instances_world_id_fkey";
+            columns: ["world_id"];
+            isOneToOne: false;
+            referencedRelation: "worlds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_id: number | null;
@@ -37,6 +78,33 @@ export type Database = {
           display_name?: string;
           id?: string;
           lang?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      worlds: {
+        Row: {
+          created_at: string;
+          description: string;
+          id: string;
+          name: string;
+          player_capacity: number;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string;
+          id?: string;
+          name: string;
+          player_capacity?: number;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          description?: string;
+          id?: string;
+          name?: string;
+          player_capacity?: number;
           updated_at?: string;
         };
         Relationships: [];

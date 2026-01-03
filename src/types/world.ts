@@ -2,22 +2,21 @@
  * World type definitions for the VRChat-style world/instance system.
  */
 
-export type World = {
-  id: string;
-  name: string;
-  description: string;
-  thumbnail: string;
-  createdAt: string;
-  playerCapacity: number;
-};
+import type { Tables } from "./supabase";
 
-export type Instance = {
-  id: string;
-  worldId: string;
-  roomSid: string;
-  roomName: string;
-  createdAt: string;
-  playerCount: number;
-  maxPlayers: number;
+/**
+ * World type from Supabase database
+ */
+export type World = Tables<"worlds">;
+
+/**
+ * Instance type from Supabase database
+ */
+export type DbInstance = Tables<"instances">;
+
+/**
+ * Instance type with host name for display purposes
+ */
+export type Instance = DbInstance & {
   hostName?: string;
 };

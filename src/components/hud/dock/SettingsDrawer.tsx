@@ -110,10 +110,10 @@ const GeneralTab = () => {
   const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
   const { updateProfile } = useAuth();
-  const { roomName, roomSid } = useWorldStore(
+  const { instanceName, instanceId } = useWorldStore(
     useShallow((state) => ({
-      roomName: state.room.roomName || "—",
-      roomSid: state.room.roomSid || "—",
+      instanceName: state.room.roomName || "—",
+      instanceId: state.room.roomSid || "—",
     })),
   );
 
@@ -202,8 +202,8 @@ const GeneralTab = () => {
         title={t("sessionInfo")}
         icon={<Fingerprint className="size-4 text-muted-foreground" />}
       >
-        <InfoRow label={t("roomName")} value={roomName} mono />
-        <InfoRow label={t("roomSid")} value={roomSid} mono />
+        <InfoRow label={t("instanceName")} value={instanceName} mono />
+        <InfoRow label={t("instanceId")} value={instanceId} mono />
         <InfoRow label={t("sessionId")} value={sessionId} mono />
       </SettingsSection>
     </motion.div>

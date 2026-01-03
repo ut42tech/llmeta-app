@@ -1,5 +1,3 @@
-"use client";
-
 import { ArrowRight, Users } from "lucide-react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
@@ -19,12 +17,10 @@ export function InstanceCard({ instance }: InstanceCardProps) {
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex-1 min-w-0">
-            <h3 className="font-medium truncate">{instance.roomName}</h3>
+            <h3 className="font-medium truncate">{instance.name}</h3>
             <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
               <Users className="size-4" />
-              <span>
-                {instance.playerCount} / {instance.maxPlayers}
-              </span>
+              <span>— / {instance.max_players}</span>
               {instance.hostName && (
                 <>
                   <span>•</span>
@@ -33,7 +29,7 @@ export function InstanceCard({ instance }: InstanceCardProps) {
               )}
             </div>
           </div>
-          <Link href={`/instance/${instance.roomSid}`}>
+          <Link href={`/instance/${instance.id}`}>
             <Button size="sm" className="shrink-0">
               {t("join")}
               <ArrowRight className="size-4 ml-1" />
