@@ -89,9 +89,10 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ```
 src/
 ├── app/                # Next.js App Router pages
+│   ├── (auth)/         # Authentication pages (login, signup)
+│   ├── (hub)/          # Main hub with sidebar (dashboard, world, instance)
 │   ├── api/            # API routes
-│   ├── experience/     # 3D world experience page
-│   └── lobby/          # Room lobby page
+│   └── experience/     # Full-screen 3D world experience
 ├── components/
 │   ├── ai-elements/    # AI agent UI components
 │   ├── character/      # VRM character components
