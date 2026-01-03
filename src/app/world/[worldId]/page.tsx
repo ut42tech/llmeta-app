@@ -4,7 +4,7 @@ import { ArrowLeft, Globe, Plus, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, useParams, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 import { InstanceCard } from "@/components/InstanceCard";
 import { Button } from "@/components/ui/button";
@@ -33,6 +33,7 @@ export default function WorldDetailPage() {
   const params = useParams<{ worldId: string }>();
   const router = useRouter();
   const t = useTranslations("world");
+  const format = useFormatter();
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newRoomName, setNewRoomName] = useState("");
@@ -63,7 +64,7 @@ export default function WorldDetailPage() {
           className="object-cover"
           priority
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent" />
 
         <div className="absolute top-4 left-4">
           <Link href="/">
@@ -108,7 +109,11 @@ export default function WorldDetailPage() {
               <div>
                 <p className="text-muted-foreground">{t("createdAt")}</p>
                 <p className="font-medium">
-                  {new Date(world.createdAt).toLocaleDateString()}
+                  {format.dateTime(new Date(world.createdAt), {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })}
                 </p>
               </div>
             </div>
