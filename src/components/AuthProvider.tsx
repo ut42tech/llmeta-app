@@ -3,6 +3,7 @@
 import type { User } from "@supabase/supabase-js";
 import { useEffect, useRef } from "react";
 import { useAuthStore } from "@/stores/authStore";
+import { useLanguageStore } from "@/stores/languageStore";
 import type { Tables } from "@/types/supabase";
 
 type Profile = Tables<"profiles">;
@@ -23,9 +24,15 @@ export function AuthProvider({ user, profile, children }: AuthProviderProps) {
     if (hasInitialized.current) return;
     hasInitialized.current = true;
 
-    const store = useAuthStore.getState();
-    store.setUser(user);
-    store.setProfile(profile);
+    const authStore = useAuthStore.getState();
+    authStore.setUser(user);
+    authStore.setProfile(profile);
+
+    // Initialize language from profile if set
+    const languageStore = useLanguageStore.getState();
+    if (profile.lang) {
+      languageStore.initializeFromProfile(profile.lang);
+    }
   }, [user, profile]);
 
   return <>{children}</>;

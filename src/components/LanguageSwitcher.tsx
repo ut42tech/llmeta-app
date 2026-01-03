@@ -10,11 +10,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Locale, localeNames, locales } from "@/i18n/config";
+import { useAuthStore } from "@/stores/authStore";
 import { useLanguageStore } from "@/stores/languageStore";
 
 export const LanguageSwitcher = () => {
   const t = useTranslations("language");
-  const { locale, setLocale } = useLanguageStore();
+  const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
+  const { user } = useAuthStore();
+
+  const handleLocaleChange = async (newLocale: Locale) => {
+    setLocale(newLocale);
+    // Sync to profile if user is logged in
+    if (user) {
+      await syncLocaleToProfile(user.id, newLocale);
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -27,7 +37,7 @@ export const LanguageSwitcher = () => {
         {locales.map((loc) => (
           <DropdownMenuItem
             key={loc}
-            onClick={() => setLocale(loc)}
+            onClick={() => handleLocaleChange(loc)}
             className={locale === loc ? "bg-accent" : ""}
           >
             {localeNames[loc as Locale]}

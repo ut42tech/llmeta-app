@@ -28,7 +28,7 @@ export default function SettingsPage() {
   const t = useTranslations("settingsPage");
   const tLanguage = useTranslations("language");
   const { user, profile, updateProfile, signOut } = useAuth();
-  const { locale, setLocale } = useLanguageStore();
+  const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
 
   const [displayName, setDisplayName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -145,7 +145,13 @@ export default function SettingsPage() {
               <Label htmlFor="language">{tLanguage("selectLanguage")}</Label>
               <Select
                 value={locale}
-                onValueChange={(value) => setLocale(value as Locale)}
+                onValueChange={(value) => {
+                  const newLocale = value as Locale;
+                  setLocale(newLocale);
+                  if (user) {
+                    syncLocaleToProfile(user.id, newLocale);
+                  }
+                }}
               >
                 <SelectTrigger id="language" className="w-full max-w-xs">
                   <SelectValue />
