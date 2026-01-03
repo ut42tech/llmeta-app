@@ -33,6 +33,7 @@ Each user is paired with a personal AI agent that facilitates communication betw
 | **3D/VR** | Three.js, React Three Fiber, @react-three/viverse, @react-three/xr |
 | **Real-time** | LiveKit, Deepgram |
 | **AI** | Vercel AI SDK, OpenAI |
+| **Auth** | Supabase Auth (@supabase/ssr) |
 | **UI** | shadcn/ui, Tailwind CSS, Motion, Lucide Icons |
 | **State** | Zustand |
 | **Testing** | Vitest, Testing Library |
@@ -64,8 +65,8 @@ cp .env.example .env.local
 ```
 
 | Variable | Description |
-|----------|-------------|
-| `LIVEKIT_API_KEY` | LiveKit API key |
+|----------|-------------|| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (anon) key || `LIVEKIT_API_KEY` | LiveKit API key |
 | `LIVEKIT_API_SECRET` | LiveKit API secret |
 | `LIVEKIT_URL` | LiveKit WebSocket URL |
 | `LIVEKIT_DEFAULT_ROOM` | Default room name |

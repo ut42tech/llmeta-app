@@ -23,8 +23,6 @@ describe("useAuthStore", () => {
       const state = useAuthStore.getState();
       expect(state.user).toBeNull();
       expect(state.profile).toBeNull();
-      expect(state.isLoading).toBe(true);
-      expect(state.isInitialized).toBe(false);
     });
   });
 
@@ -82,32 +80,6 @@ describe("useAuthStore", () => {
     });
   });
 
-  describe("setIsLoading", () => {
-    it("sets isLoading to true", () => {
-      useAuthStore.getState().setIsLoading(false);
-      useAuthStore.getState().setIsLoading(true);
-
-      const state = useAuthStore.getState();
-      expect(state.isLoading).toBe(true);
-    });
-
-    it("sets isLoading to false", () => {
-      useAuthStore.getState().setIsLoading(false);
-
-      const state = useAuthStore.getState();
-      expect(state.isLoading).toBe(false);
-    });
-  });
-
-  describe("setIsInitialized", () => {
-    it("sets isInitialized correctly", () => {
-      useAuthStore.getState().setIsInitialized(true);
-
-      const state = useAuthStore.getState();
-      expect(state.isInitialized).toBe(true);
-    });
-  });
-
   describe("reset", () => {
     it("resets all state to initial values", () => {
       const mockUser = createMockUser();
@@ -122,16 +94,12 @@ describe("useAuthStore", () => {
 
       useAuthStore.getState().setUser(mockUser);
       useAuthStore.getState().setProfile(mockProfile);
-      useAuthStore.getState().setIsLoading(false);
-      useAuthStore.getState().setIsInitialized(true);
 
       useAuthStore.getState().reset();
 
       const state = useAuthStore.getState();
       expect(state.user).toBeNull();
       expect(state.profile).toBeNull();
-      expect(state.isLoading).toBe(true);
-      expect(state.isInitialized).toBe(false);
     });
   });
 

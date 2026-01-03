@@ -13,26 +13,11 @@ export function useAuth() {
   const router = useRouter();
   const supabase = createClient();
 
-  const {
-    user,
-    profile,
-    isLoading,
-    isInitialized,
-    setUser,
-    setProfile,
-    setIsLoading,
-    setIsInitialized,
-    reset,
-  } = useAuthStore(
+  const { user, profile, setProfile, reset } = useAuthStore(
     useShallow((state) => ({
       user: state.user,
       profile: state.profile,
-      isLoading: state.isLoading,
-      isInitialized: state.isInitialized,
-      setUser: state.setUser,
       setProfile: state.setProfile,
-      setIsLoading: state.setIsLoading,
-      setIsInitialized: state.setIsInitialized,
       reset: state.reset,
     })),
   );
@@ -81,72 +66,37 @@ export function useAuth() {
   );
 
   const signOut = useCallback(async () => {
-    await supabase.auth.signOut();
+    try {
+      await supabase.auth.signOut();
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
     reset();
     router.push("/login");
     router.refresh();
   }, [supabase, reset, router]);
 
-  const initialize = useCallback(async () => {
-    if (isInitialized) return;
-
-    setIsLoading(true);
-
-    try {
-      const {
-        data: { user: currentUser },
-      } = await supabase.auth.getUser();
-
-      if (currentUser) {
-        setUser(currentUser);
-        const userProfile = await fetchProfile(currentUser.id);
-        if (userProfile) {
-          setProfile(userProfile);
-        }
-      }
-    } catch (error) {
-      console.error("Error initializing auth:", error);
-    } finally {
-      setIsLoading(false);
-      setIsInitialized(true);
-    }
-  }, [
-    isInitialized,
-    supabase,
-    fetchProfile,
-    setUser,
-    setProfile,
-    setIsLoading,
-    setIsInitialized,
-  ]);
-
+  // Listen for auth state changes (sign out, token refresh)
   useEffect(() => {
-    initialize();
-
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      if (event === "SIGNED_IN" && session?.user) {
-        setUser(session.user);
-        const userProfile = await fetchProfile(session.user.id);
-        if (userProfile) {
-          setProfile(userProfile);
-        }
-      } else if (event === "SIGNED_OUT") {
-        reset();
+    } = supabase.auth.onAuthStateChange((event, session) => {
+      const store = useAuthStore.getState();
+
+      if (event === "SIGNED_OUT") {
+        store.reset();
+      } else if (event === "TOKEN_REFRESHED" && session?.user) {
+        store.setUser(session.user);
       }
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
-  }, [initialize, supabase, fetchProfile, setUser, setProfile, reset]);
+    return () => subscription.unsubscribe();
+  }, [supabase]);
 
   return {
     user,
     profile,
-    isLoading,
-    isAuthenticated: !!user,
+    isAuthenticated: !!user && !!profile,
     updateProfile,
     signOut,
     refetchProfile: user ? () => fetchProfile(user.id) : undefined,

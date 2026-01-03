@@ -73,7 +73,7 @@ export default function SignupPage() {
 
       setSuccess(true);
     } catch {
-      setError("An unexpected error occurred");
+      setError(t("errors.unexpectedError"));
     } finally {
       setIsLoading(false);
     }

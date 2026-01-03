@@ -190,6 +190,11 @@
     "playersOnline": "{count}人のプレイヤーがオンライン（あなたを含む）"
   },
   "auth": {
+    "errors": {
+      "profileNotFound": "アカウントの設定に問題があります。再度サインアップしてください。",
+      "authCallbackError": "認証に失敗しました。もう一度お試しください。",
+      "unexpectedError": "予期しないエラーが発生しました"
+    },
     "login": {
       "title": "おかえりなさい",
       "description": "アカウントにサインインして続行",

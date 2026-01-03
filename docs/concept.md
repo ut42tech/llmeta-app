@@ -102,15 +102,26 @@ LLMeta is built on a modern, robust technology stack:
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
+| **Framework** | Next.js | Modern React application with server-side rendering |
+| **Authentication** | Supabase Auth | Secure cookie-based session management |
 | **3D Rendering** | React Three Fiber, Three.js | Immersive virtual environments |
 | **Avatar System** | @react-three/viverse, VRM | Expressive 3D character representation |
 | **Voice Communication** | LiveKit | Real-time audio transmission |
 | **Speech Recognition** | Deepgram | Accurate speech-to-text transcription |
 | **AI Intelligence** | Vercel AI SDK, OpenAI | Intelligent agent responses |
 | **State Management** | Zustand | Reactive, efficient application state |
-| **Framework** | Next.js | Modern React application foundation |
+
+### Authentication Architecture
+
+LLMeta uses a Server Component-first authentication pattern:
+
+1. **Server-side validation** — Dashboard layout (Server Component) validates sessions via Supabase cookies
+2. **Middleware token refresh** — Middleware refreshes auth tokens on every request
+3. **Client hydration** — AuthProvider passes server-fetched user data to client components
 
 This architecture ensures:
+- **Instant page loads** — No client-side loading states for auth
+- **Secure sessions** — Cookie-based authentication with HTTP-only tokens
 - **Low-latency communication** — Real-time voice and text
 - **Scalable AI integration** — Flexible model selection and API management
 - **Smooth visual experience** — Optimized 3D rendering performance

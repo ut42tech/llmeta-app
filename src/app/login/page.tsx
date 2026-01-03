@@ -2,9 +2,9 @@
 
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BackgroundCanvas } from "@/components/BackgroundCanvas";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Button } from "@/components/ui/button";
@@ -21,12 +21,23 @@ import { createClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const t = useTranslations("auth");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Check for error in URL params (e.g., from middleware redirect)
+  useEffect(() => {
+    const urlError = searchParams.get("error");
+    if (urlError === "profile_not_found") {
+      setError(t("errors.profileNotFound"));
+    } else if (urlError === "auth_callback_error") {
+      setError(t("errors.authCallbackError"));
+    }
+  }, [searchParams, t]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,7 +59,7 @@ export default function LoginPage() {
       router.push("/");
       router.refresh();
     } catch {
-      setError("An unexpected error occurred");
+      setError(t("errors.unexpectedError"));
     } finally {
       setIsLoading(false);
     }

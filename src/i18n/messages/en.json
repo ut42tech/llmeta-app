@@ -190,6 +190,11 @@
     "playersOnline": "{count} players online (including you)"
   },
   "auth": {
+    "errors": {
+      "profileNotFound": "There is an issue with your account. Please sign up again.",
+      "authCallbackError": "Authentication failed. Please try again.",
+      "unexpectedError": "An unexpected error occurred"
+    },
     "login": {
       "title": "Welcome Back",
       "description": "Sign in to your account to continue",

@@ -1,44 +1,46 @@
-"use client";
+import { redirect } from "next/navigation";
+import { DashboardContent } from "@/components/layout/DashboardContent";
+import { createClient } from "@/lib/supabase/server";
 
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { AppSidebar } from "@/components/layout/AppSidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { useAuth } from "@/hooks/useAuth";
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const router = useRouter();
-  const { isAuthenticated, isLoading } = useAuth();
+  const supabase = await createClient();
 
-  useEffect(() => {
-    if (!isLoading && !isAuthenticated) {
-      router.push("/login");
-    }
-  }, [isLoading, isAuthenticated, router]);
+  // Server-side authentication check
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="size-8 animate-spin text-muted-foreground" />
-      </div>
-    );
+  if (userError || !user) {
+    redirect("/login");
   }
 
-  if (!isAuthenticated) {
-    return null;
+  // Check for anonymous users (should not be allowed)
+  if (user.is_anonymous) {
+    await supabase.auth.signOut();
+    redirect("/login?error=anonymous_not_allowed");
+  }
+
+  // Fetch user profile
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .single();
+
+  if (profileError || !profile) {
+    // User exists but no profile - sign out and redirect
+    await supabase.auth.signOut();
+    redirect("/login?error=profile_not_found");
   }
 
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <main className="flex-1">{children}</main>
-      </SidebarInset>
-    </SidebarProvider>
+    <DashboardContent user={user} profile={profile}>
+      {children}
+    </DashboardContent>
   );
 }

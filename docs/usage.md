@@ -23,7 +23,7 @@ Navigate to the application URL in your browser. You'll be greeted by the landin
 
 ### 1. Authentication
 
-LLMeta requires an account to access the virtual world. This ensures your profile and preferences are saved.
+LLMeta uses secure server-side authentication powered by Supabase. Your session is managed via HTTP-only cookies, ensuring security and instant page loads.
 
 #### Creating an Account
 
@@ -40,6 +40,9 @@ LLMeta requires an account to access the virtual world. This ensures your profil
 2. Enter your registered **Email** and **Password**
 3. Click **"Sign In"**
 4. You'll be redirected to the Dashboard
+
+> [!NOTE]
+> Authentication is validated server-side. If your session expires, you'll be automatically redirected to the login page.
 
 #### Logging Out
 
