@@ -56,7 +56,7 @@ export function AppSidebar() {
                   <Sparkles className="size-4" />
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-semibold">LLMeta</span>
+                  <span className="font-semibold">Project LLMeta</span>
                   <span className="text-xs text-muted-foreground">
                     AI Metaverse
                   </span>
