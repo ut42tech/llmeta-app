@@ -5,6 +5,7 @@ const MAX_CHAT_MESSAGES = 200;
 
 type AIChatState = {
   isOpen: boolean;
+  conversationId: string | null;
 };
 
 type ChatState = {
@@ -18,6 +19,7 @@ type ChatActions = {
   toggleAIChat: () => void;
   openAIChat: () => void;
   closeAIChat: () => void;
+  setAIConversationId: (id: string | null) => void;
   reset: () => void;
 };
 
@@ -27,6 +29,7 @@ const initialState: ChatState = {
   messages: [],
   aiChat: {
     isOpen: false,
+    conversationId: null,
   },
 };
 
@@ -68,6 +71,11 @@ export const useChatStore = create<ChatStore>((set) => ({
   closeAIChat: () =>
     set((state) => ({
       aiChat: { ...state.aiChat, isOpen: false },
+    })),
+
+  setAIConversationId: (id) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, conversationId: id },
     })),
 
   reset: () => set(initialState),

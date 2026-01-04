@@ -9,7 +9,7 @@ import { createMoveData } from "@/utils/player";
 type LocalPlayerState = {
   sessionId: string;
   username: string;
-  roomName: string;
+  instanceId: string;
   currentAvatar?: ViverseAvatar;
   avatarList?: ViverseAvatar[];
   position: Vector3;
@@ -25,7 +25,7 @@ type LocalPlayerState = {
 type LocalPlayerActions = {
   setSessionId: (sessionId: string) => void;
   setUsername: (username: string) => void;
-  setRoomName: (roomName: string) => void;
+  setInstanceId: (instanceId: string) => void;
   setCurrentAvatar: (avatar: ViverseAvatar) => void;
   setAvatarList: (avatarList: ViverseAvatar[]) => void;
   setPosition: (position: Vector3) => void;
@@ -67,7 +67,7 @@ const normalizeRotation = (rot: Euler): Euler =>
 const createInitialState = (): LocalPlayerState => ({
   sessionId: "",
   username: "Anonymous",
-  roomName: LIVEKIT_CONFIG.defaultRoom,
+  instanceId: LIVEKIT_CONFIG.defaultInstanceId,
   position: new Vector3(),
   rotation: new Euler(),
   isRunning: false,
@@ -83,7 +83,7 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
 
   setSessionId: (sessionId) => set({ sessionId }),
   setUsername: (username) => set({ username }),
-  setRoomName: (roomName) => set({ roomName }),
+  setInstanceId: (instanceId) => set({ instanceId }),
   setCurrentAvatar: (currentAvatar) => set({ currentAvatar }),
   setAvatarList: (avatarList) => set({ avatarList }),
 

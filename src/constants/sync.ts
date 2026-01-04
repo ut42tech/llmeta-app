@@ -4,7 +4,8 @@
 
 export const LIVEKIT_CONFIG = {
   tokenEndpoint: "/api/livekit/token",
-  defaultRoom: process.env.LIVEKIT_ROOM || "playground",
+  /** Default instance ID used when no instance is specified */
+  defaultInstanceId: process.env.LIVEKIT_ROOM || "playground",
   wsUrl: process.env.LIVEKIT_URL || "",
 };
 

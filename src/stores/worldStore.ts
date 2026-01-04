@@ -24,18 +24,14 @@ type ConnectionState = {
   error?: string;
 };
 
-type RoomInfo = {
-  roomName?: string;
-  roomSid?: string;
-};
-
 type WorldState = {
+  instanceId: string | null;
   contentItems: WorldContentItem[];
   connection: ConnectionState;
-  room: RoomInfo;
 };
 
 type WorldActions = {
+  setInstanceId: (id: string | null) => void;
   addContentItem: (item: Omit<WorldContentItem, "createdAt">) => void;
   removeContentItem: (id: string) => void;
   setConnecting: () => void;
@@ -43,8 +39,6 @@ type WorldActions = {
   setFailed: (error?: string) => void;
   setDisconnected: () => void;
   resetConnection: () => void;
-  setRoomInfo: (info: RoomInfo) => void;
-  clearRoomInfo: () => void;
 };
 
 type WorldStore = WorldState & WorldActions;
@@ -54,15 +48,12 @@ const INITIAL_CONNECTION: ConnectionState = {
   error: undefined,
 };
 
-const INITIAL_ROOM: RoomInfo = {
-  roomName: undefined,
-  roomSid: undefined,
-};
-
 export const useWorldStore = create<WorldStore>((set) => ({
+  instanceId: null,
   contentItems: [],
   connection: { ...INITIAL_CONNECTION },
-  room: { ...INITIAL_ROOM },
+
+  setInstanceId: (id) => set({ instanceId: id }),
 
   addContentItem: (item) => {
     set(() => ({
@@ -90,12 +81,6 @@ export const useWorldStore = create<WorldStore>((set) => ({
       connection: { ...state.connection, status: "disconnected" },
     })),
 
-  resetConnection: () => set({ connection: { ...INITIAL_CONNECTION } }),
-
-  setRoomInfo: (info) =>
-    set((state) => ({
-      room: { ...state.room, ...info },
-    })),
-
-  clearRoomInfo: () => set({ room: { ...INITIAL_ROOM } }),
+  resetConnection: () =>
+    set({ instanceId: null, connection: { ...INITIAL_CONNECTION } }),
 }));

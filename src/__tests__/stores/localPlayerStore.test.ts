@@ -24,7 +24,7 @@ describe("useLocalPlayerStore", () => {
       expect(state.isFPV).toBe(false);
       expect(state.pendingTeleport).toBeNull();
       expect(state.hasJoinedWorld).toBe(false);
-      expect(state.roomName).toBe(LIVEKIT_CONFIG.defaultRoom);
+      expect(state.instanceId).toBe(LIVEKIT_CONFIG.defaultInstanceId);
     });
   });
 
@@ -49,9 +49,11 @@ describe("useLocalPlayerStore", () => {
       expect(useLocalPlayerStore.getState().animationState).toBe("forward");
     });
 
-    it("sets roomName", () => {
-      useLocalPlayerStore.getState().setRoomName("test-room");
-      expect(useLocalPlayerStore.getState().roomName).toBe("test-room");
+    it("sets instanceId", () => {
+      useLocalPlayerStore.getState().setInstanceId("test-instance-id");
+      expect(useLocalPlayerStore.getState().instanceId).toBe(
+        "test-instance-id",
+      );
     });
   });
 

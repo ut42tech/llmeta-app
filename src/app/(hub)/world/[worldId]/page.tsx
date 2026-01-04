@@ -38,7 +38,7 @@ export default function WorldDetailPage() {
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newInstanceName, setNewInstanceName] = useState("");
-  const setRoomName = useLocalPlayerStore((state) => state.setRoomName);
+  const setInstanceId = useLocalPlayerStore((state) => state.setInstanceId);
 
   const [world, setWorld] = useState<World | null>(null);
   const [instances, setInstances] = useState<Instance[]>([]);
@@ -159,7 +159,7 @@ export default function WorldDetailPage() {
       return;
     }
 
-    setRoomName(instance.id);
+    setInstanceId(instance.id);
     setIsCreateDialogOpen(false);
     router.push(`/instance/${instance.id}`);
   };

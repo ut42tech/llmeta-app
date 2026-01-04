@@ -23,6 +23,7 @@ describe("useChatStore", () => {
       const state = useChatStore.getState();
       expect(state.messages).toEqual([]);
       expect(state.aiChat.isOpen).toBe(false);
+      expect(state.aiChat.conversationId).toBe(null);
     });
   });
 
@@ -105,20 +106,33 @@ describe("useChatStore", () => {
       closeAIChat();
       expect(useChatStore.getState().aiChat.isOpen).toBe(false);
     });
+
+    it("sets AI conversation ID", () => {
+      const { setAIConversationId } = useChatStore.getState();
+
+      setAIConversationId("conv-123");
+      expect(useChatStore.getState().aiChat.conversationId).toBe("conv-123");
+
+      setAIConversationId(null);
+      expect(useChatStore.getState().aiChat.conversationId).toBe(null);
+    });
   });
 
   describe("reset", () => {
     it("resets store to initial state", () => {
-      const { addMessage, openAIChat, reset } = useChatStore.getState();
+      const { addMessage, openAIChat, setAIConversationId, reset } =
+        useChatStore.getState();
 
       addMessage(createMessage());
       openAIChat();
+      setAIConversationId("conv-123");
 
       reset();
 
       const state = useChatStore.getState();
       expect(state.messages).toEqual([]);
       expect(state.aiChat.isOpen).toBe(false);
+      expect(state.aiChat.conversationId).toBe(null);
     });
   });
 });

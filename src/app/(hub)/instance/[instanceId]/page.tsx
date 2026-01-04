@@ -53,7 +53,7 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
     setUsername,
     setCurrentAvatar,
     setHasJoinedWorld,
-    setRoomName,
+    setInstanceId,
   } = useLocalPlayerStore();
 
   const [inputUsername, setInputUsername] = useState("");
@@ -63,10 +63,10 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
   const [isReadyToEnter, setIsReadyToEnter] = useState(false);
   const [isProfileLoaded, setIsProfileLoaded] = useState(false);
 
-  // Set room name in store on mount (using instance ID for uniqueness)
+  // Set instance ID in store on mount
   useEffect(() => {
-    setRoomName(instanceData.id);
-  }, [instanceData.id, setRoomName]);
+    setInstanceId(instanceData.id);
+  }, [instanceData.id, setInstanceId]);
 
   // Load profile data when available
   useEffect(() => {
@@ -317,7 +317,7 @@ function InstancePage() {
   }
 
   return (
-    <LiveKitSyncProvider roomName={instance.id}>
+    <LiveKitSyncProvider instanceId={instance.id}>
       <InstanceContent instanceData={instance} />
     </LiveKitSyncProvider>
   );

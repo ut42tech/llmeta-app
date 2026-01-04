@@ -5,7 +5,7 @@ import { DefaultChatTransport } from "ai";
 import { BotMessageSquare, ImageIcon, Send, WandSparkles } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Conversation,
   ConversationContent,
@@ -38,6 +38,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAIChatHistory } from "@/hooks/useAIChatHistory";
 import { useTextChat } from "@/hooks/useTextChat";
 import { useChatStore } from "@/stores/chatStore";
 
@@ -62,8 +63,11 @@ export const AIChatWindow = () => {
   const chatMessagesRef = useRef(chatMessages);
   chatMessagesRef.current = chatMessages;
 
-  const getChatHistoryForContext = () => {
-    return chatMessagesRef.current.map((msg) => ({
+  const { conversationId, initialMessages, saveMessages, recordMessageTime } =
+    useAIChatHistory();
+
+  const getChatHistoryForContext = () =>
+    chatMessagesRef.current.map((msg) => ({
       id: msg.id,
       senderId: msg.senderId,
       username: msg.username,
@@ -71,16 +75,29 @@ export const AIChatWindow = () => {
       isOwn: msg.isOwn,
       sentAt: msg.sentAt,
     }));
-  };
 
   const { messages, status, sendMessage } = useChat({
+    id: conversationId ?? undefined,
+    messages: initialMessages,
     transport: new DefaultChatTransport({
       api: "/api/ai/chat",
-      body: () => ({
-        chatHistory: getChatHistoryForContext(),
-      }),
+      body: () => ({ chatHistory: getChatHistoryForContext() }),
     }),
+    onFinish: ({ messages: allMessages }) => {
+      saveMessages(allMessages);
+    },
   });
+
+  // Track message IDs to detect new messages and record timestamps
+  const seenMessageIdsRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    for (const msg of messages) {
+      if (!seenMessageIdsRef.current.has(msg.id)) {
+        seenMessageIdsRef.current.add(msg.id);
+        recordMessageTime(msg.id);
+      }
+    }
+  }, [messages, recordMessageTime]);
 
   const handleSuggestionClick = (suggestion: string) => {
     sendMessage({ text: suggestion });

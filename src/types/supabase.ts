@@ -61,7 +61,6 @@ export type Database = {
       };
       ai_messages: {
         Row: {
-          attachments: Json;
           conversation_id: string;
           created_at: string;
           id: string;
@@ -69,7 +68,6 @@ export type Database = {
           role: string;
         };
         Insert: {
-          attachments?: Json;
           conversation_id: string;
           created_at?: string;
           id?: string;
@@ -77,7 +75,6 @@ export type Database = {
           role: string;
         };
         Update: {
-          attachments?: Json;
           conversation_id?: string;
           created_at?: string;
           id?: string;
