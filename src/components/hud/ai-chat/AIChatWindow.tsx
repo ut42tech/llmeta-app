@@ -98,7 +98,7 @@ export const AIChatWindow = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="flex h-[600px] max-w-2xl flex-col gap-0 p-0">
+      <DialogContent className="flex h-150 max-w-2xl flex-col gap-0 p-0">
         <DialogHeader className="flex-none border-b px-4 py-3">
           <DialogTitle className="flex items-center gap-2 font-medium text-sm">
             <BotMessageSquare className="size-4" />
