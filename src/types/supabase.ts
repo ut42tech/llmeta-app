@@ -55,6 +55,77 @@ export type Database = {
           },
         ];
       };
+      message_images: {
+        Row: {
+          id: string;
+          message_id: string;
+          prompt: string | null;
+          url: string;
+        };
+        Insert: {
+          id?: string;
+          message_id: string;
+          prompt?: string | null;
+          url: string;
+        };
+        Update: {
+          id?: string;
+          message_id?: string;
+          prompt?: string | null;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "message_images_message_id_fkey";
+            columns: ["message_id"];
+            isOneToOne: false;
+            referencedRelation: "messages";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      messages: {
+        Row: {
+          content: string | null;
+          id: string;
+          instance_id: string;
+          sender_id: string | null;
+          sent_at: string;
+          type: string;
+        };
+        Insert: {
+          content?: string | null;
+          id?: string;
+          instance_id: string;
+          sender_id?: string | null;
+          sent_at?: string;
+          type?: string;
+        };
+        Update: {
+          content?: string | null;
+          id?: string;
+          instance_id?: string;
+          sender_id?: string | null;
+          sent_at?: string;
+          type?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "messages_instance_id_fkey";
+            columns: ["instance_id"];
+            isOneToOne: false;
+            referencedRelation: "instances";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey";
+            columns: ["sender_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_id: number | null;
