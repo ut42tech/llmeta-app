@@ -5,7 +5,7 @@ import { DefaultChatTransport } from "ai";
 import { BotMessageSquare, ImageIcon, Send, WandSparkles } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Conversation,
   ConversationContent,
@@ -38,6 +38,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAIChatHistory } from "@/hooks/useAIChatHistory";
 import { useTextChat } from "@/hooks/useTextChat";
 import { useChatStore } from "@/stores/chatStore";
 
@@ -62,25 +63,48 @@ export const AIChatWindow = () => {
   const chatMessagesRef = useRef(chatMessages);
   chatMessagesRef.current = chatMessages;
 
-  const getChatHistoryForContext = () => {
-    return chatMessagesRef.current.map((msg) => ({
+  const { conversationId, initialMessages, recordMessageTime } =
+    useAIChatHistory();
+
+  const getChatHistoryForContext = () =>
+    chatMessagesRef.current.map((msg) => ({
       id: msg.id,
-      sessionId: msg.sessionId,
+      senderId: msg.senderId,
       username: msg.username,
       content: msg.content,
-      direction: msg.direction,
+      isOwn: msg.isOwn,
       sentAt: msg.sentAt,
     }));
-  };
 
   const { messages, status, sendMessage } = useChat({
+    id: conversationId ?? undefined,
+    messages: initialMessages,
     transport: new DefaultChatTransport({
       api: "/api/ai/chat",
-      body: () => ({
-        chatHistory: getChatHistoryForContext(),
-      }),
+      // Send only the last message to reduce bandwidth
+      prepareSendMessagesRequest: ({ messages }) => {
+        const lastMessage = messages[messages.length - 1];
+        return {
+          body: {
+            message: lastMessage,
+            conversationId,
+            chatHistory: getChatHistoryForContext(),
+          },
+        };
+      },
     }),
   });
+
+  // Track message IDs to detect new messages and record timestamps
+  const seenMessageIdsRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    for (const msg of messages) {
+      if (!seenMessageIdsRef.current.has(msg.id)) {
+        seenMessageIdsRef.current.add(msg.id);
+        recordMessageTime(msg.id);
+      }
+    }
+  }, [messages, recordMessageTime]);
 
   const handleSuggestionClick = (suggestion: string) => {
     sendMessage({ text: suggestion });
@@ -98,7 +122,7 @@ export const AIChatWindow = () => {
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="flex h-[600px] max-w-2xl flex-col gap-0 p-0">
+      <DialogContent className="flex h-150 max-w-2xl flex-col gap-0 p-0">
         <DialogHeader className="flex-none border-b px-4 py-3">
           <DialogTitle className="flex items-center gap-2 font-medium text-sm">
             <BotMessageSquare className="size-4" />

@@ -49,18 +49,23 @@
     "instances": "インスタンス",
     "createInstance": "インスタンスを作成",
     "createInstanceTitle": "新規インスタンスを作成",
-    "createInstanceDescription": "このワールドの新しいルームインスタンスを作成します",
-    "roomName": "ルーム名",
-    "roomNamePlaceholder": "ルーム名を入力（任意）",
+    "createInstanceDescription": "このワールドの新しいインスタンスを作成します",
+    "instanceName": "インスタンス名",
+    "instanceNamePlaceholder": "インスタンス名を入力（任意）",
     "cancel": "キャンセル",
     "create": "作成",
     "noInstances": "アクティブなインスタンスがありません。作成して始めましょう！"
   },
   "instance": {
     "back": "戻る",
-    "room": "ルーム",
+    "instance": "インスタンス",
     "join": "参加",
-    "hostedBy": "{name} がホスト"
+    "hostedBy": "{name} がホスト",
+    "notFound": {
+      "title": "インスタンスが見つかりません",
+      "description": "このインスタンスは存在しないか、削除された可能性があります。",
+      "backToHome": "ホームに戻る"
+    }
   },
   "landing": {
     "tagline": "PROJECT LLMeta",
@@ -80,8 +85,8 @@
     "warningText": "このアプリは外部サービスに情報を送信します。個人情報などの機密情報は送信しないでください。",
     "usernameLabel": "ユーザーネーム",
     "usernamePlaceholder": "ユーザーネームを入力",
-    "roomNameLabel": "ルーム名",
-    "roomNamePlaceholder": "ルーム名を入力",
+    "instanceNameLabel": "インスタンス名",
+    "instanceNamePlaceholder": "インスタンス名を入力",
     "avatarLabel": "アバターを選択",
     "continueButton": "続ける"
   },
@@ -165,8 +170,7 @@
     "usernamePlaceholder": "名前を入力",
     "avatar": "アバター",
     "sessionInfo": "セッション情報",
-    "roomName": "ルーム名",
-    "roomSid": "ルームSID",
+    "instanceId": "インスタンスID",
     "sessionId": "セッションID"
   },
   "language": {

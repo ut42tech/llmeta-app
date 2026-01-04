@@ -1,16 +1,25 @@
 import { openai } from "@ai-sdk/openai";
 import {
   convertToModelMessages,
+  createIdGenerator,
   gateway,
-  experimental_generateImage as generateImage,
+  generateImage,
   streamText,
   tool,
   type UIMessage,
 } from "ai";
 import { z } from "zod";
+import { createClient } from "@/lib/supabase/server";
+import type { Json } from "@/types/supabase";
 import { uploadImageToBlob } from "@/utils/blob";
 
 export const maxDuration = 120;
+
+// =============================================================================
+// Types
+// =============================================================================
+
+type MessageRole = "user" | "assistant" | "system";
 
 type ChatHistoryMessage = {
   id: string;
@@ -21,27 +30,112 @@ type ChatHistoryMessage = {
   sentAt: number;
 };
 
-function formatChatHistory(chatHistory: ChatHistoryMessage[]): string {
-  if (!chatHistory || chatHistory.length === 0) {
-    return "";
+type RequestBody = {
+  message: UIMessage;
+  conversationId?: string;
+  chatHistory?: ChatHistoryMessage[];
+};
+
+// =============================================================================
+// Database Operations
+// =============================================================================
+
+/**
+ * Serialize UIMessage part for database storage.
+ * Filters out non-essential parts like step-start.
+ */
+function serializePart(part: UIMessage["parts"][number]): Json | null {
+  switch (part.type) {
+    case "text":
+      return { type: "text", text: part.text };
+    case "step-start":
+      return null;
+    default:
+      if (part.type.startsWith("tool-")) {
+        const { type, toolCallId, state, input, output } = part as Record<
+          string,
+          unknown
+        >;
+        return { type, toolCallId, state, input, output } as Json;
+      }
+      return null;
   }
-
-  const formattedMessages = chatHistory.map((msg) => {
-    const time = new Date(msg.sentAt).toLocaleTimeString(undefined, {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-    const sender = msg.username || "Anonymous";
-    const directionLabel =
-      msg.direction === "outgoing" ? "(me)" : "(other user)";
-    return `[${time}] ${sender} ${directionLabel}: ${msg.content}`;
-  });
-
-  return formattedMessages.join("\n");
 }
 
-function buildSystemPrompt(chatHistory?: ChatHistoryMessage[]): string {
-  const basePrompt = `You are an AI assistant that helps users with their questions and requests. Please provide clear and helpful responses.
+/** Load all messages for a conversation from database. */
+async function loadMessages(conversationId: string): Promise<UIMessage[]> {
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("ai_messages")
+    .select("id, role, parts")
+    .eq("conversation_id", conversationId)
+    .order("created_at", { ascending: true });
+
+  return (data ?? []).map((m) => ({
+    id: m.id,
+    role: m.role as UIMessage["role"],
+    parts: m.parts as UIMessage["parts"],
+  }));
+}
+
+/** Save a single user message immediately before streaming. */
+async function saveUserMessage(
+  conversationId: string,
+  message: UIMessage,
+): Promise<void> {
+  const supabase = await createClient();
+  const parts = message.parts.map(serializePart).filter(Boolean) as Json;
+
+  await supabase.from("ai_messages").upsert({
+    id: message.id,
+    conversation_id: conversationId,
+    role: message.role as MessageRole,
+    parts,
+    created_at: new Date().toISOString(),
+  });
+}
+
+/** Save all messages after stream completion. */
+async function saveAllMessages(
+  conversationId: string,
+  messages: UIMessage[],
+): Promise<void> {
+  const supabase = await createClient();
+
+  // Get existing IDs to avoid duplicates
+  const { data: existing } = await supabase
+    .from("ai_messages")
+    .select("id")
+    .eq("conversation_id", conversationId);
+
+  const existingIds = new Set(existing?.map((m) => m.id) ?? []);
+  const now = new Date().toISOString();
+
+  const newMessages = messages
+    .filter((m) => !existingIds.has(m.id))
+    .map((m) => ({
+      id: m.id,
+      conversation_id: conversationId,
+      role: m.role as MessageRole,
+      parts: m.parts.map(serializePart).filter(Boolean) as Json,
+      created_at: now,
+    }));
+
+  if (!newMessages.length) return;
+
+  await supabase.from("ai_messages").insert(newMessages);
+  await supabase
+    .from("ai_conversations")
+    .update({ updated_at: now })
+    .eq("id", conversationId);
+}
+
+// =============================================================================
+// System Prompt Builder
+// =============================================================================
+
+const BASE_SYSTEM_PROMPT = `You are an AI assistant that helps users with their questions and requests. Please provide clear and helpful responses.
 
 You have access to an image generation tool. Use it when:
 - The user explicitly asks to generate, create, or draw an image
@@ -54,13 +148,24 @@ When generating images, create prompts that are:
 - Based on the conversation context when relevant
 - Safe and appropriate`;
 
-  if (!chatHistory || chatHistory.length === 0) {
-    return basePrompt;
-  }
+function formatChatHistory(history: ChatHistoryMessage[]): string {
+  return history
+    .map((msg) => {
+      const time = new Date(msg.sentAt).toLocaleTimeString(undefined, {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      const sender = msg.username || "Anonymous";
+      const label = msg.direction === "outgoing" ? "(me)" : "(other user)";
+      return `[${time}] ${sender} ${label}: ${msg.content}`;
+    })
+    .join("\n");
+}
 
-  const formattedHistory = formatChatHistory(chatHistory);
+function buildSystemPrompt(chatHistory?: ChatHistoryMessage[]): string {
+  if (!chatHistory?.length) return BASE_SYSTEM_PROMPT;
 
-  return `${basePrompt}
+  return `${BASE_SYSTEM_PROMPT}
 
 ## User Chat History (Context)
 Below is the text chat history between users. If the user asks about this chat content, please refer to this history to provide answers.
@@ -68,7 +173,7 @@ If asked to summarize or explain the conversation, please respond based on this 
 You can also generate images that visualize or relate to the conversation content when appropriate.
 
 ---
-${formattedHistory}
+${formatChatHistory(chatHistory)}
 ---
 
 When the user asks about the chat history:
@@ -79,15 +184,17 @@ When the user asks about the chat history:
 - When asked to visualize something from the chat, use the image generation tool with context-appropriate prompts`;
 }
 
+// =============================================================================
+// Tools
+// =============================================================================
+
 const imageGenerationTool = tool({
   description:
-    "Generate an image based on a text prompt. Use this when the user asks for an image or when visualizing something would enhance the response. Create detailed prompts that capture the essence of what should be visualized.",
+    "Generate an image based on a text prompt. Use this when the user asks for an image or when visualizing something would enhance the response.",
   inputSchema: z.object({
     prompt: z
       .string()
-      .describe(
-        "A detailed description of the image to generate. Be specific about style, composition, colors, and mood.",
-      ),
+      .describe("A detailed description of the image to generate."),
   }),
   execute: async ({ prompt }) => {
     const { image } = await generateImage({
@@ -97,29 +204,51 @@ const imageGenerationTool = tool({
     });
 
     const { url } = await uploadImageToBlob(image.base64, "image/png", prompt);
-
-    return {
-      imageUrl: url,
-      prompt,
-    };
+    return { imageUrl: url, prompt };
   },
 });
 
+// =============================================================================
+// Route Handler
+// =============================================================================
+
 export async function POST(req: Request) {
-  const {
-    messages,
-    chatHistory,
-  }: { messages: UIMessage[]; chatHistory?: ChatHistoryMessage[] } =
+  const { message, conversationId, chatHistory }: RequestBody =
     await req.json();
 
+  // Load previous messages and save user message (if conversation exists)
+  let allMessages: UIMessage[] = [message];
+
+  if (conversationId) {
+    const [previousMessages] = await Promise.all([
+      loadMessages(conversationId),
+      saveUserMessage(conversationId, message),
+    ]);
+    allMessages = [...previousMessages, message];
+  }
+
+  // Stream AI response
   const result = streamText({
     model: gateway("openai/gpt-4o-mini"),
-    messages: await convertToModelMessages(messages),
+    messages: await convertToModelMessages(allMessages),
     system: buildSystemPrompt(chatHistory),
-    tools: {
-      generateImage: imageGenerationTool,
-    },
+    tools: { generateImage: imageGenerationTool },
   });
 
-  return result.toUIMessageStreamResponse();
+  // Ensure stream completes even on client disconnect
+  result.consumeStream();
+
+  return result.toUIMessageStreamResponse({
+    originalMessages: allMessages,
+    generateMessageId: createIdGenerator({ prefix: "ai-msg", size: 16 }),
+    onFinish: async ({ messages: finalMessages }) => {
+      if (!conversationId) return;
+
+      try {
+        await saveAllMessages(conversationId, finalMessages);
+      } catch (error) {
+        console.error("[AI Chat] Failed to save messages:", error);
+      }
+    },
+  });
 }

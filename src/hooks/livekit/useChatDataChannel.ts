@@ -1,51 +1,51 @@
 import { nanoid } from "nanoid";
 import { useCallback } from "react";
-import { useShallow } from "zustand/react/shallow";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useTypedDataChannel } from "@/hooks/livekit/createTypedDataChannel";
+import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { ChatMessageImage, ChatMessagePacket } from "@/types/chat";
+import type {
+  ChatMessage,
+  ChatMessageImage,
+  ChatMessagePacket,
+} from "@/types/chat";
 
 /**
- * Hook for chat data channel (messages only, typing removed for simplicity)
+ * Hook for chat data channel.
+ * - LiveKit: Real-time broadcast
+ * - Supabase: Persistence (via API)
  */
-export function useChatDataChannel(identity: string) {
-  const { localSessionId, username } = useLocalPlayerStore(
-    useShallow((s) => ({ localSessionId: s.sessionId, username: s.username })),
-  );
-
-  const { addIncomingMessage, addOutgoingMessage, updateMessageStatus } =
-    useChatStore(
-      useShallow((s) => ({
-        addIncomingMessage: s.addIncomingMessage,
-        addOutgoingMessage: s.addOutgoingMessage,
-        updateMessageStatus: s.updateMessageStatus,
-      })),
-    );
-
-  const effectiveIdentity = localSessionId || identity;
+export function useChatDataChannel(instanceId: string, identity: string) {
+  const userId = useAuthStore((s) => s.user?.id);
+  const sessionId = useLocalPlayerStore((s) => s.sessionId);
+  const username = useLocalPlayerStore((s) => s.username);
+  const addMessage = useChatStore((s) => s.addMessage);
 
   const handleChatMessage = useCallback(
-    (data: ChatMessagePacket, senderId: string) => {
-      if (!data?.text && !data?.image) return;
+    (data: ChatMessagePacket) => {
+      if (!data?.content && !data?.image) return;
 
-      addIncomingMessage({
+      const message: ChatMessage = {
         id: data.id,
-        sessionId: senderId,
+        senderId: data.senderId,
+        sessionId: data.sessionId,
         username: data.username,
-        content: data.text,
-        sentAt: data.sentAt ?? Date.now(),
+        content: data.content,
+        sentAt: data.sentAt,
         image: data.image,
-      });
+        isOwn: data.senderId === userId,
+      };
+
+      addMessage(message);
     },
-    [addIncomingMessage],
+    [addMessage, userId],
   );
 
   const { publishAsync: publishChatMessage } =
     useTypedDataChannel<ChatMessagePacket>({
       topic: DATA_TOPICS.CHAT_MESSAGE,
-      identity: effectiveIdentity,
+      identity,
       onMessage: handleChatMessage,
     });
 
@@ -53,40 +53,52 @@ export function useChatDataChannel(identity: string) {
     async (content: string, image?: ChatMessageImage) => {
       const text = content.trim();
       if (!text && !image) return;
+      if (!userId) return;
 
       const messageId = nanoid();
-      const payload: ChatMessagePacket = {
+      const sentAt = new Date().toISOString();
+
+      // Create message object
+      const message: ChatMessage = {
         id: messageId,
-        text,
+        senderId: userId,
+        sessionId,
         username: username || undefined,
-        sentAt: Date.now(),
+        content: text,
+        sentAt,
+        image,
+        isOwn: true,
+      };
+
+      // Add to local store immediately (optimistic)
+      addMessage(message);
+
+      // Create LiveKit packet (includes sessionId for player matching)
+      const packet: ChatMessagePacket = {
+        id: messageId,
+        senderId: userId,
+        sessionId,
+        username: username || undefined,
+        content: text,
+        sentAt,
         image,
       };
 
-      addOutgoingMessage({
-        id: payload.id,
-        sessionId: effectiveIdentity,
-        username: payload.username,
-        content: payload.text,
-        sentAt: payload.sentAt,
-        image: payload.image,
-      });
-
+      // Broadcast via LiveKit and persist to Supabase in parallel
       try {
-        await publishChatMessage(payload, true);
-        updateMessageStatus(messageId, "sent");
+        await Promise.all([
+          publishChatMessage(packet, true),
+          fetch("/api/messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ instanceId, content: text, image }),
+          }),
+        ]);
       } catch (error) {
         console.warn("[Chat] Failed to send message", error);
-        updateMessageStatus(messageId, "failed");
       }
     },
-    [
-      addOutgoingMessage,
-      effectiveIdentity,
-      publishChatMessage,
-      updateMessageStatus,
-      username,
-    ],
+    [addMessage, instanceId, publishChatMessage, sessionId, userId, username],
   );
 
   return { sendChatMessage };

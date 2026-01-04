@@ -49,18 +49,23 @@
     "instances": "Instances",
     "createInstance": "Create Instance",
     "createInstanceTitle": "Create New Instance",
-    "createInstanceDescription": "Create a new room instance for this world",
-    "roomName": "Room Name",
-    "roomNamePlaceholder": "Enter room name (optional)",
+    "createInstanceDescription": "Create a new instance for this world",
+    "instanceName": "Instance Name",
+    "instanceNamePlaceholder": "Enter instance name (optional)",
     "cancel": "Cancel",
     "create": "Create",
     "noInstances": "No active instances. Create one to get started!"
   },
   "instance": {
     "back": "Back",
-    "room": "Room",
+    "instance": "Instance",
     "join": "Join",
-    "hostedBy": "Hosted by {name}"
+    "hostedBy": "Hosted by {name}",
+    "notFound": {
+      "title": "Instance Not Found",
+      "description": "This instance does not exist or may have been deleted.",
+      "backToHome": "Back to Home"
+    }
   },
   "landing": {
     "tagline": "PROJECT LLMeta",
@@ -80,8 +85,8 @@
     "warningText": "This app sends data to external services. Please do not share personal or sensitive information.",
     "usernameLabel": "Username",
     "usernamePlaceholder": "Enter your username",
-    "roomNameLabel": "Room Name",
-    "roomNamePlaceholder": "Enter room name",
+    "instanceNameLabel": "Instance Name",
+    "instanceNamePlaceholder": "Enter instance name",
     "avatarLabel": "Choose your avatar",
     "continueButton": "Continue"
   },
@@ -165,8 +170,7 @@
     "usernamePlaceholder": "Enter your name",
     "avatar": "Avatar",
     "sessionInfo": "Session Info",
-    "roomName": "Room Name",
-    "roomSid": "Room SID",
+    "instanceId": "Instance ID",
     "sessionId": "Session ID"
   },
   "language": {

@@ -16,6 +16,7 @@ import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
 import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
 import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
+import { useChatHistory } from "@/hooks/useChatHistory";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { ChatMessageImage } from "@/types/chat";
@@ -44,16 +45,16 @@ const defaultContextValue: LiveKitSyncContextValue = {
 export const LiveKitSyncContext =
   createContext<LiveKitSyncContextValue>(defaultContextValue);
 
-type ProviderProps = PropsWithChildren<{ roomName?: string }>;
+type ProviderProps = PropsWithChildren<{ instanceId?: string }>;
 
 export function LiveKitSyncProvider({
   children,
-  roomName: propRoomName,
+  instanceId: propInstanceId,
 }: ProviderProps) {
-  const storeRoomName = useLocalPlayerStore((state) => state.roomName);
-  const roomName = propRoomName ?? storeRoomName;
+  const storeInstanceId = useLocalPlayerStore((state) => state.instanceId);
+  const instanceId = propInstanceId ?? storeInstanceId;
   const setFailed = useWorldStore((state) => state.setFailed);
-  const { authState, identity } = useLiveKitAuth(roomName);
+  const { authState, identity } = useLiveKitAuth(instanceId);
 
   if (!authState.token || !authState.serverUrl) {
     return (
@@ -87,26 +88,27 @@ type BridgeProps = {
 const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const username = useLocalPlayerStore((state) => state.username);
   const currentAvatar = useLocalPlayerStore((state) => state.currentAvatar);
-  const setRoomInfo = useWorldStore((state) => state.setRoomInfo);
-  const clearRoomInfo = useWorldStore((state) => state.clearRoomInfo);
+  const instanceId = useLocalPlayerStore((state) => state.instanceId);
+  const setWorldInstanceId = useWorldStore((state) => state.setInstanceId);
 
   const roomInstance = useRoomContext();
   const { sessionId, connectionState } = useLiveKitConnection(identity);
   const { sendMove } = useMovementDataChannel(identity);
   const { setProfile } = useParticipantProfile();
-  const { sendChatMessage } = useChatDataChannel(identity);
+  const { sendChatMessage } = useChatDataChannel(instanceId, identity);
+
+  // Load chat history when connected
+  useChatHistory(
+    connectionState === LiveKitConnectionState.Connected ? instanceId : null,
+  );
 
   useEffect(() => {
-    if (connectionState !== LiveKitConnectionState.Connected) {
-      clearRoomInfo();
-      return;
+    if (connectionState === LiveKitConnectionState.Connected) {
+      setWorldInstanceId(instanceId);
+    } else {
+      setWorldInstanceId(null);
     }
-
-    setRoomInfo({ roomName: roomInstance.name });
-    roomInstance.getSid().then((sid) => {
-      setRoomInfo({ roomSid: sid });
-    });
-  }, [connectionState, roomInstance, setRoomInfo, clearRoomInfo]);
+  }, [connectionState, instanceId, setWorldInstanceId]);
 
   useEffect(() => {
     if (!sessionId || connectionState !== LiveKitConnectionState.Connected) {

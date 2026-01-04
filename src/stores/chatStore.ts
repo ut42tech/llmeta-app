@@ -1,51 +1,25 @@
 import { create } from "zustand";
-import type { ChatMessage, ChatMessageStatus } from "@/types/chat";
+import type { ChatMessage } from "@/types/chat";
 
 const MAX_CHAT_MESSAGES = 200;
 
-const appendMessage = (
-  messages: ChatMessage[],
-  message: ChatMessage,
-): ChatMessage[] => {
-  const existingIndex = messages.findIndex((msg) => msg.id === message.id);
-  if (existingIndex >= 0) {
-    const updated = [...messages];
-    updated[existingIndex] = { ...updated[existingIndex], ...message };
-    return updated;
-  }
-
-  const appended = [...messages, message];
-  return appended.length > MAX_CHAT_MESSAGES
-    ? appended.slice(-MAX_CHAT_MESSAGES)
-    : appended;
-};
-
 type AIChatState = {
   isOpen: boolean;
+  conversationId: string | null;
 };
 
 type ChatState = {
   messages: ChatMessage[];
-  isOpen: boolean;
   aiChat: AIChatState;
 };
 
 type ChatActions = {
-  addIncomingMessage: (
-    message: Omit<ChatMessage, "direction" | "status"> & {
-      status?: ChatMessageStatus;
-    },
-  ) => void;
-  addOutgoingMessage: (
-    message: Omit<ChatMessage, "direction" | "status"> & {
-      status?: ChatMessageStatus;
-    },
-  ) => void;
-  updateMessageStatus: (id: string, status: ChatMessageStatus) => void;
-  setOpen: (isOpen: boolean) => void;
+  setMessages: (messages: ChatMessage[]) => void;
+  addMessage: (message: ChatMessage) => void;
   toggleAIChat: () => void;
   openAIChat: () => void;
   closeAIChat: () => void;
+  setAIConversationId: (id: string | null) => void;
   reset: () => void;
 };
 
@@ -53,55 +27,36 @@ type ChatStore = ChatState & ChatActions;
 
 const initialState: ChatState = {
   messages: [],
-  isOpen: false,
   aiChat: {
     isOpen: false,
+    conversationId: null,
   },
 };
 
 /**
  * Unified chat store.
- * Includes both text chat and AI chat state.
+ * Messages are persisted to Supabase, real-time sync via LiveKit.
  */
 export const useChatStore = create<ChatStore>((set) => ({
   ...initialState,
 
-  addIncomingMessage: (message) => {
-    const incoming: ChatMessage = {
-      ...message,
-      direction: "incoming",
-      status: message.status ?? "sent",
-    };
+  setMessages: (messages) =>
+    set({ messages: messages.slice(-MAX_CHAT_MESSAGES) }),
 
-    set((state) => ({
-      messages: appendMessage(state.messages, incoming),
-    }));
-  },
-
-  addOutgoingMessage: (message) => {
-    const outgoing: ChatMessage = {
-      ...message,
-      direction: "outgoing",
-      status: message.status ?? "pending",
-    };
-
-    set((state) => ({
-      messages: appendMessage(state.messages, outgoing),
-    }));
-  },
-
-  updateMessageStatus: (id, status) => {
+  addMessage: (message) =>
     set((state) => {
-      const index = state.messages.findIndex((msg) => msg.id === id);
-      if (index === -1) return state;
-
-      const updated = [...state.messages];
-      updated[index] = { ...updated[index], status };
-      return { messages: updated };
-    });
-  },
-
-  setOpen: (isOpen) => set({ isOpen }),
+      // Skip if already exists
+      if (state.messages.some((m) => m.id === message.id)) {
+        return state;
+      }
+      const appended = [...state.messages, message];
+      return {
+        messages:
+          appended.length > MAX_CHAT_MESSAGES
+            ? appended.slice(-MAX_CHAT_MESSAGES)
+            : appended,
+      };
+    }),
 
   toggleAIChat: () =>
     set((state) => ({
@@ -116,6 +71,11 @@ export const useChatStore = create<ChatStore>((set) => ({
   closeAIChat: () =>
     set((state) => ({
       aiChat: { ...state.aiChat, isOpen: false },
+    })),
+
+  setAIConversationId: (id) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, conversationId: id },
     })),
 
   reset: () => set(initialState),

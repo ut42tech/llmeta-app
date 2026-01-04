@@ -54,7 +54,7 @@ After logging in, you'll see the **Dashboard** — your central hub for explorin
 
 **Features:**
 
-- **Sidebar Navigation** — Access Home (Dashboard) and Profile pages
+- **Sidebar Navigation** — Access Home (Dashboard) and Settings pages
 - **World List** — Browse available metaverse worlds displayed as cards
 - **User Info** — Your display name is shown in the sidebar footer
 
@@ -104,9 +104,9 @@ The instance lobby (`/instance/[roomSid]`) is where you configure your identity 
 > [!WARNING]
 > **Privacy Notice**: This application sends data to external services. Do not share personal or sensitive information.
 
-### 5. Profile Page
+### 5. Settings Page
 
-Access your profile settings via the sidebar or navigating to `/profile`.
+Access your settings via the sidebar or navigating to `/settings`.
 
 **Available Settings:**
 
@@ -115,6 +115,7 @@ Access your profile settings via the sidebar or navigating to `/profile`.
 | **Avatar** | Your current avatar initial display |
 | **Email** | Your registered email (read-only) |
 | **Display Name** | Editable — click "Update" to save changes |
+| **Language** | Switch between English and Japanese |
 | **Sign Out** | Log out from your account |
 
 ### 6. The 3D Experience
@@ -226,7 +227,7 @@ Access settings by clicking the gear icon in the dock or pressing **P**.
 
 | Tab | Options |
 |-----|---------|
-| **General** | Update username, view avatar, session information (Room Name, Room SID, Session ID) |
+| **General** | View username and avatar, session information (Room Name, Room SID, Session ID) |
 | **Language** | Switch between English (🇺🇸) and Japanese (🇯🇵) |
 
 ---

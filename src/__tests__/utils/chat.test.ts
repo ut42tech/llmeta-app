@@ -4,10 +4,11 @@ import { filterTextMessages, hasImageContent } from "@/utils/chat";
 
 const createMessage = (overrides: Partial<ChatMessage> = {}): ChatMessage => ({
   id: "msg-1",
+  senderId: "user-1",
   sessionId: "session-1",
   content: "Hello, world!",
-  direction: "incoming",
-  sentAt: Date.now(),
+  sentAt: new Date().toISOString(),
+  isOwn: false,
   ...overrides,
 });
 
@@ -48,11 +49,13 @@ describe("filterTextMessages", () => {
   const now = Date.now();
   const ONE_MINUTE = 60 * 1000;
 
+  const toISOString = (timestamp: number) => new Date(timestamp).toISOString();
+
   it("filters only messages with text content", () => {
     const messages = [
-      createMessage({ id: "1", content: "Hello", sentAt: now }),
-      createMessage({ id: "2", content: "", sentAt: now }),
-      createMessage({ id: "3", content: "World", sentAt: now }),
+      createMessage({ id: "1", content: "Hello", sentAt: toISOString(now) }),
+      createMessage({ id: "2", content: "", sentAt: toISOString(now) }),
+      createMessage({ id: "3", content: "World", sentAt: toISOString(now) }),
     ];
 
     const result = filterTextMessages(messages, ONE_MINUTE * 10);
@@ -62,11 +65,11 @@ describe("filterTextMessages", () => {
 
   it("excludes expired messages", () => {
     const messages = [
-      createMessage({ id: "1", content: "Recent", sentAt: now }),
+      createMessage({ id: "1", content: "Recent", sentAt: toISOString(now) }),
       createMessage({
         id: "2",
         content: "Old",
-        sentAt: now - ONE_MINUTE * 5,
+        sentAt: toISOString(now - ONE_MINUTE * 5),
       }),
     ];
 
@@ -82,9 +85,9 @@ describe("filterTextMessages", () => {
 
   it("excludes whitespace-only content", () => {
     const messages = [
-      createMessage({ id: "1", content: "   ", sentAt: now }),
-      createMessage({ id: "2", content: "\n\t", sentAt: now }),
-      createMessage({ id: "3", content: "Valid", sentAt: now }),
+      createMessage({ id: "1", content: "   ", sentAt: toISOString(now) }),
+      createMessage({ id: "2", content: "\n\t", sentAt: toISOString(now) }),
+      createMessage({ id: "3", content: "Valid", sentAt: toISOString(now) }),
     ];
 
     const result = filterTextMessages(messages, ONE_MINUTE * 10);
@@ -97,12 +100,12 @@ describe("filterTextMessages", () => {
       createMessage({
         id: "1",
         content: "Old1",
-        sentAt: now - ONE_MINUTE * 10,
+        sentAt: toISOString(now - ONE_MINUTE * 10),
       }),
       createMessage({
         id: "2",
         content: "Old2",
-        sentAt: now - ONE_MINUTE * 20,
+        sentAt: toISOString(now - ONE_MINUTE * 20),
       }),
     ];
 

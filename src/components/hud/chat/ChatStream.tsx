@@ -15,15 +15,13 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useTextChat } from "@/hooks/useTextChat";
 import { cn } from "@/lib/utils";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import type { ChatMessage } from "@/types/chat";
 
 type MessageLineProps = {
   message: ChatMessage;
-  isOwnMessage: boolean;
 };
 
-const MessageLine = ({ message, isOwnMessage }: MessageLineProps) => {
+const MessageLine = ({ message }: MessageLineProps) => {
   const displayName = message.username || "???";
   const hasImage = Boolean(message.image?.url);
   const hasText = Boolean(message.content);
@@ -37,7 +35,7 @@ const MessageLine = ({ message, isOwnMessage }: MessageLineProps) => {
       style={{ maxWidth: "100%" }}
     >
       <Badge
-        variant={isOwnMessage ? "default" : "secondary"}
+        variant={message.isOwn ? "default" : "secondary"}
         className="shrink-0 h-5 px-1.5 text-[10px]"
       >
         {displayName}
@@ -57,7 +55,7 @@ const MessageLine = ({ message, isOwnMessage }: MessageLineProps) => {
           <span
             className={cn(
               "text-white/70 drop-shadow-sm leading-5",
-              isOwnMessage && "text-white/90",
+              message.isOwn && "text-white/90",
             )}
             style={{ overflowWrap: "anywhere", wordBreak: "break-word" }}
           >
@@ -89,7 +87,6 @@ const ChatEmptyState = () => {
 
 export const ChatStream = () => {
   const { messages } = useTextChat();
-  const sessionId = useLocalPlayerStore((state) => state.sessionId);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const prevMessagesLengthRef = useRef(messages.length);
 
@@ -112,11 +109,7 @@ export const ChatStream = () => {
           <ScrollArea className="h-full w-full">
             <div className="flex flex-col gap-2 pr-3 w-full">
               {messages.map((message) => (
-                <MessageLine
-                  key={message.id}
-                  message={message}
-                  isOwnMessage={message.sessionId === sessionId}
-                />
+                <MessageLine key={message.id} message={message} />
               ))}
               <div ref={messagesEndRef} />
             </div>

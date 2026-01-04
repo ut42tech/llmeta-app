@@ -14,12 +14,202 @@ export type Database = {
   };
   public: {
     Tables: {
+      ai_conversations: {
+        Row: {
+          created_at: string;
+          id: string;
+          instance_id: string | null;
+          title: string;
+          updated_at: string;
+          user_id: string;
+          visibility: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          instance_id?: string | null;
+          title?: string;
+          updated_at?: string;
+          user_id: string;
+          visibility?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          instance_id?: string | null;
+          title?: string;
+          updated_at?: string;
+          user_id?: string;
+          visibility?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ai_conversations_instance_id_fkey";
+            columns: ["instance_id"];
+            isOneToOne: false;
+            referencedRelation: "instances";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "ai_conversations_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      ai_messages: {
+        Row: {
+          conversation_id: string;
+          created_at: string;
+          id: string;
+          parts: Json;
+          role: string;
+        };
+        Insert: {
+          conversation_id: string;
+          created_at?: string;
+          id?: string;
+          parts?: Json;
+          role: string;
+        };
+        Update: {
+          conversation_id?: string;
+          created_at?: string;
+          id?: string;
+          parts?: Json;
+          role?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_conversation_id_fkey";
+            columns: ["conversation_id"];
+            isOneToOne: false;
+            referencedRelation: "ai_conversations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      instances: {
+        Row: {
+          created_at: string;
+          host_id: string | null;
+          id: string;
+          max_players: number;
+          name: string;
+          player_count: number;
+          updated_at: string;
+          world_id: string;
+        };
+        Insert: {
+          created_at?: string;
+          host_id?: string | null;
+          id?: string;
+          max_players?: number;
+          name: string;
+          player_count?: number;
+          updated_at?: string;
+          world_id: string;
+        };
+        Update: {
+          created_at?: string;
+          host_id?: string | null;
+          id?: string;
+          max_players?: number;
+          name?: string;
+          player_count?: number;
+          updated_at?: string;
+          world_id?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "instances_world_id_fkey";
+            columns: ["world_id"];
+            isOneToOne: false;
+            referencedRelation: "worlds";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      message_images: {
+        Row: {
+          id: string;
+          message_id: string;
+          prompt: string | null;
+          url: string;
+        };
+        Insert: {
+          id?: string;
+          message_id: string;
+          prompt?: string | null;
+          url: string;
+        };
+        Update: {
+          id?: string;
+          message_id?: string;
+          prompt?: string | null;
+          url?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "message_images_message_id_fkey";
+            columns: ["message_id"];
+            isOneToOne: false;
+            referencedRelation: "messages";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      messages: {
+        Row: {
+          content: string | null;
+          id: string;
+          instance_id: string;
+          sender_id: string | null;
+          sent_at: string;
+          type: string;
+        };
+        Insert: {
+          content?: string | null;
+          id?: string;
+          instance_id: string;
+          sender_id?: string | null;
+          sent_at?: string;
+          type?: string;
+        };
+        Update: {
+          content?: string | null;
+          id?: string;
+          instance_id?: string;
+          sender_id?: string | null;
+          sent_at?: string;
+          type?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "messages_instance_id_fkey";
+            columns: ["instance_id"];
+            isOneToOne: false;
+            referencedRelation: "instances";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "messages_sender_id_fkey";
+            columns: ["sender_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       profiles: {
         Row: {
           avatar_id: number | null;
           created_at: string;
           display_name: string;
           id: string;
+          lang: string | null;
           updated_at: string;
         };
         Insert: {
@@ -27,6 +217,7 @@ export type Database = {
           created_at?: string;
           display_name?: string;
           id: string;
+          lang?: string | null;
           updated_at?: string;
         };
         Update: {
@@ -34,6 +225,34 @@ export type Database = {
           created_at?: string;
           display_name?: string;
           id?: string;
+          lang?: string | null;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      worlds: {
+        Row: {
+          created_at: string;
+          description: string;
+          id: string;
+          name: string;
+          player_capacity: number;
+          updated_at: string;
+        };
+        Insert: {
+          created_at?: string;
+          description?: string;
+          id?: string;
+          name: string;
+          player_capacity?: number;
+          updated_at?: string;
+        };
+        Update: {
+          created_at?: string;
+          description?: string;
+          id?: string;
+          name?: string;
+          player_capacity?: number;
           updated_at?: string;
         };
         Relationships: [];
