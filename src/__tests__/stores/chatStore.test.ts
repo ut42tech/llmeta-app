@@ -22,7 +22,6 @@ describe("useChatStore", () => {
     it("has correct initial state", () => {
       const state = useChatStore.getState();
       expect(state.messages).toEqual([]);
-      expect(state.isOpen).toBe(false);
       expect(state.aiChat.isOpen).toBe(false);
     });
   });
@@ -84,19 +83,7 @@ describe("useChatStore", () => {
     });
   });
 
-  describe("UI state", () => {
-    it("opens and closes chat panel", () => {
-      const { setOpen } = useChatStore.getState();
-
-      expect(useChatStore.getState().isOpen).toBe(false);
-
-      setOpen(true);
-      expect(useChatStore.getState().isOpen).toBe(true);
-
-      setOpen(false);
-      expect(useChatStore.getState().isOpen).toBe(false);
-    });
-
+  describe("AI chat state", () => {
     it("toggles AI chat", () => {
       const { toggleAIChat } = useChatStore.getState();
 
@@ -122,18 +109,15 @@ describe("useChatStore", () => {
 
   describe("reset", () => {
     it("resets store to initial state", () => {
-      const { addMessage, setOpen, openAIChat, reset } =
-        useChatStore.getState();
+      const { addMessage, openAIChat, reset } = useChatStore.getState();
 
       addMessage(createMessage());
-      setOpen(true);
       openAIChat();
 
       reset();
 
       const state = useChatStore.getState();
       expect(state.messages).toEqual([]);
-      expect(state.isOpen).toBe(false);
       expect(state.aiChat.isOpen).toBe(false);
     });
   });

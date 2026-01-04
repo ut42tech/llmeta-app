@@ -9,14 +9,12 @@ type AIChatState = {
 
 type ChatState = {
   messages: ChatMessage[];
-  isOpen: boolean;
   aiChat: AIChatState;
 };
 
 type ChatActions = {
   setMessages: (messages: ChatMessage[]) => void;
   addMessage: (message: ChatMessage) => void;
-  setOpen: (isOpen: boolean) => void;
   toggleAIChat: () => void;
   openAIChat: () => void;
   closeAIChat: () => void;
@@ -27,7 +25,6 @@ type ChatStore = ChatState & ChatActions;
 
 const initialState: ChatState = {
   messages: [],
-  isOpen: false,
   aiChat: {
     isOpen: false,
   },
@@ -57,8 +54,6 @@ export const useChatStore = create<ChatStore>((set) => ({
             : appended,
       };
     }),
-
-  setOpen: (isOpen) => set({ isOpen }),
 
   toggleAIChat: () =>
     set((state) => ({

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
 import type { ChatMessage } from "@/types/chat";
@@ -22,51 +22,42 @@ type ApiMessage = {
 export function useChatHistory(instanceId: string | null) {
   const userId = useAuthStore((s) => s.user?.id);
   const setMessages = useChatStore((s) => s.setMessages);
-  const [isLoading, setIsLoading] = useState(false);
   const loadedRef = useRef<string | null>(null);
 
-  const loadHistory = useCallback(async () => {
+  useEffect(() => {
     if (!instanceId || loadedRef.current === instanceId) return;
 
-    setIsLoading(true);
-    try {
-      const res = await fetch(
-        `/api/messages?instanceId=${instanceId}&limit=100`,
-      );
-      if (!res.ok) throw new Error("Failed to fetch messages");
+    const loadHistory = async () => {
+      try {
+        const res = await fetch(
+          `/api/messages?instanceId=${instanceId}&limit=100`,
+        );
+        if (!res.ok) throw new Error("Failed to fetch messages");
 
-      const { messages } = (await res.json()) as { messages: ApiMessage[] };
+        const { messages } = (await res.json()) as { messages: ApiMessage[] };
 
-      const chatMessages: ChatMessage[] = messages.map((msg) => ({
-        id: msg.id,
-        senderId: msg.sender_id || "system",
-        username: msg.profiles?.display_name,
-        content: msg.content || "",
-        sentAt: msg.sent_at,
-        image: msg.message_images[0]
-          ? {
-              url: msg.message_images[0].url,
-              prompt: msg.message_images[0].prompt || undefined,
-            }
-          : undefined,
-        isOwn: msg.sender_id === userId,
-      }));
+        const chatMessages: ChatMessage[] = messages.map((msg) => ({
+          id: msg.id,
+          senderId: msg.sender_id || "system",
+          username: msg.profiles?.display_name,
+          content: msg.content || "",
+          sentAt: msg.sent_at,
+          image: msg.message_images[0]
+            ? {
+                url: msg.message_images[0].url,
+                prompt: msg.message_images[0].prompt || undefined,
+              }
+            : undefined,
+          isOwn: msg.sender_id === userId,
+        }));
 
-      setMessages(chatMessages);
-      loadedRef.current = instanceId;
-    } catch (error) {
-      console.error("[ChatHistory] Failed to load:", error);
-    } finally {
-      setIsLoading(false);
-    }
+        setMessages(chatMessages);
+        loadedRef.current = instanceId;
+      } catch (error) {
+        console.error("[ChatHistory] Failed to load:", error);
+      }
+    };
+
+    loadHistory();
   }, [instanceId, setMessages, userId]);
-
-  // Auto-load on mount when instanceId is available
-  useEffect(() => {
-    if (instanceId) {
-      loadHistory();
-    }
-  }, [instanceId, loadHistory]);
-
-  return { isLoading, loadHistory };
 }

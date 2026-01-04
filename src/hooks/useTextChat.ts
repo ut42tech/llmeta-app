@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback } from "react";
-import { useShallow } from "zustand/react/shallow";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useChatStore } from "@/stores/chatStore";
 import type { ChatMessageImage } from "@/types/chat";
@@ -11,13 +10,7 @@ import type { ChatMessageImage } from "@/types/chat";
  */
 export function useTextChat() {
   const { sendChatMessage, isConnected } = useSyncClient();
-  const { messages, isOpen, setOpen } = useChatStore(
-    useShallow((state) => ({
-      messages: state.messages,
-      isOpen: state.isOpen,
-      setOpen: state.setOpen,
-    })),
-  );
+  const messages = useChatStore((state) => state.messages);
 
   const handleSend = useCallback(
     async (content: string, image?: ChatMessageImage) => {
@@ -29,9 +22,7 @@ export function useTextChat() {
 
   return {
     messages,
-    isOpen,
     canSend: isConnected,
-    setOpen,
     sendMessage: handleSend,
   };
 }
