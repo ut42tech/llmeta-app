@@ -14,6 +14,86 @@ export type Database = {
   };
   public: {
     Tables: {
+      ai_conversations: {
+        Row: {
+          created_at: string;
+          id: string;
+          instance_id: string | null;
+          title: string;
+          updated_at: string;
+          user_id: string;
+          visibility: string;
+        };
+        Insert: {
+          created_at?: string;
+          id?: string;
+          instance_id?: string | null;
+          title?: string;
+          updated_at?: string;
+          user_id: string;
+          visibility?: string;
+        };
+        Update: {
+          created_at?: string;
+          id?: string;
+          instance_id?: string | null;
+          title?: string;
+          updated_at?: string;
+          user_id?: string;
+          visibility?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ai_conversations_instance_id_fkey";
+            columns: ["instance_id"];
+            isOneToOne: false;
+            referencedRelation: "instances";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "ai_conversations_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "profiles";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      ai_messages: {
+        Row: {
+          attachments: Json;
+          conversation_id: string;
+          created_at: string;
+          id: string;
+          parts: Json;
+          role: string;
+        };
+        Insert: {
+          attachments?: Json;
+          conversation_id: string;
+          created_at?: string;
+          id?: string;
+          parts?: Json;
+          role: string;
+        };
+        Update: {
+          attachments?: Json;
+          conversation_id?: string;
+          created_at?: string;
+          id?: string;
+          parts?: Json;
+          role?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "ai_messages_conversation_id_fkey";
+            columns: ["conversation_id"];
+            isOneToOne: false;
+            referencedRelation: "ai_conversations";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
       instances: {
         Row: {
           created_at: string;
