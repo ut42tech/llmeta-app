@@ -65,10 +65,10 @@ export const AIChatWindow = () => {
   const getChatHistoryForContext = () => {
     return chatMessagesRef.current.map((msg) => ({
       id: msg.id,
-      sessionId: msg.sessionId,
+      senderId: msg.senderId,
       username: msg.username,
       content: msg.content,
-      direction: msg.direction,
+      isOwn: msg.isOwn,
       sentAt: msg.sentAt,
     }));
   };

@@ -16,6 +16,7 @@ import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
 import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
 import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
+import { useChatHistory } from "@/hooks/useChatHistory";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { ChatMessageImage } from "@/types/chat";
@@ -87,6 +88,7 @@ type BridgeProps = {
 const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const username = useLocalPlayerStore((state) => state.username);
   const currentAvatar = useLocalPlayerStore((state) => state.currentAvatar);
+  const roomName = useLocalPlayerStore((state) => state.roomName);
   const setRoomInfo = useWorldStore((state) => state.setRoomInfo);
   const clearRoomInfo = useWorldStore((state) => state.clearRoomInfo);
 
@@ -94,7 +96,12 @@ const LiveKitSyncBridge = ({ identity, children }: BridgeProps) => {
   const { sessionId, connectionState } = useLiveKitConnection(identity);
   const { sendMove } = useMovementDataChannel(identity);
   const { setProfile } = useParticipantProfile();
-  const { sendChatMessage } = useChatDataChannel(identity);
+  const { sendChatMessage } = useChatDataChannel(roomName, identity);
+
+  // Load chat history when connected
+  useChatHistory(
+    connectionState === LiveKitConnectionState.Connected ? roomName : null,
+  );
 
   useEffect(() => {
     if (connectionState !== LiveKitConnectionState.Connected) {

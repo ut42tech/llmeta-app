@@ -8,33 +8,20 @@ import type { ChatMessageImage } from "@/types/chat";
 
 /**
  * Simplified text chat hook.
- * Removed: typing indicator, unread count (per user request for simplicity)
  */
 export function useTextChat() {
   const { sendChatMessage, isConnected } = useSyncClient();
-
-  const { messages, isOpen } = useChatStore(
+  const { messages, isOpen, setOpen } = useChatStore(
     useShallow((state) => ({
       messages: state.messages,
       isOpen: state.isOpen,
+      setOpen: state.setOpen,
     })),
-  );
-
-  const setOpen = useChatStore((state) => state.setOpen);
-
-  const handleOpenChange = useCallback(
-    (open: boolean) => {
-      setOpen(open);
-    },
-    [setOpen],
   );
 
   const handleSend = useCallback(
     async (content: string, image?: ChatMessageImage) => {
-      if (!isConnected) {
-        return;
-      }
-
+      if (!isConnected) return;
       await sendChatMessage(content, image);
     },
     [isConnected, sendChatMessage],
@@ -44,7 +31,7 @@ export function useTextChat() {
     messages,
     isOpen,
     canSend: isConnected,
-    setOpen: handleOpenChange,
+    setOpen,
     sendMessage: handleSend,
   };
 }

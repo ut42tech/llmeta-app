@@ -1,17 +1,32 @@
+import type { Tables } from "./supabase";
+
+// =============================================================================
+// Database Types
+// =============================================================================
+
+export type DbMessage = Tables<"messages">;
+export type DbMessageImage = Tables<"message_images">;
+
+// =============================================================================
+// LiveKit Packet (for real-time sync)
+// =============================================================================
+
 export type ChatMessagePacket = {
   id: string;
-  text: string;
+  senderId: string; // Supabase user ID (for DB persistence)
+  sessionId: string; // LiveKit session ID (for player matching)
   username?: string;
-  sentAt: number;
+  content: string;
+  sentAt: string;
   image?: {
     url: string;
     prompt?: string;
   };
 };
 
-export type ChatMessageDirection = "incoming" | "outgoing" | "system";
-
-export type ChatMessageStatus = "pending" | "sent" | "failed";
+// =============================================================================
+// Client Types
+// =============================================================================
 
 export type ChatMessageImage = {
   url: string;
@@ -20,11 +35,11 @@ export type ChatMessageImage = {
 
 export type ChatMessage = {
   id: string;
-  sessionId: string;
+  senderId: string; // Supabase user ID
+  sessionId?: string; // LiveKit session ID (only for real-time messages)
   username?: string;
   content: string;
-  direction: ChatMessageDirection;
-  status?: ChatMessageStatus;
-  sentAt: number;
+  sentAt: string;
   image?: ChatMessageImage;
+  isOwn: boolean;
 };

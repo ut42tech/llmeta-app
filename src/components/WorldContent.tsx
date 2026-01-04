@@ -66,10 +66,10 @@ export function WorldContent() {
       let position: Vector3 | null = null;
       let username: string | undefined;
 
-      if (msg.direction === "outgoing") {
+      if (msg.isOwn) {
         position = localPlayerPosition.clone().add(CONTENT_OFFSET);
         username = localPlayerUsername;
-      } else {
+      } else if (msg.sessionId) {
         const player = remotePlayers[msg.sessionId];
         if (player?.position) {
           position = player.position.clone().add(CONTENT_OFFSET);

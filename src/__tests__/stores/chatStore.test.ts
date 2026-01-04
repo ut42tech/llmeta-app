@@ -1,5 +1,17 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import { useChatStore } from "@/stores/chatStore";
+import type { ChatMessage } from "@/types/chat";
+
+const createMessage = (overrides: Partial<ChatMessage> = {}): ChatMessage => ({
+  id: "msg-1",
+  senderId: "user-1",
+  sessionId: "session-1",
+  username: "Test User",
+  content: "Hello!",
+  sentAt: new Date().toISOString(),
+  isOwn: false,
+  ...overrides,
+});
 
 describe("useChatStore", () => {
   beforeEach(() => {
@@ -16,101 +28,59 @@ describe("useChatStore", () => {
   });
 
   describe("message management", () => {
-    it("adds incoming message", () => {
-      const { addIncomingMessage } = useChatStore.getState();
+    it("adds a message", () => {
+      const { addMessage } = useChatStore.getState();
+      const message = createMessage();
 
-      addIncomingMessage({
-        id: "msg-1",
-        sessionId: "session-1",
-        content: "Hello!",
-        sentAt: Date.now(),
-      });
+      addMessage(message);
 
       const { messages } = useChatStore.getState();
       expect(messages).toHaveLength(1);
       expect(messages[0]).toMatchObject({
         id: "msg-1",
         content: "Hello!",
-        direction: "incoming",
-        status: "sent",
+        senderId: "user-1",
       });
     });
 
-    it("adds outgoing message", () => {
-      const { addOutgoingMessage } = useChatStore.getState();
+    it("skips duplicate message with same ID", () => {
+      const { addMessage } = useChatStore.getState();
 
-      addOutgoingMessage({
-        id: "msg-1",
-        sessionId: "session-1",
-        content: "Hi there!",
-        sentAt: Date.now(),
-      });
+      addMessage(createMessage({ id: "msg-1", content: "First" }));
+      addMessage(createMessage({ id: "msg-1", content: "Duplicate" }));
 
       const { messages } = useChatStore.getState();
       expect(messages).toHaveLength(1);
-      expect(messages[0]).toMatchObject({
-        id: "msg-1",
-        content: "Hi there!",
-        direction: "outgoing",
-        status: "pending",
-      });
+      expect(messages[0].content).toBe("First");
     });
 
-    it("updates message with same ID", () => {
-      const { addIncomingMessage } = useChatStore.getState();
+    it("sets messages array", () => {
+      const { setMessages } = useChatStore.getState();
+      const messages = [
+        createMessage({ id: "msg-1" }),
+        createMessage({ id: "msg-2" }),
+      ];
 
-      addIncomingMessage({
-        id: "msg-1",
-        sessionId: "session-1",
-        content: "Original",
-        sentAt: Date.now(),
-      });
+      setMessages(messages);
 
-      addIncomingMessage({
-        id: "msg-1",
-        sessionId: "session-1",
-        content: "Updated",
-        sentAt: Date.now(),
-      });
-
-      const { messages } = useChatStore.getState();
-      expect(messages).toHaveLength(1);
-      expect(messages[0].content).toBe("Updated");
+      expect(useChatStore.getState().messages).toHaveLength(2);
     });
 
-    it("updates message status", () => {
-      const { addOutgoingMessage, updateMessageStatus } =
-        useChatStore.getState();
+    it("limits messages to MAX_CHAT_MESSAGES", () => {
+      const { setMessages, addMessage } = useChatStore.getState();
 
-      addOutgoingMessage({
-        id: "msg-1",
-        sessionId: "session-1",
-        content: "Sending...",
-        sentAt: Date.now(),
-      });
+      // Set 200 messages (max)
+      const initialMessages = Array.from({ length: 200 }, (_, i) =>
+        createMessage({ id: `msg-${i}` }),
+      );
+      setMessages(initialMessages);
 
-      updateMessageStatus("msg-1", "sent");
-
-      const { messages } = useChatStore.getState();
-      expect(messages[0].status).toBe("sent");
-    });
-
-    it("does nothing when updating non-existent message ID", () => {
-      const { addOutgoingMessage, updateMessageStatus } =
-        useChatStore.getState();
-
-      addOutgoingMessage({
-        id: "msg-1",
-        sessionId: "session-1",
-        content: "Hello",
-        sentAt: Date.now(),
-      });
-
-      updateMessageStatus("non-existent", "sent");
+      // Add one more
+      addMessage(createMessage({ id: "msg-new" }));
 
       const { messages } = useChatStore.getState();
-      expect(messages).toHaveLength(1);
-      expect(messages[0].status).toBe("pending");
+      expect(messages).toHaveLength(200);
+      expect(messages[199].id).toBe("msg-new");
     });
   });
 
@@ -152,15 +122,10 @@ describe("useChatStore", () => {
 
   describe("reset", () => {
     it("resets store to initial state", () => {
-      const { addIncomingMessage, setOpen, openAIChat, reset } =
+      const { addMessage, setOpen, openAIChat, reset } =
         useChatStore.getState();
 
-      addIncomingMessage({
-        id: "msg-1",
-        sessionId: "session-1",
-        content: "Hello",
-        sentAt: Date.now(),
-      });
+      addMessage(createMessage());
       setOpen(true);
       openAIChat();
 
