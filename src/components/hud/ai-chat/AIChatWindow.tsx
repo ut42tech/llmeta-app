@@ -63,7 +63,7 @@ export const AIChatWindow = () => {
   const chatMessagesRef = useRef(chatMessages);
   chatMessagesRef.current = chatMessages;
 
-  const { conversationId, initialMessages, saveMessages, recordMessageTime } =
+  const { conversationId, initialMessages, recordMessageTime } =
     useAIChatHistory();
 
   const getChatHistoryForContext = () =>
@@ -81,11 +81,18 @@ export const AIChatWindow = () => {
     messages: initialMessages,
     transport: new DefaultChatTransport({
       api: "/api/ai/chat",
-      body: () => ({ chatHistory: getChatHistoryForContext() }),
+      // Send only the last message to reduce bandwidth
+      prepareSendMessagesRequest: ({ messages }) => {
+        const lastMessage = messages[messages.length - 1];
+        return {
+          body: {
+            message: lastMessage,
+            conversationId,
+            chatHistory: getChatHistoryForContext(),
+          },
+        };
+      },
     }),
-    onFinish: ({ messages: allMessages }) => {
-      saveMessages(allMessages);
-    },
   });
 
   // Track message IDs to detect new messages and record timestamps

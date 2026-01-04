@@ -15,43 +15,22 @@ type StoredMessage = {
   createdAt: string;
 };
 
-const serializePart = (part: UIMessage["parts"][number]): unknown | null => {
-  switch (part.type) {
-    case "text":
-      return { type: "text", text: part.text };
-    case "step-start":
-      return null;
-    default:
-      if (part.type.startsWith("tool-")) {
-        const { type, toolCallId, state, input, output } = part as Record<
-          string,
-          unknown
-        >;
-        return { type, toolCallId, state, input, output };
-      }
-      return null;
-  }
-};
-
-const toStoredMessages = (
-  messages: UIMessage[],
-  timestamps: Map<string, string>,
-): StoredMessage[] =>
-  messages.map((m) => ({
-    id: m.id,
-    role: m.role,
-    parts: m.parts.map(serializePart).filter(Boolean),
-    createdAt: timestamps.get(m.id) ?? new Date().toISOString(),
-  }));
-
 const toUIMessages = (messages: StoredMessage[]): UIMessage[] =>
   messages.map((m) => ({
     id: m.id,
     role: m.role,
     parts: m.parts as UIMessage["parts"],
-    createdAt: new Date(m.createdAt),
   }));
 
+/**
+ * Hook for AI chat history management.
+ *
+ * Messages are now saved on the server side in the API route's onFinish callback.
+ * This hook handles:
+ * - Loading initial messages from database
+ * - Creating conversations if needed
+ * - Tracking message timestamps
+ */
 export function useAIChatHistory() {
   const userId = useAuthStore((s) => s.user?.id);
   const instanceId = useWorldStore((s) => s.instanceId);
@@ -83,7 +62,6 @@ export function useAIChatHistory() {
     })();
   }, [userId, instanceId, setConversationId]);
 
-  // Create conversation if needed
   const ensureConversation = useCallback(async () => {
     if (conversationId) return conversationId;
 
@@ -103,39 +81,21 @@ export function useAIChatHistory() {
     }
   }, [conversationId, instanceId, setConversationId]);
 
-  // Record timestamp when message first appears
+  useEffect(() => {
+    if (userId && !conversationId) {
+      ensureConversation();
+    }
+  }, [userId, conversationId, ensureConversation]);
+
   const recordMessageTime = useCallback((messageId: string) => {
     if (!timestampsRef.current.has(messageId)) {
       timestampsRef.current.set(messageId, new Date().toISOString());
     }
   }, []);
 
-  // Save messages to database
-  const saveMessages = useCallback(
-    async (messages: UIMessage[]) => {
-      const convId = await ensureConversation();
-      if (!convId || !messages.length) return;
-
-      try {
-        await fetch("/api/ai/conversations", {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            conversationId: convId,
-            messages: toStoredMessages(messages, timestampsRef.current),
-          }),
-        });
-      } catch {
-        /* ignore */
-      }
-    },
-    [ensureConversation],
-  );
-
   return {
     conversationId,
     initialMessages: initialMessagesRef.current,
     recordMessageTime,
-    saveMessages,
   };
 }
