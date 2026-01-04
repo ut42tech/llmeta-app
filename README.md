@@ -88,24 +88,30 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 src/
-├── app/                # Next.js App Router pages
-│   ├── (auth)/         # Authentication pages (login, signup)
-│   ├── (hub)/          # Main hub with sidebar (dashboard, world, instance)
-│   ├── api/            # API routes
-│   └── experience/     # Full-screen 3D world experience
+├── app/                     # Next.js App Router pages
+│   ├── (auth)/              # Authentication pages (login, signup)
+│   ├── (hub)/               # Main hub with sidebar
+│   │   ├── instance/        # Instance lobby page
+│   │   ├── settings/        # User settings page
+│   │   └── world/           # World detail page
+│   ├── api/                 # API routes (ai, auth, blob, deepgram, livekit, messages)
+│   └── experience/          # Full-screen 3D world experience
 ├── components/
-│   ├── ai-elements/    # AI agent UI components
-│   ├── character/      # VRM character components
-│   ├── hud/            # HUD and UI overlays
-│   └── ui/             # Shared shadcn/ui components
-├── hooks/              # Custom React hooks
-│   ├── livekit/        # LiveKit integration
-│   ├── scene/          # 3D scene hooks
-│   └── transcription/  # Speech-to-text
-├── i18n/               # Internationalization
-├── stores/             # Zustand state stores
-├── types/              # TypeScript types
-└── utils/              # Utility functions
+│   ├── ai-elements/         # AI agent UI components (30+ components)
+│   ├── character/           # VRM character & player components
+│   ├── hud/                 # HUD overlays (dock, chat, caption, status-bar)
+│   ├── layout/              # Dashboard layout (AppSidebar, DashboardContent)
+│   └── ui/                  # Shared shadcn/ui components
+├── hooks/                   # Custom React hooks
+│   ├── livekit/             # LiveKit integration (auth, connection, data channels)
+│   ├── scene/               # 3D scene hooks (camera, character, lighting)
+│   └── transcription/       # Speech-to-text hooks
+├── i18n/                    # Internationalization (config, messages)
+├── lib/                     # Utility libraries
+│   └── supabase/            # Supabase client (server/browser)
+├── stores/                  # Zustand state stores (8 stores)
+├── types/                   # TypeScript types
+└── utils/                   # Utility functions
 ```
 
 ## Scripts
