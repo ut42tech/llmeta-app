@@ -43,3 +43,22 @@ export type ChatMessage = {
   image?: ChatMessageImage;
   isOwn: boolean;
 };
+
+// =============================================================================
+// AI Conversation Types
+// =============================================================================
+
+export type AIConversation = {
+  id: string;
+  title: string | null;
+  instanceId: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type AIStoredMessage = {
+  id: string;
+  role: "user" | "assistant" | "system";
+  parts: unknown[];
+  createdAt: string;
+};

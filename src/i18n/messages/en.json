@@ -124,6 +124,12 @@
     "connectToSend": "Connect to a room to send images",
     "regenerate": "Regenerate",
     "refinePlaceholder": "e.g., Make it more anime-style",
+    "conversations": "Conversations",
+    "newConversation": "New Conversation",
+    "noConversations": "No conversations yet",
+    "rename": "Rename",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this conversation?",
     "suggestions": {
       "summarize": "Summarize this chat",
       "explainFlow": "Explain the conversation flow",

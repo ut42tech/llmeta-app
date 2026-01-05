@@ -19,94 +19,127 @@ const getAuthenticatedUser = async () => {
   return { supabase, user };
 };
 
-// GET: Load conversation and messages
+// GET: Load all conversations or a specific conversation with messages
 export async function GET(request: NextRequest) {
-  const instanceId = new URL(request.url).searchParams.get("instanceId");
+  const url = new URL(request.url);
+  const conversationId = url.searchParams.get("conversationId");
+  const instanceId = url.searchParams.get("instanceId");
   const { supabase, user } = await getAuthenticatedUser();
 
   if (!user) return error("Unauthorized", 401);
 
-  // Find conversation
-  const query = supabase
-    .from("ai_conversations")
-    .select("id")
-    .eq("user_id", user.id);
+  // If conversationId is provided, load that specific conversation with messages
+  if (conversationId) {
+    const { data: conversation } = await supabase
+      .from("ai_conversations")
+      .select("id, title, instance_id, created_at, updated_at")
+      .eq("id", conversationId)
+      .eq("user_id", user.id)
+      .single();
 
-  const { data: conversation } = await (instanceId
-    ? query.eq("instance_id", instanceId)
-    : query.is("instance_id", null)
-  ).single();
+    if (!conversation) {
+      return json({ conversationId: null, messages: [] });
+    }
 
-  if (!conversation) {
-    return json({ conversationId: null, messages: [] });
+    const { data: messages, error: err } = await supabase
+      .from("ai_messages")
+      .select("id, role, parts, created_at")
+      .eq("conversation_id", conversation.id)
+      .order("created_at", { ascending: true });
+
+    if (err) return error(err.message, 500);
+
+    return json({
+      conversationId: conversation.id,
+      messages: messages.map((m) => ({
+        id: m.id,
+        role: m.role,
+        parts: m.parts,
+        createdAt: m.created_at,
+      })),
+    });
   }
 
-  // Load messages
-  const { data: messages, error: err } = await supabase
-    .from("ai_messages")
-    .select("id, role, parts, created_at")
-    .eq("conversation_id", conversation.id)
-    .order("created_at", { ascending: true });
+  // Otherwise, load all conversations for the user (optionally filtered by instanceId)
+  let query = supabase
+    .from("ai_conversations")
+    .select("id, title, instance_id, created_at, updated_at")
+    .eq("user_id", user.id)
+    .order("updated_at", { ascending: false });
+
+  if (instanceId) {
+    query = query.eq("instance_id", instanceId);
+  }
+
+  const { data: conversations, error: err } = await query;
 
   if (err) return error(err.message, 500);
 
   return json({
-    conversationId: conversation.id,
-    messages: messages.map((m) => ({
-      id: m.id,
-      role: m.role,
-      parts: m.parts,
-      createdAt: m.created_at,
+    conversations: (conversations ?? []).map((c) => ({
+      id: c.id,
+      title: c.title,
+      instanceId: c.instance_id,
+      createdAt: c.created_at,
+      updatedAt: c.updated_at,
     })),
   });
 }
 
 // POST: Create conversation
 export async function POST(request: NextRequest) {
-  const { instanceId } = (await request.json()) as { instanceId?: string };
+  const { instanceId, title } = (await request.json()) as {
+    instanceId?: string;
+    title?: string;
+  };
   const { supabase, user } = await getAuthenticatedUser();
 
   if (!user) return error("Unauthorized", 401);
 
-  // Check existing
-  const query = supabase
-    .from("ai_conversations")
-    .select("id")
-    .eq("user_id", user.id);
-
-  const { data: existing } = await (instanceId
-    ? query.eq("instance_id", instanceId)
-    : query.is("instance_id", null)
-  ).single();
-
-  if (existing) return json({ conversationId: existing.id });
-
-  // Create new
+  // Create new conversation (always create new, don't check existing)
+  const now = new Date().toISOString();
   const { data, error: err } = await supabase
     .from("ai_conversations")
-    .insert({ user_id: user.id, instance_id: instanceId ?? null })
-    .select("id")
+    .insert({
+      user_id: user.id,
+      instance_id: instanceId,
+      title: title,
+      created_at: now,
+      updated_at: now,
+    })
+    .select("id, title, instance_id, created_at, updated_at")
     .single();
 
   if (err) return error(err.message, 500);
 
-  return json({ conversationId: data.id });
+  return json({
+    conversation: {
+      id: data.id,
+      title: data.title,
+      instanceId: data.instance_id,
+      createdAt: data.created_at,
+      updatedAt: data.updated_at,
+    },
+  });
 }
 
-// PATCH: Save messages
+// PATCH: Save messages or update conversation
 export async function PATCH(request: NextRequest) {
-  const { conversationId, messages } = (await request.json()) as {
+  const body = (await request.json()) as {
     conversationId: string;
-    messages: Array<{
+    messages?: Array<{
       id: string;
       role: MessageRole;
       parts: Json;
       createdAt?: string;
     }>;
+    title?: string;
   };
 
-  if (!conversationId || !messages?.length) {
-    return error("conversationId and messages required", 400);
+  const { conversationId, messages, title } = body;
+
+  if (!conversationId) {
+    return error("conversationId required", 400);
   }
 
   const { supabase, user } = await getAuthenticatedUser();
@@ -122,35 +155,90 @@ export async function PATCH(request: NextRequest) {
 
   if (!conv) return error("Conversation not found", 404);
 
-  // Get existing IDs
-  const { data: existing } = await supabase
-    .from("ai_messages")
+  // Update title if provided
+  if (title !== undefined) {
+    await supabase
+      .from("ai_conversations")
+      .update({ title, updated_at: new Date().toISOString() })
+      .eq("id", conversationId);
+  }
+
+  // Save messages if provided
+  if (messages?.length) {
+    // Get existing IDs
+    const { data: existing } = await supabase
+      .from("ai_messages")
+      .select("id")
+      .eq("conversation_id", conversationId);
+
+    const existingIds = new Set(existing?.map((m) => m.id) ?? []);
+
+    // Insert only new messages
+    const newMessages = messages
+      .filter((m) => !existingIds.has(m.id))
+      .map((m) => ({
+        id: m.id,
+        conversation_id: conversationId,
+        role: m.role,
+        parts: m.parts,
+        created_at: m.createdAt ?? new Date().toISOString(),
+      }));
+
+    if (newMessages.length) {
+      const { error: err } = await supabase
+        .from("ai_messages")
+        .insert(newMessages);
+      if (err) return error(err.message, 500);
+
+      // Update conversation timestamp
+      await supabase
+        .from("ai_conversations")
+        .update({ updated_at: new Date().toISOString() })
+        .eq("id", conversationId);
+    }
+
+    return json({ saved: newMessages.length });
+  }
+
+  return json({ success: true });
+}
+
+// DELETE: Delete a conversation and its messages
+export async function DELETE(request: NextRequest) {
+  const { conversationId } = (await request.json()) as {
+    conversationId: string;
+  };
+
+  if (!conversationId) {
+    return error("conversationId required", 400);
+  }
+
+  const { supabase, user } = await getAuthenticatedUser();
+  if (!user) return error("Unauthorized", 401);
+
+  // Verify ownership
+  const { data: conv } = await supabase
+    .from("ai_conversations")
     .select("id")
+    .eq("id", conversationId)
+    .eq("user_id", user.id)
+    .single();
+
+  if (!conv) return error("Conversation not found", 404);
+
+  // Delete messages first (due to foreign key constraint)
+  await supabase
+    .from("ai_messages")
+    .delete()
     .eq("conversation_id", conversationId);
 
-  const existingIds = new Set(existing?.map((m) => m.id) ?? []);
-
-  // Insert only new messages
-  const newMessages = messages
-    .filter((m) => !existingIds.has(m.id))
-    .map((m) => ({
-      id: m.id,
-      conversation_id: conversationId,
-      role: m.role,
-      parts: m.parts,
-      created_at: m.createdAt ?? new Date().toISOString(),
-    }));
-
-  if (!newMessages.length) return json({ saved: 0 });
-
-  const { error: err } = await supabase.from("ai_messages").insert(newMessages);
-  if (err) return error(err.message, 500);
-
-  // Update conversation timestamp
-  await supabase
+  // Delete conversation
+  const { error: err } = await supabase
     .from("ai_conversations")
-    .update({ updated_at: new Date().toISOString() })
+    .delete()
     .eq("id", conversationId);
 
-  return json({ saved: newMessages.length });
+  if (err) return error(err.message, 500);
+
+  return json({ success: true });
 }

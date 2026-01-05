@@ -2,20 +2,14 @@
 
 import type { UIMessage } from "ai";
 import { useCallback, useEffect, useRef } from "react";
+import { useShallow } from "zustand/react/shallow";
+import { conversationsApi } from "@/lib/api/conversations";
 import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
 import { useWorldStore } from "@/stores/worldStore";
+import type { AIConversation, AIStoredMessage } from "@/types/chat";
 
-type MessageRole = "user" | "assistant" | "system";
-
-type StoredMessage = {
-  id: string;
-  role: MessageRole;
-  parts: unknown[];
-  createdAt: string;
-};
-
-const toUIMessages = (messages: StoredMessage[]): UIMessage[] =>
+const toUIMessages = (messages: AIStoredMessage[]): UIMessage[] =>
   messages.map((m) => ({
     id: m.id,
     role: m.role,
@@ -23,79 +17,126 @@ const toUIMessages = (messages: StoredMessage[]): UIMessage[] =>
   }));
 
 /**
- * Hook for AI chat history management.
- *
- * Messages are now saved on the server side in the API route's onFinish callback.
- * This hook handles:
- * - Loading initial messages from database
- * - Creating conversations if needed
- * - Tracking message timestamps
+ * Hook for AI chat history with multi-conversation support.
  */
 export function useAIChatHistory() {
   const userId = useAuthStore((s) => s.user?.id);
   const instanceId = useWorldStore((s) => s.instanceId);
-  const conversationId = useChatStore((s) => s.aiChat.conversationId);
-  const setConversationId = useChatStore((s) => s.setAIConversationId);
 
-  const loadedKeyRef = useRef<string | null>(null);
-  const initialMessagesRef = useRef<UIMessage[]>([]);
-  const timestampsRef = useRef(new Map<string, string>());
+  // State (reactive)
+  const state = useChatStore(
+    useShallow((s) => ({
+      conversationId: s.aiChat.conversationId,
+      conversations: s.aiChat.conversations,
+      initialMessages: s.aiChat.initialMessages,
+      isLoadingConversations: s.aiChat.isLoadingConversations,
+      isLoadingMessages: s.aiChat.isLoadingMessages,
+    })),
+  );
 
-  // Load history on mount or when instance changes
+  // Actions (stable references from Zustand)
+  const actions = useChatStore(
+    useShallow((s) => ({
+      setConversationId: s.setAIConversationId,
+      setConversations: s.setAIConversations,
+      setInitialMessages: s.setAIInitialMessages,
+      addConversation: s.addAIConversation,
+      removeConversation: s.removeAIConversation,
+      updateConversation: s.updateAIConversation,
+      setIsLoadingConversations: s.setIsLoadingConversations,
+      setIsLoadingMessages: s.setIsLoadingMessages,
+    })),
+  );
+
+  const loadedUserIdRef = useRef<string | null>(null);
+
+  // Load conversations on user change
   useEffect(() => {
-    const key = `${userId}-${instanceId}`;
-    if (!userId || loadedKeyRef.current === key) return;
+    if (!userId || loadedUserIdRef.current === userId) return;
+    loadedUserIdRef.current = userId;
 
-    (async () => {
-      try {
-        const params = instanceId ? `?instanceId=${instanceId}` : "";
-        const res = await fetch(`/api/ai/conversations${params}`);
-        if (!res.ok) return;
-
-        const { conversationId: id, messages } = await res.json();
-        setConversationId(id);
-        initialMessagesRef.current = toUIMessages(messages);
-        loadedKeyRef.current = key;
-      } catch {
-        /* ignore */
-      }
+    void (async () => {
+      actions.setIsLoadingConversations(true);
+      actions.setConversations(await conversationsApi.list(instanceId));
+      actions.setIsLoadingConversations(false);
     })();
-  }, [userId, instanceId, setConversationId]);
+  }, [userId, instanceId, actions]);
 
-  const ensureConversation = useCallback(async () => {
-    if (conversationId) return conversationId;
-
-    try {
-      const res = await fetch("/api/ai/conversations", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ instanceId }),
-      });
-      if (!res.ok) return null;
-
-      const { conversationId: id } = await res.json();
-      setConversationId(id);
-      return id;
-    } catch {
-      return null;
-    }
-  }, [conversationId, instanceId, setConversationId]);
-
+  // Load messages when conversation changes
   useEffect(() => {
-    if (userId && !conversationId) {
-      ensureConversation();
+    const id = state.conversationId;
+    if (!id) {
+      actions.setInitialMessages([]);
+      return;
     }
-  }, [userId, conversationId, ensureConversation]);
 
-  const recordMessageTime = useCallback((messageId: string) => {
-    if (!timestampsRef.current.has(messageId)) {
-      timestampsRef.current.set(messageId, new Date().toISOString());
-    }
-  }, []);
+    void (async () => {
+      actions.setIsLoadingMessages(true);
+      actions.setInitialMessages(
+        toUIMessages(await conversationsApi.getMessages(id)),
+      );
+      actions.setIsLoadingMessages(false);
+    })();
+  }, [state.conversationId, actions]);
+
+  // Actions
+  const create = useCallback(
+    async (title?: string): Promise<AIConversation | null> => {
+      const conv = await conversationsApi.create(instanceId, title);
+      if (!conv) return null;
+      actions.addConversation(conv);
+      actions.setConversationId(conv.id);
+      actions.setInitialMessages([]);
+      return conv;
+    },
+    [instanceId, actions],
+  );
+
+  const remove = useCallback(
+    async (id: string): Promise<boolean> => {
+      if (!(await conversationsApi.delete(id))) return false;
+      actions.removeConversation(id);
+      if (state.conversationId === id) {
+        const next = state.conversations.find((c) => c.id !== id);
+        actions.setConversationId(next?.id ?? null);
+        if (!next) actions.setInitialMessages([]);
+      }
+      return true;
+    },
+    [state.conversationId, state.conversations, actions],
+  );
+
+  const rename = useCallback(
+    async (id: string, title: string): Promise<boolean> => {
+      if (!(await conversationsApi.updateTitle(id, title))) return false;
+      actions.updateConversation(id, { title });
+      return true;
+    },
+    [actions],
+  );
+
+  const select = useCallback(
+    (id: string) => {
+      if (id !== state.conversationId) actions.setConversationId(id);
+    },
+    [state.conversationId, actions],
+  );
+
+  const startNew = useCallback(() => {
+    actions.setConversationId(null);
+    actions.setInitialMessages([]);
+  }, [actions]);
 
   return {
-    conversationId,
-    initialMessages: initialMessagesRef.current,
-    recordMessageTime,
+    conversationId: state.conversationId,
+    conversations: state.conversations,
+    initialMessages: state.initialMessages,
+    isLoadingConversations: state.isLoadingConversations,
+    isLoadingMessages: state.isLoadingMessages,
+    create,
+    remove,
+    rename,
+    select,
+    startNew,
   };
 }

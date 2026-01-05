@@ -124,6 +124,12 @@
     "connectToSend": "画像を送信するにはルームに接続してください",
     "regenerate": "再生成",
     "refinePlaceholder": "例: もっとアニメ風にして",
+    "conversations": "会話一覧",
+    "newConversation": "新しい会話",
+    "noConversations": "会話がありません",
+    "rename": "名前を変更",
+    "delete": "削除",
+    "deleteConfirm": "この会話を削除しますか？",
     "suggestions": {
       "summarize": "このチャットを要約して",
       "explainFlow": "会話の流れを説明して",
