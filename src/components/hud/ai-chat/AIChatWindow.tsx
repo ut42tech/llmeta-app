@@ -277,15 +277,12 @@ export const AIChatWindow = () => {
           )}
 
           {/* Input Area */}
-          <div className="shrink-0 border-t bg-background px-6 py-4">
+          <div className="shrink-0 border-t bg-background/95 px-6 py-4 backdrop-blur-sm">
             <div className="mx-auto max-w-3xl">
-              <PromptInput
-                onSubmit={handleSubmit}
-                className="rounded-xl border border-border/50 bg-muted/30 shadow-sm transition-colors focus-within:border-primary/30 focus-within:bg-background"
-              >
+              <PromptInput onSubmit={handleSubmit}>
                 <PromptInputTextarea
                   placeholder={tChat("typePlaceholder")}
-                  className="min-h-11 max-h-32 border-0 bg-transparent shadow-none focus-visible:ring-0"
+                  className="min-h-11 max-h-32"
                 />
                 <PromptInputFooter>
                   <PromptInputTools />
