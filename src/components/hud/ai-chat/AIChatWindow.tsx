@@ -38,6 +38,7 @@ import { useAIChatHistory } from "@/hooks/useAIChatHistory";
 import { useTextChat } from "@/hooks/useTextChat";
 import { useChatStore } from "@/stores/chatStore";
 
+const AI_CHAT_KEYBOARD_SHORTCUT = "/";
 const MAX_TITLE_LENGTH = 50;
 
 // Message part renderer
@@ -86,8 +87,43 @@ export const AIChatWindow = () => {
 
   const isOpen = useChatStore((s) => s.aiChat.isOpen);
   const close = useChatStore((s) => s.closeAIChat);
+  const toggleAIChat = useChatStore((s) => s.toggleAIChat);
   const chatMessages = useChatStore((s) => s.messages);
   const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
+
+  // Ref for textarea focus
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Keyboard shortcut to toggle AI chat
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Don't trigger when typing in input fields
+      const target = event.target as HTMLElement;
+      const isInputField =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable;
+
+      if (event.key === AI_CHAT_KEYBOARD_SHORTCUT && !isInputField) {
+        event.preventDefault();
+        toggleAIChat();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [toggleAIChat]);
+
+  // Focus textarea when dialog opens
+  useEffect(() => {
+    if (isOpen) {
+      // Delay to wait for dialog animation
+      const timer = setTimeout(() => {
+        textareaRef.current?.focus();
+      }, 100);
+      return () => clearTimeout(timer);
+    }
+  }, [isOpen]);
 
   const {
     conversationId,
@@ -281,6 +317,7 @@ export const AIChatWindow = () => {
             <div className="mx-auto max-w-3xl">
               <PromptInput onSubmit={handleSubmit}>
                 <PromptInputTextarea
+                  ref={textareaRef}
                   placeholder={tChat("typePlaceholder")}
                   className="min-h-11 max-h-32"
                 />
