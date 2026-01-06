@@ -9,7 +9,11 @@ type AuthState = {
   serverUrl?: string;
 };
 
-export function useLiveKitAuth(roomName: string) {
+/**
+ * Fetches LiveKit authentication token for the given instance.
+ * Uses instanceId as the LiveKit room name.
+ */
+export function useLiveKitAuth(instanceId: string) {
   const identityRef = useRef<string>(nanoid());
   const setFailed = useWorldStore((state) => state.setFailed);
   const [authState, setAuthState] = useState<AuthState>(() => ({
@@ -28,7 +32,7 @@ export function useLiveKitAuth(roomName: string) {
       try {
         const params = new URLSearchParams({
           identity,
-          roomName,
+          roomName: instanceId, // Use instanceId as LiveKit room name
         });
         const latestUsername = useLocalPlayerStore.getState().username;
         if (latestUsername) {
@@ -82,7 +86,7 @@ export function useLiveKitAuth(roomName: string) {
     return () => {
       cancelled = true;
     };
-  }, [roomName, setFailed]);
+  }, [instanceId, setFailed]);
 
   return { authState, identity: identityRef.current };
 }

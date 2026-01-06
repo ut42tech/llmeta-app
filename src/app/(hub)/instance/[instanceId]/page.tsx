@@ -3,20 +3,20 @@
 import { ConnectionState as LiveKitConnectionState } from "livekit-client";
 import {
   AlertTriangle,
+  ArrowLeft,
   ArrowRight,
   CheckCircle2,
   Loader2,
   RefreshCw,
-  Wifi,
   WifiOff,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { BackgroundCanvas } from "@/components/BackgroundCanvas";
 import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
-import { LiveKitSyncProvider } from "@/components/LiveKitSyncProvider";
+import { LiveKitSyncProvider } from "@/components/providers";
+import { BackgroundCanvas } from "@/components/scene";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,66 +28,88 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { useAuth } from "@/hooks/auth";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
+import { createClient } from "@/lib/supabase/client";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { ViverseAvatar } from "@/types/player";
+import type { DbInstance } from "@/types/world";
 
-function LobbyContent() {
+function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
   const router = useRouter();
   const t = useTranslations("joinWorld");
+  const tInstance = useTranslations("instance");
   const tLobby = useTranslations("lobby");
+
+  const { profile, updateProfile } = useAuth();
 
   const { connectionState } = useSyncClient();
   const connectionStatus = useWorldStore((state) => state.connection.status);
   const connectionError = useWorldStore((state) => state.connection.error);
 
-  const hasJoinedWorld = useLocalPlayerStore((state) => state.hasJoinedWorld);
-  const setUsername = useLocalPlayerStore((state) => state.setUsername);
-  const setCurrentAvatar = useLocalPlayerStore(
-    (state) => state.setCurrentAvatar,
-  );
-  const setHasJoinedWorld = useLocalPlayerStore(
-    (state) => state.setHasJoinedWorld,
-  );
+  const {
+    hasJoinedWorld,
+    setUsername,
+    setCurrentAvatar,
+    setHasJoinedWorld,
+    setInstanceId,
+  } = useLocalPlayerStore();
 
   const [inputUsername, setInputUsername] = useState("");
   const [selectedAvatar, setSelectedAvatar] = useState<ViverseAvatar | null>(
     null,
   );
   const [isReadyToEnter, setIsReadyToEnter] = useState(false);
+  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+
+  // Set instance ID in store on mount
+  useEffect(() => {
+    setInstanceId(instanceData.id);
+  }, [instanceData.id, setInstanceId]);
+
+  // Load profile data when available
+  useEffect(() => {
+    if (profile && !isProfileLoaded) {
+      setInputUsername(profile.display_name || "");
+      if (profile.avatar_id) {
+        const savedAvatar = AVATAR_LIST.find((a) => a.id === profile.avatar_id);
+        if (savedAvatar) {
+          setSelectedAvatar(savedAvatar);
+        }
+      }
+      setIsProfileLoaded(true);
+    }
+  }, [profile, isProfileLoaded]);
 
   const isConnected = connectionState === LiveKitConnectionState.Connected;
-  const isConnecting =
-    connectionState === LiveKitConnectionState.Connecting ||
-    connectionStatus === "connecting";
   const isFailed = connectionStatus === "failed";
 
-  const isFormValid =
-    inputUsername.trim().length > 0 && selectedAvatar !== null;
-
-  const handleJoinWorld = () => {
-    if (!isFormValid) return;
-    setUsername(inputUsername.trim());
-    if (selectedAvatar) {
-      setCurrentAvatar(selectedAvatar);
-    }
-    setHasJoinedWorld(true);
-    setIsReadyToEnter(true);
-  };
-
+  // Navigate to experience when ready and connected
   useEffect(() => {
     if (isReadyToEnter && isConnected && hasJoinedWorld) {
       router.push("/experience");
     }
   }, [isReadyToEnter, isConnected, hasJoinedWorld, router]);
 
-  const handleRetry = () => {
-    window.location.reload();
-  };
+  const isFormValid =
+    inputUsername.trim().length > 0 && selectedAvatar !== null;
 
-  const handleAvatarSelect = (avatar: ViverseAvatar) => {
-    setSelectedAvatar(avatar);
+  const handleJoinWorld = async () => {
+    if (!isFormValid) return;
+
+    // Save profile to Supabase
+    await updateProfile({
+      display_name: inputUsername.trim(),
+      avatar_id: selectedAvatar?.id ?? null,
+    });
+
+    setUsername(inputUsername.trim());
+    if (selectedAvatar) {
+      setCurrentAvatar(selectedAvatar);
+    }
+    setHasJoinedWorld(true);
+    setIsReadyToEnter(true);
   };
 
   const ConnectionIndicator = () => {
@@ -103,7 +125,11 @@ function LobbyContent() {
               <p className="text-xs text-destructive/70">{connectionError}</p>
             )}
           </div>
-          <Button variant="outline" size="sm" onClick={handleRetry}>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => window.location.reload()}
+          >
             <RefreshCw className="size-4 mr-1" />
             {tLobby("retry")}
           </Button>
@@ -122,23 +148,11 @@ function LobbyContent() {
       );
     }
 
-    if (isConnecting) {
-      return (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-muted border">
-          <Loader2 className="size-5 text-muted-foreground animate-spin" />
-          <p className="text-sm text-muted-foreground">
-            {tLobby("connecting")}
-          </p>
-        </div>
-      );
-    }
-
+    // Default: connecting or waiting
     return (
       <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-muted border">
-        <Wifi className="size-5 text-muted-foreground" />
-        <p className="text-sm text-muted-foreground">
-          {tLobby("waitingForConnection")}
-        </p>
+        <Loader2 className="size-5 text-muted-foreground animate-spin" />
+        <p className="text-sm text-muted-foreground">{tLobby("connecting")}</p>
       </div>
     );
   };
@@ -148,11 +162,23 @@ function LobbyContent() {
       <BackgroundCanvas />
 
       <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
-        <div className="flex items-center gap-2">
-          <div className="h-1.5 w-1.5 rounded-full bg-white/90" />
-          <span className="text-sm text-white/90">PROJECT LLMeta</span>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.back()}
+            className="text-white/70 hover:text-white hover:bg-white/10"
+          >
+            <ArrowLeft className="size-4 mr-2" />
+            {tInstance("back")}
+          </Button>
         </div>
-        <LanguageSwitcher />
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-white/70">
+            {tInstance("instance")}:{" "}
+            <span className="font-medium text-white">{instanceData.name}</span>
+          </span>
+        </div>
       </header>
 
       <main className="relative z-10 flex items-center justify-center px-6 md:px-12 py-8 min-h-[calc(100vh-120px)]">
@@ -183,7 +209,7 @@ function LobbyContent() {
                 <AvatarPicker
                   avatars={AVATAR_LIST}
                   selectedId={selectedAvatar?.id}
-                  onSelect={handleAvatarSelect}
+                  onSelect={setSelectedAvatar}
                   disabled={isReadyToEnter}
                 />
               </div>
@@ -227,10 +253,74 @@ function LobbyContent() {
   );
 }
 
-export default function LobbyPage() {
+function InstancePage() {
+  const params = useParams<{ instanceId: string }>();
+  const tInstance = useTranslations("instance");
+  const [instance, setInstance] = useState<DbInstance | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+
+  useEffect(() => {
+    const fetchInstance = async () => {
+      if (!params.instanceId) return;
+
+      const supabase = createClient();
+      const { data, error } = await supabase
+        .from("instances")
+        .select("*")
+        .eq("id", params.instanceId)
+        .single();
+
+      if (error || !data) {
+        console.error("Error fetching instance:", error);
+        setNotFound(true);
+        setIsLoading(false);
+        return;
+      }
+
+      setInstance(data);
+      setIsLoading(false);
+    };
+
+    fetchInstance();
+  }, [params.instanceId]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <Loader2 className="size-8 text-white animate-spin" />
+      </div>
+    );
+  }
+
+  if (notFound || !instance) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-black">
+        <Card className="w-full max-w-md mx-4">
+          <CardHeader>
+            <CardTitle>{tInstance("notFound.title")}</CardTitle>
+            <CardDescription>
+              {tInstance("notFound.description")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild className="w-full">
+              <Link href="/">
+                <ArrowLeft className="size-4 mr-2" />
+                {tInstance("notFound.backToHome")}
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
   return (
-    <LiveKitSyncProvider>
-      <LobbyContent />
+    <LiveKitSyncProvider instanceId={instance.id}>
+      <InstanceContent instanceData={instance} />
     </LiveKitSyncProvider>
   );
 }
+
+export default InstancePage;

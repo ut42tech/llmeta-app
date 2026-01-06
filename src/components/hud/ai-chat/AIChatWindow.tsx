@@ -2,22 +2,16 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { BotMessageSquare, ImageIcon, Send, WandSparkles } from "lucide-react";
-import Image from "next/image";
+import { BotMessageSquare, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import {
   Conversation,
   ConversationContent,
-  ConversationEmptyState,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Loader } from "@/components/ai-elements/loader";
-import {
-  Message,
-  MessageContent,
-  MessageResponse,
-} from "@/components/ai-elements/message";
+import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
   PromptInput,
   PromptInputFooter,
@@ -25,368 +19,262 @@ import {
   PromptInputTextarea,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
-import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
-import { Button } from "@/components/ui/button";
+import { AIChatSidebar } from "@/components/hud/ai-chat/AIChatSidebar";
+import { AIChatWelcome } from "@/components/hud/ai-chat/AIChatWelcome";
+import { MessagePartRenderer } from "@/components/hud/ai-chat/MessagePartRenderer";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import { useTextChat } from "@/hooks/useTextChat";
+import { useAIChatHistory } from "@/hooks/ai-chat";
+import { useTextChat } from "@/hooks/chat";
+import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
+
+const AI_CHAT_KEYBOARD_SHORTCUT = "/";
+const MAX_TITLE_LENGTH = 50;
 
 export const AIChatWindow = () => {
   const t = useTranslations("aiChat");
   const tChat = useTranslations("chat");
-  const tCommon = useTranslations("common");
-  const isOpen = useChatStore((state) => state.aiChat.isOpen);
-  const close = useChatStore((state) => state.closeAIChat);
-  const chatMessages = useChatStore((state) => state.messages);
+
+  const isOpen = useChatStore((s) => s.aiChat.isOpen);
+  const close = useChatStore((s) => s.closeAIChat);
+  const toggleAIChat = useChatStore((s) => s.toggleAIChat);
+  const chatMessages = useChatStore((s) => s.messages);
+  const profile = useAuthStore((s) => s.profile);
   const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
-  const [refineImageId, setRefineImageId] = useState<string | null>(null);
-  const [refineInput, setRefineInput] = useState("");
 
-  const SUGGESTIONS = [
-    t("suggestions.summarize"),
-    t("suggestions.explainFlow"),
-    t("suggestions.misunderstandings"),
-    t("suggestions.generateImage"),
-  ];
+  // Ref for textarea focus
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
+  // Track previous isOpen state to detect open event
+  const prevIsOpenRef = useRef(false);
+
+  // Keyboard shortcut to toggle AI chat
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Don't trigger when typing in input fields
+      const target = event.target as HTMLElement;
+      const isInputField =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.isContentEditable;
+
+      if (event.key === AI_CHAT_KEYBOARD_SHORTCUT && !isInputField) {
+        event.preventDefault();
+        toggleAIChat();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [toggleAIChat]);
+
+  const {
+    conversationId,
+    conversations,
+    initialMessages,
+    isLoadingConversations,
+    isLoadingMessages,
+    create,
+    remove,
+    rename,
+    select,
+    startNew,
+  } = useAIChatHistory();
+
+  // Refs for stable callback values
   const chatMessagesRef = useRef(chatMessages);
   chatMessagesRef.current = chatMessages;
+  const conversationIdRef = useRef(conversationId);
+  conversationIdRef.current = conversationId;
 
-  const getChatHistoryForContext = () => {
-    return chatMessagesRef.current.map((msg) => ({
-      id: msg.id,
-      sessionId: msg.sessionId,
-      username: msg.username,
-      content: msg.content,
-      direction: msg.direction,
-      sentAt: msg.sentAt,
-    }));
-  };
+  const getChatHistory = useCallback(
+    () =>
+      chatMessagesRef.current.map(
+        ({ id, senderId, username, content, isOwn, sentAt }) => ({
+          id,
+          senderId,
+          username,
+          content,
+          isOwn,
+          sentAt,
+        }),
+      ),
+    [],
+  );
 
-  const { messages, status, sendMessage } = useChat({
+  const { messages, status, sendMessage, setMessages } = useChat({
+    id: "ai-chat-window",
     transport: new DefaultChatTransport({
       api: "/api/ai/chat",
-      body: () => ({
-        chatHistory: getChatHistoryForContext(),
+      prepareSendMessagesRequest: ({ messages }) => ({
+        body: {
+          message: messages.at(-1),
+          conversationId: conversationIdRef.current,
+          chatHistory: getChatHistory(),
+        },
       }),
     }),
   });
 
-  const handleSuggestionClick = (suggestion: string) => {
-    sendMessage({ text: suggestion });
-  };
+  // Sync messages when loading from history
+  useEffect(() => setMessages(initialMessages), [initialMessages, setMessages]);
 
-  const handleSubmit = (message: { text: string }) => {
-    if (message.text.trim()) {
-      sendMessage({ text: message.text });
+  // Reset to welcome screen and focus textarea when dialog opens
+  useEffect(() => {
+    if (isOpen && !prevIsOpenRef.current) {
+      startNew();
+      setMessages([]);
+      // Focus textarea after dialog animation
+      const timer = setTimeout(() => textareaRef.current?.focus(), 100);
+      return () => clearTimeout(timer);
     }
-  };
+    prevIsOpenRef.current = isOpen;
+  }, [isOpen, startNew, setMessages]);
 
   const handleOpenChange = (open: boolean) => {
     if (!open) close();
   };
 
+  const ensureConversation = async (text: string) => {
+    if (conversationId) return true;
+    const conv = await create(text.slice(0, MAX_TITLE_LENGTH));
+    if (!conv) return false;
+    conversationIdRef.current = conv.id;
+    return true;
+  };
+
+  const handleSubmit = async ({ text }: { text: string }) => {
+    const trimmed = text.trim();
+    if (trimmed && (await ensureConversation(trimmed)))
+      sendMessage({ text: trimmed });
+  };
+
+  const handleSuggestion = async (text: string) => {
+    if (await ensureConversation(text)) {
+      sendMessage({ text });
+    }
+  };
+
+  const handleSendImage = async (url: string, prompt?: string) => {
+    if (canSendToChat)
+      await sendToChat("", { url, prompt }).catch(console.error);
+  };
+
+  const handleRefine = (msg: string) => sendMessage({ text: msg });
+
+  const isStreaming = status === "streaming";
+  const showLoader = isStreaming && messages.at(-1)?.role !== "assistant";
+  const isWelcomeScreen = messages.length === 0 && !conversationId;
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="flex h-[600px] max-w-2xl flex-col gap-0 p-0">
-        <DialogHeader className="flex-none border-b px-4 py-3">
-          <DialogTitle className="flex items-center gap-2 font-medium text-sm">
-            <BotMessageSquare className="size-4" />
-            {t("title")}
-          </DialogTitle>
-        </DialogHeader>
+      <DialogContent
+        className="flex h-[80vh] max-h-175 w-[90vw] max-w-5xl! flex-row gap-0 overflow-hidden p-0 sm:max-w-5xl"
+        showCloseButton
+      >
+        {/* Sidebar */}
+        <AIChatSidebar
+          conversations={conversations}
+          currentConversationId={conversationId}
+          isLoading={isLoadingConversations}
+          onSelect={select}
+          onCreate={startNew}
+          onDelete={remove}
+          onRename={rename}
+        />
 
-        <Conversation className="flex-1 overflow-y-auto">
-          <ConversationContent>
-            {messages.length === 0 ? (
-              <ConversationEmptyState
-                title={t("emptyStateTitle")}
-                description={t("emptyStateDescription")}
-                icon={<BotMessageSquare className="size-8" />}
-              />
-            ) : (
-              messages.map((message) => (
-                <Message key={message.id} from={message.role}>
-                  <MessageContent>
-                    {message.parts.map((part, index) => {
-                      switch (part.type) {
-                        case "text":
-                          return (
-                            <MessageResponse key={`${message.id}-${index}`}>
-                              {part.text}
-                            </MessageResponse>
-                          );
-                        case "tool-generateImage": {
-                          const toolPart = part as {
-                            type: string;
-                            toolCallId: string;
-                            state: string;
-                            input?: { prompt?: string };
-                            output?: {
-                              imageUrl?: string;
-                              prompt?: string;
-                            };
-                            errorText?: string;
-                          };
+        <div className="flex min-w-0 flex-1 flex-col bg-background">
+          {/* Header */}
+          <DialogHeader className="shrink-0 border-b bg-background/95 px-6 py-4 backdrop-blur-sm">
+            <DialogTitle className="flex items-center gap-2.5 font-semibold text-base">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+                <BotMessageSquare className="size-4 text-primary" />
+              </div>
+              {t("title")}
+            </DialogTitle>
+          </DialogHeader>
 
-                          const handleSendToChat = async () => {
-                            if (!toolPart.output?.imageUrl || !canSendToChat)
-                              return;
-
-                            try {
-                              await sendToChat("", {
-                                url: toolPart.output.imageUrl,
-                                prompt: toolPart.output.prompt,
-                              });
-                            } catch (error) {
-                              console.error(
-                                "[AIChatWindow] Failed to send image:",
-                                error,
-                              );
-                            }
-                          };
-
-                          switch (toolPart.state) {
-                            case "input-streaming":
-                            case "input-available":
-                              return (
-                                <div
-                                  key={`${message.id}-${index}`}
-                                  className="flex items-center gap-2 rounded-lg bg-muted/50 p-3 text-muted-foreground text-sm"
-                                >
-                                  <ImageIcon className="size-4 animate-pulse" />
-                                  <span>
-                                    {t("generatingImage", {
-                                      prompt: toolPart.input?.prompt || "",
-                                    })}
-                                  </span>
-                                </div>
-                              );
-                            case "output-available":
-                              if (toolPart.output?.imageUrl) {
-                                const imageId = `${message.id}-${index}`;
-                                const isRefining = refineImageId === imageId;
-
-                                const handleRefine = () => {
-                                  if (!refineInput.trim()) return;
-                                  const originalPrompt =
-                                    toolPart.output?.prompt ||
-                                    "the previous image";
-                                  const refineMessage = `Please regenerate the image with these modifications: "${refineInput}". Original prompt was: "${originalPrompt}"`;
-                                  sendMessage({ text: refineMessage });
-                                  setRefineImageId(null);
-                                  setRefineInput("");
-                                };
-
-                                return (
-                                  <div key={imageId} className="space-y-2">
-                                    <Image
-                                      src={toolPart.output.imageUrl}
-                                      alt={
-                                        toolPart.output.prompt ||
-                                        "Generated image"
-                                      }
-                                      width={512}
-                                      height={512}
-                                      className="h-auto max-w-full overflow-hidden rounded-lg"
-                                      unoptimized
-                                    />
-                                    {toolPart.output.prompt && (
-                                      <p className="text-muted-foreground text-xs">
-                                        {toolPart.output.prompt}
-                                      </p>
-                                    )}
-
-                                    {isRefining ? (
-                                      <div className="space-y-2">
-                                        <div className="flex gap-2">
-                                          <input
-                                            type="text"
-                                            value={refineInput}
-                                            onChange={(e) =>
-                                              setRefineInput(e.target.value)
-                                            }
-                                            placeholder={t("refinePlaceholder")}
-                                            className="flex-1 rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                                            onKeyDown={(e) => {
-                                              if (
-                                                e.key === "Enter" &&
-                                                !e.shiftKey
-                                              ) {
-                                                e.preventDefault();
-                                                handleRefine();
-                                              }
-                                              if (e.key === "Escape") {
-                                                setRefineImageId(null);
-                                                setRefineInput("");
-                                              }
-                                            }}
-                                            ref={(input) => input?.focus()}
-                                          />
-                                        </div>
-                                        <div className="flex gap-2">
-                                          <Button
-                                            variant="default"
-                                            size="sm"
-                                            className="flex-1 gap-2"
-                                            onClick={handleRefine}
-                                            disabled={
-                                              !refineInput.trim() ||
-                                              status === "streaming"
-                                            }
-                                          >
-                                            <WandSparkles className="size-3" />
-                                            {t("regenerate")}
-                                          </Button>
-                                          <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => {
-                                              setRefineImageId(null);
-                                              setRefineInput("");
-                                            }}
-                                          >
-                                            {tCommon("cancel")}
-                                          </Button>
-                                        </div>
-                                      </div>
-                                    ) : (
-                                      <div className="flex gap-2">
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <Button
-                                              variant="outline"
-                                              size="sm"
-                                              className="flex-1 gap-2"
-                                              onClick={() =>
-                                                setRefineImageId(imageId)
-                                              }
-                                              disabled={status === "streaming"}
-                                            >
-                                              <WandSparkles className="size-3" />
-                                              {t("refine")}
-                                            </Button>
-                                          </TooltipTrigger>
-                                          <TooltipContent>
-                                            <p>{t("refineTooltip")}</p>
-                                          </TooltipContent>
-                                        </Tooltip>
-                                        <Tooltip>
-                                          <TooltipTrigger asChild>
-                                            <Button
-                                              variant="outline"
-                                              size="sm"
-                                              className="flex-1 gap-2"
-                                              onClick={handleSendToChat}
-                                              disabled={!canSendToChat}
-                                            >
-                                              <Send className="size-3" />
-                                              {t("sendToChat")}
-                                            </Button>
-                                          </TooltipTrigger>
-                                          {!canSendToChat && (
-                                            <TooltipContent>
-                                              <p>{t("connectToSend")}</p>
-                                            </TooltipContent>
-                                          )}
-                                        </Tooltip>
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              }
-                              return null;
-                            case "output-error":
-                              return (
-                                <div
-                                  key={`${message.id}-${index}`}
-                                  className="rounded-lg bg-red-50 p-3 text-red-600 text-sm"
-                                >
-                                  {t("errorGeneratingImage", {
-                                    error:
-                                      toolPart.errorText || "Unknown error",
-                                  })}
-                                </div>
-                              );
-                            default:
-                              console.log(
-                                "Unhandled tool state:",
-                                toolPart.state,
-                                toolPart,
-                              );
-                              return null;
-                          }
-                        }
-                        default:
-                          if (part.type !== "step-start") {
-                            console.log(
-                              "Unhandled part type:",
-                              part.type,
-                              part,
-                            );
-                          }
-                          return null;
-                      }
-                    })}
-                  </MessageContent>
-                </Message>
-              ))
-            )}
-            {status === "streaming" &&
-              messages.at(-1)?.role !== "assistant" && (
-                <Message from="assistant">
-                  <MessageContent>
-                    <Loader className="text-muted-foreground" />
-                  </MessageContent>
-                </Message>
-              )}
-          </ConversationContent>
-          <ConversationScrollButton />
-        </Conversation>
-
-        {messages.length === 0 && (
-          <div className="flex-none border-t px-4 py-3">
-            <Suggestions>
-              {SUGGESTIONS.map((suggestion) => (
-                <Suggestion
-                  key={suggestion}
-                  suggestion={suggestion}
-                  onClick={handleSuggestionClick}
-                  variant="secondary"
-                  size="sm"
-                />
-              ))}
-            </Suggestions>
-          </div>
-        )}
-
-        <div className="flex-none border-t">
-          <PromptInput
-            onSubmit={(message) => handleSubmit(message)}
-            className="border-0 shadow-none"
-          >
-            <PromptInputTextarea
-              placeholder={tChat("typePlaceholder")}
-              className="min-h-10 max-h-24"
+          {/* Main Content Area */}
+          {isLoadingMessages ? (
+            <div className="flex flex-1 items-center justify-center">
+              <Loader className="text-muted-foreground" />
+            </div>
+          ) : isWelcomeScreen ? (
+            /* Welcome Screen */
+            <AIChatWelcome
+              username={profile?.display_name ?? undefined}
+              onSuggestion={handleSuggestion}
+              className="flex-1"
             />
-            <PromptInputFooter>
-              <PromptInputTools />
-              <PromptInputSubmit
-                status={status}
-                disabled={status === "streaming" || status === "submitted"}
-              />
-            </PromptInputFooter>
-          </PromptInput>
+          ) : (
+            <Conversation className="flex-1 overflow-y-auto">
+              <ConversationContent className="mx-auto max-w-3xl px-6 py-6">
+                {messages.map((msg) => (
+                  <Message key={msg.id} from={msg.role}>
+                    <MessageContent>
+                      {msg.parts.map((part, i) => (
+                        <MessagePartRenderer
+                          key={`${msg.id}-${i}`}
+                          message={msg}
+                          part={part}
+                          index={i}
+                          isStreaming={isStreaming}
+                          canSendToChat={canSendToChat}
+                          onSendToChat={handleSendImage}
+                          onRefine={handleRefine}
+                        />
+                      ))}
+                    </MessageContent>
+                  </Message>
+                ))}
+                {showLoader && (
+                  <Message from="assistant">
+                    <MessageContent>
+                      <Loader className="text-muted-foreground" />
+                    </MessageContent>
+                  </Message>
+                )}
+              </ConversationContent>
+              <ConversationScrollButton />
+            </Conversation>
+          )}
+
+          {/* Input Area */}
+          <div className="shrink-0 border-t bg-background/95 px-6 py-4 backdrop-blur-sm">
+            <div className="mx-auto max-w-3xl">
+              <PromptInput onSubmit={handleSubmit}>
+                <PromptInputTextarea
+                  ref={textareaRef}
+                  placeholder={
+                    isWelcomeScreen
+                      ? t("welcome.placeholder")
+                      : tChat("typePlaceholder")
+                  }
+                  className="min-h-11 max-h-32"
+                />
+                <PromptInputFooter>
+                  <PromptInputTools />
+                  <PromptInputSubmit
+                    status={status}
+                    disabled={isStreaming || status === "submitted"}
+                  />
+                </PromptInputFooter>
+              </PromptInput>
+
+              {/* Disclaimer */}
+              <div className="mt-3 flex items-center justify-center gap-1.5 text-center">
+                <Info className="size-3 shrink-0 text-muted-foreground/60" />
+                <p className="text-[11px] leading-tight text-muted-foreground/60">
+                  {t("disclaimer")}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

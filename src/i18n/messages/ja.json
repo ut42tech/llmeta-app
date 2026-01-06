@@ -1,5 +1,7 @@
 {
   "common": {
+    "appName": "Project LLMeta",
+    "copyright": "Takuya Uehara, All Rights Reserved.",
     "close": "閉じる",
     "cancel": "キャンセル",
     "update": "更新",
@@ -9,6 +11,61 @@
     "send": "送信",
     "loading": "読み込み中...",
     "sendMessage": "メッセージを送信"
+  },
+  "dashboard": {
+    "title": "ダッシュボード",
+    "description": "ワールドを探索してインスタンスに参加",
+    "worlds": "ワールド"
+  },
+  "sidebar": {
+    "navigation": "ナビゲーション",
+    "home": "ホーム",
+    "settings": "設定",
+    "logout": "サインアウト",
+    "guest": "ゲスト"
+  },
+  "settingsPage": {
+    "title": "設定",
+    "description": "アカウントと環境設定を管理",
+    "accountInfo": "アカウント情報",
+    "accountInfoDescription": "あなたの個人情報と設定",
+    "email": "メールアドレス",
+    "emailNote": "メールアドレスは変更できません",
+    "displayName": "表示名",
+    "displayNamePlaceholder": "表示名を入力",
+    "update": "更新",
+    "language": "言語",
+    "languageDescription": "インターフェースの表示言語を選択",
+    "dangerZone": "危険な操作",
+    "dangerZoneDescription": "取り消せない操作",
+    "logout": "サインアウト"
+  },
+  "world": {
+    "back": "戻る",
+    "worldInfo": "ワールド情報",
+    "capacity": "定員",
+    "players": "人",
+    "createdAt": "作成日",
+    "instances": "インスタンス",
+    "createInstance": "インスタンスを作成",
+    "createInstanceTitle": "新規インスタンスを作成",
+    "createInstanceDescription": "このワールドの新しいインスタンスを作成します",
+    "instanceName": "インスタンス名",
+    "instanceNamePlaceholder": "インスタンス名を入力（任意）",
+    "cancel": "キャンセル",
+    "create": "作成",
+    "noInstances": "アクティブなインスタンスがありません。作成して始めましょう！"
+  },
+  "instance": {
+    "back": "戻る",
+    "instance": "インスタンス",
+    "join": "参加",
+    "hostedBy": "{name} がホスト",
+    "notFound": {
+      "title": "インスタンスが見つかりません",
+      "description": "このインスタンスは存在しないか、削除された可能性があります。",
+      "backToHome": "ホームに戻る"
+    }
   },
   "landing": {
     "tagline": "PROJECT LLMeta",
@@ -28,6 +85,8 @@
     "warningText": "このアプリは外部サービスに情報を送信します。個人情報などの機密情報は送信しないでください。",
     "usernameLabel": "ユーザーネーム",
     "usernamePlaceholder": "ユーザーネームを入力",
+    "instanceNameLabel": "インスタンス名",
+    "instanceNamePlaceholder": "インスタンス名を入力",
     "avatarLabel": "アバターを選択",
     "continueButton": "続ける"
   },
@@ -55,6 +114,15 @@
   },
   "aiChat": {
     "title": "AIエージェント",
+    "welcome": {
+      "greeting": "{name}さん",
+      "question": "何から始めますか？",
+      "placeholder": "AIエージェントに相談"
+    },
+    "relativeDate": {
+      "yesterday": "昨日",
+      "daysAgo": "{count}日前"
+    },
     "emptyStateTitle": "AIエージェント",
     "emptyStateDescription": "何でも聞いてください！",
     "generatingImage": "画像を生成中: {prompt}",
@@ -65,12 +133,19 @@
     "connectToSend": "画像を送信するにはルームに接続してください",
     "regenerate": "再生成",
     "refinePlaceholder": "例: もっとアニメ風にして",
+    "conversations": "会話一覧",
+    "newConversation": "新しい会話",
+    "noConversations": "会話がありません",
+    "rename": "名前を変更",
+    "delete": "削除",
+    "deleteConfirm": "この会話を削除しますか？",
     "suggestions": {
       "summarize": "このチャットを要約して",
       "explainFlow": "会話の流れを説明して",
       "misunderstandings": "誤解はありますか？",
       "generateImage": "チャットに基づいて画像を生成して"
-    }
+    },
+    "disclaimer": "AIエージェントの回答は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。"
   },
   "worldInfo": {
     "title": "このワールドについて",
@@ -111,8 +186,7 @@
     "usernamePlaceholder": "名前を入力",
     "avatar": "アバター",
     "sessionInfo": "セッション情報",
-    "roomName": "ルーム名",
-    "roomSid": "ルームSID",
+    "instanceId": "インスタンスID",
     "sessionId": "セッションID"
   },
   "language": {
@@ -138,5 +212,42 @@
     "players": "プレイヤー",
     "onlyPlayerOnline": "あなただけがオンラインです",
     "playersOnline": "{count}人のプレイヤーがオンライン（あなたを含む）"
+  },
+  "auth": {
+    "errors": {
+      "profileNotFound": "アカウントの設定に問題があります。再度サインアップしてください。",
+      "authCallbackError": "認証に失敗しました。もう一度お試しください。",
+      "unexpectedError": "予期しないエラーが発生しました"
+    },
+    "login": {
+      "title": "おかえりなさい",
+      "description": "アカウントにサインインして続行",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "submit": "サインイン",
+      "loading": "サインイン中...",
+      "noAccount": "アカウントをお持ちでないですか？",
+      "signupLink": "新規登録"
+    },
+    "signup": {
+      "title": "アカウント作成",
+      "description": "新規登録して始めましょう",
+      "displayName": "表示名",
+      "displayNamePlaceholder": "表示名を入力",
+      "displayNameRequired": "表示名は必須です",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "confirmPassword": "パスワード（確認）",
+      "submit": "アカウントを作成",
+      "loading": "アカウント作成中...",
+      "hasAccount": "すでにアカウントをお持ちですか？",
+      "loginLink": "サインイン",
+      "passwordMismatch": "パスワードが一致しません",
+      "passwordTooShort": "パスワードは6文字以上である必要があります",
+      "successTitle": "メールを確認してください",
+      "successMessage": "確認リンクを送信しました。メールを確認してアカウントを認証してください。",
+      "goToLogin": "ログインへ"
+    },
+    "logout": "サインアウト"
   }
 }

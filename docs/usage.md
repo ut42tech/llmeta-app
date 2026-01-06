@@ -21,17 +21,69 @@ Navigate to the application URL in your browser. You'll be greeted by the landin
 
 ## Getting Started
 
-### 1. Landing Page
+### 1. Authentication
 
-The landing page serves as your entry point to the LLMeta metaverse.
+LLMeta uses secure server-side authentication powered by Supabase. Your session is managed via HTTP-only cookies, ensuring security and instant page loads.
 
-- Click **"Enter the World"** to proceed to the lobby
-- Click **"Learn More"** to discover more about the project
-- Use the language switcher in the top-right corner to change between English and Japanese
+#### Creating an Account
 
-### 2. Joining a World (Lobby)
+1. Navigate to the **Sign Up** page (`/signup`)
+2. Enter your **Display Name** — This is how other users will see you
+3. Enter your **Email** and **Password**
+4. Confirm your password
+5. Click **"Create Account"**
+6. Check your email for a confirmation link and click it to verify your account
 
-The lobby is where you configure your identity before entering the virtual world.
+#### Logging In
+
+1. Navigate to the **Login** page (`/login`)
+2. Enter your registered **Email** and **Password**
+3. Click **"Sign In"**
+4. You'll be redirected to the Dashboard
+
+> [!NOTE]
+> Authentication is validated server-side. If your session expires, you'll be automatically redirected to the login page.
+
+#### Logging Out
+
+Click the **Sign Out** button in the sidebar or profile page to sign out of your account.
+
+### 2. Dashboard
+
+After logging in, you'll see the **Dashboard** — your central hub for exploring worlds.
+
+**Features:**
+
+- **Sidebar Navigation** — Access Home (Dashboard) and Settings pages
+- **World List** — Browse available metaverse worlds displayed as cards
+- **User Info** — Your display name is shown in the sidebar footer
+
+**To Enter a World:**
+Click on a world card to view its details.
+
+### 3. World Detail Page
+
+The world detail page (`/world/[worldId]`) shows comprehensive information about a specific world.
+
+**What You'll See:**
+
+- **Hero Section** — Large thumbnail image with world name and description
+- **World Info** — Player capacity and creation date
+- **Instance List** — Active rooms you can join
+
+**Creating an Instance:**
+
+1. Click **"Create Instance"** button
+2. Enter a room name (optional — a default name will be generated if left empty)
+3. Click **"Create"**
+4. You'll be redirected to the instance lobby
+
+**Joining an Existing Instance:**
+Click **"Join"** on any instance card to enter that room.
+
+### 4. Instance Lobby
+
+The instance lobby (`/instance/[roomSid]`) is where you configure your identity before entering the virtual world.
 
 **Steps to Join:**
 
@@ -40,18 +92,35 @@ The lobby is where you configure your identity before entering the virtual world
    - ✅ *Connected* — Ready to proceed
    - ❌ *Failed* — Click "Retry" to reconnect
 
-2. **Enter Username** — Type your display name (maximum 20 characters)
+2. **Edit Display Name** — Your display name is loaded from your profile. You can update it here (maximum 20 characters)
 
 3. **Choose Avatar** — Click on one of the available VRM avatars to select your virtual representation
 
 4. **Click "Continue"** — Once connected and configured, enter the 3D world
 
+> [!NOTE]
+> Your display name and avatar selection are automatically saved to your profile.
+
 > [!WARNING]
 > **Privacy Notice**: This application sends data to external services. Do not share personal or sensitive information.
 
-### 3. The 3D Experience
+### 5. Settings Page
 
-After joining, you'll be immersed in the 3D metaverse with other users and your personal AI agent.
+Access your settings via the sidebar or navigating to `/settings`.
+
+**Available Settings:**
+
+| Setting | Description |
+|---------|-------------|
+| **Avatar** | Your current avatar initial display |
+| **Email** | Your registered email (read-only) |
+| **Display Name** | Editable — click "Update" to save changes |
+| **Language** | Switch between English and Japanese |
+| **Sign Out** | Log out from your account |
+
+### 6. The 3D Experience
+
+After joining an instance, you'll be immersed in the 3D metaverse with other users and your personal AI agent.
 
 ---
 
@@ -61,13 +130,13 @@ The HUD (Heads-Up Display) provides all essential information and controls while
 
 ### Status Bar (Top)
 
-Located at the top of the screen, the status bar displays:
+Located at the top of the screen, the status bar displays three key indicators:
 
 | Element | Description |
 |---------|-------------|
-| **Connection Status** | Current server connection state |
+| **Connection Status** | Current server connection state (connecting/connected/failed) |
 | **Transcription Status** | Active/inactive indicator for speech-to-text |
-| **Player Count** | Number of users currently online |
+| **Player Count** | Number of users currently online in the room |
 
 ### Caption Window (Below Status Bar)
 
@@ -79,17 +148,15 @@ Shows **text messages** from all users in the current room. Messages appear in a
 
 ### Dock (Bottom Center)
 
-The main control bar with three primary buttons:
+The main control bar with five primary buttons:
 
 | Button | Function |
 |--------|----------|
 | 👁️ **View Toggle** | Switch between first-person and third-person camera views |
 | 🎤 **Voice Chat** | Mute/unmute your microphone |
-| ⚙️ **Preferences** | Open the settings panel |
-
-### AI Agent Button (Bottom Right)
-
-A dedicated button to open the **AI Agent chat window** — your personal AI assistant.
+| 🎭 **Avatar Picker** | Change your avatar during the session |
+| ⚙️ **Preferences** | Open the settings drawer |
+| 🤖 **AI Chat** | Open the AI Agent chat sidebar |
 
 ---
 
@@ -121,7 +188,7 @@ Send text messages visible to all users in the room.
 Your personal AI assistant is always available to help with communication.
 
 **Opening the AI Agent:**
-Click the AI Agent button in the bottom-right corner to open the chat dialog.
+Click the AI Agent button in the dock to open the chat sidebar.
 
 **Capabilities:**
 
@@ -158,7 +225,7 @@ Access settings by clicking the gear icon in the dock or pressing **P**.
 
 | Tab | Options |
 |-----|---------|
-| **General** | Update username, view avatar, session information (Room Name, Room SID, Session ID) |
+| **General** | View username and avatar, session information (Room Name, Room SID, Session ID) |
 | **Language** | Switch between English (🇺🇸) and Japanese (🇯🇵) |
 
 ---

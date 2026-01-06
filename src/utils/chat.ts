@@ -30,6 +30,7 @@ export function filterTextMessages(
 ): ChatMessage[] {
   const now = Date.now();
   return messages.filter(
-    (msg) => hasTextContent(msg) && now - msg.sentAt < maxAgeMs,
+    (msg) =>
+      hasTextContent(msg) && now - new Date(msg.sentAt).getTime() < maxAgeMs,
   );
 }

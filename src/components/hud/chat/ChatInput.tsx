@@ -12,7 +12,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useTextChat } from "@/hooks/useTextChat";
+import { useTextChat } from "@/hooks/chat";
 
 const MAX_MESSAGE_LENGTH = 500;
 

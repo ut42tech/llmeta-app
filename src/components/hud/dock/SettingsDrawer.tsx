@@ -38,8 +38,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { useAuth } from "@/hooks/auth";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import type { Locale } from "@/i18n/config";
+import { useAuthStore } from "@/stores/authStore";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
@@ -94,7 +96,7 @@ const InfoRow = ({ label, value, mono }: InfoRowProps) => (
     <span
       className={
         mono
-          ? "font-mono text-xs text-foreground/80 break-all max-w-[200px] text-right"
+          ? "font-mono text-xs text-foreground/80 break-all max-w-50 text-right"
           : "text-base font-semibold"
       }
     >
@@ -107,12 +109,8 @@ const GeneralTab = () => {
   const t = useTranslations("settings");
   const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
-  const { roomName, roomSid } = useWorldStore(
-    useShallow((state) => ({
-      roomName: state.room.roomName || "—",
-      roomSid: state.room.roomSid || "—",
-    })),
-  );
+  const { updateProfile } = useAuth();
+  const instanceId = useWorldStore((state) => state.instanceId);
 
   const {
     username,
@@ -148,6 +146,7 @@ const GeneralTab = () => {
     if (!newName) return;
     setUsername(newName);
     sendProfile({ username: newName });
+    updateProfile({ display_name: newName });
   };
 
   const handleSelectAvatar = (avatar: ViverseAvatar) => {
@@ -156,6 +155,7 @@ const GeneralTab = () => {
     setCurrentAvatar(avatar);
     teleport(currentPosition, currentRotation);
     sendProfile({ avatar });
+    updateProfile({ avatar_id: avatar.id });
   };
 
   return (
@@ -197,8 +197,7 @@ const GeneralTab = () => {
         title={t("sessionInfo")}
         icon={<Fingerprint className="size-4 text-muted-foreground" />}
       >
-        <InfoRow label={t("roomName")} value={roomName} mono />
-        <InfoRow label={t("roomSid")} value={roomSid} mono />
+        <InfoRow label={t("instanceId")} value={instanceId || "—"} mono />
         <InfoRow label={t("sessionId")} value={sessionId} mono />
       </SettingsSection>
     </motion.div>
@@ -262,7 +261,15 @@ const languageOptions: { value: Locale; label: string; description: string }[] =
 
 const LanguageTab = () => {
   const t = useTranslations("language");
-  const { locale, setLocale } = useLanguageStore();
+  const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
+  const { user } = useAuthStore();
+
+  const handleLocaleChange = (newLocale: Locale) => {
+    setLocale(newLocale);
+    if (user) {
+      syncLocaleToProfile(user.id, newLocale);
+    }
+  };
 
   return (
     <motion.div
@@ -277,7 +284,7 @@ const LanguageTab = () => {
       >
         <RadioGroup
           value={locale}
-          onValueChange={(v) => setLocale(v as Locale)}
+          onValueChange={(v) => handleLocaleChange(v as Locale)}
         >
           {languageOptions.map((lang, index) => (
             <motion.div

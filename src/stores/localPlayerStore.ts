@@ -1,5 +1,6 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
+import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { PERFORMANCE, PRECISION } from "@/constants/world";
 import type { AnimationState, MoveData, ViverseAvatar } from "@/types/player";
 import { normalizeAngle, roundToDecimals } from "@/utils/math";
@@ -8,6 +9,7 @@ import { createMoveData } from "@/utils/player";
 type LocalPlayerState = {
   sessionId: string;
   username: string;
+  instanceId: string;
   currentAvatar?: ViverseAvatar;
   avatarList?: ViverseAvatar[];
   position: Vector3;
@@ -23,6 +25,7 @@ type LocalPlayerState = {
 type LocalPlayerActions = {
   setSessionId: (sessionId: string) => void;
   setUsername: (username: string) => void;
+  setInstanceId: (instanceId: string) => void;
   setCurrentAvatar: (avatar: ViverseAvatar) => void;
   setAvatarList: (avatarList: ViverseAvatar[]) => void;
   setPosition: (position: Vector3) => void;
@@ -64,6 +67,7 @@ const normalizeRotation = (rot: Euler): Euler =>
 const createInitialState = (): LocalPlayerState => ({
   sessionId: "",
   username: "Anonymous",
+  instanceId: LIVEKIT_CONFIG.defaultInstanceId,
   position: new Vector3(),
   rotation: new Euler(),
   isRunning: false,
@@ -79,6 +83,7 @@ export const useLocalPlayerStore = create<LocalPlayerStore>((set, get) => ({
 
   setSessionId: (sessionId) => set({ sessionId }),
   setUsername: (username) => set({ username }),
+  setInstanceId: (instanceId) => set({ instanceId }),
   setCurrentAvatar: (currentAvatar) => set({ currentAvatar }),
   setAvatarList: (avatarList) => set({ avatarList }),
 

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Noto_Sans_JP, Roboto, Roboto_Mono } from "next/font/google";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
-import { I18nProvider } from "@/components/I18nProvider";
+import { I18nProvider } from "@/components/providers";
 import "./globals.css";
 
 const notoSans = Noto_Sans_JP({

@@ -29,13 +29,16 @@ Each user is paired with a personal AI agent that facilitates communication betw
 
 | Category | Technologies |
 |----------|-------------|
-| **Core** | Next.js App Router, TypeScript |
-| **3D/VR** | Three.js, React Three Fiber, @react-three/viverse, @react-three/xr |
+| **Core** | Next.js (App Router), TypeScript |
+| **3D/VR** | Three.js, React Three Fiber, @react-three/viverse, @react-three/xr, @pixiv/three-vrm |
 | **Real-time** | LiveKit, Deepgram |
 | **AI** | Vercel AI SDK, OpenAI |
+| **Auth** | Supabase Auth (@supabase/ssr) |
 | **UI** | shadcn/ui, Tailwind CSS, Motion, Lucide Icons |
 | **State** | Zustand |
+| **i18n** | next-intl |
 | **Testing** | Vitest, Testing Library |
+| **Linting** | Biome |
 
 ## Getting Started
 
@@ -64,8 +67,8 @@ cp .env.example .env.local
 ```
 
 | Variable | Description |
-|----------|-------------|
-| `LIVEKIT_API_KEY` | LiveKit API key |
+|----------|-------------|| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (anon) key || `LIVEKIT_API_KEY` | LiveKit API key |
 | `LIVEKIT_API_SECRET` | LiveKit API secret |
 | `LIVEKIT_URL` | LiveKit WebSocket URL |
 | `LIVEKIT_DEFAULT_ROOM` | Default room name |
@@ -87,23 +90,53 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ```
 src/
-├── app/                # Next.js App Router pages
-│   ├── api/            # API routes
-│   ├── experience/     # 3D world experience page
-│   └── lobby/          # Room lobby page
+├── app/                     # Next.js App Router pages
+│   ├── (auth)/              # Authentication pages (login, signup)
+│   ├── (hub)/               # Main hub with sidebar
+│   │   ├── instance/        # Instance lobby page
+│   │   ├── settings/        # User settings page
+│   │   └── world/           # World detail page
+│   ├── actions/             # Server actions
+│   ├── api/                 # API routes
+│   │   ├── ai/              # AI endpoints (chat, conversations)
+│   │   ├── auth/            # Authentication endpoints
+│   │   ├── blob/            # Blob storage endpoints
+│   │   ├── deepgram/        # Speech-to-text endpoints
+│   │   ├── livekit/         # LiveKit token endpoints
+│   │   └── messages/        # Message endpoints
+│   └── experience/          # Full-screen 3D world experience
 ├── components/
-│   ├── ai-elements/    # AI agent UI components
-│   ├── character/      # VRM character components
-│   ├── hud/            # HUD and UI overlays
-│   └── ui/             # Shared shadcn/ui components
-├── hooks/              # Custom React hooks
-│   ├── livekit/        # LiveKit integration
-│   ├── scene/          # 3D scene hooks
-│   └── transcription/  # Speech-to-text
-├── i18n/               # Internationalization
-├── stores/             # Zustand state stores
-├── types/              # TypeScript types
-└── utils/              # Utility functions
+│   ├── ai-elements/         # AI agent UI components (30 components)
+│   ├── character/           # VRM character & player components (7 components)
+│   ├── common/              # Shared utilities (DebugPanel, LanguageSwitcher)
+│   ├── hud/                 # HUD overlays
+│   │   ├── ai-chat/         # AI chat sidebar & window
+│   │   ├── caption/         # Caption window & waveform
+│   │   ├── chat/            # Text chat input & stream
+│   │   ├── dock/            # Control buttons & drawers
+│   │   └── status-bar/      # Connection & player status badges
+│   ├── layout/              # Dashboard layout (AppSidebar, DashboardContent)
+│   ├── providers/           # Context providers (Auth, I18n, LiveKitSync)
+│   ├── scene/               # 3D scene components (Scene, WorldContent, DefaultMap)
+│   ├── ui/                  # Shared shadcn/ui components (32 components)
+│   └── world/               # World cards & instance cards
+├── constants/               # App constants (animations, avatars, sync, world)
+├── hooks/                   # Custom React hooks (20+ hooks)
+│   ├── ai-chat/             # AI chat history hooks
+│   ├── auth/                # Authentication hooks
+│   ├── chat/                # Text chat hooks
+│   ├── common/              # Common utility hooks
+│   ├── livekit/             # LiveKit integration (7 hooks)
+│   ├── scene/               # 3D scene hooks (5 hooks)
+│   ├── transcription/       # Speech-to-text hooks
+│   └── voice-chat/          # Voice chat hooks
+├── i18n/                    # Internationalization (en, ja)
+├── lib/                     # Utility libraries
+│   ├── api/                 # API utilities
+│   └── supabase/            # Supabase client (server/browser)
+├── stores/                  # Zustand state stores (8 stores)
+├── types/                   # TypeScript types (7 categories)
+└── utils/                   # Utility functions
 ```
 
 ## Scripts

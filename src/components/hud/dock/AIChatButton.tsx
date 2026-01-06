@@ -3,6 +3,7 @@
 import { BotMessageSquareIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
 import {
   Tooltip,
   TooltipContent,
@@ -27,8 +28,9 @@ export const AIChatButton = () => {
           {t("agent")}
         </Button>
       </TooltipTrigger>
-      <TooltipContent>
-        <p>{t("aiAgent")}</p>
+      <TooltipContent className="flex items-center gap-2">
+        {t("aiAgent")}
+        <Kbd>/</Kbd>
       </TooltipContent>
     </Tooltip>
   );

@@ -1,107 +1,111 @@
+import type { UIMessage } from "ai";
 import { create } from "zustand";
-import type { ChatMessage, ChatMessageStatus } from "@/types/chat";
+import type { AIConversation, ChatMessage } from "@/types/chat";
+
+// =============================================================================
+// Constants
+// =============================================================================
 
 const MAX_CHAT_MESSAGES = 200;
 
-const appendMessage = (
-  messages: ChatMessage[],
-  message: ChatMessage,
-): ChatMessage[] => {
-  const existingIndex = messages.findIndex((msg) => msg.id === message.id);
-  if (existingIndex >= 0) {
-    const updated = [...messages];
-    updated[existingIndex] = { ...updated[existingIndex], ...message };
-    return updated;
-  }
-
-  const appended = [...messages, message];
-  return appended.length > MAX_CHAT_MESSAGES
-    ? appended.slice(-MAX_CHAT_MESSAGES)
-    : appended;
-};
+// =============================================================================
+// Types
+// =============================================================================
 
 type AIChatState = {
   isOpen: boolean;
+  conversationId: string | null;
+  conversations: AIConversation[];
+  initialMessages: UIMessage[];
+  isLoadingConversations: boolean;
+  isLoadingMessages: boolean;
 };
 
 type ChatState = {
+  /** Real-time chat messages (LiveKit sync) */
   messages: ChatMessage[];
-  isOpen: boolean;
+  /** AI chat assistant state */
   aiChat: AIChatState;
 };
 
+// =============================================================================
+// Actions
+// =============================================================================
+
 type ChatActions = {
-  addIncomingMessage: (
-    message: Omit<ChatMessage, "direction" | "status"> & {
-      status?: ChatMessageStatus;
-    },
-  ) => void;
-  addOutgoingMessage: (
-    message: Omit<ChatMessage, "direction" | "status"> & {
-      status?: ChatMessageStatus;
-    },
-  ) => void;
-  updateMessageStatus: (id: string, status: ChatMessageStatus) => void;
-  setOpen: (isOpen: boolean) => void;
+  // Real-time chat actions
+  setMessages: (messages: ChatMessage[]) => void;
+  addMessage: (message: ChatMessage) => void;
+  // AI chat actions
   toggleAIChat: () => void;
   openAIChat: () => void;
   closeAIChat: () => void;
+  setAIConversationId: (id: string | null) => void;
+  setAIConversations: (conversations: AIConversation[]) => void;
+  addAIConversation: (conversation: AIConversation) => void;
+  removeAIConversation: (id: string) => void;
+  updateAIConversation: (id: string, updates: Partial<AIConversation>) => void;
+  setAIInitialMessages: (messages: UIMessage[]) => void;
+  setIsLoadingConversations: (loading: boolean) => void;
+  setIsLoadingMessages: (loading: boolean) => void;
+  // Store reset
   reset: () => void;
 };
 
 type ChatStore = ChatState & ChatActions;
 
+// =============================================================================
+// Initial State
+// =============================================================================
+
 const initialState: ChatState = {
   messages: [],
-  isOpen: false,
   aiChat: {
     isOpen: false,
+    conversationId: null,
+    conversations: [],
+    initialMessages: [],
+    isLoadingConversations: false,
+    isLoadingMessages: false,
   },
 };
 
+// =============================================================================
+// Store
+// =============================================================================
+
 /**
  * Unified chat store.
- * Includes both text chat and AI chat state.
+ * - Real-time messages: persisted to Supabase, synced via LiveKit
+ * - AI chat: conversation history with AI assistant
  */
 export const useChatStore = create<ChatStore>((set) => ({
   ...initialState,
 
-  addIncomingMessage: (message) => {
-    const incoming: ChatMessage = {
-      ...message,
-      direction: "incoming",
-      status: message.status ?? "sent",
-    };
+  // ---------------------------------------------------------------------------
+  // Real-time Chat Actions
+  // ---------------------------------------------------------------------------
 
-    set((state) => ({
-      messages: appendMessage(state.messages, incoming),
-    }));
-  },
+  setMessages: (messages) =>
+    set({ messages: messages.slice(-MAX_CHAT_MESSAGES) }),
 
-  addOutgoingMessage: (message) => {
-    const outgoing: ChatMessage = {
-      ...message,
-      direction: "outgoing",
-      status: message.status ?? "pending",
-    };
-
-    set((state) => ({
-      messages: appendMessage(state.messages, outgoing),
-    }));
-  },
-
-  updateMessageStatus: (id, status) => {
+  addMessage: (message) =>
     set((state) => {
-      const index = state.messages.findIndex((msg) => msg.id === id);
-      if (index === -1) return state;
+      if (state.messages.some((m) => m.id === message.id)) {
+        return state;
+      }
+      const appended = [...state.messages, message];
+      return {
+        messages:
+          appended.length > MAX_CHAT_MESSAGES
+            ? appended.slice(-MAX_CHAT_MESSAGES)
+            : appended,
+      };
+    }),
 
-      const updated = [...state.messages];
-      updated[index] = { ...updated[index], status };
-      return { messages: updated };
-    });
-  },
-
-  setOpen: (isOpen) => set({ isOpen }),
+  // ---------------------------------------------------------------------------
+  // AI Chat Actions
+  // ---------------------------------------------------------------------------
 
   toggleAIChat: () =>
     set((state) => ({
@@ -117,6 +121,65 @@ export const useChatStore = create<ChatStore>((set) => ({
     set((state) => ({
       aiChat: { ...state.aiChat, isOpen: false },
     })),
+
+  setAIConversationId: (id) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, conversationId: id },
+    })),
+
+  setAIConversations: (conversations) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, conversations },
+    })),
+
+  addAIConversation: (conversation) =>
+    set((state) => ({
+      aiChat: {
+        ...state.aiChat,
+        conversations: [conversation, ...state.aiChat.conversations],
+      },
+    })),
+
+  removeAIConversation: (id) =>
+    set((state) => ({
+      aiChat: {
+        ...state.aiChat,
+        conversations: state.aiChat.conversations.filter((c) => c.id !== id),
+        conversationId:
+          state.aiChat.conversationId === id
+            ? null
+            : state.aiChat.conversationId,
+      },
+    })),
+
+  updateAIConversation: (id, updates) =>
+    set((state) => ({
+      aiChat: {
+        ...state.aiChat,
+        conversations: state.aiChat.conversations.map((c) =>
+          c.id === id ? { ...c, ...updates } : c,
+        ),
+      },
+    })),
+
+  setAIInitialMessages: (messages) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, initialMessages: messages },
+    })),
+
+  setIsLoadingConversations: (loading) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, isLoadingConversations: loading },
+    })),
+
+  setIsLoadingMessages: (loading) =>
+    set((state) => ({
+      aiChat: { ...state.aiChat, isLoadingMessages: loading },
+    })),
+
+  // ---------------------------------------------------------------------------
+  // Reset
+  // ---------------------------------------------------------------------------
 
   reset: () => set(initialState),
 }));
