@@ -130,13 +130,13 @@ The HUD (Heads-Up Display) provides all essential information and controls while
 
 ### Status Bar (Top)
 
-Located at the top of the screen, the status bar displays:
+Located at the top of the screen, the status bar displays three key indicators:
 
 | Element | Description |
 |---------|-------------|
-| **Connection Status** | Current server connection state |
+| **Connection Status** | Current server connection state (connecting/connected/failed) |
 | **Transcription Status** | Active/inactive indicator for speech-to-text |
-| **Player Count** | Number of users currently online |
+| **Player Count** | Number of users currently online in the room |
 
 ### Caption Window (Below Status Bar)
 
@@ -148,17 +148,15 @@ Shows **text messages** from all users in the current room. Messages appear in a
 
 ### Dock (Bottom Center)
 
-The main control bar with three primary buttons:
+The main control bar with five primary buttons:
 
 | Button | Function |
 |--------|----------|
 | 👁️ **View Toggle** | Switch between first-person and third-person camera views |
 | 🎤 **Voice Chat** | Mute/unmute your microphone |
-| ⚙️ **Preferences** | Open the settings panel |
-
-### AI Agent Button (Bottom Right)
-
-A dedicated button to open the **AI Agent chat window** — your personal AI assistant.
+| 🎭 **Avatar Picker** | Change your avatar during the session |
+| ⚙️ **Preferences** | Open the settings drawer |
+| 🤖 **AI Chat** | Open the AI Agent chat sidebar |
 
 ---
 
@@ -190,7 +188,7 @@ Send text messages visible to all users in the room.
 Your personal AI assistant is always available to help with communication.
 
 **Opening the AI Agent:**
-Click the AI Agent button in the bottom-right corner to open the chat dialog.
+Click the AI Agent button in the dock to open the chat sidebar.
 
 **Capabilities:**
 

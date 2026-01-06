@@ -105,11 +105,15 @@ LLMeta is built on a modern, robust technology stack:
 | **Framework** | Next.js | Modern React application with server-side rendering |
 | **Authentication** | Supabase Auth | Secure cookie-based session management |
 | **3D Rendering** | React Three Fiber, Three.js | Immersive virtual environments |
-| **Avatar System** | @react-three/viverse, VRM | Expressive 3D character representation |
-| **Voice Communication** | LiveKit | Real-time audio transmission |
-| **Speech Recognition** | Deepgram | Accurate speech-to-text transcription |
-| **AI Intelligence** | Vercel AI SDK, OpenAI | Intelligent agent responses |
-| **State Management** | Zustand | Reactive, efficient application state |
+| **Avatar System** | @react-three/viverse, @pixiv/three-vrm | Expressive VRM 3D character representation |
+| **Voice Communication** | LiveKit | Real-time audio transmission with WebRTC |
+| **Speech Recognition** | Deepgram | Accurate real-time speech-to-text transcription |
+| **AI Intelligence** | Vercel AI SDK, OpenAI | Intelligent agent responses and image generation |
+| **State Management** | Zustand | Reactive, efficient application state (8 stores) |
+| **Internationalization** | next-intl | Multi-language support (English, Japanese) |
+| **UI Components** | shadcn/ui, Tailwind CSS | Modern, accessible component library |
+| **Animation** | Motion | Smooth UI transitions and animations |
+| **Testing** | Vitest, Testing Library | Unit and integration testing |
 
 ### Authentication Architecture
 
