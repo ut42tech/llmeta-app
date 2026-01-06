@@ -9,7 +9,6 @@ import { useCallback, useEffect, useRef } from "react";
 import {
   Conversation,
   ConversationContent,
-  ConversationEmptyState,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Loader } from "@/components/ai-elements/loader";
@@ -25,8 +24,8 @@ import {
   PromptInputTextarea,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
-import { Suggestion, Suggestions } from "@/components/ai-elements/suggestion";
 import { AIChatSidebar } from "@/components/hud/ai-chat/AIChatSidebar";
+import { AIChatWelcome } from "@/components/hud/ai-chat/AIChatWelcome";
 import { ImageToolResult } from "@/components/hud/ai-chat/ImageToolResult";
 import {
   Dialog,
@@ -36,6 +35,7 @@ import {
 } from "@/components/ui/dialog";
 import { useAIChatHistory } from "@/hooks/useAIChatHistory";
 import { useTextChat } from "@/hooks/useTextChat";
+import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
 
 const AI_CHAT_KEYBOARD_SHORTCUT = "/";
@@ -89,10 +89,14 @@ export const AIChatWindow = () => {
   const close = useChatStore((s) => s.closeAIChat);
   const toggleAIChat = useChatStore((s) => s.toggleAIChat);
   const chatMessages = useChatStore((s) => s.messages);
+  const profile = useAuthStore((s) => s.profile);
   const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
 
   // Ref for textarea focus
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  // Track previous isOpen state to detect open event
+  const prevIsOpenRef = useRef(false);
 
   // Keyboard shortcut to toggle AI chat
   useEffect(() => {
@@ -113,17 +117,6 @@ export const AIChatWindow = () => {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [toggleAIChat]);
-
-  // Focus textarea when dialog opens
-  useEffect(() => {
-    if (isOpen) {
-      // Delay to wait for dialog animation
-      const timer = setTimeout(() => {
-        textareaRef.current?.focus();
-      }, 100);
-      return () => clearTimeout(timer);
-    }
-  }, [isOpen]);
 
   const {
     conversationId,
@@ -173,12 +166,23 @@ export const AIChatWindow = () => {
     }),
   });
 
-  // Sync messages & start new on open
+  // Sync messages when loading from history
   useEffect(() => setMessages(initialMessages), [initialMessages, setMessages]);
 
+  // Reset to welcome screen and focus textarea when dialog opens
+  useEffect(() => {
+    if (isOpen && !prevIsOpenRef.current) {
+      startNew();
+      setMessages([]);
+      // Focus textarea after dialog animation
+      const timer = setTimeout(() => textareaRef.current?.focus(), 100);
+      return () => clearTimeout(timer);
+    }
+    prevIsOpenRef.current = isOpen;
+  }, [isOpen, startNew, setMessages]);
+
   const handleOpenChange = (open: boolean) => {
-    if (open) startNew();
-    else close();
+    if (!open) close();
   };
 
   const ensureConversation = async (text: string) => {
@@ -196,7 +200,9 @@ export const AIChatWindow = () => {
   };
 
   const handleSuggestion = async (text: string) => {
-    if (await ensureConversation(text)) sendMessage({ text });
+    if (await ensureConversation(text)) {
+      sendMessage({ text });
+    }
   };
 
   const handleSendImage = async (url: string, prompt?: string) => {
@@ -206,15 +212,9 @@ export const AIChatWindow = () => {
 
   const handleRefine = (msg: string) => sendMessage({ text: msg });
 
-  const suggestions = [
-    t("suggestions.summarize"),
-    t("suggestions.explainFlow"),
-    t("suggestions.misunderstandings"),
-    t("suggestions.generateImage"),
-  ];
-
   const isStreaming = status === "streaming";
   const showLoader = isStreaming && messages.at(-1)?.role !== "assistant";
+  const isWelcomeScreen = messages.length === 0 && !conversationId;
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -222,6 +222,7 @@ export const AIChatWindow = () => {
         className="flex h-[80vh] max-h-175 w-[90vw] max-w-5xl! flex-row gap-0 overflow-hidden p-0 sm:max-w-5xl"
         showCloseButton
       >
+        {/* Sidebar */}
         <AIChatSidebar
           conversations={conversations}
           currentConversationId={conversationId}
@@ -248,39 +249,34 @@ export const AIChatWindow = () => {
             <div className="flex flex-1 items-center justify-center">
               <Loader className="text-muted-foreground" />
             </div>
+          ) : isWelcomeScreen ? (
+            /* Welcome Screen */
+            <AIChatWelcome
+              username={profile?.display_name ?? undefined}
+              onSuggestion={handleSuggestion}
+              className="flex-1"
+            />
           ) : (
             <Conversation className="flex-1 overflow-y-auto">
               <ConversationContent className="mx-auto max-w-3xl px-6 py-6">
-                {messages.length === 0 ? (
-                  <ConversationEmptyState
-                    title={t("emptyStateTitle")}
-                    description={t("emptyStateDescription")}
-                    icon={
-                      <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10">
-                        <BotMessageSquare className="size-7 text-primary" />
-                      </div>
-                    }
-                  />
-                ) : (
-                  messages.map((msg) => (
-                    <Message key={msg.id} from={msg.role}>
-                      <MessageContent>
-                        {msg.parts.map((part, i) => (
-                          <MessagePartRenderer
-                            key={`${msg.id}-${i}`}
-                            message={msg}
-                            part={part}
-                            index={i}
-                            isStreaming={isStreaming}
-                            canSendToChat={canSendToChat}
-                            onSendToChat={handleSendImage}
-                            onRefine={handleRefine}
-                          />
-                        ))}
-                      </MessageContent>
-                    </Message>
-                  ))
-                )}
+                {messages.map((msg) => (
+                  <Message key={msg.id} from={msg.role}>
+                    <MessageContent>
+                      {msg.parts.map((part, i) => (
+                        <MessagePartRenderer
+                          key={`${msg.id}-${i}`}
+                          message={msg}
+                          part={part}
+                          index={i}
+                          isStreaming={isStreaming}
+                          canSendToChat={canSendToChat}
+                          onSendToChat={handleSendImage}
+                          onRefine={handleRefine}
+                        />
+                      ))}
+                    </MessageContent>
+                  </Message>
+                ))}
                 {showLoader && (
                   <Message from="assistant">
                     <MessageContent>
@@ -293,32 +289,17 @@ export const AIChatWindow = () => {
             </Conversation>
           )}
 
-          {/* Suggestions */}
-          {messages.length === 0 && !isLoadingMessages && (
-            <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
-              <div className="mx-auto max-w-3xl">
-                <Suggestions className="justify-center">
-                  {suggestions.map((s) => (
-                    <Suggestion
-                      key={s}
-                      suggestion={s}
-                      onClick={handleSuggestion}
-                      variant="secondary"
-                      size="sm"
-                    />
-                  ))}
-                </Suggestions>
-              </div>
-            </div>
-          )}
-
           {/* Input Area */}
           <div className="shrink-0 border-t bg-background/95 px-6 py-4 backdrop-blur-sm">
             <div className="mx-auto max-w-3xl">
               <PromptInput onSubmit={handleSubmit}>
                 <PromptInputTextarea
                   ref={textareaRef}
-                  placeholder={tChat("typePlaceholder")}
+                  placeholder={
+                    isWelcomeScreen
+                      ? t("welcome.placeholder")
+                      : tChat("typePlaceholder")
+                  }
                   className="min-h-11 max-h-32"
                 />
                 <PromptInputFooter>

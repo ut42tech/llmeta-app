@@ -114,6 +114,11 @@
   },
   "aiChat": {
     "title": "AI Agent",
+    "welcome": {
+      "greeting": "Hi {name}",
+      "question": "What can I help you with?",
+      "placeholder": "Ask AI Agent"
+    },
     "emptyStateTitle": "AI Agent",
     "emptyStateDescription": "Ask me anything!",
     "generatingImage": "Generating image: {prompt}",

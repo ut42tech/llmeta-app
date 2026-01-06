@@ -1,20 +1,18 @@
 "use client";
 
-import type { UIMessage } from "ai";
 import { useCallback, useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { conversationsApi } from "@/lib/api/conversations";
+import {
+  createConversation,
+  deleteConversation,
+  getConversationMessages,
+  listConversations,
+  renameConversation,
+} from "@/app/actions/ai-conversations";
 import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
 import { useWorldStore } from "@/stores/worldStore";
-import type { AIConversation, AIStoredMessage } from "@/types/chat";
-
-const toUIMessages = (messages: AIStoredMessage[]): UIMessage[] =>
-  messages.map((m) => ({
-    id: m.id,
-    role: m.role,
-    parts: m.parts as UIMessage["parts"],
-  }));
+import type { AIConversation } from "@/types/chat";
 
 /**
  * Hook for AI chat history with multi-conversation support.
@@ -57,7 +55,10 @@ export function useAIChatHistory() {
 
     void (async () => {
       actions.setIsLoadingConversations(true);
-      actions.setConversations(await conversationsApi.list(instanceId));
+      const result = await listConversations(instanceId);
+      if (result.success) {
+        actions.setConversations(result.data);
+      }
       actions.setIsLoadingConversations(false);
     })();
   }, [userId, instanceId, actions]);
@@ -72,9 +73,10 @@ export function useAIChatHistory() {
 
     void (async () => {
       actions.setIsLoadingMessages(true);
-      actions.setInitialMessages(
-        toUIMessages(await conversationsApi.getMessages(id)),
-      );
+      const result = await getConversationMessages(id);
+      if (result.success) {
+        actions.setInitialMessages(result.data);
+      }
       actions.setIsLoadingMessages(false);
     })();
   }, [state.conversationId, actions]);
@@ -82,19 +84,20 @@ export function useAIChatHistory() {
   // Actions
   const create = useCallback(
     async (title?: string): Promise<AIConversation | null> => {
-      const conv = await conversationsApi.create(instanceId, title);
-      if (!conv) return null;
-      actions.addConversation(conv);
-      actions.setConversationId(conv.id);
+      const result = await createConversation(instanceId, title);
+      if (!result.success) return null;
+      actions.addConversation(result.data);
+      actions.setConversationId(result.data.id);
       actions.setInitialMessages([]);
-      return conv;
+      return result.data;
     },
     [instanceId, actions],
   );
 
   const remove = useCallback(
     async (id: string): Promise<boolean> => {
-      if (!(await conversationsApi.delete(id))) return false;
+      const result = await deleteConversation(id);
+      if (!result.success) return false;
       actions.removeConversation(id);
       if (state.conversationId === id) {
         const next = state.conversations.find((c) => c.id !== id);
@@ -106,9 +109,10 @@ export function useAIChatHistory() {
     [state.conversationId, state.conversations, actions],
   );
 
-  const rename = useCallback(
+  const renameAction = useCallback(
     async (id: string, title: string): Promise<boolean> => {
-      if (!(await conversationsApi.updateTitle(id, title))) return false;
+      const result = await renameConversation(id, title);
+      if (!result.success) return false;
       actions.updateConversation(id, { title });
       return true;
     },
@@ -135,7 +139,7 @@ export function useAIChatHistory() {
     isLoadingMessages: state.isLoadingMessages,
     create,
     remove,
-    rename,
+    rename: renameAction,
     select,
     startNew,
   };
