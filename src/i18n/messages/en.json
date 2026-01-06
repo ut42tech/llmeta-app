@@ -135,7 +135,8 @@
       "explainFlow": "Explain the conversation flow",
       "misunderstandings": "Are there any misunderstandings?",
       "generateImage": "Generate an image based on the chat"
-    }
+    },
+    "disclaimer": "AI agent responses may not always be accurate. Please verify important information."
   },
   "worldInfo": {
     "title": "About this world",

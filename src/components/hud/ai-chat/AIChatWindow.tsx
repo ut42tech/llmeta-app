@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import type { UIMessage } from "ai";
 import { DefaultChatTransport } from "ai";
-import { BotMessageSquare } from "lucide-react";
+import { BotMessageSquare, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
 import {
@@ -196,26 +196,34 @@ export const AIChatWindow = () => {
           onRename={rename}
         />
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <DialogHeader className="shrink-0 border-b px-4 py-3">
-            <DialogTitle className="flex items-center gap-2 font-medium text-sm">
-              <BotMessageSquare className="size-4" />
+        <div className="flex min-w-0 flex-1 flex-col bg-background">
+          {/* Header */}
+          <DialogHeader className="shrink-0 border-b bg-background/95 px-6 py-4 backdrop-blur-sm">
+            <DialogTitle className="flex items-center gap-2.5 font-semibold text-base">
+              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+                <BotMessageSquare className="size-4 text-primary" />
+              </div>
               {t("title")}
             </DialogTitle>
           </DialogHeader>
 
+          {/* Main Content Area */}
           {isLoadingMessages ? (
             <div className="flex flex-1 items-center justify-center">
               <Loader className="text-muted-foreground" />
             </div>
           ) : (
             <Conversation className="flex-1 overflow-y-auto">
-              <ConversationContent>
+              <ConversationContent className="mx-auto max-w-3xl px-6 py-6">
                 {messages.length === 0 ? (
                   <ConversationEmptyState
                     title={t("emptyStateTitle")}
                     description={t("emptyStateDescription")}
-                    icon={<BotMessageSquare className="size-8" />}
+                    icon={
+                      <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10">
+                        <BotMessageSquare className="size-7 text-primary" />
+                      </div>
+                    }
                   />
                 ) : (
                   messages.map((msg) => (
@@ -249,39 +257,53 @@ export const AIChatWindow = () => {
             </Conversation>
           )}
 
+          {/* Suggestions */}
           {messages.length === 0 && !isLoadingMessages && (
-            <div className="flex-none border-t px-4 py-3">
-              <Suggestions>
-                {suggestions.map((s) => (
-                  <Suggestion
-                    key={s}
-                    suggestion={s}
-                    onClick={handleSuggestion}
-                    variant="secondary"
-                    size="sm"
-                  />
-                ))}
-              </Suggestions>
+            <div className="shrink-0 border-t bg-muted/20 px-6 py-4">
+              <div className="mx-auto max-w-3xl">
+                <Suggestions className="justify-center">
+                  {suggestions.map((s) => (
+                    <Suggestion
+                      key={s}
+                      suggestion={s}
+                      onClick={handleSuggestion}
+                      variant="secondary"
+                      size="sm"
+                    />
+                  ))}
+                </Suggestions>
+              </div>
             </div>
           )}
 
-          <div className="flex-none border-t">
-            <PromptInput
-              onSubmit={handleSubmit}
-              className="border-0 shadow-none"
-            >
-              <PromptInputTextarea
-                placeholder={tChat("typePlaceholder")}
-                className="min-h-10 max-h-24"
-              />
-              <PromptInputFooter>
-                <PromptInputTools />
-                <PromptInputSubmit
-                  status={status}
-                  disabled={isStreaming || status === "submitted"}
+          {/* Input Area */}
+          <div className="shrink-0 border-t bg-background px-6 py-4">
+            <div className="mx-auto max-w-3xl">
+              <PromptInput
+                onSubmit={handleSubmit}
+                className="rounded-xl border border-border/50 bg-muted/30 shadow-sm transition-colors focus-within:border-primary/30 focus-within:bg-background"
+              >
+                <PromptInputTextarea
+                  placeholder={tChat("typePlaceholder")}
+                  className="min-h-11 max-h-32 border-0 bg-transparent shadow-none focus-visible:ring-0"
                 />
-              </PromptInputFooter>
-            </PromptInput>
+                <PromptInputFooter>
+                  <PromptInputTools />
+                  <PromptInputSubmit
+                    status={status}
+                    disabled={isStreaming || status === "submitted"}
+                  />
+                </PromptInputFooter>
+              </PromptInput>
+
+              {/* Disclaimer */}
+              <div className="mt-3 flex items-center justify-center gap-1.5 text-center">
+                <Info className="size-3 shrink-0 text-muted-foreground/60" />
+                <p className="text-[11px] leading-tight text-muted-foreground/60">
+                  {t("disclaimer")}
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </DialogContent>

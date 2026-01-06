@@ -4,6 +4,8 @@ import { ImageIcon, Send, WandSparkles } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { Shimmer } from "@/components/ai-elements/shimmer";
+import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -74,12 +76,33 @@ export const ImageToolResult = ({
     toolPart.state === "input-streaming" ||
     toolPart.state === "input-available"
   ) {
+    const promptText = toolPart.input?.prompt || "";
     return (
-      <div className="flex items-center gap-2 rounded-lg bg-muted/50 p-3 text-muted-foreground text-sm">
-        <ImageIcon className="size-4 animate-pulse" />
-        <span>
-          {t("generatingImage", { prompt: toolPart.input?.prompt || "" })}
-        </span>
+      <div className="flex max-w-sm flex-col gap-3 rounded-xl border border-border/50 bg-muted/30 p-4">
+        <div className="flex items-start gap-3">
+          <div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10">
+            <ImageIcon className="size-5 text-primary" />
+          </div>
+          <div className="flex min-w-0 flex-1 flex-col gap-1">
+            <Shimmer className="text-sm font-medium" duration={1.5}>
+              {t("generatingImage", { prompt: "" }).replace(": ", "")}
+            </Shimmer>
+            {promptText && (
+              <p className="line-clamp-2 wrap-break-words text-xs text-muted-foreground">
+                {promptText}
+              </p>
+            )}
+          </div>
+        </div>
+        <AspectRatio
+          ratio={1}
+          className="overflow-hidden rounded-lg bg-muted/50"
+        >
+          <div className="absolute inset-0 animate-pulse bg-linear-to-r from-muted/30 via-muted/60 to-muted/30" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <ImageIcon className="size-8 text-muted-foreground/40" />
+          </div>
+        </AspectRatio>
       </div>
     );
   }
@@ -87,10 +110,15 @@ export const ImageToolResult = ({
   // Error state
   if (toolPart.state === "output-error") {
     return (
-      <div className="rounded-lg bg-red-50 p-3 text-red-600 text-sm">
-        {t("errorGeneratingImage", {
-          error: toolPart.errorText || "Unknown error",
-        })}
+      <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4 text-destructive text-sm">
+        <div className="flex items-center gap-2">
+          <ImageIcon className="size-4 shrink-0" />
+          <span>
+            {t("errorGeneratingImage", {
+              error: toolPart.errorText || "Unknown error",
+            })}
+          </span>
+        </div>
       </div>
     );
   }
@@ -98,30 +126,33 @@ export const ImageToolResult = ({
   // Success state
   if (toolPart.state === "output-available" && toolPart.output?.imageUrl) {
     return (
-      <div className="space-y-2">
-        <Image
-          src={toolPart.output.imageUrl}
-          alt={toolPart.output.prompt || "Generated image"}
-          width={512}
-          height={512}
-          className="h-auto max-w-full overflow-hidden rounded-lg"
-          unoptimized
-        />
+      <div className="flex max-w-sm flex-col gap-3">
+        <div className="overflow-hidden rounded-xl border border-border/50">
+          <AspectRatio ratio={1}>
+            <Image
+              src={toolPart.output.imageUrl}
+              alt={toolPart.output.prompt || "Generated image"}
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          </AspectRatio>
+        </div>
 
         {toolPart.output.prompt && (
-          <p className="text-muted-foreground text-xs">
+          <p className="wrap-break-words text-muted-foreground text-xs leading-relaxed">
             {toolPart.output.prompt}
           </p>
         )}
 
         {isRefining ? (
-          <div className="space-y-2">
+          <div className="flex flex-col gap-3 rounded-xl border border-border/50 bg-muted/30 p-4">
             <input
               type="text"
               value={refineInput}
               onChange={(e) => setRefineInput(e.target.value)}
               placeholder={t("refinePlaceholder")}
-              className="w-full rounded-md border bg-background px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
@@ -142,7 +173,7 @@ export const ImageToolResult = ({
                 onClick={handleRefine}
                 disabled={!refineInput.trim() || isStreaming}
               >
-                <WandSparkles className="size-3" />
+                <WandSparkles className="size-3.5" />
                 {t("regenerate")}
               </Button>
               <Button
@@ -168,7 +199,7 @@ export const ImageToolResult = ({
                   onClick={() => setIsRefining(true)}
                   disabled={isStreaming}
                 >
-                  <WandSparkles className="size-3" />
+                  <WandSparkles className="size-3.5" />
                   {t("refine")}
                 </Button>
               </TooltipTrigger>
@@ -186,7 +217,7 @@ export const ImageToolResult = ({
                   onClick={handleSendToChat}
                   disabled={!canSendToChat}
                 >
-                  <Send className="size-3" />
+                  <Send className="size-3.5" />
                   {t("sendToChat")}
                 </Button>
               </TooltipTrigger>

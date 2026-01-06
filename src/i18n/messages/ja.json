@@ -135,7 +135,8 @@
       "explainFlow": "会話の流れを説明して",
       "misunderstandings": "誤解はありますか？",
       "generateImage": "チャットに基づいて画像を生成して"
-    }
+    },
+    "disclaimer": "AIエージェントの回答は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。"
   },
   "worldInfo": {
     "title": "このワールドについて",
