@@ -154,6 +154,7 @@ export const ImageToolResult = ({
               placeholder={t("refinePlaceholder")}
               className="w-full rounded-lg border border-border/50 bg-background px-3 py-2 text-sm transition-colors focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               onKeyDown={(e) => {
+                if (e.nativeEvent.isComposing || e.key === "Process") return;
                 if (e.key === "Enter" && !e.shiftKey) {
                   e.preventDefault();
                   handleRefine();
