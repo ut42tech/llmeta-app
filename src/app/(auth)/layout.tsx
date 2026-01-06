@@ -2,8 +2,8 @@
 
 import { Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { BackgroundCanvas } from "@/components/BackgroundCanvas";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { LanguageSwitcher } from "@/components/common";
+import { BackgroundCanvas } from "@/components/scene";
 
 export default function AuthLayout({
   children,

@@ -47,16 +47,29 @@ type AIChatSidebarProps = {
 // Utils
 // =============================================================================
 
-const formatRelativeDate = (dateString: string) => {
+type RelativeDateTranslations = {
+  yesterday: string;
+  daysAgo: (count: number) => string;
+};
+
+const formatRelativeDate = (
+  dateString: string,
+  translations: RelativeDateTranslations,
+) => {
   const date = new Date(dateString);
   const diffDays = Math.floor(
     (Date.now() - date.getTime()) / (1000 * 60 * 60 * 24),
   );
 
-  if (diffDays === 0)
+  if (diffDays === 0) {
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-  if (diffDays === 1) return "昨日";
-  if (diffDays < 7) return `${diffDays}日前`;
+  }
+  if (diffDays === 1) {
+    return translations.yesterday;
+  }
+  if (diffDays < 7) {
+    return translations.daysAgo(diffDays);
+  }
   return date.toLocaleDateString([], { month: "short", day: "numeric" });
 };
 
@@ -76,6 +89,12 @@ const ConversationItem = ({
   const [editTitle, setEditTitle] = useState(conversation.title ?? "");
 
   const title = conversation.title || t("newConversation");
+
+  // Memoize translations for formatRelativeDate
+  const relativeDateTranslations: RelativeDateTranslations = {
+    yesterday: t("relativeDate.yesterday"),
+    daysAgo: (count) => t("relativeDate.daysAgo", { count }),
+  };
 
   const handleRename = () => {
     const trimmed = editTitle.trim();
@@ -120,7 +139,7 @@ const ConversationItem = ({
       >
         <p className="truncate text-sm font-medium">{title}</p>
         <p className="truncate text-xs text-muted-foreground">
-          {formatRelativeDate(conversation.updatedAt)}
+          {formatRelativeDate(conversation.updatedAt, relativeDateTranslations)}
         </p>
       </button>
 

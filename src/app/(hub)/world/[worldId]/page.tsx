@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { InstanceCard } from "@/components/InstanceCard";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { InstanceCard } from "@/components/world";
 import { createClient } from "@/lib/supabase/client";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import type { Instance, World } from "@/types/world";

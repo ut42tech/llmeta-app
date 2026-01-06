@@ -119,6 +119,10 @@
       "question": "What can I help you with?",
       "placeholder": "Ask AI Agent"
     },
+    "relativeDate": {
+      "yesterday": "Yesterday",
+      "daysAgo": "{count} days ago"
+    },
     "emptyStateTitle": "AI Agent",
     "emptyStateDescription": "Ask me anything!",
     "generatingImage": "Generating image: {prompt}",

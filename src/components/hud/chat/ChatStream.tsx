@@ -13,7 +13,7 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTextChat } from "@/hooks/useTextChat";
+import { useTextChat } from "@/hooks/chat";
 import { cn } from "@/lib/utils";
 import type { ChatMessage } from "@/types/chat";
 

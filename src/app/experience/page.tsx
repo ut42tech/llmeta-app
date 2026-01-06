@@ -8,8 +8,8 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { Suspense, useEffect } from "react";
 import { HUD } from "@/components/hud/HUD";
-import { LiveKitSyncProvider } from "@/components/LiveKitSyncProvider";
-import { Scene } from "@/components/Scene";
+import { LiveKitSyncProvider } from "@/components/providers";
+import { Scene } from "@/components/scene";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 

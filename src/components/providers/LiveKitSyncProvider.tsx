@@ -11,18 +11,22 @@ import {
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
+import { useChatHistory } from "@/hooks/chat";
 import { useChatDataChannel } from "@/hooks/livekit/useChatDataChannel";
 import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
 import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
 import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
-import { useChatHistory } from "@/hooks/useChatHistory";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
 import type { ChatMessageImage } from "@/types/chat";
 import type { MoveData, ProfileData } from "@/types/player";
 
-type LiveKitSyncContextValue = {
+// =============================================================================
+// Types (exported for reuse in useSyncClient)
+// =============================================================================
+
+export type LiveKitSyncContextValue = {
   sessionId?: string;
   isConnected: boolean;
   connectionState: LiveKitConnectionState;
@@ -31,6 +35,10 @@ type LiveKitSyncContextValue = {
   sendChatMessage: (content: string, image?: ChatMessageImage) => Promise<void>;
   room?: Room;
 };
+
+// =============================================================================
+// Context
+// =============================================================================
 
 const defaultContextValue: LiveKitSyncContextValue = {
   sessionId: undefined,

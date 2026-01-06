@@ -12,23 +12,11 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import type { ImageToolPart } from "@/types/ai";
 
 // =============================================================================
 // Types
 // =============================================================================
-
-type ImageToolPart = {
-  type: string;
-  toolCallId: string;
-  state:
-    | "input-streaming"
-    | "input-available"
-    | "output-available"
-    | "output-error";
-  input?: { prompt?: string };
-  output?: { imageUrl?: string; prompt?: string };
-  errorText?: string;
-};
 
 type ImageToolResultProps = {
   toolPart: ImageToolPart;

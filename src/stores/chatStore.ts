@@ -2,7 +2,15 @@ import type { UIMessage } from "ai";
 import { create } from "zustand";
 import type { AIConversation, ChatMessage } from "@/types/chat";
 
+// =============================================================================
+// Constants
+// =============================================================================
+
 const MAX_CHAT_MESSAGES = 200;
+
+// =============================================================================
+// Types
+// =============================================================================
 
 type AIChatState = {
   isOpen: boolean;
@@ -14,13 +22,21 @@ type AIChatState = {
 };
 
 type ChatState = {
+  /** Real-time chat messages (LiveKit sync) */
   messages: ChatMessage[];
+  /** AI chat assistant state */
   aiChat: AIChatState;
 };
 
+// =============================================================================
+// Actions
+// =============================================================================
+
 type ChatActions = {
+  // Real-time chat actions
   setMessages: (messages: ChatMessage[]) => void;
   addMessage: (message: ChatMessage) => void;
+  // AI chat actions
   toggleAIChat: () => void;
   openAIChat: () => void;
   closeAIChat: () => void;
@@ -32,10 +48,15 @@ type ChatActions = {
   setAIInitialMessages: (messages: UIMessage[]) => void;
   setIsLoadingConversations: (loading: boolean) => void;
   setIsLoadingMessages: (loading: boolean) => void;
+  // Store reset
   reset: () => void;
 };
 
 type ChatStore = ChatState & ChatActions;
+
+// =============================================================================
+// Initial State
+// =============================================================================
 
 const initialState: ChatState = {
   messages: [],
@@ -49,19 +70,27 @@ const initialState: ChatState = {
   },
 };
 
+// =============================================================================
+// Store
+// =============================================================================
+
 /**
  * Unified chat store.
- * Messages are persisted to Supabase, real-time sync via LiveKit.
+ * - Real-time messages: persisted to Supabase, synced via LiveKit
+ * - AI chat: conversation history with AI assistant
  */
 export const useChatStore = create<ChatStore>((set) => ({
   ...initialState,
+
+  // ---------------------------------------------------------------------------
+  // Real-time Chat Actions
+  // ---------------------------------------------------------------------------
 
   setMessages: (messages) =>
     set({ messages: messages.slice(-MAX_CHAT_MESSAGES) }),
 
   addMessage: (message) =>
     set((state) => {
-      // Skip if already exists
       if (state.messages.some((m) => m.id === message.id)) {
         return state;
       }
@@ -73,6 +102,10 @@ export const useChatStore = create<ChatStore>((set) => ({
             : appended,
       };
     }),
+
+  // ---------------------------------------------------------------------------
+  // AI Chat Actions
+  // ---------------------------------------------------------------------------
 
   toggleAIChat: () =>
     set((state) => ({
@@ -143,6 +176,10 @@ export const useChatStore = create<ChatStore>((set) => ({
     set((state) => ({
       aiChat: { ...state.aiChat, isLoadingMessages: loading },
     })),
+
+  // ---------------------------------------------------------------------------
+  // Reset
+  // ---------------------------------------------------------------------------
 
   reset: () => set(initialState),
 }));

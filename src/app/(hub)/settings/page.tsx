@@ -20,7 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/hooks/auth";
 import { type Locale, localeNames, locales } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
 

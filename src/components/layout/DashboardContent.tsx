@@ -1,8 +1,8 @@
 "use client";
 
 import type { User } from "@supabase/supabase-js";
-import { AuthProvider } from "@/components/AuthProvider";
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { AuthProvider } from "@/components/providers";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import type { Tables } from "@/types/supabase";
 

@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
-import { WorldCard } from "@/components/WorldCard";
+import { WorldCard } from "@/components/world";
 import { createClient } from "@/lib/supabase/client";
 import type { World } from "@/types/world";
 

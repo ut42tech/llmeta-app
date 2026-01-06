@@ -1,7 +1,6 @@
 "use client";
 
 import { useChat } from "@ai-sdk/react";
-import type { UIMessage } from "ai";
 import { DefaultChatTransport } from "ai";
 import { BotMessageSquare, Info } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -12,11 +11,7 @@ import {
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
 import { Loader } from "@/components/ai-elements/loader";
-import {
-  Message,
-  MessageContent,
-  MessageResponse,
-} from "@/components/ai-elements/message";
+import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
   PromptInput,
   PromptInputFooter,
@@ -26,60 +21,20 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { AIChatSidebar } from "@/components/hud/ai-chat/AIChatSidebar";
 import { AIChatWelcome } from "@/components/hud/ai-chat/AIChatWelcome";
-import { ImageToolResult } from "@/components/hud/ai-chat/ImageToolResult";
+import { MessagePartRenderer } from "@/components/hud/ai-chat/MessagePartRenderer";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { useAIChatHistory } from "@/hooks/useAIChatHistory";
-import { useTextChat } from "@/hooks/useTextChat";
+import { useAIChatHistory } from "@/hooks/ai-chat";
+import { useTextChat } from "@/hooks/chat";
 import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
 
 const AI_CHAT_KEYBOARD_SHORTCUT = "/";
 const MAX_TITLE_LENGTH = 50;
-
-// Message part renderer
-const MessagePartRenderer = ({
-  message,
-  part,
-  index,
-  isStreaming,
-  canSendToChat,
-  onSendToChat,
-  onRefine,
-}: {
-  message: UIMessage;
-  part: UIMessage["parts"][number];
-  index: number;
-  isStreaming: boolean;
-  canSendToChat: boolean;
-  onSendToChat: (url: string, prompt?: string) => void;
-  onRefine: (msg: string) => void;
-}) => {
-  const key = `${message.id}-${index}`;
-
-  if (part.type === "text") {
-    return <MessageResponse key={key}>{part.text}</MessageResponse>;
-  }
-
-  if (part.type === "tool-generateImage") {
-    return (
-      <ImageToolResult
-        key={key}
-        toolPart={part as Parameters<typeof ImageToolResult>[0]["toolPart"]}
-        isStreaming={isStreaming}
-        canSendToChat={canSendToChat}
-        onSendToChat={onSendToChat}
-        onRefine={onRefine}
-      />
-    );
-  }
-
-  return null;
-};
 
 export const AIChatWindow = () => {
   const t = useTranslations("aiChat");

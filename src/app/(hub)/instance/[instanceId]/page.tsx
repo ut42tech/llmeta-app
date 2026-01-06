@@ -14,9 +14,9 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { BackgroundCanvas } from "@/components/BackgroundCanvas";
 import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
-import { LiveKitSyncProvider } from "@/components/LiveKitSyncProvider";
+import { LiveKitSyncProvider } from "@/components/providers";
+import { BackgroundCanvas } from "@/components/scene";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,8 +28,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { useAuth } from "@/hooks/auth";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { useAuth } from "@/hooks/useAuth";
 import { createClient } from "@/lib/supabase/client";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";

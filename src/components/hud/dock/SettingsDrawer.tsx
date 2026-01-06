@@ -38,8 +38,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { useAuth } from "@/hooks/auth";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { useAuth } from "@/hooks/useAuth";
 import type { Locale } from "@/i18n/config";
 import { useAuthStore } from "@/stores/authStore";
 import { useLanguageStore } from "@/stores/languageStore";
