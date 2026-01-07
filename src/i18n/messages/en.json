@@ -270,5 +270,12 @@
       "goToLogin": "Go to Login"
     },
     "logout": "Sign Out"
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "settings": "Settings",
+    "world": "World",
+    "instance": "Instance",
+    "loading": "Loading..."
   }
 }

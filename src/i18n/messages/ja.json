@@ -270,5 +270,12 @@
       "goToLogin": "ログインへ"
     },
     "logout": "サインアウト"
+  },
+  "breadcrumb": {
+    "home": "ホーム",
+    "settings": "設定",
+    "world": "ワールド",
+    "instance": "インスタンス",
+    "loading": "読み込み中..."
   }
 }
