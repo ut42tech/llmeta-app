@@ -148,7 +148,7 @@ Shows **text messages** from all users in the current room. Messages appear in a
 
 ### Dock (Bottom Center)
 
-The main control bar with five primary buttons:
+The main control bar with six primary buttons:
 
 | Button | Function |
 |--------|----------|
@@ -157,6 +157,7 @@ The main control bar with five primary buttons:
 | 🎭 **Avatar Picker** | Change your avatar during the session |
 | ⚙️ **Preferences** | Open the settings drawer |
 | 🤖 **AI Chat** | Open the AI Agent chat sidebar |
+| 🚪 **Leave** | Leave the current room and return to dashboard |
 
 ---
 
