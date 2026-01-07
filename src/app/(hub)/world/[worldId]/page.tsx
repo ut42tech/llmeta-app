@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeft, Globe, Plus, Users } from "lucide-react";
+import { ArrowLeft, Calendar, Layers, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
@@ -166,10 +166,16 @@ export default function WorldDetailPage() {
 
   if (isLoading || !world) {
     return (
-      <div className="min-h-screen">
-        <Skeleton className="h-64 w-full md:h-80" />
-        <div className="max-w-4xl space-y-8 p-6 lg:p-8">
-          <Skeleton className="h-32 w-full" />
+      <div className="min-h-screen p-6 lg:p-8">
+        <div className="mx-auto max-w-4xl space-y-6">
+          <Skeleton className="h-8 w-32" />
+          <Skeleton className="h-10 w-2/3" />
+          <Skeleton className="h-6 w-full" />
+          <div className="grid grid-cols-3 gap-4 pt-4">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
           <Skeleton className="h-48 w-full" />
         </div>
       </div>
@@ -177,55 +183,62 @@ export default function WorldDetailPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="relative flex h-64 items-center justify-center overflow-hidden bg-muted md:h-80">
-        <Globe className="size-32 text-muted-foreground/30" />
-        <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent" />
-
-        <div className="absolute top-4 left-4">
+    <div className="min-h-screen p-6 lg:p-8">
+      <div className="mx-auto max-w-4xl">
+        {/* Back button */}
+        <div className="mb-6">
           <Link href="/">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="bg-background/50 backdrop-blur"
-            >
+            <Button variant="ghost" size="sm">
               <ArrowLeft className="mr-2 size-4" />
               {t("back")}
             </Button>
           </Link>
         </div>
 
-        <div className="absolute right-6 bottom-6 left-6">
-          <div className="max-w-4xl">
-            <h1 className="font-bold text-3xl md:text-4xl">{world.name}</h1>
-            <p className="mt-2 text-muted-foreground">{world.description}</p>
-          </div>
-        </div>
-      </div>
+        {/* Header */}
+        <header className="mb-8">
+          <h1 className="font-bold text-3xl tracking-tight">{world.name}</h1>
+          <p className="mt-2 text-muted-foreground">{world.description}</p>
+        </header>
 
-      {/* Content */}
-      <div className="max-w-4xl p-6 lg:p-8">
-        {/* World Info */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Globe className="size-5" />
-              {t("worldInfo")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-muted-foreground">{t("capacity")}</p>
-                <p className="flex items-center gap-1 font-medium">
-                  <Users className="size-4" />
-                  {world.player_capacity} {t("players")}
-                </p>
+        {/* Stats Cards */}
+        <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <Card>
+            <CardContent className="flex items-center gap-4 p-4">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
+                <Users className="size-5 text-muted-foreground" />
               </div>
               <div>
-                <p className="text-muted-foreground">{t("createdAt")}</p>
-                <p className="font-medium">
+                <p className="text-muted-foreground text-sm">{t("capacity")}</p>
+                <p className="font-semibold text-xl">{world.player_capacity}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="flex items-center gap-4 p-4">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
+                <Layers className="size-5 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">
+                  {t("instances")}
+                </p>
+                <p className="font-semibold text-xl">{instances.length}</p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardContent className="flex items-center gap-4 p-4">
+              <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
+                <Calendar className="size-5 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="text-muted-foreground text-sm">
+                  {t("createdAt")}
+                </p>
+                <p className="font-semibold">
                   {format.dateTime(new Date(world.created_at), {
                     year: "numeric",
                     month: "short",
@@ -233,9 +246,9 @@ export default function WorldDetailPage() {
                   })}
                 </p>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* Instances Section */}
         <section>
@@ -290,9 +303,20 @@ export default function WorldDetailPage() {
               ))}
             </div>
           ) : (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <CardDescription>{t("noInstances")}</CardDescription>
+            <Card className="border-dashed">
+              <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                <Layers className="mb-4 size-10 text-muted-foreground" />
+                <p className="mb-1 font-medium">{t("noInstances")}</p>
+                <p className="mb-4 text-muted-foreground text-sm">
+                  {t("createFirstInstance")}
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={() => setIsCreateDialogOpen(true)}
+                >
+                  <Plus className="mr-2 size-4" />
+                  {t("createInstance")}
+                </Button>
               </CardContent>
             </Card>
           )}

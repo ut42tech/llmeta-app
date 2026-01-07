@@ -13,7 +13,7 @@ export function InstanceCard({ instance }: InstanceCardProps) {
   const t = useTranslations("instance");
 
   return (
-    <Card className="group transition-all hover:shadow-md">
+    <Card>
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
           <div className="min-w-0 flex-1">

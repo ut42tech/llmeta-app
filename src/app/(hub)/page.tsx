@@ -7,24 +7,41 @@ import { WorldCard } from "@/components/world";
 import { createClient } from "@/lib/supabase/client";
 import type { World } from "@/types/world";
 
+type WorldWithInstanceCount = World & {
+  instanceCount: number;
+};
+
 export default function DashboardPage() {
   const t = useTranslations("dashboard");
-  const [worlds, setWorlds] = useState<World[]>([]);
+  const [worlds, setWorlds] = useState<WorldWithInstanceCount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchWorlds = async () => {
       const supabase = createClient();
-      const { data, error } = await supabase
+
+      // Fetch worlds with instance count
+      const { data: worldsData, error: worldsError } = await supabase
         .from("worlds")
-        .select("*")
+        .select("*, instances(count)")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching worlds:", error);
-      } else {
-        setWorlds(data ?? []);
+      if (worldsError) {
+        console.error("Error fetching worlds:", worldsError);
+        setIsLoading(false);
+        return;
       }
+
+      const worldsWithCount: WorldWithInstanceCount[] = (worldsData ?? []).map(
+        (world) => ({
+          ...world,
+          instanceCount:
+            (world.instances as unknown as { count: number }[])?.[0]?.count ??
+            0,
+        }),
+      );
+
+      setWorlds(worldsWithCount);
       setIsLoading(false);
     };
 
@@ -43,13 +60,18 @@ export default function DashboardPage() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {isLoading
             ? [1, 2, 3, 4].map((key) => (
-                <div key={`skeleton-${key}`} className="space-y-3">
-                  <Skeleton className="aspect-video w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                </div>
+                <Skeleton
+                  key={`skeleton-${key}`}
+                  className="aspect-square w-full rounded-xl"
+                />
               ))
-            : worlds.map((world) => <WorldCard key={world.id} world={world} />)}
+            : worlds.map((world) => (
+                <WorldCard
+                  key={world.id}
+                  world={world}
+                  instanceCount={world.instanceCount}
+                />
+              ))}
         </div>
       </section>
     </div>

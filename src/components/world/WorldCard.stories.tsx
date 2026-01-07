@@ -37,6 +37,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     world: mockWorld,
+    instanceCount: 3,
   },
 };
 
@@ -49,6 +50,7 @@ export const LongDescription: Story = {
       description:
         "A sprawling futuristic city with neon lights, towering skyscrapers, and advanced technology. Experience the blend of high-tech and urban decay in this immersive cyberpunk environment.",
     },
+    instanceCount: 12,
   },
 };
 
@@ -61,6 +63,7 @@ export const ShortDescription: Story = {
       description: "A relaxing café space.",
       player_capacity: 10,
     },
+    instanceCount: 1,
   },
 };
 
@@ -72,12 +75,14 @@ export const LongName: Story = {
       name: "The Mysterious Ancient Temple of the Lost Civilization",
       description: "Explore ancient ruins and uncover secrets.",
     },
+    instanceCount: 0,
   },
 };
 
 export const MultipleCards: Story = {
   args: {
     world: mockWorld,
+    instanceCount: 3,
   },
   decorators: [
     (Story) => (
@@ -88,7 +93,7 @@ export const MultipleCards: Story = {
   ],
   render: () => (
     <>
-      <WorldCard world={mockWorld} />
+      <WorldCard world={mockWorld} instanceCount={5} />
       <WorldCard
         world={{
           ...mockWorld,
@@ -97,6 +102,7 @@ export const MultipleCards: Story = {
           description: "Underwater world with coral reefs.",
           player_capacity: 30,
         }}
+        instanceCount={2}
       />
       <WorldCard
         world={{
@@ -106,6 +112,7 @@ export const MultipleCards: Story = {
           description: "Orbiting station with zero gravity zones.",
           player_capacity: 20,
         }}
+        instanceCount={0}
       />
     </>
   ),
