@@ -5,7 +5,6 @@ import {
   Gamepad2,
   Globe,
   Languages,
-  Mouse,
   Settings,
   Smile,
   User,
@@ -214,41 +213,91 @@ const ControlsTab = () => {
       initial="hidden"
       animate="visible"
     >
+      {/* Introduction */}
       <motion.p
         className="text-muted-foreground text-sm leading-relaxed"
         variants={staggerItem}
       >
-        {t("placeholder")}
+        {t("intro")}
       </motion.p>
 
-      <motion.div className="space-y-3" variants={staggerItem}>
-        <h3 className="font-semibold text-sm">{t("controlsTitle")}</h3>
-        <div className="space-y-2.5">
-          <motion.div
-            className="flex items-start gap-3"
-            whileHover={{ x: 4 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          >
-            <Kbd className="min-w-20 justify-center">WASD</Kbd>
-            <span className="text-muted-foreground text-sm">
-              {t("moveAround")}
-            </span>
-          </motion.div>
-          <motion.div
-            className="flex items-start gap-3"
-            whileHover={{ x: 4 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          >
-            <Kbd className="min-w-20 justify-center gap-1">
-              <Mouse className="size-3" />
-              Mouse
-            </Kbd>
+      {/* Movement & Camera */}
+      <SettingsSection
+        title={t("controlsTitle")}
+        icon={<Gamepad2 className="size-4 text-muted-foreground" />}
+      >
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">WASD</Kbd>
+            <span className="text-muted-foreground text-sm">{t("move")}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">Space</Kbd>
+            <span className="text-muted-foreground text-sm">{t("jump")}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">Shift</Kbd>
+            <span className="text-muted-foreground text-sm">{t("run")}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">Drag</Kbd>
             <span className="text-muted-foreground text-sm">
               {t("lookAround")}
             </span>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </SettingsSection>
+
+      {/* Keyboard Shortcuts */}
+      <SettingsSection
+        title={t("shortcutsTitle")}
+        icon={<Settings className="size-4 text-muted-foreground" />}
+      >
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">V</Kbd>
+            <span className="text-muted-foreground text-sm">
+              {t("toggleView")}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">M</Kbd>
+            <span className="text-muted-foreground text-sm">
+              {t("toggleMic")}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">P</Kbd>
+            <span className="text-muted-foreground text-sm">
+              {t("openPreferences")}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">/</Kbd>
+            <span className="text-muted-foreground text-sm">
+              {t("openAIChat")}
+            </span>
+          </div>
+        </div>
+      </SettingsSection>
+
+      {/* Communication */}
+      <SettingsSection
+        title={t("communicationTitle")}
+        icon={<Globe className="size-4 text-muted-foreground" />}
+      >
+        <div className="space-y-2">
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {t("voiceChatDesc")}
+          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {t("textChatDesc")}
+          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {t("aiChatDesc")}
+          </p>
+        </div>
+      </SettingsSection>
     </motion.div>
   );
 };

@@ -81,7 +81,7 @@ export const MultipleCards: Story = {
   },
   decorators: [
     (Story) => (
-      <div className="grid w-[800px] grid-cols-3 gap-4">
+      <div className="grid w-200 grid-cols-3 gap-4">
         <Story />
       </div>
     ),
