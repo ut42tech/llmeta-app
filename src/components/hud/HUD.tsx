@@ -8,7 +8,7 @@ import { StatusBar } from "@/components/hud/StatusBar";
 
 export const HUD = () => {
   return (
-    <div className="fixed inset-0 z-50 pointer-events-none flex flex-col">
+    <div className="pointer-events-none fixed inset-0 z-50 flex flex-col">
       {/* Top Section */}
       <div className="relative flex-none">
         <StatusBar />

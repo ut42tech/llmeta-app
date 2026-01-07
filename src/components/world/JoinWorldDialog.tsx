@@ -64,7 +64,7 @@ export const JoinWorldDialog = () => {
     <Dialog open={open}>
       <DialogContent
         showCloseButton={false}
-        className="max-h-[90vh] flex flex-col"
+        className="flex max-h-[90vh] flex-col"
       >
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -74,7 +74,7 @@ export const JoinWorldDialog = () => {
           <DialogDescription>{t("description")}</DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="flex-1 -mx-6 px-6">
+        <ScrollArea className="-mx-6 flex-1 px-6">
           <div className="flex flex-col gap-6 py-2">
             <div className="flex flex-col gap-2">
               <Label>{t("languageLabel")}</Label>
@@ -121,12 +121,12 @@ export const JoinWorldDialog = () => {
 
             <div className="rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
               <div className="flex items-start gap-3">
-                <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />
+                <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" />
                 <div className="flex flex-col gap-1">
-                  <p className="text-sm font-medium text-amber-500">
+                  <p className="font-medium text-amber-500 text-sm">
                     {t("warningTitle")}
                   </p>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     {t("warningText")}
                   </p>
                 </div>

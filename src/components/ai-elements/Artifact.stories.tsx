@@ -56,7 +56,7 @@ export const Simple: Story = {
         <ArtifactClose />
       </ArtifactHeader>
       <ArtifactContent>
-        <p className="text-sm text-muted-foreground">Preview content here...</p>
+        <p className="text-muted-foreground text-sm">Preview content here...</p>
       </ArtifactContent>
     </Artifact>
   ),

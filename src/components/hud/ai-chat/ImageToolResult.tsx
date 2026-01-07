@@ -72,11 +72,11 @@ export const ImageToolResult = ({
             <ImageIcon className="size-5 text-primary" />
           </div>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
-            <Shimmer className="text-sm font-medium" duration={1.5}>
+            <Shimmer className="font-medium text-sm" duration={1.5}>
               {t("generatingImage", { prompt: "" }).replace(": ", "")}
             </Shimmer>
             {promptText && (
-              <p className="line-clamp-2 wrap-break-words text-xs text-muted-foreground">
+              <p className="wrap-break-words line-clamp-2 text-muted-foreground text-xs">
                 {promptText}
               </p>
             )}

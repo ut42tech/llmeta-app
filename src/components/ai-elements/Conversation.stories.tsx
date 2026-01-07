@@ -19,7 +19,7 @@ type Story = StoryObj<typeof meta>;
 
 export const EmptyState: Story = {
   render: () => (
-    <div className="h-75 w-100 border rounded-lg">
+    <div className="h-75 w-100 rounded-lg border">
       <ConversationEmptyState
         description="Type a message to start chatting"
         icon={<MessageSquareIcon className="size-12" />}
@@ -31,7 +31,7 @@ export const EmptyState: Story = {
 
 export const CustomEmptyState: Story = {
   render: () => (
-    <div className="h-75 w-100 border rounded-lg">
+    <div className="h-75 w-100 rounded-lg border">
       <ConversationEmptyState
         title="No conversations"
         description="Start a new conversation to begin"

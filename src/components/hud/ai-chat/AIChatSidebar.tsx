@@ -128,7 +128,7 @@ const ConversationItem = ({
   return (
     <div
       className={cn(
-        "group grid grid-cols-[1fr_28px] items-center gap-1 rounded-lg py-2 pl-2 pr-1 transition-colors",
+        "group grid grid-cols-[1fr_28px] items-center gap-1 rounded-lg py-2 pr-1 pl-2 transition-colors",
         isActive ? "bg-accent text-accent-foreground" : "hover:bg-muted/50",
       )}
     >
@@ -137,8 +137,8 @@ const ConversationItem = ({
         className="overflow-hidden text-left"
         onClick={onSelect}
       >
-        <p className="truncate text-sm font-medium">{title}</p>
-        <p className="truncate text-xs text-muted-foreground">
+        <p className="truncate font-medium text-sm">{title}</p>
+        <p className="truncate text-muted-foreground text-xs">
           {formatRelativeDate(conversation.updatedAt, relativeDateTranslations)}
         </p>
       </button>
@@ -190,7 +190,7 @@ export const AIChatSidebar = ({
     <div className="flex h-full w-64 shrink-0 flex-col border-r bg-muted/20">
       {/* Header */}
       <div className="flex shrink-0 items-center justify-between border-b px-4 py-4">
-        <h3 className="text-sm font-semibold">{t("conversations")}</h3>
+        <h3 className="font-semibold text-sm">{t("conversations")}</h3>
         <Button
           variant="ghost"
           size="icon"
@@ -241,6 +241,6 @@ const LoadingSkeleton = () => (
 const EmptyState = ({ message }: { message: string }) => (
   <div className="flex flex-col items-center justify-center p-6 text-center">
     <MessageSquarePlus className="mb-2 size-8 text-muted-foreground/40" />
-    <p className="text-sm text-muted-foreground">{message}</p>
+    <p className="text-muted-foreground text-sm">{message}</p>
   </div>
 );

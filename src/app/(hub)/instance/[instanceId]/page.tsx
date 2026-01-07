@@ -115,14 +115,14 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
   const ConnectionIndicator = () => {
     if (isFailed) {
       return (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-destructive/10 border border-destructive/30">
+        <div className="flex items-center gap-3 rounded-lg border border-destructive/30 bg-destructive/10 px-4 py-3">
           <WifiOff className="size-5 text-destructive" />
           <div className="flex-1">
-            <p className="text-sm font-medium text-destructive">
+            <p className="font-medium text-destructive text-sm">
               {tLobby("failed")}
             </p>
             {connectionError && (
-              <p className="text-xs text-destructive/70">{connectionError}</p>
+              <p className="text-destructive/70 text-xs">{connectionError}</p>
             )}
           </div>
           <Button
@@ -130,7 +130,7 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
             size="sm"
             onClick={() => window.location.reload()}
           >
-            <RefreshCw className="size-4 mr-1" />
+            <RefreshCw className="mr-1 size-4" />
             {tLobby("retry")}
           </Button>
         </div>
@@ -139,9 +139,9 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
 
     if (isConnected) {
       return (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-emerald-500/10 border border-emerald-500/30">
+        <div className="flex items-center gap-3 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-3">
           <CheckCircle2 className="size-5 text-emerald-500" />
-          <p className="text-sm font-medium text-emerald-500">
+          <p className="font-medium text-emerald-500 text-sm">
             {tLobby("connected")}
           </p>
         </div>
@@ -150,26 +150,26 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
 
     // Default: connecting or waiting
     return (
-      <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-muted border">
-        <Loader2 className="size-5 text-muted-foreground animate-spin" />
-        <p className="text-sm text-muted-foreground">{tLobby("connecting")}</p>
+      <div className="flex items-center gap-3 rounded-lg border bg-muted px-4 py-3">
+        <Loader2 className="size-5 animate-spin text-muted-foreground" />
+        <p className="text-muted-foreground text-sm">{tLobby("connecting")}</p>
       </div>
     );
   };
 
   return (
-    <div className="relative min-h-screen bg-black overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-black">
       <BackgroundCanvas />
 
-      <header className="relative z-10 flex items-center justify-between px-6 md:px-12 py-6">
+      <header className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12">
         <div className="flex items-center gap-4">
           <Button
             variant="ghost"
             size="sm"
             onClick={() => router.back()}
-            className="text-white/70 hover:text-white hover:bg-white/10"
+            className="text-white/70 hover:bg-white/10 hover:text-white"
           >
-            <ArrowLeft className="size-4 mr-2" />
+            <ArrowLeft className="mr-2 size-4" />
             {tInstance("back")}
           </Button>
         </div>
@@ -181,7 +181,7 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
         </div>
       </header>
 
-      <main className="relative z-10 flex items-center justify-center px-6 md:px-12 py-8 min-h-[calc(100vh-120px)]">
+      <main className="relative z-10 flex min-h-[calc(100vh-120px)] items-center justify-center px-6 py-8 md:px-12">
         <Card className="w-full max-w-lg">
           <CardHeader>
             <CardTitle className="text-2xl">{t("title")}</CardTitle>
@@ -205,7 +205,7 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
 
             <div className="space-y-2">
               <Label>{t("avatarLabel")}</Label>
-              <div className="p-4 rounded-lg border bg-muted/50">
+              <div className="rounded-lg border bg-muted/50 p-4">
                 <AvatarPicker
                   avatars={AVATAR_LIST}
                   selectedId={selectedAvatar?.id}
@@ -215,13 +215,13 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
               </div>
             </div>
 
-            <div className="flex items-start gap-3 p-4 rounded-lg border border-amber-500/50 bg-amber-500/10">
-              <AlertTriangle className="size-5 text-amber-500 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
+              <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" />
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-medium text-amber-500">
+                <p className="font-medium text-amber-500 text-sm">
                   {t("warningTitle")}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-muted-foreground text-sm">
                   {t("warningText")}
                 </p>
               </div>
@@ -236,13 +236,13 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
             >
               {isReadyToEnter ? (
                 <>
-                  <Loader2 className="size-5 mr-2 animate-spin" />
+                  <Loader2 className="mr-2 size-5 animate-spin" />
                   {tLobby("waitingForConnection")}
                 </>
               ) : (
                 <>
                   {t("continueButton")}
-                  <ArrowRight className="size-5 ml-2" />
+                  <ArrowRight className="ml-2 size-5" />
                 </>
               )}
             </Button>
@@ -287,16 +287,16 @@ function InstancePage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <Loader2 className="size-8 text-white animate-spin" />
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <Loader2 className="size-8 animate-spin text-white" />
       </div>
     );
   }
 
   if (notFound || !instance) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <Card className="w-full max-w-md mx-4">
+      <div className="flex min-h-screen items-center justify-center bg-black">
+        <Card className="mx-4 w-full max-w-md">
           <CardHeader>
             <CardTitle>{tInstance("notFound.title")}</CardTitle>
             <CardDescription>
@@ -306,7 +306,7 @@ function InstancePage() {
           <CardContent>
             <Button asChild className="w-full">
               <Link href="/">
-                <ArrowLeft className="size-4 mr-2" />
+                <ArrowLeft className="mr-2 size-4" />
                 {tInstance("notFound.backToHome")}
               </Link>
             </Button>

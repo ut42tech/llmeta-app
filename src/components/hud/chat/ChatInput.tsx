@@ -45,7 +45,7 @@ export const ChatInput = () => {
 
   return (
     <TooltipProvider>
-      <form onSubmit={handleSubmit} className="flex items-center gap-2 w-64">
+      <form onSubmit={handleSubmit} className="flex w-64 items-center gap-2">
         <Input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -55,7 +55,7 @@ export const ChatInput = () => {
           placeholder={t("placeholder")}
           disabled={!canSend}
           aria-label={t("inputAriaLabel")}
-          className="h-11 flex-1 rounded-full bg-black/20 backdrop-blur-sm border-0 px-4 text-sm text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/30"
+          className="h-11 flex-1 rounded-full border-0 bg-black/20 px-4 text-sm text-white backdrop-blur-sm placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/30"
           maxLength={MAX_MESSAGE_LENGTH}
         />
         <Tooltip>

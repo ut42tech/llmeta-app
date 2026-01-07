@@ -18,8 +18,8 @@ const meta = {
   decorators: [
     (Story) => (
       <ReactFlowProvider>
-        <div className="h-75 w-100 border rounded-lg relative bg-muted/50">
-          <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-xs text-muted-foreground">
+        <div className="relative h-75 w-100 rounded-lg border bg-muted/50">
+          <p className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-muted-foreground text-xs">
             Canvas viewport
           </p>
           <Story />
@@ -36,16 +36,16 @@ export const TopLeft: Story = {
   render: () => (
     <div className="absolute top-4 left-4 m-4 overflow-hidden rounded-md border bg-card p-2">
       <p className="text-sm">Top Left Panel</p>
-      <p className="text-xs text-muted-foreground">Panel content here</p>
+      <p className="text-muted-foreground text-xs">Panel content here</p>
     </div>
   ),
 };
 
 export const BottomRight: Story = {
   render: () => (
-    <div className="absolute bottom-4 right-4 m-4 overflow-hidden rounded-md border bg-card p-2">
+    <div className="absolute right-4 bottom-4 m-4 overflow-hidden rounded-md border bg-card p-2">
       <p className="text-sm">Bottom Right Panel</p>
-      <p className="text-xs text-muted-foreground">Position: bottom-right</p>
+      <p className="text-muted-foreground text-xs">Position: bottom-right</p>
     </div>
   ),
 };

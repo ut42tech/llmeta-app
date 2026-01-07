@@ -22,7 +22,7 @@ export const Default: Story = {
   render: () => (
     <ScrollArea className="h-72 w-48 rounded-md border">
       <div className="p-4">
-        <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
+        <h4 className="mb-4 font-medium text-sm leading-none">Tags</h4>
         {tags.map((tag) => (
           <div key={tag}>
             <div className="text-sm">{tag}</div>
@@ -52,9 +52,9 @@ export const Horizontal: Story = {
       <div className="flex w-max space-x-4 p-4">
         {works.map((work) => (
           <div key={work.artist} className="w-[150px] shrink-0">
-            <div className="overflow-hidden rounded-md bg-muted h-[150px]" />
-            <p className="mt-2 text-sm font-medium">{work.art}</p>
-            <p className="text-xs text-muted-foreground">{work.artist}</p>
+            <div className="h-[150px] overflow-hidden rounded-md bg-muted" />
+            <p className="mt-2 font-medium text-sm">{work.art}</p>
+            <p className="text-muted-foreground text-xs">{work.artist}</p>
           </div>
         ))}
       </div>

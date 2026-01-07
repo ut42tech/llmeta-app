@@ -17,7 +17,7 @@ export default function AuthLayout({
       <BackgroundCanvas />
 
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-20 flex items-center justify-between p-4">
+      <header className="absolute top-0 right-0 left-0 z-20 flex items-center justify-between p-4">
         {/* App Logo & Name */}
         <div className="flex items-center gap-2">
           <Sparkles className="size-6 text-primary" />
@@ -34,7 +34,7 @@ export default function AuthLayout({
       </main>
 
       {/* Footer */}
-      <footer className="absolute bottom-0 left-0 right-0 z-10 p-4 text-center">
+      <footer className="absolute right-0 bottom-0 left-0 z-10 p-4 text-center">
         <p className="text-muted-foreground text-sm">
           © {new Date().getFullYear()} {t("copyright")}
         </p>

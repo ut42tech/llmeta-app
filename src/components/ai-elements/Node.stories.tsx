@@ -45,12 +45,12 @@ export const Default: Story = {
         <NodeAction>Edit</NodeAction>
       </NodeHeader>
       <NodeContent>
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           This node represents an AI processing step in a workflow.
         </p>
       </NodeContent>
       <NodeFooter>
-        <span className="text-xs text-muted-foreground">Status: Ready</span>
+        <span className="text-muted-foreground text-xs">Status: Ready</span>
       </NodeFooter>
     </Node>
   ),

@@ -112,8 +112,8 @@ export default function WorldDetailPage() {
 
   if (notFoundState) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="w-full max-w-md mx-4">
+      <div className="flex min-h-screen items-center justify-center">
+        <Card className="mx-4 w-full max-w-md">
           <CardHeader>
             <CardTitle>World Not Found</CardTitle>
             <CardDescription>
@@ -123,7 +123,7 @@ export default function WorldDetailPage() {
           <CardContent>
             <Link href="/">
               <Button className="w-full">
-                <ArrowLeft className="size-4 mr-2" />
+                <ArrowLeft className="mr-2 size-4" />
                 {t("back")}
               </Button>
             </Link>
@@ -167,8 +167,8 @@ export default function WorldDetailPage() {
   if (isLoading || !world) {
     return (
       <div className="min-h-screen">
-        <Skeleton className="h-64 md:h-80 w-full" />
-        <div className="p-6 lg:p-8 max-w-4xl space-y-8">
+        <Skeleton className="h-64 w-full md:h-80" />
+        <div className="max-w-4xl space-y-8 p-6 lg:p-8">
           <Skeleton className="h-32 w-full" />
           <Skeleton className="h-48 w-full" />
         </div>
@@ -179,7 +179,7 @@ export default function WorldDetailPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <div className="relative h-64 md:h-80 bg-muted overflow-hidden flex items-center justify-center">
+      <div className="relative flex h-64 items-center justify-center overflow-hidden bg-muted md:h-80">
         <Globe className="size-32 text-muted-foreground/30" />
         <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent" />
 
@@ -190,22 +190,22 @@ export default function WorldDetailPage() {
               size="sm"
               className="bg-background/50 backdrop-blur"
             >
-              <ArrowLeft className="size-4 mr-2" />
+              <ArrowLeft className="mr-2 size-4" />
               {t("back")}
             </Button>
           </Link>
         </div>
 
-        <div className="absolute bottom-6 left-6 right-6">
+        <div className="absolute right-6 bottom-6 left-6">
           <div className="max-w-4xl">
-            <h1 className="text-3xl md:text-4xl font-bold">{world.name}</h1>
-            <p className="text-muted-foreground mt-2">{world.description}</p>
+            <h1 className="font-bold text-3xl md:text-4xl">{world.name}</h1>
+            <p className="mt-2 text-muted-foreground">{world.description}</p>
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="p-6 lg:p-8 max-w-4xl">
+      <div className="max-w-4xl p-6 lg:p-8">
         {/* World Info */}
         <Card className="mb-8">
           <CardHeader>
@@ -218,7 +218,7 @@ export default function WorldDetailPage() {
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
                 <p className="text-muted-foreground">{t("capacity")}</p>
-                <p className="font-medium flex items-center gap-1">
+                <p className="flex items-center gap-1 font-medium">
                   <Users className="size-4" />
                   {world.player_capacity} {t("players")}
                 </p>
@@ -239,15 +239,15 @@ export default function WorldDetailPage() {
 
         {/* Instances Section */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">{t("instances")}</h2>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="font-semibold text-xl">{t("instances")}</h2>
             <Dialog
               open={isCreateDialogOpen}
               onOpenChange={setIsCreateDialogOpen}
             >
               <DialogTrigger asChild>
                 <Button>
-                  <Plus className="size-4 mr-2" />
+                  <Plus className="mr-2 size-4" />
                   {t("createInstance")}
                 </Button>
               </DialogTrigger>
