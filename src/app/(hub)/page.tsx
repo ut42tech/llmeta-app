@@ -34,13 +34,13 @@ export default function DashboardPage() {
   return (
     <div className="p-6 lg:p-8">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-2">{t("description")}</p>
+        <h1 className="font-bold text-3xl tracking-tight">{t("title")}</h1>
+        <p className="mt-2 text-muted-foreground">{t("description")}</p>
       </header>
 
       <section>
-        <h2 className="text-xl font-semibold mb-4">{t("worlds")}</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <h2 className="mb-4 font-semibold text-xl">{t("worlds")}</h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {isLoading
             ? [1, 2, 3, 4].map((key) => (
                 <div key={`skeleton-${key}`} className="space-y-3">

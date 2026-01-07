@@ -24,7 +24,7 @@ export const AvatarPicker = ({
     <div
       className={cn(
         "grid grid-cols-4 gap-3",
-        disabled && "opacity-50 pointer-events-none",
+        disabled && "pointer-events-none opacity-50",
       )}
     >
       {avatars.map((avatar, index) => {
@@ -40,7 +40,7 @@ export const AvatarPicker = ({
             className={cn(
               "group relative aspect-square overflow-hidden rounded-lg border transition-colors",
               isSelected
-                ? "ring-2 ring-primary border-primary/50"
+                ? "border-primary/50 ring-2 ring-primary"
                 : "hover:border-foreground/30",
               disabled && "cursor-not-allowed",
             )}

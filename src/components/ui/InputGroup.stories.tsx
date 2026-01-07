@@ -22,7 +22,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <InputGroup className="w-[300px]">
+    <InputGroup className="w-75">
       <InputGroupAddon align="inline-start">
         <InputGroupText>
           <AtSign />
@@ -35,7 +35,7 @@ export const Default: Story = {
 
 export const WithButton: Story = {
   render: () => (
-    <InputGroup className="w-[300px]">
+    <InputGroup className="w-75">
       <InputGroupInput type="password" placeholder="Password" />
       <InputGroupAddon align="inline-end">
         <InputGroupButton>
@@ -48,7 +48,7 @@ export const WithButton: Story = {
 
 export const SearchInput: Story = {
   render: () => (
-    <InputGroup className="w-[300px]">
+    <InputGroup className="w-75">
       <InputGroupAddon align="inline-start">
         <InputGroupText>
           <Search />
@@ -61,7 +61,7 @@ export const SearchInput: Story = {
 
 export const BothSides: Story = {
   render: () => (
-    <InputGroup className="w-[350px]">
+    <InputGroup className="w-87.5">
       <InputGroupAddon align="inline-start">
         <InputGroupText>https://</InputGroupText>
       </InputGroupAddon>

@@ -18,8 +18,8 @@ const meta = {
   decorators: [
     (Story) => (
       <ReactFlowProvider>
-        <div className="h-50 w-75 border rounded-lg relative bg-muted/50">
-          <p className="absolute top-4 left-4 text-xs text-muted-foreground">
+        <div className="relative h-50 w-75 rounded-lg border bg-muted/50">
+          <p className="absolute top-4 left-4 text-muted-foreground text-xs">
             Canvas area (Controls appear in ReactFlow context)
           </p>
           <Story />

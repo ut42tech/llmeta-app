@@ -18,7 +18,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => (
-    <div className="w-[450px]">
+    <div className="w-112.5">
       <AspectRatio ratio={16 / 9}>
         <div className="flex h-full w-full items-center justify-center rounded-md bg-muted">
           16 / 9
@@ -30,7 +30,7 @@ export const Default: Story = {
 
 export const Square: Story = {
   render: () => (
-    <div className="w-[300px]">
+    <div className="w-75">
       <AspectRatio ratio={1}>
         <div className="flex h-full w-full items-center justify-center rounded-md bg-muted">
           1 / 1
@@ -42,7 +42,7 @@ export const Square: Story = {
 
 export const Portrait: Story = {
   render: () => (
-    <div className="w-[200px]">
+    <div className="w-50">
       <AspectRatio ratio={3 / 4}>
         <div className="flex h-full w-full items-center justify-center rounded-md bg-muted">
           3 / 4

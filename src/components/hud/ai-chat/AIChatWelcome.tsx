@@ -76,7 +76,7 @@ export const AIChatWelcome = ({
             {t("welcome.greeting", { name: displayName })}
           </span>
         </div>
-        <h1 className="text-3xl font-medium tracking-tight md:text-4xl">
+        <h1 className="font-medium text-3xl tracking-tight md:text-4xl">
           {t("welcome.question")}
         </h1>
       </div>

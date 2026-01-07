@@ -71,7 +71,7 @@ type SettingsSectionProps = {
 
 const SettingsSection = ({ title, icon, children }: SettingsSectionProps) => (
   <motion.div className="space-y-3" variants={staggerItem}>
-    <h3 className="text-sm font-semibold flex items-center gap-2">
+    <h3 className="flex items-center gap-2 font-semibold text-sm">
       {icon}
       {title}
     </h3>
@@ -92,12 +92,12 @@ const InfoRow = ({ label, value, mono }: InfoRowProps) => (
     animate={{ opacity: 1, x: 0 }}
     transition={{ duration: 0.2 }}
   >
-    <span className="text-sm font-medium text-muted-foreground">{label}</span>
+    <span className="font-medium text-muted-foreground text-sm">{label}</span>
     <span
       className={
         mono
-          ? "font-mono text-xs text-foreground/80 break-all max-w-50 text-right"
-          : "text-base font-semibold"
+          ? "max-w-50 break-all text-right font-mono text-foreground/80 text-xs"
+          : "font-semibold text-base"
       }
     >
       {value}
@@ -215,14 +215,14 @@ const ControlsTab = () => {
       animate="visible"
     >
       <motion.p
-        className="text-sm text-muted-foreground leading-relaxed"
+        className="text-muted-foreground text-sm leading-relaxed"
         variants={staggerItem}
       >
         {t("placeholder")}
       </motion.p>
 
       <motion.div className="space-y-3" variants={staggerItem}>
-        <h3 className="text-sm font-semibold">{t("controlsTitle")}</h3>
+        <h3 className="font-semibold text-sm">{t("controlsTitle")}</h3>
         <div className="space-y-2.5">
           <motion.div
             className="flex items-start gap-3"
@@ -230,7 +230,7 @@ const ControlsTab = () => {
             transition={{ type: "spring", stiffness: 400, damping: 25 }}
           >
             <Kbd className="min-w-20 justify-center">WASD</Kbd>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-muted-foreground text-sm">
               {t("moveAround")}
             </span>
           </motion.div>
@@ -243,7 +243,7 @@ const ControlsTab = () => {
               <Mouse className="size-3" />
               Mouse
             </Kbd>
-            <span className="text-sm text-muted-foreground">
+            <span className="text-muted-foreground text-sm">
               {t("lookAround")}
             </span>
           </motion.div>
@@ -297,12 +297,12 @@ const LanguageTab = () => {
             >
               <Label
                 htmlFor={`lang-${lang.value}`}
-                className="flex items-center gap-4 p-4 rounded-xl border cursor-pointer hover:bg-muted/50 has-[data-state=checked]:border-primary has-[data-state=checked]:bg-primary/5 transition-colors"
+                className="flex cursor-pointer items-center gap-4 rounded-xl border p-4 transition-colors hover:bg-muted/50 has-[data-state=checked]:border-primary has-[data-state=checked]:bg-primary/5"
               >
                 <RadioGroupItem value={lang.value} id={`lang-${lang.value}`} />
                 <div className="flex-1">
                   <div className="font-semibold">{lang.label}</div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-muted-foreground text-sm">
                     {lang.description}
                   </div>
                 </div>
@@ -426,15 +426,15 @@ export const SettingsDrawer = () => {
       </Tooltip>
 
       <DrawerContent className="flex flex-col overflow-hidden">
-        <div className="mx-auto w-full max-w-md flex flex-col flex-1 overflow-hidden">
-          <DrawerHeader className="text-center shrink-0">
-            <DrawerTitle className="text-2xl font-bold flex items-center justify-center gap-2">
+        <div className="mx-auto flex w-full max-w-md flex-1 flex-col overflow-hidden">
+          <DrawerHeader className="shrink-0 text-center">
+            <DrawerTitle className="flex items-center justify-center gap-2 font-bold text-2xl">
               <Settings className="size-6" />
               {t("title")}
             </DrawerTitle>
           </DrawerHeader>
 
-          <div className="overflow-y-auto flex-1 min-h-0 px-4 pb-6">
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-6">
             {isClient ? (
               <SettingsContent />
             ) : (
@@ -442,7 +442,7 @@ export const SettingsDrawer = () => {
             )}
           </div>
 
-          <DrawerFooter className="pt-2 shrink-0">
+          <DrawerFooter className="shrink-0 pt-2">
             <DrawerClose asChild>
               <Button variant="outline" className="w-full">
                 {tCommon("close")}

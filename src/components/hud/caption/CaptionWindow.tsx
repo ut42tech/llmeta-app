@@ -22,23 +22,23 @@ export const CaptionWindow = () => {
   const text = partial || entries.at(-1)?.text;
 
   return (
-    <div className="absolute left-4 top-12 pointer-events-auto">
+    <div className="pointer-events-auto absolute top-12 left-4">
       <Badge
         variant="secondary"
         className={cn(
-          "flex items-center gap-2 px-2.5 py-1.5 max-w-sm",
-          "bg-white/50 backdrop-blur-md border-white/20",
-          error && "bg-red-500/20 border-red-500/30 text-red-900",
+          "flex max-w-sm items-center gap-2 px-2.5 py-1.5",
+          "border-white/20 bg-white/50 backdrop-blur-md",
+          error && "border-red-500/30 bg-red-500/20 text-red-900",
         )}
       >
-        <div className="h-4 w-16 shrink-0 rounded-full bg-white/50 overflow-hidden">
+        <div className="h-4 w-16 shrink-0 overflow-hidden rounded-full bg-white/50">
           <Waveform track={track} className="h-full w-full" />
         </div>
 
         <p
           className={cn(
-            "text-xs wrap-break-word",
-            !text && "opacity-50 italic",
+            "wrap-break-word text-xs",
+            !text && "italic opacity-50",
           )}
         >
           {error ?? text ?? t("waitingForSpeech")}

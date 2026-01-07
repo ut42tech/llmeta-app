@@ -10,7 +10,7 @@ export const Dock = () => {
   return (
     <TooltipProvider>
       {/* Dock */}
-      <div className="absolute inset-x-0 bottom-6 flex items-center justify-center pointer-events-auto gap-2">
+      <div className="pointer-events-auto absolute inset-x-0 bottom-6 flex items-center justify-center gap-2">
         {/* Right: AI Chat */}
         <div className="fixed right-6">
           <AIChatButton />

@@ -48,11 +48,11 @@ export const WithLabels: Story = {
   render: () => (
     <div className="flex items-center gap-1 rounded-sm border bg-background p-1.5">
       <Button size="sm" variant="ghost">
-        <EditIcon className="size-4 mr-1" />
+        <EditIcon className="mr-1 size-4" />
         Edit
       </Button>
       <Button size="sm" variant="ghost">
-        <DeleteIcon className="size-4 mr-1" />
+        <DeleteIcon className="mr-1 size-4" />
         Delete
       </Button>
     </div>

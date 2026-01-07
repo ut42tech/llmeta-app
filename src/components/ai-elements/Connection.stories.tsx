@@ -33,13 +33,13 @@ type Story = StoryObj;
 
 export const Documentation: Story = {
   render: () => (
-    <div className="p-8 max-w-lg">
-      <h3 className="text-lg font-semibold mb-4">Connection Line</h3>
-      <p className="text-sm text-muted-foreground mb-4">
+    <div className="max-w-lg p-8">
+      <h3 className="mb-4 font-semibold text-lg">Connection Line</h3>
+      <p className="mb-4 text-muted-foreground text-sm">
         The connection line appears when dragging from a node handle to create a
         new edge. It follows the cursor with a smooth bezier curve.
       </p>
-      <div className="border rounded-lg p-4 bg-muted/50">
+      <div className="rounded-lg border bg-muted/50 p-4">
         <svg height="100" width="250">
           <title>Connection Line</title>
           <path
@@ -56,10 +56,10 @@ export const Documentation: Story = {
             stroke="var(--color-ring)"
             strokeWidth="1"
           />
-          <text className="text-xs fill-muted-foreground" x="20" y="80">
+          <text className="fill-muted-foreground text-xs" x="20" y="80">
             Source Handle
           </text>
-          <text className="text-xs fill-muted-foreground" x="190" y="80">
+          <text className="fill-muted-foreground text-xs" x="190" y="80">
             Cursor Position
           </text>
         </svg>

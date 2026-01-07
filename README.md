@@ -37,7 +37,7 @@ Each user is paired with a personal AI agent that facilitates communication betw
 | **UI** | shadcn/ui, Tailwind CSS, Motion, Lucide Icons |
 | **State** | Zustand |
 | **i18n** | next-intl |
-| **Testing** | Vitest, Testing Library |
+| **Testing** | Vitest, Testing Library, Playwright, Storybook |
 | **Linting** | Biome |
 
 ## Getting Started
@@ -121,7 +121,7 @@ src/
 │   ├── ui/                  # Shared shadcn/ui components (32 components)
 │   └── world/               # World cards & instance cards
 ├── constants/               # App constants (animations, avatars, sync, world)
-├── hooks/                   # Custom React hooks (20+ hooks)
+├── hooks/                   # Custom React hooks (27 hooks)
 │   ├── ai-chat/             # AI chat history hooks
 │   ├── auth/                # Authentication hooks
 │   ├── chat/                # Text chat hooks
@@ -134,8 +134,8 @@ src/
 ├── lib/                     # Utility libraries
 │   ├── api/                 # API utilities
 │   └── supabase/            # Supabase client (server/browser)
-├── stores/                  # Zustand state stores (8 stores)
-├── types/                   # TypeScript types (7 categories)
+├── stores/                  # Zustand state stores (9 stores)
+├── types/                   # TypeScript types (8 type files)
 └── utils/                   # Utility functions
 ```
 
@@ -148,7 +148,12 @@ src/
 | `pnpm start` | Start production server |
 | `pnpm lint` | Run Biome linter |
 | `pnpm format` | Format code with Biome |
-| `pnpm test` | Run tests with Vitest |
+| `pnpm typecheck` | Run TypeScript type checking |
+| `pnpm test` | Run unit tests with Vitest |
+| `pnpm test:e2e` | Run E2E tests with Playwright |
+| `pnpm test:all` | Run all tests (unit + E2E) |
+| `pnpm storybook` | Start Storybook dev server |
+| `pnpm build-storybook` | Build Storybook for deployment |
 
 ## License
 

@@ -12,7 +12,7 @@ export const StatusBar = () => {
   const isStreaming = useTranscriptionStore((state) => state.isStreaming);
 
   return (
-    <div className="absolute inset-x-4 top-4 grid grid-cols-3 items-start pointer-events-auto">
+    <div className="pointer-events-auto absolute inset-x-4 top-4 grid grid-cols-3 items-start">
       <div className="justify-self-start">
         <CaptionStatusBadge isStreaming={isStreaming} />
       </div>

@@ -108,7 +108,7 @@ export default function SignupPage() {
       <CardContent>
         <form onSubmit={handleSignup} className="space-y-4">
           {error && (
-            <div className="rounded-md bg-destructive/10 p-3 text-sm text-destructive">
+            <div className="rounded-md bg-destructive/10 p-3 text-destructive text-sm">
               {error}
             </div>
           )}
@@ -176,7 +176,7 @@ export default function SignupPage() {
             )}
           </Button>
 
-          <p className="text-center text-sm text-muted-foreground">
+          <p className="text-center text-muted-foreground text-sm">
             {t("signup.hasAccount")}{" "}
             <Link
               href="/login"

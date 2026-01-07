@@ -1,5 +1,7 @@
 import type { Preview } from "@storybook/nextjs-vite";
 import { Noto_Sans_JP, Roboto, Roboto_Mono } from "next/font/google";
+import { NextIntlClientProvider } from "next-intl";
+import messages from "../src/i18n/messages/en.json";
 import "../src/app/globals.css";
 
 const notoSans = Noto_Sans_JP({
@@ -37,11 +39,13 @@ const preview: Preview = {
   },
   decorators: [
     (Story) => (
-      <div
-        className={`${notoSans.variable} ${roboto.variable} ${robotoMono.variable}`}
-      >
-        <Story />
-      </div>
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <div
+          className={`${notoSans.variable} ${roboto.variable} ${robotoMono.variable}`}
+        >
+          <Story />
+        </div>
+      </NextIntlClientProvider>
     ),
   ],
 };

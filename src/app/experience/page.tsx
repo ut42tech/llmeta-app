@@ -34,7 +34,7 @@ function ExperienceContent() {
 
   if (!isConnected) {
     return (
-      <div className="fixed inset-0 bg-black flex items-center justify-center">
+      <div className="fixed inset-0 flex items-center justify-center bg-black">
         <Loader />
       </div>
     );
@@ -51,7 +51,7 @@ function ExperienceContent() {
 
       <Viverse>
         <Canvas
-          className="fixed! w-screen! h-screen! touch-none"
+          className="fixed! h-screen! w-screen! touch-none"
           shadows
           camera={{ position: [3, 3, 3], fov: 40 }}
           gl={{

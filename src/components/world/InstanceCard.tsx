@@ -16,9 +16,9 @@ export function InstanceCard({ instance }: InstanceCardProps) {
     <Card className="group transition-all hover:shadow-md">
       <CardContent className="p-4">
         <div className="flex items-center justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <h3 className="font-medium truncate">{instance.name}</h3>
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
+          <div className="min-w-0 flex-1">
+            <h3 className="truncate font-medium">{instance.name}</h3>
+            <div className="mt-1 flex items-center gap-2 text-muted-foreground text-sm">
               <Users className="size-4" />
               <span>— / {instance.max_players}</span>
               {instance.hostName && (
@@ -32,7 +32,7 @@ export function InstanceCard({ instance }: InstanceCardProps) {
           <Link href={`/instance/${instance.id}`}>
             <Button size="sm" className="shrink-0">
               {t("join")}
-              <ArrowRight className="size-4 ml-1" />
+              <ArrowRight className="ml-1 size-4" />
             </Button>
           </Link>
         </div>

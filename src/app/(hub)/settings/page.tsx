@@ -56,10 +56,10 @@ export default function SettingsPage() {
   const hasChanges = displayName.trim() !== (profile?.display_name || "");
 
   return (
-    <div className="p-6 lg:p-8 max-w-2xl">
+    <div className="max-w-2xl p-6 lg:p-8">
       <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight">{t("title")}</h1>
-        <p className="text-muted-foreground mt-2">{t("description")}</p>
+        <h1 className="font-bold text-3xl tracking-tight">{t("title")}</h1>
+        <p className="mt-2 text-muted-foreground">{t("description")}</p>
       </header>
 
       <div className="space-y-6">
@@ -74,12 +74,12 @@ export default function SettingsPage() {
           <CardContent className="space-y-4">
             {/* Avatar */}
             <div className="flex items-center gap-4">
-              <div className="size-16 rounded-full bg-muted flex items-center justify-center text-2xl font-medium">
+              <div className="flex size-16 items-center justify-center rounded-full bg-muted font-medium text-2xl">
                 {profile?.display_name?.charAt(0).toUpperCase() || "?"}
               </div>
               <div>
                 <p className="font-medium">{profile?.display_name}</p>
-                <p className="text-sm text-muted-foreground">{user?.email}</p>
+                <p className="text-muted-foreground text-sm">{user?.email}</p>
               </div>
             </div>
 
@@ -96,7 +96,7 @@ export default function SettingsPage() {
                 disabled
                 className="bg-muted"
               />
-              <p className="text-xs text-muted-foreground">{t("emailNote")}</p>
+              <p className="text-muted-foreground text-xs">{t("emailNote")}</p>
             </div>
 
             {/* Display Name (editable) */}

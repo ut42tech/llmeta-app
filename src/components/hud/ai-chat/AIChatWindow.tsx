@@ -255,7 +255,7 @@ export const AIChatWindow = () => {
                       ? t("welcome.placeholder")
                       : tChat("typePlaceholder")
                   }
-                  className="min-h-11 max-h-32"
+                  className="max-h-32 min-h-11"
                 />
                 <PromptInputFooter>
                   <PromptInputTools />
@@ -269,7 +269,7 @@ export const AIChatWindow = () => {
               {/* Disclaimer */}
               <div className="mt-3 flex items-center justify-center gap-1.5 text-center">
                 <Info className="size-3 shrink-0 text-muted-foreground/60" />
-                <p className="text-[11px] leading-tight text-muted-foreground/60">
+                <p className="text-[11px] text-muted-foreground/60 leading-tight">
                   {t("disclaimer")}
                 </p>
               </div>

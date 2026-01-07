@@ -57,7 +57,7 @@ export function AppSidebar() {
                 </div>
                 <div className="flex flex-col gap-0.5 leading-none">
                   <span className="font-semibold">Project LLMeta</span>
-                  <span className="text-xs text-muted-foreground">
+                  <span className="text-muted-foreground text-xs">
                     AI Metaverse
                   </span>
                 </div>
@@ -102,7 +102,7 @@ export function AppSidebar() {
                   size="lg"
                   className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
                 >
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted text-sm font-medium">
+                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-muted font-medium text-sm">
                     {profile?.display_name?.charAt(0).toUpperCase() || "?"}
                   </div>
                   <div className="grid flex-1 text-left text-sm leading-tight">

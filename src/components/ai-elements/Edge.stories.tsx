@@ -44,12 +44,12 @@ type Story = StoryObj;
 
 export const Documentation: Story = {
   render: () => (
-    <div className="p-8 max-w-lg">
-      <h3 className="text-lg font-semibold mb-4">Edge Types</h3>
+    <div className="max-w-lg p-8">
+      <h3 className="mb-4 font-semibold text-lg">Edge Types</h3>
       <div className="space-y-4">
-        <div className="border rounded-lg p-4">
-          <h4 className="font-medium mb-2">Edge.Temporary</h4>
-          <p className="text-sm text-muted-foreground mb-2">
+        <div className="rounded-lg border p-4">
+          <h4 className="mb-2 font-medium">Edge.Temporary</h4>
+          <p className="mb-2 text-muted-foreground text-sm">
             Dashed bezier edge shown during node connection.
           </p>
           <svg height="60" width="200">
@@ -63,9 +63,9 @@ export const Documentation: Story = {
             />
           </svg>
         </div>
-        <div className="border rounded-lg p-4">
-          <h4 className="font-medium mb-2">Edge.Animated</h4>
-          <p className="text-sm text-muted-foreground mb-2">
+        <div className="rounded-lg border p-4">
+          <h4 className="mb-2 font-medium">Edge.Animated</h4>
+          <p className="mb-2 text-muted-foreground text-sm">
             Solid edge with animated dot traveling along the path.
           </p>
           <svg height="60" width="200">

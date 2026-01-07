@@ -37,7 +37,7 @@ export const Default: Story = {
             <div className="p-1">
               <Card>
                 <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-4xl font-semibold">{slide.number}</span>
+                  <span className="font-semibold text-4xl">{slide.number}</span>
                 </CardContent>
               </Card>
             </div>
@@ -64,7 +64,7 @@ export const ThreeItems: Story = {
             <div className="p-1">
               <Card>
                 <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <span className="text-2xl font-semibold">{slide.number}</span>
+                  <span className="font-semibold text-2xl">{slide.number}</span>
                 </CardContent>
               </Card>
             </div>
