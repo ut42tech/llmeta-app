@@ -25,7 +25,7 @@ export const Default: Story = {
 
 export const AllValues: Story = {
   render: () => (
-    <div className="flex w-[300px] flex-col gap-4">
+    <div className="flex w-75 flex-col gap-4">
       <Progress value={0} />
       <Progress value={25} />
       <Progress value={50} />
