@@ -119,7 +119,7 @@ LLMeta is built on a modern, robust technology stack:
 
 LLMeta uses a Server Component-first authentication pattern:
 
-1. **Server-side validation** — Dashboard layout (Server Component) validates sessions via Supabase cookies
+1. **Server-side validation** — Hub layout (Server Component) validates sessions via Supabase cookies
 2. **Middleware token refresh** — Middleware refreshes auth tokens on every request
 3. **Client hydration** — AuthProvider passes server-fetched user data to client components
 

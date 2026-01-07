@@ -12,8 +12,8 @@
     "loading": "読み込み中...",
     "sendMessage": "メッセージを送信"
   },
-  "dashboard": {
-    "title": "ダッシュボード",
+  "home": {
+    "title": "ホーム",
     "description": "ワールドを探索してインスタンスに参加",
     "worlds": "ワールド"
   },
@@ -47,6 +47,8 @@
     "players": "人",
     "createdAt": "作成日",
     "instances": "インスタンス",
+    "activeInstances": "件のアクティブなインスタンス",
+    "noActiveInstances": "アクティブなインスタンスはありません",
     "createInstance": "インスタンスを作成",
     "createInstanceTitle": "新規インスタンスを作成",
     "createInstanceDescription": "このワールドの新しいインスタンスを作成します",
@@ -54,7 +56,8 @@
     "instanceNamePlaceholder": "インスタンス名を入力（任意）",
     "cancel": "キャンセル",
     "create": "作成",
-    "noInstances": "アクティブなインスタンスがありません。作成して始めましょう！"
+    "noInstances": "インスタンスがありません",
+    "createFirstInstance": "最初のインスタンスを作成してこのワールドを探索しましょう"
   },
   "instance": {
     "back": "戻る",

@@ -1,6 +1,13 @@
 "use client";
 
-import { CheckCircle2, Globe, Loader2, Mail, User } from "lucide-react";
+import {
+  CheckCircle2,
+  Globe,
+  Loader2,
+  Mail,
+  Settings,
+  User,
+} from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -58,7 +65,10 @@ export default function SettingsPage() {
   return (
     <div className="max-w-2xl p-6 lg:p-8">
       <header className="mb-8">
-        <h1 className="font-bold text-3xl tracking-tight">{t("title")}</h1>
+        <h1 className="flex items-center gap-2 font-bold text-3xl tracking-tight">
+          <Settings className="size-8" />
+          {t("title")}
+        </h1>
         <p className="mt-2 text-muted-foreground">{t("description")}</p>
       </header>
 

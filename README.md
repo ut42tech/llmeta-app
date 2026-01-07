@@ -115,7 +115,7 @@ src/
 │   │   ├── chat/            # Text chat input & stream
 │   │   ├── dock/            # Control buttons & drawers (7 components)
 │   │   └── status-bar/      # Connection & player status badges
-│   ├── layout/              # Dashboard layout (AppSidebar, DashboardContent)
+│   ├── layout/              # Hub layout (AppSidebar, HubLayout)
 │   ├── providers/           # Context providers (Auth, I18n, LiveKitSync)
 │   ├── scene/               # 3D scene components (Scene, WorldContent, DefaultMap)
 │   ├── ui/                  # Shared shadcn/ui components (33 components)

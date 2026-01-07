@@ -39,7 +39,7 @@ LLMeta uses secure server-side authentication powered by Supabase. Your session 
 1. Navigate to the **Login** page (`/login`)
 2. Enter your registered **Email** and **Password**
 3. Click **"Sign In"**
-4. You'll be redirected to the Dashboard
+4. You'll be redirected to the Home page
 
 > [!NOTE]
 > Authentication is validated server-side. If your session expires, you'll be automatically redirected to the login page.
@@ -48,13 +48,13 @@ LLMeta uses secure server-side authentication powered by Supabase. Your session 
 
 Click the **Sign Out** button in the sidebar or profile page to sign out of your account.
 
-### 2. Dashboard
+### 2. Home
 
-After logging in, you'll see the **Dashboard** — your central hub for exploring worlds.
+After logging in, you'll see the **Home** page — your central hub for exploring worlds.
 
 **Features:**
 
-- **Sidebar Navigation** — Access Home (Dashboard) and Settings pages
+- **Sidebar Navigation** — Access Home and Settings pages
 - **World List** — Browse available metaverse worlds displayed as cards
 - **User Info** — Your display name is shown in the sidebar footer
 
@@ -157,7 +157,7 @@ The main control bar with six primary buttons:
 | 🎭 **Avatar Picker** | Change your avatar during the session |
 | ⚙️ **Preferences** | Open the settings drawer |
 | 🤖 **AI Chat** | Open the AI Agent chat sidebar |
-| 🚪 **Leave** | Leave the current room and return to dashboard |
+| 🚪 **Leave** | Leave the current room and return to Home |
 
 ---
 

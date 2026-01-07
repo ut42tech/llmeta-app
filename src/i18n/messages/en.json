@@ -12,8 +12,8 @@
     "loading": "Loading...",
     "sendMessage": "Send message"
   },
-  "dashboard": {
-    "title": "Dashboard",
+  "home": {
+    "title": "Home",
     "description": "Explore worlds and join instances",
     "worlds": "Worlds"
   },
@@ -47,6 +47,8 @@
     "players": "players",
     "createdAt": "Created",
     "instances": "Instances",
+    "activeInstances": "active instances",
+    "noActiveInstances": "No active instances yet",
     "createInstance": "Create Instance",
     "createInstanceTitle": "Create New Instance",
     "createInstanceDescription": "Create a new instance for this world",
@@ -54,7 +56,8 @@
     "instanceNamePlaceholder": "Enter instance name (optional)",
     "cancel": "Cancel",
     "create": "Create",
-    "noInstances": "No active instances. Create one to get started!"
+    "noInstances": "No instances yet",
+    "createFirstInstance": "Create your first instance to start exploring this world"
   },
   "instance": {
     "back": "Back",

@@ -92,7 +92,7 @@ export const Default: Story = {
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b px-4">
           <SidebarTrigger />
-          <h1 className="font-semibold">Dashboard</h1>
+          <h1 className="font-semibold">Home</h1>
         </header>
         <div className="p-4">
           <p className="text-muted-foreground">Main content area</p>
@@ -136,7 +136,7 @@ export const WithSearch: Story = {
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b px-4">
           <SidebarTrigger />
-          <h1 className="font-semibold">Dashboard</h1>
+          <h1 className="font-semibold">Home</h1>
         </header>
         <div className="p-4">
           <p className="text-muted-foreground">
@@ -179,7 +179,7 @@ export const Collapsed: Story = {
       <SidebarInset>
         <header className="flex h-14 items-center gap-4 border-b px-4">
           <SidebarTrigger />
-          <h1 className="font-semibold">Dashboard</h1>
+          <h1 className="font-semibold">Home</h1>
         </header>
         <div className="p-4">
           <p className="text-muted-foreground">

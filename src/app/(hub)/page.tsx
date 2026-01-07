@@ -1,5 +1,6 @@
 "use client";
 
+import { Home } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,8 +12,8 @@ type WorldWithInstanceCount = World & {
   instanceCount: number;
 };
 
-export default function DashboardPage() {
-  const t = useTranslations("dashboard");
+export default function HomePage() {
+  const t = useTranslations("home");
   const [worlds, setWorlds] = useState<WorldWithInstanceCount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -51,7 +52,10 @@ export default function DashboardPage() {
   return (
     <div className="p-6 lg:p-8">
       <header className="mb-8">
-        <h1 className="font-bold text-3xl tracking-tight">{t("title")}</h1>
+        <h1 className="flex items-center gap-2 font-bold text-3xl tracking-tight">
+          <Home className="size-8" />
+          {t("title")}
+        </h1>
         <p className="mt-2 text-muted-foreground">{t("description")}</p>
       </header>
 
