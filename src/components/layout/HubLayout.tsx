@@ -2,8 +2,13 @@
 
 import type { User } from "@supabase/supabase-js";
 import { AppSidebar } from "@/components/layout/AppSidebar";
+import { DynamicBreadcrumb } from "@/components/layout/DynamicBreadcrumb";
 import { AuthProvider } from "@/components/providers";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import type { Tables } from "@/types/supabase";
 
 type Profile = Tables<"profiles">;
@@ -24,7 +29,11 @@ export function HubLayout({ user, profile, children }: HubLayoutProps) {
       <SidebarProvider>
         <AppSidebar />
         <SidebarInset>
-          <main className="flex-1">{children}</main>
+          <header className="flex h-16 shrink-0 items-center gap-2 border-b border-l px-4">
+            <SidebarTrigger className="-ml-1" />
+            <DynamicBreadcrumb />
+          </header>
+          <main className="flex-1 p-4">{children}</main>
         </SidebarInset>
       </SidebarProvider>
     </AuthProvider>

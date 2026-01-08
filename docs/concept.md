@@ -102,24 +102,24 @@ LLMeta is built on a modern, robust technology stack:
 
 | Layer | Technology | Purpose |
 |-------|------------|---------|
-| **Framework** | Next.js | Modern React application with server-side rendering |
+| **Framework** | Next.js 16 (App Router), React 19 | Modern React application with server-side rendering |
 | **Authentication** | Supabase Auth | Secure cookie-based session management |
 | **3D Rendering** | React Three Fiber, Three.js | Immersive virtual environments |
 | **Avatar System** | @react-three/viverse, @pixiv/three-vrm | Expressive VRM 3D character representation |
 | **Voice Communication** | LiveKit | Real-time audio transmission with WebRTC |
 | **Speech Recognition** | Deepgram | Accurate real-time speech-to-text transcription |
-| **AI Intelligence** | Vercel AI SDK, OpenAI | Intelligent agent responses and image generation |
-| **State Management** | Zustand | Reactive, efficient application state (9 stores) |
+| **AI Intelligence** | Vercel AI SDK 6, OpenAI | Intelligent agent responses and image generation |
+| **State Management** | Zustand 5 | Reactive, efficient application state (8 stores) |
 | **Internationalization** | next-intl | Multi-language support (English, Japanese) |
-| **UI Components** | shadcn/ui, Tailwind CSS | Modern, accessible component library |
+| **UI Components** | shadcn/ui, Tailwind CSS v4 | Modern, accessible component library (34 components) |
 | **Animation** | Motion | Smooth UI transitions and animations |
-| **Testing** | Vitest, Testing Library, Playwright, Storybook | Unit, integration, E2E testing and component documentation |
+| **Testing** | Vitest, Testing Library, Playwright, Storybook 10 | Unit, integration, E2E testing and component documentation |
 
 ### Authentication Architecture
 
 LLMeta uses a Server Component-first authentication pattern:
 
-1. **Server-side validation** — Dashboard layout (Server Component) validates sessions via Supabase cookies
+1. **Server-side validation** — Hub layout (Server Component) validates sessions via Supabase cookies
 2. **Middleware token refresh** — Middleware refreshes auth tokens on every request
 3. **Client hydration** — AuthProvider passes server-fetched user data to client components
 

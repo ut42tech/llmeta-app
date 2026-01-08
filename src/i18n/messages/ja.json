@@ -12,8 +12,8 @@
     "loading": "読み込み中...",
     "sendMessage": "メッセージを送信"
   },
-  "dashboard": {
-    "title": "ダッシュボード",
+  "home": {
+    "title": "ホーム",
     "description": "ワールドを探索してインスタンスに参加",
     "worlds": "ワールド"
   },
@@ -36,9 +36,28 @@
     "update": "更新",
     "language": "言語",
     "languageDescription": "インターフェースの表示言語を選択",
+    "avatar": "アバター",
+    "avatarDescription": "ワールド内で使用するアバターを選択",
     "dangerZone": "危険な操作",
     "dangerZoneDescription": "取り消せない操作",
-    "logout": "サインアウト"
+    "logout": "サインアウト",
+    "notifications": {
+      "displayName": {
+        "loading": "表示名を更新中...",
+        "success": "表示名を更新しました",
+        "error": "表示名の更新に失敗しました"
+      },
+      "avatar": {
+        "loading": "アバターを更新中...",
+        "success": "アバターを更新しました",
+        "error": "アバターの更新に失敗しました"
+      },
+      "language": {
+        "loading": "言語設定を更新中...",
+        "success": "言語設定を更新しました",
+        "error": "言語設定の更新に失敗しました"
+      }
+    }
   },
   "world": {
     "back": "戻る",
@@ -47,6 +66,8 @@
     "players": "人",
     "createdAt": "作成日",
     "instances": "インスタンス",
+    "activeInstances": "件のアクティブなインスタンス",
+    "noActiveInstances": "アクティブなインスタンスはありません",
     "createInstance": "インスタンスを作成",
     "createInstanceTitle": "新規インスタンスを作成",
     "createInstanceDescription": "このワールドの新しいインスタンスを作成します",
@@ -54,7 +75,8 @@
     "instanceNamePlaceholder": "インスタンス名を入力（任意）",
     "cancel": "キャンセル",
     "create": "作成",
-    "noInstances": "アクティブなインスタンスがありません。作成して始めましょう！"
+    "noInstances": "インスタンスがありません",
+    "createFirstInstance": "最初のインスタンスを作成してこのワールドを探索しましょう"
   },
   "instance": {
     "back": "戻る",
@@ -96,6 +118,15 @@
     "failed": "接続に失敗しました",
     "retry": "再試行",
     "waitingForConnection": "接続待機中..."
+  },
+  "instanceLobby": {
+    "capacity": "最大人数",
+    "world": "ワールド",
+    "host": "ホスト",
+    "player": "あなた",
+    "privacyTitle": "プライバシーに関するお知らせ",
+    "privacyText": "このアプリは外部サービスに情報を送信します。個人情報などの機密情報は送信しないでください。",
+    "joinButton": "インスタンスに参加"
   },
   "dock": {
     "chat": "チャット",
@@ -151,10 +182,21 @@
     "title": "このワールドについて",
     "tooltip": "このワールドについて",
     "description": "💫 他のプレイヤーとリアルタイムで一緒に探索しよう",
-    "placeholder": "このワールドのコンセプトと基本操作がここに表示されます。現在はプレースホルダーです。",
-    "controlsTitle": "操作方法",
-    "moveAround": "移動する",
-    "lookAround": "見回す"
+    "intro": "このワールドでは、他のプレイヤーとリアルタイムで交流しながら3D空間を探索できます。音声チャット、テキストチャット、AIエージェントとの会話を楽しめます。",
+    "controlsTitle": "移動・視点操作",
+    "move": "移動する",
+    "jump": "ジャンプ",
+    "run": "走る",
+    "lookAround": "視点を回転（ドラッグ）",
+    "shortcutsTitle": "ショートカットキー",
+    "toggleView": "一人称/三人称視点の切り替え",
+    "toggleMic": "マイクのミュート/解除",
+    "openPreferences": "設定を開く/閉じる",
+    "openAIChat": "AIチャットを開く",
+    "communicationTitle": "コミュニケーション",
+    "voiceChatDesc": "画面下部のマイクボタンをクリックでミュート/解除。発話内容は自動で文字起こしされます。",
+    "textChatDesc": "メッセージを入力してEnterで送信。全員に表示されます。",
+    "aiChatDesc": "AIアシスタントがチャット内容の要約や画像生成をサポートします。"
   },
   "yourInfo": {
     "title": "あなたの情報",
@@ -162,6 +204,13 @@
     "description": "🎮 セッションがアクティブでサーバーと同期中です",
     "username": "ユーザー名",
     "sessionId": "セッションID"
+  },
+  "experience": {
+    "leave": "退出",
+    "leaveConfirmTitle": "退出しますか？",
+    "leaveConfirmDescription": "現在のセッションから退出します。よろしいですか？",
+    "leaveCancel": "キャンセル",
+    "leaveConfirm": "退出する"
   },
   "voiceChat": {
     "mute": "マイクをミュート",
@@ -187,7 +236,24 @@
     "avatar": "アバター",
     "sessionInfo": "セッション情報",
     "instanceId": "インスタンスID",
-    "sessionId": "セッションID"
+    "sessionId": "セッションID",
+    "notifications": {
+      "displayName": {
+        "loading": "表示名を更新中...",
+        "success": "表示名を更新しました",
+        "error": "表示名の更新に失敗しました"
+      },
+      "avatar": {
+        "loading": "アバターを更新中...",
+        "success": "アバターを更新しました",
+        "error": "アバターの更新に失敗しました"
+      },
+      "language": {
+        "loading": "言語設定を更新中...",
+        "success": "言語設定を更新しました",
+        "error": "言語設定の更新に失敗しました"
+      }
+    }
   },
   "language": {
     "selectLanguage": "言語を選択",
@@ -249,5 +315,12 @@
       "goToLogin": "ログインへ"
     },
     "logout": "サインアウト"
+  },
+  "breadcrumb": {
+    "home": "ホーム",
+    "settings": "設定",
+    "world": "ワールド",
+    "instance": "インスタンス",
+    "loading": "読み込み中..."
   }
 }

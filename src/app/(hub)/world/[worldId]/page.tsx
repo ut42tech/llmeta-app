@@ -1,18 +1,18 @@
 "use client";
 
-import { ArrowLeft, Globe, Plus, Users } from "lucide-react";
+import { ArrowLeft, Calendar, Layers, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  FadeIn,
+  NotFoundCard,
+  PageTransition,
+  StatCard,
+} from "@/components/common";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -49,7 +49,6 @@ export default function WorldDetailPage() {
     const fetchWorldAndInstances = async () => {
       const supabase = createClient();
 
-      // Fetch world
       const { data: worldData, error: worldError } = await supabase
         .from("worlds")
         .select("*")
@@ -64,7 +63,6 @@ export default function WorldDetailPage() {
 
       setWorld(worldData);
 
-      // Fetch instances
       const { data: instancesData, error: instancesError } = await supabase
         .from("instances")
         .select("*")
@@ -77,7 +75,6 @@ export default function WorldDetailPage() {
         return;
       }
 
-      // Fetch host profiles for instances with host_id
       const hostIds = (instancesData ?? [])
         .map((i) => i.host_id)
         .filter((id): id is string => id !== null);
@@ -103,7 +100,6 @@ export default function WorldDetailPage() {
         }),
       );
       setInstances(instancesWithHostName);
-
       setIsLoading(false);
     };
 
@@ -112,24 +108,11 @@ export default function WorldDetailPage() {
 
   if (notFoundState) {
     return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Card className="mx-4 w-full max-w-md">
-          <CardHeader>
-            <CardTitle>World Not Found</CardTitle>
-            <CardDescription>
-              This world does not exist or may have been deleted.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Link href="/">
-              <Button className="w-full">
-                <ArrowLeft className="mr-2 size-4" />
-                {t("back")}
-              </Button>
-            </Link>
-          </CardContent>
-        </Card>
-      </div>
+      <NotFoundCard
+        title="World Not Found"
+        description="This world does not exist or may have been deleted."
+        backLabel={t("back")}
+      />
     );
   }
 
@@ -137,12 +120,10 @@ export default function WorldDetailPage() {
     const instanceName = newInstanceName.trim() || `instance-${Date.now()}`;
     const supabase = createClient();
 
-    // Get current user
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    // Create instance in Supabase
     const { data: instance, error } = await supabase
       .from("instances")
       .insert({
@@ -166,10 +147,16 @@ export default function WorldDetailPage() {
 
   if (isLoading || !world) {
     return (
-      <div className="min-h-screen">
-        <Skeleton className="h-64 w-full md:h-80" />
-        <div className="max-w-4xl space-y-8 p-6 lg:p-8">
-          <Skeleton className="h-32 w-full" />
+      <div className="min-h-screen p-6 lg:p-8">
+        <div className="mx-auto max-w-4xl space-y-6">
+          <Skeleton className="h-8 w-32" />
+          <Skeleton className="h-10 w-2/3" />
+          <Skeleton className="h-6 w-full" />
+          <div className="grid grid-cols-3 gap-4 pt-4">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </div>
           <Skeleton className="h-48 w-full" />
         </div>
       </div>
@@ -177,127 +164,127 @@ export default function WorldDetailPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <div className="relative flex h-64 items-center justify-center overflow-hidden bg-muted md:h-80">
-        <Globe className="size-32 text-muted-foreground/30" />
-        <div className="absolute inset-0 bg-linear-to-t from-background via-background/50 to-transparent" />
-
-        <div className="absolute top-4 left-4">
-          <Link href="/">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="bg-background/50 backdrop-blur"
-            >
-              <ArrowLeft className="mr-2 size-4" />
-              {t("back")}
-            </Button>
-          </Link>
-        </div>
-
-        <div className="absolute right-6 bottom-6 left-6">
-          <div className="max-w-4xl">
-            <h1 className="font-bold text-3xl md:text-4xl">{world.name}</h1>
-            <p className="mt-2 text-muted-foreground">{world.description}</p>
+    <PageTransition className="min-h-screen p-6 lg:p-8">
+      <div className="mx-auto max-w-4xl">
+        <FadeIn>
+          <div className="mb-6">
+            <Link href="/">
+              <Button variant="ghost" size="sm">
+                <ArrowLeft className="mr-2 size-4" />
+                {t("back")}
+              </Button>
+            </Link>
           </div>
-        </div>
-      </div>
+        </FadeIn>
 
-      {/* Content */}
-      <div className="max-w-4xl p-6 lg:p-8">
-        {/* World Info */}
-        <Card className="mb-8">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Globe className="size-5" />
-              {t("worldInfo")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <p className="text-muted-foreground">{t("capacity")}</p>
-                <p className="flex items-center gap-1 font-medium">
-                  <Users className="size-4" />
-                  {world.player_capacity} {t("players")}
-                </p>
-              </div>
-              <div>
-                <p className="text-muted-foreground">{t("createdAt")}</p>
-                <p className="font-medium">
-                  {format.dateTime(new Date(world.created_at), {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <FadeIn delay={0.1}>
+          <header className="mb-8">
+            <h1 className="font-bold text-3xl tracking-tight">{world.name}</h1>
+            <p className="mt-2 text-muted-foreground">{world.description}</p>
+          </header>
+        </FadeIn>
 
-        {/* Instances Section */}
-        <section>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="font-semibold text-xl">{t("instances")}</h2>
-            <Dialog
-              open={isCreateDialogOpen}
-              onOpenChange={setIsCreateDialogOpen}
-            >
-              <DialogTrigger asChild>
-                <Button>
-                  <Plus className="mr-2 size-4" />
-                  {t("createInstance")}
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>{t("createInstanceTitle")}</DialogTitle>
-                  <DialogDescription>
-                    {t("createInstanceDescription")}
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-4 py-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="instanceName">{t("instanceName")}</Label>
-                    <Input
-                      id="instanceName"
-                      value={newInstanceName}
-                      onChange={(e) => setNewInstanceName(e.target.value)}
-                      placeholder={t("instanceNamePlaceholder")}
-                      maxLength={50}
-                    />
+        <FadeIn delay={0.2}>
+          <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <StatCard
+              icon={Users}
+              label={t("capacity")}
+              value={world.player_capacity}
+              largeValue
+            />
+            <StatCard
+              icon={Layers}
+              label={t("instances")}
+              value={instances.length}
+              largeValue
+            />
+            <StatCard
+              icon={Calendar}
+              label={t("createdAt")}
+              value={format.dateTime(new Date(world.created_at), {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              })}
+            />
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.3}>
+          <section>
+            <div className="mb-4 flex items-center justify-between">
+              <h2 className="font-semibold text-xl">{t("instances")}</h2>
+              <Dialog
+                open={isCreateDialogOpen}
+                onOpenChange={setIsCreateDialogOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button>
+                    <Plus className="mr-2 size-4" />
+                    {t("createInstance")}
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>{t("createInstanceTitle")}</DialogTitle>
+                    <DialogDescription>
+                      {t("createInstanceDescription")}
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="instanceName">{t("instanceName")}</Label>
+                      <Input
+                        id="instanceName"
+                        value={newInstanceName}
+                        onChange={(e) => setNewInstanceName(e.target.value)}
+                        placeholder={t("instanceNamePlaceholder")}
+                        maxLength={50}
+                      />
+                    </div>
                   </div>
-                </div>
-                <DialogFooter>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsCreateDialogOpen(false)}
+                    >
+                      {t("cancel")}
+                    </Button>
+                    <Button onClick={handleCreateInstance}>
+                      {t("create")}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {instances.length > 0 ? (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                {instances.map((instance) => (
+                  <InstanceCard key={instance.id} instance={instance} />
+                ))}
+              </div>
+            ) : (
+              <Card className="border-dashed">
+                <CardContent className="flex flex-col items-center justify-center py-12 text-center">
+                  <Layers className="mb-4 size-10 text-muted-foreground" />
+                  <p className="mb-1 font-medium">{t("noInstances")}</p>
+                  <p className="mb-4 text-muted-foreground text-sm">
+                    {t("createFirstInstance")}
+                  </p>
                   <Button
                     variant="outline"
-                    onClick={() => setIsCreateDialogOpen(false)}
+                    onClick={() => setIsCreateDialogOpen(true)}
                   >
-                    {t("cancel")}
+                    <Plus className="mr-2 size-4" />
+                    {t("createInstance")}
                   </Button>
-                  <Button onClick={handleCreateInstance}>{t("create")}</Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </div>
-
-          {instances.length > 0 ? (
-            <div className="space-y-3">
-              {instances.map((instance) => (
-                <InstanceCard key={instance.id} instance={instance} />
-              ))}
-            </div>
-          ) : (
-            <Card>
-              <CardContent className="py-12 text-center">
-                <CardDescription>{t("noInstances")}</CardDescription>
-              </CardContent>
-            </Card>
-          )}
-        </section>
+                </CardContent>
+              </Card>
+            )}
+          </section>
+        </FadeIn>
       </div>
-    </div>
+    </PageTransition>
   );
 }

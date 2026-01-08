@@ -5,7 +5,6 @@ import {
   Gamepad2,
   Globe,
   Languages,
-  Mouse,
   Settings,
   Smile,
   User,
@@ -39,6 +38,7 @@ import {
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useAuth } from "@/hooks/auth";
+import { useNotification } from "@/hooks/common/useNotification";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import type { Locale } from "@/i18n/config";
 import { useAuthStore } from "@/stores/authStore";
@@ -110,6 +110,7 @@ const GeneralTab = () => {
   const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
   const { updateProfile } = useAuth();
+  const { showPromise } = useNotification();
   const instanceId = useWorldStore((state) => state.instanceId);
 
   const {
@@ -146,7 +147,11 @@ const GeneralTab = () => {
     if (!newName) return;
     setUsername(newName);
     sendProfile({ username: newName });
-    updateProfile({ display_name: newName });
+    showPromise(updateProfile({ display_name: newName }), {
+      loading: t("notifications.displayName.loading"),
+      success: t("notifications.displayName.success"),
+      error: t("notifications.displayName.error"),
+    });
   };
 
   const handleSelectAvatar = (avatar: ViverseAvatar) => {
@@ -155,7 +160,11 @@ const GeneralTab = () => {
     setCurrentAvatar(avatar);
     teleport(currentPosition, currentRotation);
     sendProfile({ avatar });
-    updateProfile({ avatar_id: avatar.id });
+    showPromise(updateProfile({ avatar_id: avatar.id }), {
+      loading: t("notifications.avatar.loading"),
+      success: t("notifications.avatar.success"),
+      error: t("notifications.avatar.error"),
+    });
   };
 
   return (
@@ -214,41 +223,91 @@ const ControlsTab = () => {
       initial="hidden"
       animate="visible"
     >
+      {/* Introduction */}
       <motion.p
         className="text-muted-foreground text-sm leading-relaxed"
         variants={staggerItem}
       >
-        {t("placeholder")}
+        {t("intro")}
       </motion.p>
 
-      <motion.div className="space-y-3" variants={staggerItem}>
-        <h3 className="font-semibold text-sm">{t("controlsTitle")}</h3>
-        <div className="space-y-2.5">
-          <motion.div
-            className="flex items-start gap-3"
-            whileHover={{ x: 4 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          >
-            <Kbd className="min-w-20 justify-center">WASD</Kbd>
-            <span className="text-muted-foreground text-sm">
-              {t("moveAround")}
-            </span>
-          </motion.div>
-          <motion.div
-            className="flex items-start gap-3"
-            whileHover={{ x: 4 }}
-            transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          >
-            <Kbd className="min-w-20 justify-center gap-1">
-              <Mouse className="size-3" />
-              Mouse
-            </Kbd>
+      {/* Movement & Camera */}
+      <SettingsSection
+        title={t("controlsTitle")}
+        icon={<Gamepad2 className="size-4 text-muted-foreground" />}
+      >
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">WASD</Kbd>
+            <span className="text-muted-foreground text-sm">{t("move")}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">Space</Kbd>
+            <span className="text-muted-foreground text-sm">{t("jump")}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">Shift</Kbd>
+            <span className="text-muted-foreground text-sm">{t("run")}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">Drag</Kbd>
             <span className="text-muted-foreground text-sm">
               {t("lookAround")}
             </span>
-          </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </SettingsSection>
+
+      {/* Keyboard Shortcuts */}
+      <SettingsSection
+        title={t("shortcutsTitle")}
+        icon={<Settings className="size-4 text-muted-foreground" />}
+      >
+        <div className="space-y-2">
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">V</Kbd>
+            <span className="text-muted-foreground text-sm">
+              {t("toggleView")}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">M</Kbd>
+            <span className="text-muted-foreground text-sm">
+              {t("toggleMic")}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">P</Kbd>
+            <span className="text-muted-foreground text-sm">
+              {t("openPreferences")}
+            </span>
+          </div>
+          <div className="flex items-center gap-3">
+            <Kbd className="min-w-16 justify-center">/</Kbd>
+            <span className="text-muted-foreground text-sm">
+              {t("openAIChat")}
+            </span>
+          </div>
+        </div>
+      </SettingsSection>
+
+      {/* Communication */}
+      <SettingsSection
+        title={t("communicationTitle")}
+        icon={<Globe className="size-4 text-muted-foreground" />}
+      >
+        <div className="space-y-2">
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {t("voiceChatDesc")}
+          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {t("textChatDesc")}
+          </p>
+          <p className="text-muted-foreground text-sm leading-relaxed">
+            {t("aiChatDesc")}
+          </p>
+        </div>
+      </SettingsSection>
     </motion.div>
   );
 };
@@ -261,13 +320,19 @@ const languageOptions: { value: Locale; label: string; description: string }[] =
 
 const LanguageTab = () => {
   const t = useTranslations("language");
+  const tSettings = useTranslations("settings");
   const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
   const { user } = useAuthStore();
+  const { showPromise } = useNotification();
 
   const handleLocaleChange = (newLocale: Locale) => {
     setLocale(newLocale);
     if (user) {
-      syncLocaleToProfile(user.id, newLocale);
+      showPromise(syncLocaleToProfile(user.id, newLocale), {
+        loading: tSettings("notifications.language.loading"),
+        success: tSettings("notifications.language.success"),
+        error: tSettings("notifications.language.error"),
+      });
     }
   };
 

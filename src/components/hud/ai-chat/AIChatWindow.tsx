@@ -2,7 +2,7 @@
 
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
-import { BotMessageSquare, Info } from "lucide-react";
+import { BotMessageSquare, Info, XIcon } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
 import {
@@ -24,10 +24,12 @@ import { AIChatWelcome } from "@/components/hud/ai-chat/AIChatWelcome";
 import { MessagePartRenderer } from "@/components/hud/ai-chat/MessagePartRenderer";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { Kbd } from "@/components/ui/kbd";
 import { useAIChatHistory } from "@/hooks/ai-chat";
 import { useTextChat } from "@/hooks/chat";
 import { useAuthStore } from "@/stores/authStore";
@@ -175,7 +177,7 @@ export const AIChatWindow = () => {
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogContent
         className="flex h-[80vh] max-h-175 w-[90vw] max-w-5xl! flex-row gap-0 overflow-hidden p-0 sm:max-w-5xl"
-        showCloseButton
+        showCloseButton={false}
       >
         {/* Sidebar */}
         <AIChatSidebar
@@ -191,12 +193,19 @@ export const AIChatWindow = () => {
         <div className="flex min-w-0 flex-1 flex-col bg-background">
           {/* Header */}
           <DialogHeader className="shrink-0 border-b bg-background/95 px-6 py-4 backdrop-blur-sm">
-            <DialogTitle className="flex items-center gap-2.5 font-semibold text-base">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
-                <BotMessageSquare className="size-4 text-primary" />
-              </div>
-              {t("title")}
-            </DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="flex items-center gap-2.5 font-semibold text-base">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10">
+                  <BotMessageSquare className="size-4 text-primary" />
+                </div>
+                {t("title")}
+              </DialogTitle>
+              <DialogClose className="flex items-center gap-2 rounded-xs opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-hidden focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+                <Kbd>ESC</Kbd>
+                <XIcon className="size-4" />
+                <span className="sr-only">Close</span>
+              </DialogClose>
+            </div>
           </DialogHeader>
 
           {/* Main Content Area */}

@@ -22,7 +22,6 @@ export type Database = {
           title: string;
           updated_at: string;
           user_id: string;
-          visibility: string;
         };
         Insert: {
           created_at?: string;
@@ -31,7 +30,6 @@ export type Database = {
           title?: string;
           updated_at?: string;
           user_id: string;
-          visibility?: string;
         };
         Update: {
           created_at?: string;
@@ -40,7 +38,6 @@ export type Database = {
           title?: string;
           updated_at?: string;
           user_id?: string;
-          visibility?: string;
         };
         Relationships: [
           {
@@ -205,7 +202,7 @@ export type Database = {
       };
       profiles: {
         Row: {
-          avatar_id: number | null;
+          avatar_id: number;
           created_at: string;
           display_name: string;
           id: string;
@@ -213,7 +210,7 @@ export type Database = {
           updated_at: string;
         };
         Insert: {
-          avatar_id?: number | null;
+          avatar_id?: number;
           created_at?: string;
           display_name?: string;
           id: string;
@@ -221,7 +218,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: {
-          avatar_id?: number | null;
+          avatar_id?: number;
           created_at?: string;
           display_name?: string;
           id?: string;

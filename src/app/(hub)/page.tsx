@@ -1,30 +1,49 @@
 "use client";
 
+import { Home } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { FadeIn, PageTransition } from "@/components/common";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WorldCard } from "@/components/world";
 import { createClient } from "@/lib/supabase/client";
 import type { World } from "@/types/world";
 
-export default function DashboardPage() {
-  const t = useTranslations("dashboard");
-  const [worlds, setWorlds] = useState<World[]>([]);
+type WorldWithInstanceCount = World & {
+  instanceCount: number;
+};
+
+export default function HomePage() {
+  const t = useTranslations("home");
+  const [worlds, setWorlds] = useState<WorldWithInstanceCount[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchWorlds = async () => {
       const supabase = createClient();
-      const { data, error } = await supabase
+
+      // Fetch worlds with instance count
+      const { data: worldsData, error: worldsError } = await supabase
         .from("worlds")
-        .select("*")
+        .select("*, instances(count)")
         .order("created_at", { ascending: false });
 
-      if (error) {
-        console.error("Error fetching worlds:", error);
-      } else {
-        setWorlds(data ?? []);
+      if (worldsError) {
+        console.error("Error fetching worlds:", worldsError);
+        setIsLoading(false);
+        return;
       }
+
+      const worldsWithCount: WorldWithInstanceCount[] = (worldsData ?? []).map(
+        (world) => ({
+          ...world,
+          instanceCount:
+            (world.instances as unknown as { count: number }[])?.[0]?.count ??
+            0,
+        }),
+      );
+
+      setWorlds(worldsWithCount);
       setIsLoading(false);
     };
 
@@ -32,26 +51,38 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="p-6 lg:p-8">
-      <header className="mb-8">
-        <h1 className="font-bold text-3xl tracking-tight">{t("title")}</h1>
-        <p className="mt-2 text-muted-foreground">{t("description")}</p>
-      </header>
+    <PageTransition className="p-6 lg:p-8">
+      <FadeIn delay={0} duration={0.6}>
+        <header className="mb-8">
+          <h1 className="flex items-center gap-2 font-bold text-3xl tracking-tight">
+            <Home className="size-8" />
+            {t("title")}
+          </h1>
+          <p className="mt-2 text-muted-foreground">{t("description")}</p>
+        </header>
+      </FadeIn>
 
       <section>
-        <h2 className="mb-4 font-semibold text-xl">{t("worlds")}</h2>
+        <FadeIn delay={0.1} duration={0.5}>
+          <h2 className="mb-4 font-semibold text-xl">{t("worlds")}</h2>
+        </FadeIn>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {isLoading
             ? [1, 2, 3, 4].map((key) => (
-                <div key={`skeleton-${key}`} className="space-y-3">
-                  <Skeleton className="aspect-video w-full" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-4 w-1/2" />
-                </div>
+                <Skeleton
+                  key={`skeleton-${key}`}
+                  className="aspect-square w-full rounded-xl"
+                />
               ))
-            : worlds.map((world) => <WorldCard key={world.id} world={world} />)}
+            : worlds.map((world) => (
+                <WorldCard
+                  key={world.id}
+                  world={world}
+                  instanceCount={world.instanceCount}
+                />
+              ))}
         </div>
       </section>
-    </div>
+    </PageTransition>
   );
 }

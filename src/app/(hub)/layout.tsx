@@ -1,8 +1,8 @@
 import { redirect } from "next/navigation";
-import { DashboardContent } from "@/components/layout/DashboardContent";
+import { HubLayout } from "@/components/layout/HubLayout";
 import { createClient } from "@/lib/supabase/server";
 
-export default async function DashboardLayout({
+export default async function HubRootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -39,8 +39,8 @@ export default async function DashboardLayout({
   }
 
   return (
-    <DashboardContent user={user} profile={profile}>
+    <HubLayout user={user} profile={profile}>
       {children}
-    </DashboardContent>
+    </HubLayout>
   );
 }

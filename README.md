@@ -29,15 +29,15 @@ Each user is paired with a personal AI agent that facilitates communication betw
 
 | Category | Technologies |
 |----------|-------------|
-| **Core** | Next.js (App Router), TypeScript |
+| **Core** | Next.js 16 (App Router), React 19, TypeScript |
 | **3D/VR** | Three.js, React Three Fiber, @react-three/viverse, @react-three/xr, @pixiv/three-vrm |
 | **Real-time** | LiveKit, Deepgram |
 | **AI** | Vercel AI SDK, OpenAI |
 | **Auth** | Supabase Auth (@supabase/ssr) |
-| **UI** | shadcn/ui, Tailwind CSS, Motion, Lucide Icons |
+| **UI** | shadcn/ui, Tailwind CSS v4, Motion, Lucide Icons |
 | **State** | Zustand |
 | **i18n** | next-intl |
-| **Testing** | Vitest, Testing Library, Playwright, Storybook |
+| **Testing** | Vitest, Testing Library, Playwright, Storybook 10 |
 | **Linting** | Biome |
 
 ## Getting Started
@@ -107,36 +107,35 @@ src/
 │   └── experience/          # Full-screen 3D world experience
 ├── components/
 │   ├── ai-elements/         # AI agent UI components (30 components)
-│   ├── character/           # VRM character & player components (7 components)
-│   ├── common/              # Shared utilities (DebugPanel, LanguageSwitcher)
+│   ├── character/           # VRM character & player components (8 components)
+│   ├── common/              # Shared utilities (5 components)
 │   ├── hud/                 # HUD overlays
 │   │   ├── ai-chat/         # AI chat sidebar & window
 │   │   ├── caption/         # Caption window & waveform
 │   │   ├── chat/            # Text chat input & stream
-│   │   ├── dock/            # Control buttons & drawers
+│   │   ├── dock/            # Control buttons & drawers (7 components)
 │   │   └── status-bar/      # Connection & player status badges
-│   ├── layout/              # Dashboard layout (AppSidebar, DashboardContent)
+│   ├── layout/              # Hub layout (4 components)
 │   ├── providers/           # Context providers (Auth, I18n, LiveKitSync)
-│   ├── scene/               # 3D scene components (Scene, WorldContent, DefaultMap)
-│   ├── ui/                  # Shared shadcn/ui components (32 components)
+│   ├── scene/               # 3D scene components (4 components)
+│   ├── ui/                  # Shared shadcn/ui components (34 components)
 │   └── world/               # World cards & instance cards
 ├── constants/               # App constants (animations, avatars, sync, world)
-├── hooks/                   # Custom React hooks (27 hooks)
-│   ├── ai-chat/             # AI chat history hooks
-│   ├── auth/                # Authentication hooks
-│   ├── chat/                # Text chat hooks
-│   ├── common/              # Common utility hooks
+├── hooks/                   # Custom React hooks (20 hooks)
+│   ├── ai-chat/             # AI chat history hooks (1 hook)
+│   ├── auth/                # Authentication hooks (1 hook)
+│   ├── chat/                # Text chat hooks (2 hooks)
+│   ├── common/              # Common utility hooks (1 hook)
 │   ├── livekit/             # LiveKit integration (7 hooks)
 │   ├── scene/               # 3D scene hooks (5 hooks)
-│   ├── transcription/       # Speech-to-text hooks
-│   └── voice-chat/          # Voice chat hooks
+│   ├── transcription/       # Speech-to-text hooks (2 hooks)
+│   └── voice-chat/          # Voice chat hooks (1 hook)
 ├── i18n/                    # Internationalization (en, ja)
 ├── lib/                     # Utility libraries
-│   ├── api/                 # API utilities
-│   └── supabase/            # Supabase client (server/browser)
-├── stores/                  # Zustand state stores (9 stores)
-├── types/                   # TypeScript types (8 type files)
-└── utils/                   # Utility functions
+│   └── supabase/            # Supabase client (server/browser/middleware)
+├── stores/                  # Zustand state stores (8 stores)
+├── types/                   # TypeScript types (7 type files)
+└── utils/                   # Utility functions (7 utilities)
 ```
 
 ## Scripts

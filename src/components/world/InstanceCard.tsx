@@ -1,8 +1,8 @@
-import { ArrowRight, Users } from "lucide-react";
+import { ArrowRight, Clock, User, Users } from "lucide-react";
+import { motion } from "motion/react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { useFormatter, useTranslations } from "next-intl";
+import { Card } from "@/components/ui/card";
 import type { Instance } from "@/types/world";
 
 type InstanceCardProps = {
@@ -11,32 +11,54 @@ type InstanceCardProps = {
 
 export function InstanceCard({ instance }: InstanceCardProps) {
   const t = useTranslations("instance");
+  const format = useFormatter();
+
+  const createdAt = new Date(instance.created_at);
+  const formattedDate = format.relativeTime(createdAt, new Date());
 
   return (
-    <Card className="group transition-all hover:shadow-md">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between gap-4">
-          <div className="min-w-0 flex-1">
-            <h3 className="truncate font-medium">{instance.name}</h3>
-            <div className="mt-1 flex items-center gap-2 text-muted-foreground text-sm">
-              <Users className="size-4" />
-              <span>— / {instance.max_players}</span>
-              {instance.hostName && (
-                <>
-                  <span>•</span>
-                  <span>{t("hostedBy", { name: instance.hostName })}</span>
-                </>
-              )}
+    <Link href={`/instance/${instance.id}`} className="block">
+      <motion.div
+        whileHover={{ y: -2 }}
+        whileTap={{ scale: 0.99 }}
+        transition={{ duration: 0.2 }}
+      >
+        <Card className="group cursor-pointer border-border/50 transition-colors hover:border-border hover:bg-muted/20">
+          <div className="flex items-center gap-4 p-4">
+            <div className="min-w-0 flex-1">
+              <h3 className="truncate font-medium">{instance.name}</h3>
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-muted-foreground text-sm">
+                <div className="flex items-center gap-1.5">
+                  <Users className="size-3.5" />
+                  <span>— / {instance.max_players}</span>
+                </div>
+                {instance.hostName && (
+                  <div className="flex items-center gap-1.5">
+                    <User className="size-3.5" />
+                    <span className="truncate">{instance.hostName}</span>
+                  </div>
+                )}
+                <div className="flex items-center gap-1.5">
+                  <Clock className="size-3.5" />
+                  <span>{formattedDate}</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex shrink-0 items-center gap-1.5 text-muted-foreground text-sm transition-colors group-hover:text-primary">
+              <span className="font-medium">{t("join")}</span>
+              <motion.div
+                className="flex items-center"
+                initial={{ x: 0 }}
+                whileHover={{ x: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+              </motion.div>
             </div>
           </div>
-          <Link href={`/instance/${instance.id}`}>
-            <Button size="sm" className="shrink-0">
-              {t("join")}
-              <ArrowRight className="ml-1 size-4" />
-            </Button>
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+        </Card>
+      </motion.div>
+    </Link>
   );
 }

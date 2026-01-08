@@ -1,6 +1,7 @@
 "use client";
 
 import { AIChatButton } from "@/components/hud/dock/AIChatButton";
+import { LeaveButton } from "@/components/hud/dock/LeaveButton";
 import { SettingsDrawer } from "@/components/hud/dock/SettingsDrawer";
 import { ViewToggleButton } from "@/components/hud/dock/ViewToggleButton";
 import { VoiceChatButton } from "@/components/hud/dock/VoiceChatButton";
@@ -20,6 +21,7 @@ export const Dock = () => {
         <ViewToggleButton />
         <VoiceChatButton />
         <SettingsDrawer />
+        <LeaveButton />
       </div>
     </TooltipProvider>
   );

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Noto_Sans_JP, Roboto, Roboto_Mono } from "next/font/google";
 import { getLocale, getMessages, getTimeZone } from "next-intl/server";
 import { I18nProvider } from "@/components/providers";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const notoSans = Noto_Sans_JP({
@@ -45,6 +46,7 @@ export default async function RootLayout({
         className={`${notoSans.variable} ${roboto.variable} ${robotoMono.variable} antialiased`}
       >
         <I18nProvider messages={messages} locale={locale} timeZone={timeZone}>
+          <Toaster richColors position="top-right" />
           {children}
         </I18nProvider>
       </body>
