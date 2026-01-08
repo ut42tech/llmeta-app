@@ -7,9 +7,11 @@ import {
   Mail,
   Settings,
   User,
+  UserCircle,
 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,17 +29,43 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { AVATAR_LIST } from "@/constants/avatars";
 import { useAuth } from "@/hooks/auth";
 import { type Locale, localeNames, locales } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
+import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import type { ViverseAvatar } from "@/types/player";
 
 export default function SettingsPage() {
   const t = useTranslations("settingsPage");
   const tLanguage = useTranslations("language");
   const { user, profile, updateProfile, signOut } = useAuth();
   const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
+  const { currentAvatar, setCurrentAvatar } = useLocalPlayerStore();
 
   const [displayName, setDisplayName] = useState("");
+  const [isAvatarUpdating, setIsAvatarUpdating] = useState(false);
+
+  // Load avatar from profile on mount
+  useEffect(() => {
+    if (profile) {
+      const savedAvatar = AVATAR_LIST.find((a) => a.id === profile.avatar_id);
+      if (savedAvatar) {
+        setCurrentAvatar(savedAvatar);
+      }
+    }
+  }, [profile, setCurrentAvatar]);
+
+  const handleAvatarSelect = async (avatar: ViverseAvatar) => {
+    setCurrentAvatar(avatar);
+    setIsAvatarUpdating(true);
+    try {
+      await updateProfile({ avatar_id: avatar.id });
+    } finally {
+      setIsAvatarUpdating(false);
+    }
+  };
+
   const [isUpdating, setIsUpdating] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -139,6 +167,24 @@ export default function SettingsPage() {
                 </Button>
               </div>
             </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <UserCircle className="size-5" />
+              {t("avatar")}
+            </CardTitle>
+            <CardDescription>{t("avatarDescription")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <AvatarPicker
+              avatars={AVATAR_LIST}
+              selectedId={currentAvatar?.id}
+              onSelect={handleAvatarSelect}
+              disabled={isAvatarUpdating}
+            />
           </CardContent>
         </Card>
 

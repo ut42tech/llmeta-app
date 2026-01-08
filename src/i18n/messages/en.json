@@ -36,6 +36,8 @@
     "update": "Update",
     "language": "Language",
     "languageDescription": "Choose your preferred language for the interface",
+    "avatar": "Avatar",
+    "avatarDescription": "Choose your avatar for the world",
     "dangerZone": "Danger Zone",
     "dangerZoneDescription": "Irreversible actions",
     "logout": "Sign Out"
