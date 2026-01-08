@@ -41,7 +41,7 @@ function AvatarModel({ vrmUrl }: { vrmUrl: string }) {
   );
 }
 
-const CAMERA = { position: [0, 0.2, 3.2] as const, fov: 28 };
+const CAMERA = { position: [0, 0.2, 4] as const, fov: 28 };
 const ORBIT_TARGET: [number, number, number] = [0, 0.2, 0];
 
 interface AvatarPreviewProps {
