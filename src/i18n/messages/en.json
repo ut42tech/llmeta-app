@@ -40,7 +40,24 @@
     "avatarDescription": "Choose your avatar for the world",
     "dangerZone": "Danger Zone",
     "dangerZoneDescription": "Irreversible actions",
-    "logout": "Sign Out"
+    "logout": "Sign Out",
+    "notifications": {
+      "displayName": {
+        "loading": "Updating display name...",
+        "success": "Display name updated",
+        "error": "Failed to update display name"
+      },
+      "avatar": {
+        "loading": "Updating avatar...",
+        "success": "Avatar updated",
+        "error": "Failed to update avatar"
+      },
+      "language": {
+        "loading": "Updating language...",
+        "success": "Language updated",
+        "error": "Failed to update language"
+      }
+    }
   },
   "world": {
     "back": "Back",
@@ -219,7 +236,24 @@
     "avatar": "Avatar",
     "sessionInfo": "Session Info",
     "instanceId": "Instance ID",
-    "sessionId": "Session ID"
+    "sessionId": "Session ID",
+    "notifications": {
+      "displayName": {
+        "loading": "Updating display name...",
+        "success": "Display name updated",
+        "error": "Failed to update display name"
+      },
+      "avatar": {
+        "loading": "Updating avatar...",
+        "success": "Avatar updated",
+        "error": "Failed to update avatar"
+      },
+      "language": {
+        "loading": "Updating language...",
+        "success": "Language updated",
+        "error": "Failed to update language"
+      }
+    }
   },
   "language": {
     "selectLanguage": "Select Language",

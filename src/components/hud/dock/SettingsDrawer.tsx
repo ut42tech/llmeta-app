@@ -38,6 +38,7 @@ import {
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useAuth } from "@/hooks/auth";
+import { useNotification } from "@/hooks/common/useNotification";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import type { Locale } from "@/i18n/config";
 import { useAuthStore } from "@/stores/authStore";
@@ -109,6 +110,7 @@ const GeneralTab = () => {
   const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
   const { updateProfile } = useAuth();
+  const { showPromise } = useNotification();
   const instanceId = useWorldStore((state) => state.instanceId);
 
   const {
@@ -145,7 +147,11 @@ const GeneralTab = () => {
     if (!newName) return;
     setUsername(newName);
     sendProfile({ username: newName });
-    updateProfile({ display_name: newName });
+    showPromise(updateProfile({ display_name: newName }), {
+      loading: t("notifications.displayName.loading"),
+      success: t("notifications.displayName.success"),
+      error: t("notifications.displayName.error"),
+    });
   };
 
   const handleSelectAvatar = (avatar: ViverseAvatar) => {
@@ -154,7 +160,11 @@ const GeneralTab = () => {
     setCurrentAvatar(avatar);
     teleport(currentPosition, currentRotation);
     sendProfile({ avatar });
-    updateProfile({ avatar_id: avatar.id });
+    showPromise(updateProfile({ avatar_id: avatar.id }), {
+      loading: t("notifications.avatar.loading"),
+      success: t("notifications.avatar.success"),
+      error: t("notifications.avatar.error"),
+    });
   };
 
   return (
@@ -310,13 +320,19 @@ const languageOptions: { value: Locale; label: string; description: string }[] =
 
 const LanguageTab = () => {
   const t = useTranslations("language");
+  const tSettings = useTranslations("settings");
   const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
   const { user } = useAuthStore();
+  const { showPromise } = useNotification();
 
   const handleLocaleChange = (newLocale: Locale) => {
     setLocale(newLocale);
     if (user) {
-      syncLocaleToProfile(user.id, newLocale);
+      showPromise(syncLocaleToProfile(user.id, newLocale), {
+        loading: tSettings("notifications.language.loading"),
+        success: tSettings("notifications.language.success"),
+        error: tSettings("notifications.language.error"),
+      });
     }
   };
 

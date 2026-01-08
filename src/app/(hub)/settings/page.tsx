@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  CheckCircle2,
-  Globe,
-  Loader2,
-  Mail,
-  Settings,
-  User,
-  UserCircle,
-} from "lucide-react";
+import { Globe, Loader2, Mail, Settings, User, UserCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { FadeIn, PageTransition } from "@/components/common";
@@ -31,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AVATAR_LIST } from "@/constants/avatars";
+import { useNotification } from "@/hooks";
 import { useAuth } from "@/hooks/auth";
 import { type Locale, localeNames, locales } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
@@ -43,9 +36,19 @@ export default function SettingsPage() {
   const { user, profile, updateProfile, signOut } = useAuth();
   const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
   const { currentAvatar, setCurrentAvatar } = useLocalPlayerStore();
+  const { showPromise } = useNotification();
 
   const [displayName, setDisplayName] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
   const [isAvatarUpdating, setIsAvatarUpdating] = useState(false);
+
+  const hasChanges = displayName.trim() !== (profile?.display_name || "");
+
+  useEffect(() => {
+    if (profile?.display_name) {
+      setDisplayName(profile.display_name);
+    }
+  }, [profile]);
 
   useEffect(() => {
     if (profile) {
@@ -56,39 +59,45 @@ export default function SettingsPage() {
     }
   }, [profile, setCurrentAvatar]);
 
-  const handleAvatarSelect = async (avatar: ViverseAvatar) => {
-    setCurrentAvatar(avatar);
-    setIsAvatarUpdating(true);
-    try {
-      await updateProfile({ avatar_id: avatar.id });
-    } finally {
-      setIsAvatarUpdating(false);
-    }
-  };
-
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-
-  useEffect(() => {
-    if (profile?.display_name) {
-      setDisplayName(profile.display_name);
-    }
-  }, [profile]);
-
   const handleUpdateDisplayName = async () => {
     if (!displayName.trim() || displayName === profile?.display_name) return;
 
     setIsUpdating(true);
     try {
-      await updateProfile({ display_name: displayName.trim() });
-      setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 2000);
+      await showPromise(updateProfile({ display_name: displayName.trim() }), {
+        loading: t("notifications.displayName.loading"),
+        success: t("notifications.displayName.success"),
+        error: t("notifications.displayName.error"),
+      });
     } finally {
       setIsUpdating(false);
     }
   };
 
-  const hasChanges = displayName.trim() !== (profile?.display_name || "");
+  const handleAvatarSelect = async (avatar: ViverseAvatar) => {
+    setCurrentAvatar(avatar);
+    setIsAvatarUpdating(true);
+    try {
+      await showPromise(updateProfile({ avatar_id: avatar.id }), {
+        loading: t("notifications.avatar.loading"),
+        success: t("notifications.avatar.success"),
+        error: t("notifications.avatar.error"),
+      });
+    } finally {
+      setIsAvatarUpdating(false);
+    }
+  };
+
+  const handleLanguageChange = (newLocale: Locale) => {
+    setLocale(newLocale);
+    if (user) {
+      showPromise(syncLocaleToProfile(user.id, newLocale), {
+        loading: t("notifications.language.loading"),
+        success: t("notifications.language.success"),
+        error: t("notifications.language.error"),
+      });
+    }
+  };
 
   return (
     <PageTransition className="max-w-2xl p-6 lg:p-8">
@@ -164,8 +173,6 @@ export default function SettingsPage() {
                   >
                     {isUpdating ? (
                       <Loader2 className="size-4 animate-spin" />
-                    ) : showSuccess ? (
-                      <CheckCircle2 className="size-4 text-green-500" />
                     ) : (
                       t("update")
                     )}
@@ -210,13 +217,7 @@ export default function SettingsPage() {
                 <Label htmlFor="language">{tLanguage("selectLanguage")}</Label>
                 <Select
                   value={locale}
-                  onValueChange={(value) => {
-                    const newLocale = value as Locale;
-                    setLocale(newLocale);
-                    if (user) {
-                      syncLocaleToProfile(user.id, newLocale);
-                    }
-                  }}
+                  onValueChange={(v) => handleLanguageChange(v as Locale)}
                 >
                   <SelectTrigger id="language" className="w-full max-w-xs">
                     <SelectValue />

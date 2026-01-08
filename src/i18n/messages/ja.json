@@ -40,7 +40,24 @@
     "avatarDescription": "ワールド内で使用するアバターを選択",
     "dangerZone": "危険な操作",
     "dangerZoneDescription": "取り消せない操作",
-    "logout": "サインアウト"
+    "logout": "サインアウト",
+    "notifications": {
+      "displayName": {
+        "loading": "表示名を更新中...",
+        "success": "表示名を更新しました",
+        "error": "表示名の更新に失敗しました"
+      },
+      "avatar": {
+        "loading": "アバターを更新中...",
+        "success": "アバターを更新しました",
+        "error": "アバターの更新に失敗しました"
+      },
+      "language": {
+        "loading": "言語設定を更新中...",
+        "success": "言語設定を更新しました",
+        "error": "言語設定の更新に失敗しました"
+      }
+    }
   },
   "world": {
     "back": "戻る",
@@ -219,7 +236,24 @@
     "avatar": "アバター",
     "sessionInfo": "セッション情報",
     "instanceId": "インスタンスID",
-    "sessionId": "セッションID"
+    "sessionId": "セッションID",
+    "notifications": {
+      "displayName": {
+        "loading": "表示名を更新中...",
+        "success": "表示名を更新しました",
+        "error": "表示名の更新に失敗しました"
+      },
+      "avatar": {
+        "loading": "アバターを更新中...",
+        "success": "アバターを更新しました",
+        "error": "アバターの更新に失敗しました"
+      },
+      "language": {
+        "loading": "言語設定を更新中...",
+        "success": "言語設定を更新しました",
+        "error": "言語設定の更新に失敗しました"
+      }
+    }
   },
   "language": {
     "selectLanguage": "言語を選択",

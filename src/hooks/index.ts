@@ -16,7 +16,7 @@ export { useChatHistory, useTextChat } from "./chat";
 // =============================================================================
 // Common
 // =============================================================================
-export { useIsMobile } from "./common";
+export { useIsMobile, useNotification } from "./common";
 
 // =============================================================================
 // LiveKit
