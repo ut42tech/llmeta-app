@@ -19,16 +19,16 @@ import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { AvatarPreview } from "@/components/character/AvatarPreview";
-import { StatCard } from "@/components/common";
+import {
+  FadeIn,
+  NotFoundCard,
+  PageTransition,
+  ScaleIn,
+  SlideIn,
+  StatCard,
+} from "@/components/common";
 import { LiveKitSyncProvider } from "@/components/providers";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useAuth } from "@/hooks/auth";
@@ -77,12 +77,10 @@ function InstanceContent({
 
   const [isReadyToEnter, setIsReadyToEnter] = useState(false);
 
-  // Derive avatar from profile
   const userAvatar = profile?.avatar_id
     ? (AVATAR_LIST.find((a) => a.id === profile.avatar_id) ?? AVATAR_LIST[0])
     : AVATAR_LIST[0];
 
-  // Set instance ID in store on mount
   useEffect(() => {
     setInstanceId(instanceData.id);
   }, [instanceData.id, setInstanceId]);
@@ -90,7 +88,6 @@ function InstanceContent({
   const isConnected = connectionState === LiveKitConnectionState.Connected;
   const isFailed = connectionStatus === "failed";
 
-  // Navigate to experience when ready and connected
   useEffect(() => {
     if (isReadyToEnter && isConnected && hasJoinedWorld) {
       router.push("/experience");
@@ -140,7 +137,6 @@ function InstanceContent({
       );
     }
 
-    // Default: connecting or waiting
     return (
       <div className="flex items-center gap-3 rounded-lg border bg-muted px-4 py-3">
         <Loader2 className="size-5 animate-spin text-muted-foreground" />
@@ -150,127 +146,130 @@ function InstanceContent({
   };
 
   return (
-    <div className="h-[calc(100dvh-6rem)]">
+    <PageTransition key={instanceData.id} className="h-[calc(100dvh-6rem)]">
       <div className="mx-auto flex h-full w-full max-w-6xl flex-col">
-        {/* Back button */}
-        <div className="mb-4 shrink-0">
-          <Button variant="ghost" size="sm" onClick={() => router.back()}>
-            <ArrowLeft className="mr-2 size-4" />
-            {tInstance("back")}
-          </Button>
-        </div>
-
-        {/* Main content - Split layout */}
-        <div className="grid min-h-0 flex-1 grid-cols-1 gap-8 lg:grid-cols-2">
-          {/* Left side - Avatar 3D Preview */}
-          <div className="relative flex items-center justify-center overflow-hidden rounded-2xl bg-linear-to-b from-muted/50 to-muted">
-            <AvatarPreview
-              vrmUrl={userAvatar.vrmUrl}
-              className="h-full w-full"
-            />
-
-            {/* Player name overlay */}
-            <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-              <div className="flex items-center gap-3 rounded-full bg-background/80 px-6 py-3 shadow-lg backdrop-blur-sm">
-                {userAvatar.headIconUrl && (
-                  <Image
-                    src={userAvatar.headIconUrl}
-                    alt="Avatar"
-                    width={32}
-                    height={32}
-                    className="rounded-full"
-                  />
-                )}
-                <span className="font-semibold text-lg">
-                  {profile?.display_name ?? "Player"}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Right side - Instance info and join */}
-          <div className="flex flex-col justify-center space-y-6">
-            {/* Instance header */}
-            <div>
-              <p className="mb-1 text-muted-foreground text-sm">
-                {tInstance("instance")}
-              </p>
-              <h1 className="font-bold text-3xl tracking-tight">
-                {instanceData.name}
-              </h1>
-            </div>
-
-            {/* Stats - 3 cards */}
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-              <StatCard
-                icon={Globe}
-                label={t("world")}
-                value={
-                  worldData ? (
-                    <Link
-                      href={`/world/${worldData.id}`}
-                      className="transition-colors hover:text-primary"
-                    >
-                      {worldData.name}
-                    </Link>
-                  ) : (
-                    "-"
-                  )
-                }
-              />
-              <StatCard
-                icon={User}
-                label={t("host")}
-                value={hostData?.display_name ?? "-"}
-              />
-              <StatCard
-                icon={Users}
-                label={t("capacity")}
-                value={instanceData.max_players}
-                largeValue
-              />
-            </div>
-
-            {/* Connection status */}
-            <ConnectionIndicator />
-
-            {/* Privacy notice */}
-            <div className="flex items-start gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
-              <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" />
-              <div className="flex flex-col gap-1">
-                <p className="font-medium text-amber-500 text-sm">
-                  {t("privacyTitle")}
-                </p>
-                <p className="text-muted-foreground text-sm">
-                  {t("privacyText")}
-                </p>
-              </div>
-            </div>
-
-            {/* Join button */}
-            <Button
-              type="button"
-              onClick={handleJoinInstance}
-              disabled={isReadyToEnter}
-              className="w-full"
-              size="lg"
-            >
-              {isReadyToEnter ? (
-                <>
-                  <Loader2 className="mr-2 size-5 animate-spin" />
-                  {tLobby("waitingForConnection")}
-                </>
-              ) : (
-                <>
-                  {t("joinButton")}
-                  <ArrowRight className="ml-2 size-5" />
-                </>
-              )}
+        <FadeIn>
+          <div className="mb-4 shrink-0">
+            <Button variant="ghost" size="sm" onClick={() => router.back()}>
+              <ArrowLeft className="mr-2 size-4" />
+              {tInstance("back")}
             </Button>
+          </div>
+        </FadeIn>
+
+        <div className="grid min-h-0 flex-1 grid-cols-1 gap-8 lg:grid-cols-2">
+          <ScaleIn delay={0.1}>
+            <div className="relative flex h-full items-center justify-center overflow-hidden rounded-2xl bg-linear-to-b from-muted/50 to-muted">
+              <AvatarPreview
+                vrmUrl={userAvatar.vrmUrl}
+                className="h-full w-full"
+              />
+              <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+                <div className="flex items-center gap-3 rounded-full bg-background/80 px-6 py-3 shadow-lg backdrop-blur-sm">
+                  {userAvatar.headIconUrl && (
+                    <Image
+                      src={userAvatar.headIconUrl}
+                      alt="Avatar"
+                      width={32}
+                      height={32}
+                      className="rounded-full"
+                    />
+                  )}
+                  <span className="font-semibold text-lg">
+                    {profile?.display_name ?? "Player"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </ScaleIn>
+
+          <div className="flex flex-col justify-center space-y-6">
+            <SlideIn direction="right" delay={0.15}>
+              <div>
+                <p className="mb-1 text-muted-foreground text-sm">
+                  {tInstance("instance")}
+                </p>
+                <h1 className="font-bold text-3xl tracking-tight">
+                  {instanceData.name}
+                </h1>
+              </div>
+            </SlideIn>
+
+            <FadeIn delay={0.2}>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                <StatCard
+                  icon={Globe}
+                  label={t("world")}
+                  value={
+                    worldData ? (
+                      <Link
+                        href={`/world/${worldData.id}`}
+                        className="transition-colors hover:text-primary"
+                      >
+                        {worldData.name}
+                      </Link>
+                    ) : (
+                      "-"
+                    )
+                  }
+                />
+                <StatCard
+                  icon={User}
+                  label={t("host")}
+                  value={hostData?.display_name ?? "-"}
+                />
+                <StatCard
+                  icon={Users}
+                  label={t("capacity")}
+                  value={instanceData.max_players}
+                  largeValue
+                />
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.3}>
+              <ConnectionIndicator />
+            </FadeIn>
+
+            <FadeIn delay={0.35}>
+              <div className="flex items-start gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
+                <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" />
+                <div className="flex flex-col gap-1">
+                  <p className="font-medium text-amber-500 text-sm">
+                    {t("privacyTitle")}
+                  </p>
+                  <p className="text-muted-foreground text-sm">
+                    {t("privacyText")}
+                  </p>
+                </div>
+              </div>
+            </FadeIn>
+
+            <FadeIn delay={0.4}>
+              <Button
+                type="button"
+                onClick={handleJoinInstance}
+                disabled={isReadyToEnter}
+                className="w-full"
+                size="lg"
+              >
+                {isReadyToEnter ? (
+                  <>
+                    <Loader2 className="mr-2 size-5 animate-spin" />
+                    {tLobby("waitingForConnection")}
+                  </>
+                ) : (
+                  <>
+                    {t("joinButton")}
+                    <ArrowRight className="ml-2 size-5" />
+                  </>
+                )}
+              </Button>
+            </FadeIn>
           </div>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
 
@@ -288,7 +287,6 @@ function InstancePage() {
 
       const supabase = createClient();
 
-      // Fetch instance
       const { data: instanceData, error: instanceError } = await supabase
         .from("instances")
         .select("*")
@@ -302,7 +300,6 @@ function InstancePage() {
         return;
       }
 
-      // Fetch world data
       let worldData: World | null = null;
       if (instanceData.world_id) {
         const { data } = await supabase
@@ -313,7 +310,6 @@ function InstancePage() {
         worldData = data;
       }
 
-      // Fetch host profile
       let hostData: HostProfile | null = null;
       if (instanceData.host_id) {
         const { data } = await supabase
@@ -347,8 +343,8 @@ function InstancePage() {
             <div className="flex flex-col justify-center space-y-6">
               <Skeleton className="h-6 w-32" />
               <Skeleton className="h-10 w-48" />
-              <Skeleton className="h-5 w-40" />
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-3 gap-4">
+                <Skeleton className="h-20 w-full" />
                 <Skeleton className="h-20 w-full" />
                 <Skeleton className="h-20 w-full" />
               </div>
@@ -363,30 +359,19 @@ function InstancePage() {
 
   if (notFound || !instanceDetails) {
     return (
-      <div className="flex h-[calc(100dvh-6rem)] items-center justify-center">
-        <Card className="mx-4 w-full max-w-md">
-          <CardHeader>
-            <CardTitle>{tInstance("notFound.title")}</CardTitle>
-            <CardDescription>
-              {tInstance("notFound.description")}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button asChild className="w-full">
-              <Link href="/">
-                <ArrowLeft className="mr-2 size-4" />
-                {tInstance("notFound.backToHome")}
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <NotFoundCard
+        title={tInstance("notFound.title")}
+        description={tInstance("notFound.description")}
+        backLabel={tInstance("notFound.backToHome")}
+        containerClassName="flex h-[calc(100dvh-6rem)] items-center justify-center"
+      />
     );
   }
 
   return (
     <LiveKitSyncProvider instanceId={instanceDetails.instance.id}>
       <InstanceContent
+        key={instanceDetails.instance.id}
         instanceData={instanceDetails.instance}
         worldData={instanceDetails.world}
         hostData={instanceDetails.host}
