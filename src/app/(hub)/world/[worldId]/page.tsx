@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
+import { StatCard } from "@/components/common";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -203,51 +204,27 @@ export default function WorldDetailPage() {
 
         {/* Stats Cards */}
         <div className="mb-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
-          <Card>
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                <Users className="size-5 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="text-muted-foreground text-sm">{t("capacity")}</p>
-                <p className="font-semibold text-xl">{world.player_capacity}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                <Layers className="size-5 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="text-muted-foreground text-sm">
-                  {t("instances")}
-                </p>
-                <p className="font-semibold text-xl">{instances.length}</p>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="flex items-center gap-4 p-4">
-              <div className="flex size-10 items-center justify-center rounded-lg bg-muted">
-                <Calendar className="size-5 text-muted-foreground" />
-              </div>
-              <div>
-                <p className="text-muted-foreground text-sm">
-                  {t("createdAt")}
-                </p>
-                <p className="font-semibold">
-                  {format.dateTime(new Date(world.created_at), {
-                    year: "numeric",
-                    month: "short",
-                    day: "numeric",
-                  })}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard
+            icon={Users}
+            label={t("capacity")}
+            value={world.player_capacity}
+            largeValue
+          />
+          <StatCard
+            icon={Layers}
+            label={t("instances")}
+            value={instances.length}
+            largeValue
+          />
+          <StatCard
+            icon={Calendar}
+            label={t("createdAt")}
+            value={format.dateTime(new Date(world.created_at), {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
+          />
         </div>
 
         {/* Instances Section */}

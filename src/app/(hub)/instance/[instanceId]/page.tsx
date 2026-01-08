@@ -6,17 +6,21 @@ import {
   ArrowLeft,
   ArrowRight,
   CheckCircle2,
+  Globe,
   Loader2,
   RefreshCw,
+  User,
+  Users,
   WifiOff,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { AvatarPicker } from "@/components/hud/dock/AvatarPicker";
+import { AvatarPreview } from "@/components/character/AvatarPreview";
+import { StatCard } from "@/components/common";
 import { LiveKitSyncProvider } from "@/components/providers";
-import { BackgroundCanvas } from "@/components/scene";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -25,24 +29,39 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { useAuth } from "@/hooks/auth";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { createClient } from "@/lib/supabase/client";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
-import type { ViverseAvatar } from "@/types/player";
-import type { DbInstance } from "@/types/world";
+import type { Tables } from "@/types/supabase";
+import type { DbInstance, World } from "@/types/world";
 
-function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
+type HostProfile = Pick<Tables<"profiles">, "id" | "display_name">;
+
+interface InstanceWithDetails {
+  instance: DbInstance;
+  world: World | null;
+  host: HostProfile | null;
+}
+
+function InstanceContent({
+  instanceData,
+  worldData,
+  hostData,
+}: {
+  instanceData: DbInstance;
+  worldData: World | null;
+  hostData: HostProfile | null;
+}) {
   const router = useRouter();
-  const t = useTranslations("joinWorld");
+  const t = useTranslations("instanceLobby");
   const tInstance = useTranslations("instance");
   const tLobby = useTranslations("lobby");
 
-  const { profile, updateProfile } = useAuth();
+  const { profile } = useAuth();
 
   const { connectionState } = useSyncClient();
   const connectionStatus = useWorldStore((state) => state.connection.status);
@@ -56,31 +75,17 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
     setInstanceId,
   } = useLocalPlayerStore();
 
-  const [inputUsername, setInputUsername] = useState("");
-  const [selectedAvatar, setSelectedAvatar] = useState<ViverseAvatar | null>(
-    null,
-  );
   const [isReadyToEnter, setIsReadyToEnter] = useState(false);
-  const [isProfileLoaded, setIsProfileLoaded] = useState(false);
+
+  // Derive avatar from profile
+  const userAvatar = profile?.avatar_id
+    ? (AVATAR_LIST.find((a) => a.id === profile.avatar_id) ?? AVATAR_LIST[0])
+    : AVATAR_LIST[0];
 
   // Set instance ID in store on mount
   useEffect(() => {
     setInstanceId(instanceData.id);
   }, [instanceData.id, setInstanceId]);
-
-  // Load profile data when available
-  useEffect(() => {
-    if (profile && !isProfileLoaded) {
-      setInputUsername(profile.display_name || "");
-      if (profile.avatar_id) {
-        const savedAvatar = AVATAR_LIST.find((a) => a.id === profile.avatar_id);
-        if (savedAvatar) {
-          setSelectedAvatar(savedAvatar);
-        }
-      }
-      setIsProfileLoaded(true);
-    }
-  }, [profile, isProfileLoaded]);
 
   const isConnected = connectionState === LiveKitConnectionState.Connected;
   const isFailed = connectionStatus === "failed";
@@ -92,22 +97,9 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
     }
   }, [isReadyToEnter, isConnected, hasJoinedWorld, router]);
 
-  const isFormValid =
-    inputUsername.trim().length > 0 && selectedAvatar !== null;
-
-  const handleJoinWorld = async () => {
-    if (!isFormValid) return;
-
-    // Save profile to Supabase
-    await updateProfile({
-      display_name: inputUsername.trim(),
-      avatar_id: selectedAvatar?.id ?? null,
-    });
-
-    setUsername(inputUsername.trim());
-    if (selectedAvatar) {
-      setCurrentAvatar(selectedAvatar);
-    }
+  const handleJoinInstance = () => {
+    setUsername(profile?.display_name ?? "Player");
+    setCurrentAvatar(userAvatar);
     setHasJoinedWorld(true);
     setIsReadyToEnter(true);
   };
@@ -158,79 +150,108 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black">
-      <BackgroundCanvas />
-
-      <header className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => router.back()}
-            className="text-white/70 hover:bg-white/10 hover:text-white"
-          >
+    <div className="h-[calc(100dvh-6rem)]">
+      <div className="mx-auto flex h-full w-full max-w-6xl flex-col">
+        {/* Back button */}
+        <div className="mb-4 shrink-0">
+          <Button variant="ghost" size="sm" onClick={() => router.back()}>
             <ArrowLeft className="mr-2 size-4" />
             {tInstance("back")}
           </Button>
         </div>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-white/70">
-            {tInstance("instance")}:{" "}
-            <span className="font-medium text-white">{instanceData.name}</span>
-          </span>
-        </div>
-      </header>
 
-      <main className="relative z-10 flex min-h-[calc(100vh-120px)] items-center justify-center px-6 py-8 md:px-12">
-        <Card className="w-full max-w-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">{t("title")}</CardTitle>
-            <CardDescription>{t("description")}</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <ConnectionIndicator />
+        {/* Main content - Split layout */}
+        <div className="grid min-h-0 flex-1 grid-cols-1 gap-8 lg:grid-cols-2">
+          {/* Left side - Avatar 3D Preview */}
+          <div className="relative flex items-center justify-center overflow-hidden rounded-2xl bg-linear-to-b from-muted/50 to-muted">
+            <AvatarPreview
+              vrmUrl={userAvatar.vrmUrl}
+              className="h-full w-full"
+            />
 
-            <div className="space-y-2">
-              <Label htmlFor="username">{t("usernameLabel")}</Label>
-              <Input
-                id="username"
-                type="text"
-                placeholder={t("usernamePlaceholder")}
-                value={inputUsername}
-                onChange={(e) => setInputUsername(e.target.value)}
-                maxLength={20}
-                disabled={isReadyToEnter}
+            {/* Player name overlay */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
+              <div className="flex items-center gap-3 rounded-full bg-background/80 px-6 py-3 shadow-lg backdrop-blur-sm">
+                {userAvatar.headIconUrl && (
+                  <Image
+                    src={userAvatar.headIconUrl}
+                    alt="Avatar"
+                    width={32}
+                    height={32}
+                    className="rounded-full"
+                  />
+                )}
+                <span className="font-semibold text-lg">
+                  {profile?.display_name ?? "Player"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right side - Instance info and join */}
+          <div className="flex flex-col justify-center space-y-6">
+            {/* Instance header */}
+            <div>
+              <p className="mb-1 text-muted-foreground text-sm">
+                {tInstance("instance")}
+              </p>
+              <h1 className="font-bold text-3xl tracking-tight">
+                {instanceData.name}
+              </h1>
+            </div>
+
+            {/* Stats - 3 cards */}
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <StatCard
+                icon={Globe}
+                label={t("world")}
+                value={
+                  worldData ? (
+                    <Link
+                      href={`/world/${worldData.id}`}
+                      className="transition-colors hover:text-primary"
+                    >
+                      {worldData.name}
+                    </Link>
+                  ) : (
+                    "-"
+                  )
+                }
+              />
+              <StatCard
+                icon={User}
+                label={t("host")}
+                value={hostData?.display_name ?? "-"}
+              />
+              <StatCard
+                icon={Users}
+                label={t("capacity")}
+                value={instanceData.max_players}
+                largeValue
               />
             </div>
 
-            <div className="space-y-2">
-              <Label>{t("avatarLabel")}</Label>
-              <div className="rounded-lg border bg-muted/50 p-4">
-                <AvatarPicker
-                  avatars={AVATAR_LIST}
-                  selectedId={selectedAvatar?.id}
-                  onSelect={setSelectedAvatar}
-                  disabled={isReadyToEnter}
-                />
-              </div>
-            </div>
+            {/* Connection status */}
+            <ConnectionIndicator />
 
+            {/* Privacy notice */}
             <div className="flex items-start gap-3 rounded-lg border border-amber-500/50 bg-amber-500/10 p-4">
               <AlertTriangle className="mt-0.5 size-5 shrink-0 text-amber-500" />
               <div className="flex flex-col gap-1">
                 <p className="font-medium text-amber-500 text-sm">
-                  {t("warningTitle")}
+                  {t("privacyTitle")}
                 </p>
                 <p className="text-muted-foreground text-sm">
-                  {t("warningText")}
+                  {t("privacyText")}
                 </p>
               </div>
             </div>
 
+            {/* Join button */}
             <Button
               type="button"
-              onClick={handleJoinWorld}
-              disabled={!isFormValid || isReadyToEnter}
+              onClick={handleJoinInstance}
+              disabled={isReadyToEnter}
               className="w-full"
               size="lg"
             >
@@ -241,14 +262,14 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
                 </>
               ) : (
                 <>
-                  {t("continueButton")}
+                  {t("joinButton")}
                   <ArrowRight className="ml-2 size-5" />
                 </>
               )}
             </Button>
-          </CardContent>
-        </Card>
-      </main>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -256,46 +277,93 @@ function InstanceContent({ instanceData }: { instanceData: DbInstance }) {
 function InstancePage() {
   const params = useParams<{ instanceId: string }>();
   const tInstance = useTranslations("instance");
-  const [instance, setInstance] = useState<DbInstance | null>(null);
+  const [instanceDetails, setInstanceDetails] =
+    useState<InstanceWithDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    const fetchInstance = async () => {
+    const fetchInstanceWithDetails = async () => {
       if (!params.instanceId) return;
 
       const supabase = createClient();
-      const { data, error } = await supabase
+
+      // Fetch instance
+      const { data: instanceData, error: instanceError } = await supabase
         .from("instances")
         .select("*")
         .eq("id", params.instanceId)
         .single();
 
-      if (error || !data) {
-        console.error("Error fetching instance:", error);
+      if (instanceError || !instanceData) {
+        console.error("Error fetching instance:", instanceError);
         setNotFound(true);
         setIsLoading(false);
         return;
       }
 
-      setInstance(data);
+      // Fetch world data
+      let worldData: World | null = null;
+      if (instanceData.world_id) {
+        const { data } = await supabase
+          .from("worlds")
+          .select("*")
+          .eq("id", instanceData.world_id)
+          .single();
+        worldData = data;
+      }
+
+      // Fetch host profile
+      let hostData: HostProfile | null = null;
+      if (instanceData.host_id) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("id, display_name")
+          .eq("id", instanceData.host_id)
+          .single();
+        hostData = data;
+      }
+
+      setInstanceDetails({
+        instance: instanceData,
+        world: worldData,
+        host: hostData,
+      });
       setIsLoading(false);
     };
 
-    fetchInstance();
+    fetchInstanceWithDetails();
   }, [params.instanceId]);
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
-        <Loader2 className="size-8 animate-spin text-white" />
+      <div className="h-[calc(100dvh-6rem)]">
+        <div className="mx-auto h-full w-full max-w-6xl">
+          <div className="mb-4">
+            <Skeleton className="h-9 w-24" />
+          </div>
+          <div className="grid h-[calc(100%-4rem)] grid-cols-1 gap-8 lg:grid-cols-2">
+            <Skeleton className="h-full rounded-2xl" />
+            <div className="flex flex-col justify-center space-y-6">
+              <Skeleton className="h-6 w-32" />
+              <Skeleton className="h-10 w-48" />
+              <Skeleton className="h-5 w-40" />
+              <div className="grid grid-cols-2 gap-4">
+                <Skeleton className="h-20 w-full" />
+                <Skeleton className="h-20 w-full" />
+              </div>
+              <Skeleton className="h-16 w-full" />
+              <Skeleton className="h-12 w-full" />
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
 
-  if (notFound || !instance) {
+  if (notFound || !instanceDetails) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-black">
+      <div className="flex h-[calc(100dvh-6rem)] items-center justify-center">
         <Card className="mx-4 w-full max-w-md">
           <CardHeader>
             <CardTitle>{tInstance("notFound.title")}</CardTitle>
@@ -317,8 +385,12 @@ function InstancePage() {
   }
 
   return (
-    <LiveKitSyncProvider instanceId={instance.id}>
-      <InstanceContent instanceData={instance} />
+    <LiveKitSyncProvider instanceId={instanceDetails.instance.id}>
+      <InstanceContent
+        instanceData={instanceDetails.instance}
+        worldData={instanceDetails.world}
+        hostData={instanceDetails.host}
+      />
     </LiveKitSyncProvider>
   );
 }

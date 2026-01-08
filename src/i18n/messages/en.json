@@ -102,6 +102,14 @@
     "retry": "Retry",
     "waitingForConnection": "Waiting for connection..."
   },
+  "instanceLobby": {
+    "capacity": "Capacity",
+    "world": "World",
+    "host": "Host",
+    "privacyTitle": "Privacy Notice",
+    "privacyText": "This app sends data to external services. Please do not share personal or sensitive information.",
+    "joinButton": "Join Instance"
+  },
   "dock": {
     "chat": "Chat",
     "agent": "Agent",
