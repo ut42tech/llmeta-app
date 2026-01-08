@@ -259,7 +259,7 @@ export default function WorldDetailPage() {
             </div>
 
             {instances.length > 0 ? (
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {instances.map((instance) => (
                   <InstanceCard key={instance.id} instance={instance} />
                 ))}

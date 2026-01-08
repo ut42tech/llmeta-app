@@ -164,20 +164,27 @@ function InstanceContent({
                 vrmUrl={userAvatar.vrmUrl}
                 className="h-full w-full"
               />
-              <div className="absolute bottom-6 left-1/2 -translate-x-1/2">
-                <div className="flex items-center gap-3 rounded-full bg-background/80 px-6 py-3 shadow-lg backdrop-blur-sm">
-                  {userAvatar.headIconUrl && (
-                    <Image
-                      src={userAvatar.headIconUrl}
-                      alt="Avatar"
-                      width={32}
-                      height={32}
-                      className="rounded-full"
-                    />
+              <div className="absolute right-4 bottom-4 left-4">
+                <div className="flex items-center gap-3 rounded-lg border border-border/60 bg-background/95 px-4 py-3 shadow-md backdrop-blur-md">
+                  {userAvatar.headIconUrl ? (
+                    <div className="relative size-9 shrink-0 overflow-hidden rounded-full ring-1 ring-border">
+                      <Image
+                        src={userAvatar.headIconUrl}
+                        alt="Avatar"
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted ring-1 ring-border">
+                      <User className="size-4 text-muted-foreground" />
+                    </div>
                   )}
-                  <span className="font-semibold text-lg">
-                    {profile?.display_name ?? "Player"}
-                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium">
+                      {profile?.display_name ?? "Player"}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
