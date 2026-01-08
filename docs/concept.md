@@ -111,7 +111,7 @@ LLMeta is built on a modern, robust technology stack:
 | **AI Intelligence** | Vercel AI SDK 6, OpenAI | Intelligent agent responses and image generation |
 | **State Management** | Zustand 5 | Reactive, efficient application state (8 stores) |
 | **Internationalization** | next-intl | Multi-language support (English, Japanese) |
-| **UI Components** | shadcn/ui, Tailwind CSS v4 | Modern, accessible component library (33 components) |
+| **UI Components** | shadcn/ui, Tailwind CSS v4 | Modern, accessible component library (34 components) |
 | **Animation** | Motion | Smooth UI transitions and animations |
 | **Testing** | Vitest, Testing Library, Playwright, Storybook 10 | Unit, integration, E2E testing and component documentation |
 
