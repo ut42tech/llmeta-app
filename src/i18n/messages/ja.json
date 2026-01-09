@@ -76,7 +76,9 @@
     "cancel": "キャンセル",
     "create": "作成",
     "noInstances": "インスタンスがありません",
-    "createFirstInstance": "最初のインスタンスを作成してこのワールドを探索しましょう"
+    "createFirstInstance": "最初のインスタンスを作成してこのワールドを探索しましょう",
+    "createInstanceSuccess": "インスタンスを作成しました",
+    "createInstanceError": "インスタンスの作成に失敗しました"
   },
   "instance": {
     "back": "戻る",

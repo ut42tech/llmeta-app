@@ -26,6 +26,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InstanceCard } from "@/components/world";
+import { notificationBus } from "@/lib/notification-bus";
 import { createClient } from "@/lib/supabase/client";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import type { Instance, World } from "@/types/world";
@@ -137,11 +138,13 @@ export default function WorldDetailPage() {
 
     if (error) {
       console.error("Error creating instance:", error);
+      notificationBus.error(t("createInstanceError"));
       return;
     }
 
     setInstanceId(instance.id);
     setIsCreateDialogOpen(false);
+    notificationBus.success(t("createInstanceSuccess"));
     router.push(`/instance/${instance.id}`);
   };
 

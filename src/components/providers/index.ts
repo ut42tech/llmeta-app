@@ -5,3 +5,4 @@ export {
   type LiveKitSyncContextValue,
   LiveKitSyncProvider,
 } from "./LiveKitSyncProvider";
+export { NotificationProvider } from "./NotificationProvider";

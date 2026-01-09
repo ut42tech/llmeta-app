@@ -23,9 +23,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AVATAR_LIST } from "@/constants/avatars";
-import { useNotification } from "@/hooks";
 import { useAuth } from "@/hooks/auth";
 import { type Locale, localeNames, locales } from "@/i18n/config";
+import { promiseNotification } from "@/lib/notification-bus";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import type { ViverseAvatar } from "@/types/player";
@@ -36,7 +36,6 @@ export default function SettingsPage() {
   const { user, profile, updateProfile, signOut } = useAuth();
   const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
   const { currentAvatar, setCurrentAvatar } = useLocalPlayerStore();
-  const { showPromise } = useNotification();
 
   const [displayName, setDisplayName] = useState("");
   const [isUpdating, setIsUpdating] = useState(false);
@@ -64,11 +63,14 @@ export default function SettingsPage() {
 
     setIsUpdating(true);
     try {
-      await showPromise(updateProfile({ display_name: displayName.trim() }), {
-        loading: t("notifications.displayName.loading"),
-        success: t("notifications.displayName.success"),
-        error: t("notifications.displayName.error"),
-      });
+      await promiseNotification(
+        updateProfile({ display_name: displayName.trim() }),
+        {
+          loading: t("notifications.displayName.loading"),
+          success: t("notifications.displayName.success"),
+          error: t("notifications.displayName.error"),
+        },
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -78,7 +80,7 @@ export default function SettingsPage() {
     setCurrentAvatar(avatar);
     setIsAvatarUpdating(true);
     try {
-      await showPromise(updateProfile({ avatar_id: avatar.id }), {
+      await promiseNotification(updateProfile({ avatar_id: avatar.id }), {
         loading: t("notifications.avatar.loading"),
         success: t("notifications.avatar.success"),
         error: t("notifications.avatar.error"),
@@ -91,7 +93,7 @@ export default function SettingsPage() {
   const handleLanguageChange = (newLocale: Locale) => {
     setLocale(newLocale);
     if (user) {
-      showPromise(syncLocaleToProfile(user.id, newLocale), {
+      promiseNotification(syncLocaleToProfile(user.id, newLocale), {
         loading: t("notifications.language.loading"),
         success: t("notifications.language.success"),
         error: t("notifications.language.error"),

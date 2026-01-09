@@ -76,7 +76,9 @@
     "cancel": "Cancel",
     "create": "Create",
     "noInstances": "No instances yet",
-    "createFirstInstance": "Create your first instance to start exploring this world"
+    "createFirstInstance": "Create your first instance to start exploring this world",
+    "createInstanceSuccess": "Instance created successfully",
+    "createInstanceError": "Failed to create instance"
   },
   "instance": {
     "back": "Back",
