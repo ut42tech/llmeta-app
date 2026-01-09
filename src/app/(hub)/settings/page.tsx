@@ -23,8 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AVATAR_LIST } from "@/constants/avatars";
-import { useNotification } from "@/hooks";
 import { useAuth } from "@/hooks/auth";
+import { useProfileService } from "@/hooks/services";
 import { type Locale, localeNames, locales } from "@/i18n/config";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
@@ -33,13 +33,13 @@ import type { ViverseAvatar } from "@/types/player";
 export default function SettingsPage() {
   const t = useTranslations("settingsPage");
   const tLanguage = useTranslations("language");
-  const { user, profile, updateProfile, signOut } = useAuth();
-  const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
+  const { user, profile, signOut } = useAuth();
+  const { updateDisplayName, updateAvatar, updateLanguage, isUpdating } =
+    useProfileService();
+  const locale = useLanguageStore((state) => state.locale);
   const { currentAvatar, setCurrentAvatar } = useLocalPlayerStore();
-  const { showPromise } = useNotification();
 
   const [displayName, setDisplayName] = useState("");
-  const [isUpdating, setIsUpdating] = useState(false);
   const [isAvatarUpdating, setIsAvatarUpdating] = useState(false);
 
   const hasChanges = displayName.trim() !== (profile?.display_name || "");
@@ -61,42 +61,21 @@ export default function SettingsPage() {
 
   const handleUpdateDisplayName = async () => {
     if (!displayName.trim() || displayName === profile?.display_name) return;
-
-    setIsUpdating(true);
-    try {
-      await showPromise(updateProfile({ display_name: displayName.trim() }), {
-        loading: t("notifications.displayName.loading"),
-        success: t("notifications.displayName.success"),
-        error: t("notifications.displayName.error"),
-      });
-    } finally {
-      setIsUpdating(false);
-    }
+    await updateDisplayName(displayName.trim());
   };
 
   const handleAvatarSelect = async (avatar: ViverseAvatar) => {
     setCurrentAvatar(avatar);
     setIsAvatarUpdating(true);
     try {
-      await showPromise(updateProfile({ avatar_id: avatar.id }), {
-        loading: t("notifications.avatar.loading"),
-        success: t("notifications.avatar.success"),
-        error: t("notifications.avatar.error"),
-      });
+      await updateAvatar(avatar.id);
     } finally {
       setIsAvatarUpdating(false);
     }
   };
 
-  const handleLanguageChange = (newLocale: Locale) => {
-    setLocale(newLocale);
-    if (user) {
-      showPromise(syncLocaleToProfile(user.id, newLocale), {
-        loading: t("notifications.language.loading"),
-        success: t("notifications.language.success"),
-        error: t("notifications.language.error"),
-      });
-    }
+  const handleLanguageChange = async (newLocale: Locale) => {
+    await updateLanguage(newLocale);
   };
 
   return (
