@@ -37,11 +37,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AVATAR_LIST } from "@/constants/avatars";
-import { useAuth } from "@/hooks/auth";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
+import { useProfileService } from "@/hooks/services";
 import type { Locale } from "@/i18n/config";
-import { promiseNotification } from "@/lib/notification-bus";
-import { useAuthStore } from "@/stores/authStore";
 import { useLanguageStore } from "@/stores/languageStore";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import { useWorldStore } from "@/stores/worldStore";
@@ -109,7 +107,7 @@ const GeneralTab = () => {
   const t = useTranslations("settings");
   const tCommon = useTranslations("common");
   const { sendProfile } = useSyncClient();
-  const { updateProfile } = useAuth();
+  const { updateDisplayName, updateAvatar } = useProfileService();
   const instanceId = useWorldStore((state) => state.instanceId);
 
   const {
@@ -141,29 +139,21 @@ const GeneralTab = () => {
     [nameInput, username],
   );
 
-  const handleUpdateName = () => {
+  const handleUpdateName = async () => {
     const newName = nameInput.trim();
     if (!newName) return;
     setUsername(newName);
     sendProfile({ username: newName });
-    promiseNotification(updateProfile({ display_name: newName }), {
-      loading: t("notifications.displayName.loading"),
-      success: t("notifications.displayName.success"),
-      error: t("notifications.displayName.error"),
-    });
+    await updateDisplayName(newName);
   };
 
-  const handleSelectAvatar = (avatar: ViverseAvatar) => {
+  const handleSelectAvatar = async (avatar: ViverseAvatar) => {
     const currentPosition = position.clone();
     const currentRotation = rotation.clone();
     setCurrentAvatar(avatar);
     teleport(currentPosition, currentRotation);
     sendProfile({ avatar });
-    promiseNotification(updateProfile({ avatar_id: avatar.id }), {
-      loading: t("notifications.avatar.loading"),
-      success: t("notifications.avatar.success"),
-      error: t("notifications.avatar.error"),
-    });
+    await updateAvatar(avatar.id);
   };
 
   return (
@@ -319,19 +309,11 @@ const languageOptions: { value: Locale; label: string; description: string }[] =
 
 const LanguageTab = () => {
   const t = useTranslations("language");
-  const tSettings = useTranslations("settings");
-  const { locale, setLocale, syncLocaleToProfile } = useLanguageStore();
-  const { user } = useAuthStore();
+  const { updateLanguage } = useProfileService();
+  const locale = useLanguageStore((state) => state.locale);
 
-  const handleLocaleChange = (newLocale: Locale) => {
-    setLocale(newLocale);
-    if (user) {
-      promiseNotification(syncLocaleToProfile(user.id, newLocale), {
-        loading: tSettings("notifications.language.loading"),
-        success: tSettings("notifications.language.success"),
-        error: tSettings("notifications.language.error"),
-      });
-    }
+  const handleLocaleChange = async (newLocale: Locale) => {
+    await updateLanguage(newLocale);
   };
 
   return (

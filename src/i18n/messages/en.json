@@ -77,6 +77,7 @@
     "create": "Create",
     "noInstances": "No instances yet",
     "createFirstInstance": "Create your first instance to start exploring this world",
+    "creating": "Creating instance...",
     "createInstanceSuccess": "Instance created successfully",
     "createInstanceError": "Failed to create instance"
   },

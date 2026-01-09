@@ -2,7 +2,7 @@
 
 import { ArrowLeft, Calendar, Layers, Plus, Users } from "lucide-react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import {
@@ -26,16 +26,16 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
 import { InstanceCard } from "@/components/world";
-import { notificationBus } from "@/lib/notification-bus";
+import { useInstanceService } from "@/hooks/services";
 import { createClient } from "@/lib/supabase/client";
 import { useLocalPlayerStore } from "@/stores/localPlayerStore";
 import type { Instance, World } from "@/types/world";
 
 export default function WorldDetailPage() {
   const params = useParams<{ worldId: string }>();
-  const router = useRouter();
   const t = useTranslations("world");
   const format = useFormatter();
+  const { createInstance } = useInstanceService();
 
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [newInstanceName, setNewInstanceName] = useState("");
@@ -118,34 +118,16 @@ export default function WorldDetailPage() {
   }
 
   const handleCreateInstance = async () => {
-    const instanceName = newInstanceName.trim() || `instance-${Date.now()}`;
-    const supabase = createClient();
+    const result = await createInstance(
+      params.worldId,
+      newInstanceName.trim() || `instance-${Date.now()}`,
+      { maxPlayers: world?.player_capacity ?? 32 },
+    );
 
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    const { data: instance, error } = await supabase
-      .from("instances")
-      .insert({
-        world_id: params.worldId,
-        name: instanceName,
-        host_id: user?.id ?? null,
-        max_players: world?.player_capacity ?? 32,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error("Error creating instance:", error);
-      notificationBus.error(t("createInstanceError"));
-      return;
+    if (result) {
+      setInstanceId(result.id);
+      setIsCreateDialogOpen(false);
     }
-
-    setInstanceId(instance.id);
-    setIsCreateDialogOpen(false);
-    notificationBus.success(t("createInstanceSuccess"));
-    router.push(`/instance/${instance.id}`);
   };
 
   if (isLoading || !world) {
