@@ -41,3 +41,20 @@ export type MessagePartRendererProps = {
   onSendToChat: (url: string, prompt?: string) => void;
   onRefine: (msg: string) => void;
 };
+
+// =============================================================================
+// Context Injection Types
+// =============================================================================
+
+export type ImageContext = {
+  recentImages: Array<{
+    prompt: string;
+    username?: string;
+    createdAt: string;
+  }>;
+};
+
+export type AIContext = {
+  currentDateTime: string;
+  images?: ImageContext;
+};

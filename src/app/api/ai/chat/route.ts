@@ -10,6 +10,7 @@ import {
 } from "ai";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
+import type { AIContext } from "@/types/ai";
 import type { Json } from "@/types/supabase";
 import { uploadImageToBlob } from "@/utils/blob";
 
@@ -34,6 +35,7 @@ type RequestBody = {
   message: UIMessage;
   conversationId?: string;
   chatHistory?: ChatHistoryMessage[];
+  context?: AIContext;
 };
 
 // =============================================================================
@@ -151,21 +153,36 @@ When generating images, create prompts that are:
 function formatChatHistory(history: ChatHistoryMessage[]): string {
   return history
     .map((msg) => {
-      const time = new Date(msg.sentAt).toLocaleTimeString(undefined, {
-        hour: "2-digit",
-        minute: "2-digit",
-      });
       const sender = msg.username || "Anonymous";
       const label = msg.direction === "outgoing" ? "(me)" : "(other user)";
-      return `[${time}] ${sender} ${label}: ${msg.content}`;
+      return `[${new Date(msg.sentAt).toISOString()}] ${sender} ${label}: ${msg.content}`;
     })
     .join("\n");
 }
 
-function buildSystemPrompt(chatHistory?: ChatHistoryMessage[]): string {
-  if (!chatHistory?.length) return BASE_SYSTEM_PROMPT;
+function buildSystemPrompt(
+  chatHistory?: ChatHistoryMessage[],
+  context?: AIContext,
+): string {
+  let prompt = BASE_SYSTEM_PROMPT;
 
-  return `${BASE_SYSTEM_PROMPT}
+  if (context?.currentDateTime) {
+    prompt += `\n\n## Current Context\nCurrent Time: ${context.currentDateTime}`;
+  }
+
+  if (context?.images?.recentImages.length) {
+    const images = context.images.recentImages
+      .map(
+        (img) =>
+          `- [${img.createdAt}] ${img.username || "Unknown"}: "${img.prompt}"`,
+      )
+      .join("\n");
+    prompt += `\n\n## Recently Generated Images\n${images}`;
+  }
+
+  if (!chatHistory?.length) return prompt;
+
+  return `${prompt}
 
 ## User Chat History (Context)
 Below is the text chat history between users. If the user asks about this chat content, please refer to this history to provide answers.
@@ -213,7 +230,7 @@ const imageGenerationTool = tool({
 // =============================================================================
 
 export async function POST(req: Request) {
-  const { message, conversationId, chatHistory }: RequestBody =
+  const { message, conversationId, chatHistory, context }: RequestBody =
     await req.json();
 
   // Load previous messages and save user message (if conversation exists)
@@ -231,7 +248,7 @@ export async function POST(req: Request) {
   const result = streamText({
     model: gateway("openai/gpt-4o-mini"),
     messages: await convertToModelMessages(allMessages),
-    system: buildSystemPrompt(chatHistory),
+    system: buildSystemPrompt(chatHistory, context),
     tools: { generateImage: imageGenerationTool },
   });
 

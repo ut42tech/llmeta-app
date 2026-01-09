@@ -34,6 +34,8 @@ import { useAIChatHistory } from "@/hooks/ai-chat";
 import { useTextChat } from "@/hooks/chat";
 import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
+import { useWorldStore } from "@/stores/worldStore";
+import type { AIContext } from "@/types/ai";
 
 const AI_CHAT_KEYBOARD_SHORTCUT = "/";
 const MAX_TITLE_LENGTH = 50;
@@ -47,6 +49,7 @@ export const AIChatWindow = () => {
   const toggleAIChat = useChatStore((s) => s.toggleAIChat);
   const chatMessages = useChatStore((s) => s.messages);
   const profile = useAuthStore((s) => s.profile);
+  const contentItems = useWorldStore((s) => s.contentItems);
   const { sendMessage: sendToChat, canSend: canSendToChat } = useTextChat();
 
   // Ref for textarea focus
@@ -109,6 +112,26 @@ export const AIChatWindow = () => {
     [],
   );
 
+  const contentItemsRef = useRef(contentItems);
+  contentItemsRef.current = contentItems;
+
+  const getContext = useCallback((): AIContext => {
+    const images = contentItemsRef.current;
+    return {
+      currentDateTime: new Date().toISOString(),
+      images:
+        images.length > 0
+          ? {
+              recentImages: images.slice(-10).map((item) => ({
+                prompt: item.image.prompt || "No prompt available",
+                username: item.username,
+                createdAt: new Date(item.createdAt).toISOString(),
+              })),
+            }
+          : undefined,
+    };
+  }, []);
+
   const { messages, status, sendMessage, setMessages } = useChat({
     id: "ai-chat-window",
     transport: new DefaultChatTransport({
@@ -118,6 +141,7 @@ export const AIChatWindow = () => {
           message: messages.at(-1),
           conversationId: conversationIdRef.current,
           chatHistory: getChatHistory(),
+          context: getContext(),
         },
       }),
     }),
