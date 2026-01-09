@@ -8,7 +8,7 @@ import {
   getConversationMessages,
   listConversations,
   renameConversation,
-} from "@/app/actions/ai-conversations";
+} from "@/lib/actions/ai-conversations";
 import { useAuthStore } from "@/stores/authStore";
 import { useChatStore } from "@/stores/chatStore";
 import { useWorldStore } from "@/stores/worldStore";
