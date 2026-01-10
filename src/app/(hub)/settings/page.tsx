@@ -26,13 +26,14 @@ import { AVATAR_LIST } from "@/constants/avatars";
 import { useAuth } from "@/hooks";
 import { useProfileService } from "@/hooks/services";
 import { type Locale, localeNames, locales } from "@/i18n/config";
+import { signOut } from "@/lib/actions";
 import { useLanguageStore, useLocalPlayerStore } from "@/stores";
 import type { ViverseAvatar } from "@/types";
 
 export default function SettingsPage() {
   const t = useTranslations("settingsPage");
   const tLanguage = useTranslations("language");
-  const { user, profile, signOut } = useAuth();
+  const { user, profile } = useAuth();
   const { updateDisplayName, updateAvatar, updateLanguage, isUpdating } =
     useProfileService();
   const locale = useLanguageStore((state) => state.locale);

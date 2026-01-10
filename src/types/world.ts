@@ -25,6 +25,13 @@ export type WorldContentItem = {
 export type World = Tables<"worlds">;
 
 /**
+ * World with instance count for home page display
+ */
+export type WorldWithInstanceCount = World & {
+  instanceCount: number;
+};
+
+/**
  * Instance type from Supabase database
  */
 export type DbInstance = Tables<"instances">;

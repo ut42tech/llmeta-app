@@ -9,7 +9,7 @@ import {
   getConversationMessages,
   listConversations,
   renameConversation,
-} from "@/lib/actions/ai-conversations";
+} from "@/lib/actions";
 import { useAuthStore, useChatStore } from "@/stores";
 import type { AIConversation } from "@/types";
 

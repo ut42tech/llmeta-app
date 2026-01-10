@@ -61,7 +61,12 @@
   },
   "world": {
     "back": "Back",
+    "viewDetails": "View Details",
     "worldInfo": "World Information",
+    "notFound": {
+      "title": "World Not Found",
+      "description": "This world does not exist or may have been deleted."
+    },
     "capacity": "Capacity",
     "players": "players",
     "createdAt": "Created",

@@ -13,12 +13,12 @@ import {
   Users,
   WifiOff,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { AvatarPreview } from "@/components/character/AvatarPreview";
 import {
   FadeIn,
   NotFoundCard,
@@ -37,6 +37,21 @@ import { createClient } from "@/lib/supabase/client";
 import { useLocalPlayerStore, useWorldStore } from "@/stores";
 import type { DbInstance, World } from "@/types";
 import type { Tables } from "@/types/supabase";
+
+const AvatarPreview = dynamic(
+  () =>
+    import("@/components/character/AvatarPreview").then(
+      (mod) => mod.AvatarPreview,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center bg-muted/50">
+        <Loader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    ),
+  },
+);
 
 type HostProfile = Pick<Tables<"profiles">, "id" | "display_name">;
 

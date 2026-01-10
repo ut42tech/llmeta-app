@@ -1,9 +1,22 @@
 "use client";
 
 import { Sparkles } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/components/common";
-import { BackgroundCanvas } from "@/components/scene";
+
+const BackgroundCanvas = dynamic(
+  () =>
+    import("@/components/scene/BackgroundCanvas").then(
+      (mod) => mod.BackgroundCanvas,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="fixed inset-0 bg-linear-to-br from-slate-900 to-slate-800" />
+    ),
+  },
+);
 
 export default function AuthLayout({
   children,

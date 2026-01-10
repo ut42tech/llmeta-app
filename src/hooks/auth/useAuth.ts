@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { createClient } from "@/lib/supabase/client";
@@ -10,15 +9,13 @@ import type { Tables } from "@/types/supabase";
 type Profile = Tables<"profiles">;
 
 export function useAuth() {
-  const router = useRouter();
   const supabase = createClient();
 
-  const { user, profile, setProfile, reset } = useAuthStore(
+  const { user, profile, setProfile } = useAuthStore(
     useShallow((state) => ({
       user: state.user,
       profile: state.profile,
       setProfile: state.setProfile,
-      reset: state.reset,
     })),
   );
 
@@ -65,17 +62,6 @@ export function useAuth() {
     [supabase, user, setProfile],
   );
 
-  const signOut = useCallback(async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (error) {
-      console.error("Error signing out:", error);
-    }
-    reset();
-    router.push("/login");
-    router.refresh();
-  }, [supabase, reset, router]);
-
   // Listen for auth state changes (sign out, token refresh)
   useEffect(() => {
     const {
@@ -98,7 +84,6 @@ export function useAuth() {
     profile,
     isAuthenticated: !!user && !!profile,
     updateProfile,
-    signOut,
     refetchProfile: user ? () => fetchProfile(user.id) : undefined,
   };
 }

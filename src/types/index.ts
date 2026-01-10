@@ -46,4 +46,10 @@ export type {
 // =============================================================================
 // World Types
 // =============================================================================
-export type { DbInstance, Instance, World, WorldContentItem } from "./world";
+export type {
+  DbInstance,
+  Instance,
+  World,
+  WorldContentItem,
+  WorldWithInstanceCount,
+} from "./world";

@@ -61,7 +61,12 @@
   },
   "world": {
     "back": "戻る",
+    "viewDetails": "詳細を見る",
     "worldInfo": "ワールド情報",
+    "notFound": {
+      "title": "ワールドが見つかりません",
+      "description": "このワールドは存在しないか、削除された可能性があります。"
+    },
     "capacity": "定員",
     "players": "人",
     "createdAt": "作成日",

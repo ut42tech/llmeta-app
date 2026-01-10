@@ -1,8 +1,6 @@
 import { createClient } from "@deepgram/sdk";
 import { NextResponse } from "next/server";
 
-export const dynamic = "force-dynamic";
-
 const DEEPGRAM_API_KEY = process.env.DEEPGRAM_API_KEY;
 
 const getClient = () => {
