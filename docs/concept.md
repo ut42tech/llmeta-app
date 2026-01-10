@@ -114,6 +114,7 @@ LLMeta is built on a modern, robust technology stack:
 | **UI Components** | shadcn/ui, Tailwind CSS v4 | Modern, accessible component library (35 components) |
 | **Animation** | Motion | Smooth UI transitions and animations |
 | **Testing** | Vitest, Testing Library, Playwright, Storybook 10 | Unit, integration, E2E testing and component documentation |
+| **Providers** | React Context | Auth, I18n, LiveKitSync, Notification (4 providers) |
 
 ### Authentication Architecture
 

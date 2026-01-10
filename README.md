@@ -109,25 +109,26 @@ src/
 │   ├── ai-elements/         # AI agent UI components (30 components)
 │   ├── character/           # VRM character & player components (8 components)
 │   ├── common/              # Shared utilities (5 components)
-│   ├── hud/                 # HUD overlays
-│   │   ├── ai-chat/         # AI chat sidebar & window
-│   │   ├── caption/         # Caption window & waveform
-│   │   ├── chat/            # Text chat input & stream
+│   ├── home/                # Home page components (1 component)
+│   ├── hud/                 # HUD overlays (25 components)
+│   │   ├── ai-chat/         # AI chat sidebar, window & image (5 components)
+│   │   ├── caption/         # Caption window & waveform (2 components)
+│   │   ├── chat/            # Text chat input & stream (2 components)
 │   │   ├── dock/            # Control buttons & drawers (10 components)
-│   │   └── status-bar/      # Connection & player status badges
-│   ├── layout/              # Hub layout (4 components)
-│   ├── providers/           # Context providers (Auth, I18n, LiveKitSync)
+│   │   └── status-bar/      # Connection & player status badges (3 components)
+│   ├── layout/              # Hub layout (3 components)
+│   ├── providers/           # Context providers (4 providers)
 │   ├── scene/               # 3D scene components (4 components)
 │   ├── ui/                  # Shared shadcn/ui components (35 components)
-│   └── world/               # World cards & instance cards
+│   └── world/               # World cards & instance cards (2 components)
 ├── constants/               # App constants (animations, avatars, sync, world)
-├── hooks/                   # Custom React hooks (23 hooks)
+├── hooks/                   # Custom React hooks (22 hooks)
 │   ├── ai-chat/             # AI chat history hooks (1 hook)
 │   ├── auth/                # Authentication hooks (1 hook)
 │   ├── chat/                # Text chat hooks (2 hooks)
-│   ├── common/              # Common utility hooks (2 hooks)
-│   ├── livekit/             # LiveKit integration (7 hooks)
-│   ├── scene/               # 3D scene hooks (5 hooks)
+│   ├── common/              # Common utility hooks (1 hook)
+│   ├── livekit/             # LiveKit integration (6 hooks)
+│   ├── scene/               # 3D scene hooks (6 hooks)
 │   ├── services/            # Service layer hooks (2 hooks)
 │   ├── transcription/       # Speech-to-text hooks (2 hooks)
 │   └── voice-chat/          # Voice chat hooks (1 hook)
