@@ -13,6 +13,7 @@ export type {
 export type {
   AIConversation,
   AIStoredMessage,
+  ChatHistoryMessage,
   ChatMessage,
   ChatMessageImage,
   ChatMessagePacket,

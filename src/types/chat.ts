@@ -44,6 +44,15 @@ export type ChatMessage = {
   isOwn: boolean;
 };
 
+/** Chat history message format for AI context injection */
+export type ChatHistoryMessage = Pick<
+  ChatMessage,
+  "id" | "username" | "content" | "image"
+> & {
+  direction: "incoming" | "outgoing";
+  sentAt: number;
+};
+
 // =============================================================================
 // AI Conversation Types
 // =============================================================================

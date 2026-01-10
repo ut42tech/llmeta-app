@@ -11,6 +11,7 @@ import {
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import type { AIContext } from "@/types/ai";
+import type { ChatHistoryMessage } from "@/types/chat";
 import type { Json } from "@/types/supabase";
 import { uploadImageToBlob } from "@/utils/blob";
 
@@ -21,15 +22,6 @@ export const maxDuration = 120;
 // =============================================================================
 
 type MessageRole = "user" | "assistant" | "system";
-
-type ChatHistoryMessage = {
-  id: string;
-  sessionId: string;
-  username?: string;
-  content: string;
-  direction: "incoming" | "outgoing" | "system";
-  sentAt: number;
-};
 
 type RequestBody = {
   message: UIMessage;
@@ -163,17 +155,30 @@ Your primary role is to enhance communication between users in this virtual worl
 
 ## Image Generation Guidelines
 
-When generating images, create prompts that are:
-- Detailed and descriptive
-- Based on the conversation context when relevant
-- Safe and appropriate`;
+When generating images:
+- **Always write prompts in English** for best quality results
+- Include detailed visual descriptions (style, lighting, composition, colors)
+- Reference conversation context when relevant
+- Keep prompts safe and appropriate`;
+
+/** Format message content including image information */
+function formatMessageContent(msg: ChatHistoryMessage): string {
+  if (!msg.image) return msg.content;
+
+  const imageNote = msg.image.prompt
+    ? `[Shared an image: "${msg.image.prompt}"]`
+    : "[Shared an image]";
+
+  return msg.content ? `${msg.content} ${imageNote}` : imageNote;
+}
 
 function formatChatHistory(history: ChatHistoryMessage[]): string {
   return history
     .map((msg) => {
       const sender = msg.username || "Anonymous";
       const label = msg.direction === "outgoing" ? "(me)" : "(other user)";
-      return `[${new Date(msg.sentAt).toISOString()}] ${sender} ${label}: ${msg.content}`;
+      const timestamp = new Date(msg.sentAt).toISOString();
+      return `[${timestamp}] ${sender} ${label}: ${formatMessageContent(msg)}`;
     })
     .join("\n");
 }
@@ -186,16 +191,6 @@ function buildSystemPrompt(
 
   if (context?.currentDateTime) {
     prompt += `\n\n## Current Context\nCurrent Time: ${context.currentDateTime}`;
-  }
-
-  if (context?.images?.recentImages.length) {
-    const images = context.images.recentImages
-      .map(
-        (img) =>
-          `- [${img.createdAt}] ${img.username || "Unknown"}: "${img.prompt}"`,
-      )
-      .join("\n");
-    prompt += `\n\n## Recently Generated Images\n${images}`;
   }
 
   if (!chatHistory?.length) return prompt;
@@ -220,11 +215,13 @@ ${formatChatHistory(chatHistory)}
 
 const imageGenerationTool = tool({
   description:
-    "Generate an image based on a text prompt. Use this when the user asks for an image or when visualizing something would enhance the response.",
+    "Generate an image based on a text prompt. Use when the user requests an image, or when visualizing a concept would enhance understanding. Always provide prompts in English for best results.",
   inputSchema: z.object({
     prompt: z
       .string()
-      .describe("A detailed description of the image to generate."),
+      .describe(
+        "A detailed image description in English. Include style, composition, lighting, and visual details.",
+      ),
   }),
   execute: async ({ prompt }) => {
     const { image } = await generateImage({
@@ -259,7 +256,7 @@ export async function POST(req: Request) {
 
   // Stream AI response
   const result = streamText({
-    model: gateway("openai/gpt-4o-mini"),
+    model: gateway("openai/gpt-5.2"),
     messages: await convertToModelMessages(allMessages),
     system: buildSystemPrompt(chatHistory, context),
     tools: { generateImage: imageGenerationTool },
