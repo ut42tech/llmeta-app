@@ -41,3 +41,11 @@ export type MessagePartRendererProps = {
   onSendToChat: (url: string, prompt?: string) => void;
   onRefine: (msg: string) => void;
 };
+
+// =============================================================================
+// Context Injection Types
+// =============================================================================
+
+export type AIContext = {
+  currentDateTime: string;
+};

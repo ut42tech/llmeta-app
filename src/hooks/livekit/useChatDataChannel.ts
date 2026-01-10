@@ -2,14 +2,8 @@ import { nanoid } from "nanoid";
 import { useCallback } from "react";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useTypedDataChannel } from "@/hooks/livekit/createTypedDataChannel";
-import { useAuthStore } from "@/stores/authStore";
-import { useChatStore } from "@/stores/chatStore";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type {
-  ChatMessage,
-  ChatMessageImage,
-  ChatMessagePacket,
-} from "@/types/chat";
+import { useAuthStore, useChatStore, useLocalPlayerStore } from "@/stores";
+import type { ChatMessage, ChatMessageImage, ChatMessagePacket } from "@/types";
 
 /**
  * Hook for chat data channel.

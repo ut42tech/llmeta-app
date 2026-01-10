@@ -4,5 +4,8 @@ export { useLanguageStore } from "./languageStore";
 export { useLocalPlayerStore } from "./localPlayerStore";
 export { useRemotePlayersStore } from "./remotePlayersStore";
 export { useTranscriptionStore } from "./transcriptionStore";
-export { useVoiceChatStore } from "./voiceChatStore";
-export { useWorldStore, type WorldContentItem } from "./worldStore";
+export {
+  useVoiceChatStore,
+  type VoicePermissionStatus,
+} from "./voiceChatStore";
+export { type ConnectionStatus, useWorldStore } from "./worldStore";

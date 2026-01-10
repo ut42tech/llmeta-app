@@ -1,6 +1,6 @@
 import { useControls } from "leva";
 import { useEffect } from "react";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useLocalPlayerStore } from "@/stores";
 
 /**
  * Debug panel that monitors localPlayerStore and other state.

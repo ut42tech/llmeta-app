@@ -13,12 +13,12 @@ import {
   Users,
   WifiOff,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { AvatarPreview } from "@/components/character/AvatarPreview";
 import {
   FadeIn,
   NotFoundCard,
@@ -31,13 +31,27 @@ import { LiveKitSyncProvider } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AVATAR_LIST } from "@/constants/avatars";
-import { useAuth } from "@/hooks/auth";
+import { useAuth } from "@/hooks";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { createClient } from "@/lib/supabase/client";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useWorldStore } from "@/stores/worldStore";
+import { useLocalPlayerStore, useWorldStore } from "@/stores";
+import type { DbInstance, World } from "@/types";
 import type { Tables } from "@/types/supabase";
-import type { DbInstance, World } from "@/types/world";
+
+const AvatarPreview = dynamic(
+  () =>
+    import("@/components/character/AvatarPreview").then(
+      (mod) => mod.AvatarPreview,
+    ),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="flex h-full w-full items-center justify-center bg-muted/50">
+        <Loader2 className="size-8 animate-spin text-muted-foreground" />
+      </div>
+    ),
+  },
+);
 
 type HostProfile = Pick<Tables<"profiles">, "id" | "display_name">;
 
@@ -90,9 +104,9 @@ function InstanceContent({
 
   useEffect(() => {
     if (isReadyToEnter && isConnected && hasJoinedWorld) {
-      router.push("/experience");
+      router.push(`/experience/${instanceData.id}`);
     }
-  }, [isReadyToEnter, isConnected, hasJoinedWorld, router]);
+  }, [isReadyToEnter, isConnected, hasJoinedWorld, router, instanceData.id]);
 
   const handleJoinInstance = () => {
     setUsername(profile?.display_name ?? "Player");

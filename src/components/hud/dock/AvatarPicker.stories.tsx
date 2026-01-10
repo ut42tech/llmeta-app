@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import type { ViverseAvatar } from "@/types/player";
+import type { ViverseAvatar } from "@/types";
 import { AvatarPicker } from "./AvatarPicker";
 
 const mockAvatars: ViverseAvatar[] = [

@@ -6,8 +6,7 @@ import { useShallow } from "zustand/react/shallow";
 import type { Locale } from "@/i18n/config";
 import { promiseNotification } from "@/lib/notification-bus";
 import { createClient } from "@/lib/supabase/client";
-import { useAuthStore } from "@/stores/authStore";
-import { useLanguageStore } from "@/stores/languageStore";
+import { useAuthStore, useLanguageStore } from "@/stores";
 import type { Tables } from "@/types/supabase";
 
 type Profile = Tables<"profiles">;

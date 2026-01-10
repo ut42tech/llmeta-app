@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import type { ImageToolPart } from "@/types/ai";
+import type { ImageToolPart } from "@/types";
 import { ImageToolResult } from "./ImageToolResult";
 
 const noop = () => {};

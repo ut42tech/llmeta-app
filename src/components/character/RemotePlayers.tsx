@@ -1,8 +1,7 @@
 import { useControls } from "leva";
 import { useMemo } from "react";
 import { RemoteCharacter } from "@/components/character/RemoteCharacter";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
+import { useLocalPlayerStore, useRemotePlayersStore } from "@/stores";
 
 /**
  * Component that manages all remote players.

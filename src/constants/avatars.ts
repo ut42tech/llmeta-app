@@ -1,4 +1,4 @@
-import type { ViverseAvatar } from "@/types/player";
+import type { ViverseAvatar } from "@/types";
 
 export const AVATAR_LIST: ViverseAvatar[] = [
   {

@@ -1,7 +1,6 @@
 import { Euler, Vector3 } from "three";
 import { create } from "zustand";
-import type { EntityRecord } from "@/types/common";
-import type { AnimationState, RemotePlayer } from "@/types/player";
+import type { AnimationState, EntityRecord, RemotePlayer } from "@/types";
 
 const upsertEntity = <T extends Record<string, unknown>>(
   record: EntityRecord<T>,

@@ -12,7 +12,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import type { ImageToolPart } from "@/types/ai";
+import type { ImageToolPart } from "@/types";
 
 // =============================================================================
 // Types

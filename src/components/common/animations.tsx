@@ -95,27 +95,3 @@ export function SlideIn({
     </motion.div>
   );
 }
-
-export function StaggerList({
-  children,
-  className,
-  baseDelay = 0.1,
-  staggerDelay = 0.05,
-}: Pick<BaseProps, "children" | "className"> & {
-  baseDelay?: number;
-  staggerDelay?: number;
-}) {
-  return (
-    <div
-      className={className}
-      style={
-        {
-          "--base-delay": `${baseDelay}s`,
-          "--stagger-delay": `${staggerDelay}s`,
-        } as React.CSSProperties
-      }
-    >
-      {children}
-    </div>
-  );
-}

@@ -3,7 +3,7 @@ import { motion } from "motion/react";
 import Link from "next/link";
 import { useFormatter, useTranslations } from "next-intl";
 import { Card } from "@/components/ui/card";
-import type { Instance } from "@/types/world";
+import type { Instance } from "@/types";
 
 type InstanceCardProps = {
   instance: Instance;

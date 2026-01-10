@@ -8,7 +8,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
+import { useRemotePlayersStore } from "@/stores";
 
 export const OnlinePlayersBadge = () => {
   const t = useTranslations("statusBar");

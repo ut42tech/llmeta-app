@@ -2,8 +2,7 @@
 
 import type { User } from "@supabase/supabase-js";
 import { useEffect, useRef } from "react";
-import { useAuthStore } from "@/stores/authStore";
-import { useLanguageStore } from "@/stores/languageStore";
+import { useAuthStore, useLanguageStore } from "@/stores";
 import type { Tables } from "@/types/supabase";
 
 type Profile = Tables<"profiles">;

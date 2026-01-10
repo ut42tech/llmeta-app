@@ -2,7 +2,7 @@ import { Euler, Vector3 } from "three";
 import { create } from "zustand";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
 import { PERFORMANCE, PRECISION } from "@/constants/world";
-import type { AnimationState, MoveData, ViverseAvatar } from "@/types/player";
+import type { AnimationState, MoveData, ViverseAvatar } from "@/types";
 import { normalizeAngle, roundToDecimals } from "@/utils/math";
 import { createMoveData } from "@/utils/player";
 

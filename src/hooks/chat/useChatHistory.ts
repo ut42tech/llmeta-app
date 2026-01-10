@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useAuthStore } from "@/stores/authStore";
-import { useChatStore } from "@/stores/chatStore";
-import type { ChatMessage } from "@/types/chat";
+import { useAuthStore, useChatStore } from "@/stores";
+import type { ChatMessage } from "@/types";
 
 type ApiMessage = {
   id: string;

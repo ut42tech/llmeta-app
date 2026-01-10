@@ -2,13 +2,13 @@ import { useFrame } from "@react-three/fiber";
 import { Container, Image, Text } from "@react-three/uikit";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { Vector3 } from "three";
-import { useChatStore } from "@/stores/chatStore";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
 import {
+  useChatStore,
+  useLocalPlayerStore,
+  useRemotePlayersStore,
   useWorldStore,
-  type WorldContentItem as WorldContentItemType,
-} from "@/stores/worldStore";
+} from "@/stores";
+import type { WorldContentItem as WorldContentItemType } from "@/types";
 import { hasImageContent } from "@/utils/chat";
 
 const formatTime = (timestamp: number): string => {

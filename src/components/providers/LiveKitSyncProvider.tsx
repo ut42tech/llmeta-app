@@ -11,16 +11,14 @@ import {
 } from "livekit-client";
 import type { PropsWithChildren, ReactNode } from "react";
 import { createContext, useEffect, useMemo } from "react";
-import { useChatHistory } from "@/hooks/chat";
+import { useChatHistory } from "@/hooks";
 import { useChatDataChannel } from "@/hooks/livekit/useChatDataChannel";
 import { useLiveKitAuth } from "@/hooks/livekit/useLiveKitAuth";
 import { useLiveKitConnection } from "@/hooks/livekit/useLiveKitConnection";
 import { useMovementDataChannel } from "@/hooks/livekit/useMovementDataChannel";
 import { useParticipantProfile } from "@/hooks/livekit/useParticipantProfile";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useWorldStore } from "@/stores/worldStore";
-import type { ChatMessageImage } from "@/types/chat";
-import type { MoveData, ProfileData } from "@/types/player";
+import { useLocalPlayerStore, useWorldStore } from "@/stores";
+import type { ChatMessageImage, MoveData, ProfileData } from "@/types";
 
 // =============================================================================
 // Types (exported for reuse in useSyncClient)

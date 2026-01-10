@@ -114,3 +114,19 @@ export const Japanese: Story = {
     label: "ミュート解除",
   },
 };
+
+export const Publishing: Story = {
+  args: {
+    isActive: false,
+    disabled: true,
+    label: "Connecting...",
+  },
+};
+
+export const Busy: Story = {
+  args: {
+    isActive: true,
+    disabled: true,
+    label: "Disconnecting...",
+  },
+};

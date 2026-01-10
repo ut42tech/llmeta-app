@@ -3,7 +3,7 @@
 import { type AbstractIntlMessages, NextIntlClientProvider } from "next-intl";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
-import { useLanguageStore } from "@/stores/languageStore";
+import { useLanguageStore } from "@/stores";
 
 type I18nProviderProps = {
   messages: AbstractIntlMessages;

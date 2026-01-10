@@ -5,13 +5,14 @@ import { Canvas } from "@react-three/fiber";
 import { Leva, useControls } from "leva";
 import { ConnectionState as LiveKitConnectionState } from "livekit-client";
 import dynamic from "next/dynamic";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Suspense, useEffect } from "react";
 import { HUD } from "@/components/hud/HUD";
 import { LiveKitSyncProvider } from "@/components/providers";
 import { Scene } from "@/components/scene";
-import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { Spinner } from "@/components/ui/spinner";
+import { useSyncClient } from "@/hooks";
+import { useLocalPlayerStore } from "@/stores";
 
 const Viverse = dynamic(
   () => import("@react-three/viverse").then((mod) => mod.Viverse),
@@ -35,7 +36,7 @@ function ExperienceContent() {
   if (!isConnected) {
     return (
       <div className="fixed inset-0 flex items-center justify-center bg-black">
-        <Loader />
+        <Spinner className="size-8 text-white" />
       </div>
     );
   }
@@ -43,10 +44,8 @@ function ExperienceContent() {
   return (
     <>
       <Leva titleBar={{ title: "Debug Panel" }} collapsed hidden />
-
       <Loader />
       {stats && <Stats />}
-
       <HUD />
 
       <Viverse>
@@ -71,8 +70,10 @@ function ExperienceContent() {
 }
 
 export default function ExperiencePage() {
+  const { instanceId } = useParams<{ instanceId: string }>();
+
   return (
-    <LiveKitSyncProvider>
+    <LiveKitSyncProvider instanceId={instanceId}>
       <ExperienceContent />
     </LiveKitSyncProvider>
   );

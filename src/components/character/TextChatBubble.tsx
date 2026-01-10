@@ -2,7 +2,7 @@ import { useFrame } from "@react-three/fiber";
 import { Container, Text } from "@react-three/uikit";
 import { Suspense, useMemo, useRef } from "react";
 import type { Object3D } from "three";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores";
 import { filterTextMessages } from "@/utils/chat";
 
 const TEXT_DISPLAY_DURATION_MS = 10000;

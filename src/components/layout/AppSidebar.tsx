@@ -25,11 +25,12 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/auth";
+import { signOut } from "@/lib/actions";
 
 export function AppSidebar() {
   const pathname = usePathname();
   const t = useTranslations("sidebar");
-  const { profile, signOut } = useAuth();
+  const { profile } = useAuth();
 
   const navigationItems = [
     {

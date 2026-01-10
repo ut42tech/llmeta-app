@@ -1,16 +1,5 @@
-import type { Vector3 } from "three";
 import { create } from "zustand";
-
-export type WorldContentItem = {
-  id: string;
-  position: Vector3;
-  image: {
-    url: string;
-    prompt?: string;
-  };
-  username?: string;
-  createdAt: number;
-};
+import type { WorldContentItem } from "@/types";
 
 export type ConnectionStatus =
   | "idle"

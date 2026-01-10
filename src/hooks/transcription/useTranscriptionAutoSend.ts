@@ -2,8 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { AUTO_SEND_DEBOUNCE_MS } from "@/constants/transcription";
-import { useTextChat } from "@/hooks/chat";
-import { useTranscriptionStore } from "@/stores/transcriptionStore";
+import { useTextChat } from "@/hooks";
+import { useTranscriptionStore } from "@/stores";
 
 /**
  * Automatically sends accumulated transcription results to chat after a debounce period.

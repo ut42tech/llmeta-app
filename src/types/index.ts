@@ -2,6 +2,7 @@
 // AI Types
 // =============================================================================
 export type {
+  AIContext,
   ImageToolPart,
   ImageToolState,
   MessagePartRendererProps,
@@ -13,6 +14,7 @@ export type {
 export type {
   AIConversation,
   AIStoredMessage,
+  ChatHistoryMessage,
   ChatMessage,
   ChatMessageImage,
   ChatMessagePacket,
@@ -37,10 +39,17 @@ export type {
   AnimationState,
   MoveData,
   ProfileData,
+  RemotePlayer,
   ViverseAvatar,
 } from "./player";
 
 // =============================================================================
 // World Types
 // =============================================================================
-export type { Instance, World } from "./world";
+export type {
+  DbInstance,
+  Instance,
+  World,
+  WorldContentItem,
+  WorldWithInstanceCount,
+} from "./world";

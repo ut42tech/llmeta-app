@@ -2,7 +2,7 @@
 
 import type { UIMessage } from "ai";
 import { createClient } from "@/lib/supabase/server";
-import type { AIConversation, AIStoredMessage } from "@/types/chat";
+import type { AIConversation, AIStoredMessage } from "@/types";
 
 // =============================================================================
 // Types

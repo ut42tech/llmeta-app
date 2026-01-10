@@ -12,8 +12,8 @@ import {
   useRemoteParticipants,
 } from "@livekit/components-react";
 import { useCallback, useEffect, useRef } from "react";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
-import type { ProfileData, ViverseAvatar } from "@/types/player";
+import { useRemotePlayersStore } from "@/stores";
+import type { ProfileData, ViverseAvatar } from "@/types";
 
 const ATTR_KEYS = {
   USERNAME: "profile.username",

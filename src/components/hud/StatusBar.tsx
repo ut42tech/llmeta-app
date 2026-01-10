@@ -3,8 +3,7 @@
 import { CaptionStatusBadge } from "@/components/hud/status-bar/CaptionStatusBadge";
 import { ConnectionStatusBadge } from "@/components/hud/status-bar/ConnectionStatusBadge";
 import { OnlinePlayersBadge } from "@/components/hud/status-bar/OnlinePlayersBadge";
-import { useTranscriptionStore } from "@/stores/transcriptionStore";
-import { useWorldStore } from "@/stores/worldStore";
+import { useTranscriptionStore, useWorldStore } from "@/stores";
 
 export const StatusBar = () => {
   const status = useWorldStore((state) => state.connection.status);

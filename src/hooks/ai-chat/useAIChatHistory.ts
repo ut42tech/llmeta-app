@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import { useCallback, useEffect, useRef } from "react";
 import { useShallow } from "zustand/react/shallow";
 import {
@@ -8,20 +9,20 @@ import {
   getConversationMessages,
   listConversations,
   renameConversation,
-} from "@/lib/actions/ai-conversations";
-import { useAuthStore } from "@/stores/authStore";
-import { useChatStore } from "@/stores/chatStore";
-import { useWorldStore } from "@/stores/worldStore";
-import type { AIConversation } from "@/types/chat";
+} from "@/lib/actions";
+import { useAuthStore, useChatStore } from "@/stores";
+import type { AIConversation } from "@/types";
 
 /**
  * Hook for AI chat history with multi-conversation support.
  */
 export function useAIChatHistory() {
-  const userId = useAuthStore((s) => s.user?.id);
-  const instanceId = useWorldStore((s) => s.instanceId);
+  const params = useParams<{ instanceId: string }>();
+  const instanceId = params?.instanceId;
 
-  // State (reactive)
+  const userId = useAuthStore((s) => s.user?.id);
+
+  // State
   const state = useChatStore(
     useShallow((s) => ({
       conversationId: s.aiChat.conversationId,
@@ -32,7 +33,7 @@ export function useAIChatHistory() {
     })),
   );
 
-  // Actions (stable references from Zustand)
+  // Actions
   const actions = useChatStore(
     useShallow((s) => ({
       setConversationId: s.setAIConversationId,
@@ -46,44 +47,61 @@ export function useAIChatHistory() {
     })),
   );
 
-  const loadedUserIdRef = useRef<string | null>(null);
+  const loadedKeyRef = useRef<string | null>(null);
 
-  // Load conversations on user change
+  // Load conversations when userId or instanceId changes
   useEffect(() => {
-    if (!userId || loadedUserIdRef.current === userId) return;
-    loadedUserIdRef.current = userId;
+    const key = userId && instanceId ? `${userId}:${instanceId}` : null;
 
-    void (async () => {
+    if (!key || loadedKeyRef.current === key) return;
+    loadedKeyRef.current = key;
+
+    const load = async () => {
       actions.setIsLoadingConversations(true);
-      const result = await listConversations(instanceId);
-      if (result.success) {
-        actions.setConversations(result.data);
+      try {
+        const result = await listConversations(instanceId);
+        if (result.success) {
+          actions.setConversations(result.data);
+        }
+      } finally {
+        actions.setIsLoadingConversations(false);
       }
-      actions.setIsLoadingConversations(false);
-    })();
+    };
+
+    // Reset current selection when switching instances
+    actions.setConversationId(null);
+    actions.setInitialMessages([]);
+
+    load();
   }, [userId, instanceId, actions]);
 
   // Load messages when conversation changes
   useEffect(() => {
-    const id = state.conversationId;
-    if (!id) {
+    const conversationId = state.conversationId;
+    if (!conversationId) {
       actions.setInitialMessages([]);
       return;
     }
 
-    void (async () => {
+    const load = async () => {
       actions.setIsLoadingMessages(true);
-      const result = await getConversationMessages(id);
-      if (result.success) {
-        actions.setInitialMessages(result.data);
+      try {
+        const result = await getConversationMessages(conversationId);
+        if (result.success) {
+          actions.setInitialMessages(result.data);
+        }
+      } finally {
+        actions.setIsLoadingMessages(false);
       }
-      actions.setIsLoadingMessages(false);
-    })();
+    };
+
+    load();
   }, [state.conversationId, actions]);
 
   // Actions
   const create = useCallback(
     async (title?: string): Promise<AIConversation | null> => {
+      if (!instanceId) return null;
       const result = await createConversation(instanceId, title);
       if (!result.success) return null;
       actions.addConversation(result.data);
@@ -109,7 +127,7 @@ export function useAIChatHistory() {
     [state.conversationId, state.conversations, actions],
   );
 
-  const renameAction = useCallback(
+  const rename = useCallback(
     async (id: string, title: string): Promise<boolean> => {
       const result = await renameConversation(id, title);
       if (!result.success) return false;
@@ -121,7 +139,9 @@ export function useAIChatHistory() {
 
   const select = useCallback(
     (id: string) => {
-      if (id !== state.conversationId) actions.setConversationId(id);
+      if (id !== state.conversationId) {
+        actions.setConversationId(id);
+      }
     },
     [state.conversationId, actions],
   );
@@ -132,6 +152,7 @@ export function useAIChatHistory() {
   }, [actions]);
 
   return {
+    instanceId,
     conversationId: state.conversationId,
     conversations: state.conversations,
     initialMessages: state.initialMessages,
@@ -139,7 +160,7 @@ export function useAIChatHistory() {
     isLoadingMessages: state.isLoadingMessages,
     create,
     remove,
-    rename: renameAction,
+    rename,
     select,
     startNew,
   };

@@ -10,8 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { type Locale, localeNames, locales } from "@/i18n/config";
-import { useAuthStore } from "@/stores/authStore";
-import { useLanguageStore } from "@/stores/languageStore";
+import { useAuthStore, useLanguageStore } from "@/stores";
 
 export const LanguageSwitcher = () => {
   const t = useTranslations("language");

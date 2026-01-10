@@ -1,7 +1,7 @@
 import { Globe, Layers } from "lucide-react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import type { World } from "@/types/world";
+import type { World } from "@/types";
 
 type WorldCardProps = {
   world: World;
@@ -11,7 +11,7 @@ type WorldCardProps = {
 export function WorldCard({ world, instanceCount = 0 }: WorldCardProps) {
   return (
     <Link href={`/world/${world.id}`} className="block">
-      <Card className="group relative aspect-square w-full cursor-pointer overflow-hidden border-0 bg-gradient-to-br from-slate-900 to-slate-800 shadow-md transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-primary/5 hover:shadow-xl">
+      <Card className="group relative aspect-square w-full cursor-pointer overflow-hidden border-0 bg-linear-to-br from-slate-900 to-slate-800 shadow-md transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-primary/5 hover:shadow-xl">
         {/* Center icon */}
         <div className="absolute inset-0 flex items-center justify-center">
           <Globe className="size-16 text-muted-foreground/30 transition-colors duration-300 group-hover:text-muted-foreground/50" />
@@ -19,11 +19,11 @@ export function WorldCard({ world, instanceCount = 0 }: WorldCardProps) {
 
         {/* Decorative grid pattern */}
         <div className="absolute inset-0 opacity-[0.03]">
-          <div className="h-full w-full bg-[length:24px_24px] bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)]" />
+          <div className="h-full w-full bg-[linear-gradient(rgba(255,255,255,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.1)_1px,transparent_1px)] bg-position-[24px_24px]" />
         </div>
 
         {/* Content overlay */}
-        <div className="absolute inset-0 flex flex-col justify-end bg-gradient-to-t from-black/70 via-black/10 to-transparent p-5">
+        <div className="absolute inset-0 flex flex-col justify-end bg-linear-to-t from-black/70 via-black/10 to-transparent p-5">
           {/* Instance count badge */}
           <div className="absolute top-4 right-4">
             <div className="flex items-center gap-1.5 rounded-full bg-white/10 px-2.5 py-1 font-medium text-white/70 text-xs">

@@ -21,7 +21,7 @@ import {
   RUN_TIME_SCALE,
   WALK_TIME_SCALE,
 } from "@/constants/animations";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
+import { useRemotePlayersStore } from "@/stores";
 import { boneMap } from "@/utils/bone-map";
 
 export function RemoteCharacterAnimation({ sessionId }: { sessionId: string }) {

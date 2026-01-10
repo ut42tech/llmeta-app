@@ -30,10 +30,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Kbd } from "@/components/ui/kbd";
-import { useAIChatHistory } from "@/hooks/ai-chat";
-import { useTextChat } from "@/hooks/chat";
-import { useAuthStore } from "@/stores/authStore";
-import { useChatStore } from "@/stores/chatStore";
+import { useAIChatHistory, useTextChat } from "@/hooks";
+import { useAuthStore, useChatStore } from "@/stores";
+import type { AIContext, ChatHistoryMessage } from "@/types";
 
 const AI_CHAT_KEYBOARD_SHORTCUT = "/";
 const MAX_TITLE_LENGTH = 50;
@@ -95,17 +94,22 @@ export const AIChatWindow = () => {
   conversationIdRef.current = conversationId;
 
   const getChatHistory = useCallback(
-    () =>
-      chatMessagesRef.current.map(
-        ({ id, senderId, username, content, isOwn, sentAt }) => ({
-          id,
-          senderId,
-          username,
-          content,
-          isOwn,
-          sentAt,
-        }),
-      ),
+    (): ChatHistoryMessage[] =>
+      chatMessagesRef.current.map((msg) => ({
+        id: msg.id,
+        username: msg.username,
+        content: msg.content,
+        image: msg.image,
+        direction: msg.isOwn ? "outgoing" : "incoming",
+        sentAt: new Date(msg.sentAt).getTime(),
+      })),
+    [],
+  );
+
+  const getContext = useCallback(
+    (): AIContext => ({
+      currentDateTime: new Date().toISOString(),
+    }),
     [],
   );
 
@@ -118,6 +122,7 @@ export const AIChatWindow = () => {
           message: messages.at(-1),
           conversationId: conversationIdRef.current,
           chatHistory: getChatHistory(),
+          context: getContext(),
         },
       }),
     }),

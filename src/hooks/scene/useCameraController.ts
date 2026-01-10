@@ -1,7 +1,7 @@
 import { useFrame } from "@react-three/fiber";
 import { RunAction } from "@react-three/viverse";
 import { useHotkeys } from "react-hotkeys-hook";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useLocalPlayerStore } from "@/stores";
 
 export function useCameraController() {
   const toggleFPV = useLocalPlayerStore((state) => state.toggleFPV);

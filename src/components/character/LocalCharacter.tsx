@@ -12,8 +12,8 @@ import {
 import { useEffect, useMemo } from "react";
 import type { Object3D } from "three";
 import { LocalCharacterAnimation } from "@/components/character/LocalCharacterAnimation";
-import { useCameraController } from "@/hooks/scene/useCameraController";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useCameraController } from "@/hooks";
+import { useLocalPlayerStore } from "@/stores";
 
 export function LocalCharacter({
   innerRef,
