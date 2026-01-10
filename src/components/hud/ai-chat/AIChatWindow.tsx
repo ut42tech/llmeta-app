@@ -30,12 +30,9 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Kbd } from "@/components/ui/kbd";
-import { useAIChatHistory } from "@/hooks/ai-chat";
-import { useTextChat } from "@/hooks/chat";
-import { useAuthStore } from "@/stores/authStore";
-import { useChatStore } from "@/stores/chatStore";
-import type { AIContext } from "@/types/ai";
-import type { ChatHistoryMessage } from "@/types/chat";
+import { useAIChatHistory, useTextChat } from "@/hooks";
+import { useAuthStore, useChatStore } from "@/stores";
+import type { AIContext, ChatHistoryMessage } from "@/types";
 
 const AI_CHAT_KEYBOARD_SHORTCUT = "/";
 const MAX_TITLE_LENGTH = 50;

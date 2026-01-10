@@ -1,8 +1,7 @@
 import { nanoid } from "nanoid";
 import { useEffect, useRef, useState } from "react";
 import { LIVEKIT_CONFIG } from "@/constants/sync";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useWorldStore } from "@/stores/worldStore";
+import { useLocalPlayerStore, useWorldStore } from "@/stores";
 
 type AuthState = {
   token?: string;

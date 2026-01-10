@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useLocalPlayerStore } from "@/stores";
 
 export const ViewToggleButton = () => {
   const t = useTranslations("viewToggle");

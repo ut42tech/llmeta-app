@@ -11,8 +11,8 @@ import { HUD } from "@/components/hud/HUD";
 import { LiveKitSyncProvider } from "@/components/providers";
 import { Scene } from "@/components/scene";
 import { Spinner } from "@/components/ui/spinner";
-import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import { useSyncClient } from "@/hooks";
+import { useLocalPlayerStore } from "@/stores";
 
 const Viverse = dynamic(
   () => import("@react-three/viverse").then((mod) => mod.Viverse),

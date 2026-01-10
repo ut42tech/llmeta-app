@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
 import { createClient } from "@/lib/supabase/client";
-import { useAuthStore } from "@/stores/authStore";
+import { useAuthStore } from "@/stores";
 import type { Tables } from "@/types/supabase";
 
 type Profile = Tables<"profiles">;

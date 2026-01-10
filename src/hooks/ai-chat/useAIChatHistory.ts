@@ -10,9 +10,8 @@ import {
   listConversations,
   renameConversation,
 } from "@/lib/actions/ai-conversations";
-import { useAuthStore } from "@/stores/authStore";
-import { useChatStore } from "@/stores/chatStore";
-import type { AIConversation } from "@/types/chat";
+import { useAuthStore, useChatStore } from "@/stores";
+import type { AIConversation } from "@/types";
 
 /**
  * Hook for AI chat history with multi-conversation support.

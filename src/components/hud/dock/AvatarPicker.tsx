@@ -3,7 +3,7 @@
 import { motion } from "motion/react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import type { ViverseAvatar } from "@/types/player";
+import type { ViverseAvatar } from "@/types";
 
 type AvatarPickerProps = {
   avatars: ViverseAvatar[];

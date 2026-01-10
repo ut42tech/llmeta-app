@@ -9,8 +9,8 @@ import { useCallback } from "react";
 import { Euler, Vector3 } from "three";
 import { DATA_TOPICS } from "@/constants/sync";
 import { useTypedDataChannel } from "@/hooks/livekit/createTypedDataChannel";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
-import type { AnimationState, MoveData } from "@/types/player";
+import { useRemotePlayersStore } from "@/stores";
+import type { AnimationState, MoveData } from "@/types";
 
 /**
  * Hook for player movement synchronization via DataChannel

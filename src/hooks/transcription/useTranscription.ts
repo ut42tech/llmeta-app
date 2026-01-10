@@ -7,8 +7,7 @@ import {
   DEEPGRAM_MODEL,
   DEEPGRAM_TOKEN_ENDPOINT,
 } from "@/constants/transcription";
-import { useTranscriptionStore } from "@/stores/transcriptionStore";
-import { useVoiceChatStore } from "@/stores/voiceChatStore";
+import { useTranscriptionStore, useVoiceChatStore } from "@/stores";
 import { createRecorder, stopRecorder } from "@/utils/media-recorder";
 
 type DeepgramClient = ReturnType<typeof createClient>;

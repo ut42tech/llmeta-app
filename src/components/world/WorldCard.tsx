@@ -1,7 +1,7 @@
 import { Globe, Layers } from "lucide-react";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-import type { World } from "@/types/world";
+import type { World } from "@/types";
 
 type WorldCardProps = {
   world: World;

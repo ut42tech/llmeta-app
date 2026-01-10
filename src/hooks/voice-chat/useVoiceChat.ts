@@ -2,12 +2,12 @@
 
 import { useCallback, useEffect } from "react";
 import { useShallow } from "zustand/react/shallow";
-import { useSyncClient } from "@/hooks/livekit/useSyncClient";
+import { useSyncClient } from "@/hooks";
 import {
   useVoiceChatStore,
+  useWorldStore,
   type VoicePermissionStatus,
-} from "@/stores/voiceChatStore";
-import { useWorldStore } from "@/stores/worldStore";
+} from "@/stores";
 
 export type VoiceChatStatus = {
   isMicEnabled: boolean;

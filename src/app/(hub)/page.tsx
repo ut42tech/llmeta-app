@@ -7,7 +7,7 @@ import { FadeIn, PageTransition } from "@/components/common";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WorldCard } from "@/components/world";
 import { createClient } from "@/lib/supabase/client";
-import type { World } from "@/types/world";
+import type { World } from "@/types";
 
 type WorldWithInstanceCount = World & {
   instanceCount: number;

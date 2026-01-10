@@ -2,8 +2,7 @@
  * Player-related utility functions
  */
 import type { Euler, Vector3 } from "three";
-import type { Vec3 } from "@/types/common";
-import type { MoveData } from "@/types/player";
+import type { MoveData, Vec3 } from "@/types";
 
 /**
  * Convert Vector3/Euler to plain Vec3 object

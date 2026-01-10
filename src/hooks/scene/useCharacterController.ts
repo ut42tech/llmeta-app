@@ -5,8 +5,8 @@ import { Euler, type Object3D, Vector3 } from "three";
 import { useShallow } from "zustand/react/shallow";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { PHYSICS } from "@/constants/world";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { MoveData } from "@/types/player";
+import { useLocalPlayerStore } from "@/stores";
+import type { MoveData } from "@/types";
 
 /**
  * Character controller hook

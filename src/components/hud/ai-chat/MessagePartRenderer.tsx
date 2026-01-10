@@ -2,7 +2,7 @@
 
 import { MessageResponse } from "@/components/ai-elements/message";
 import { ImageToolResult } from "@/components/hud/ai-chat/ImageToolResult";
-import type { ImageToolPart, MessagePartRendererProps } from "@/types/ai";
+import type { ImageToolPart, MessagePartRendererProps } from "@/types";
 
 /**
  * Renders individual message parts (text, images, tool results).

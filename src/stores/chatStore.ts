@@ -1,6 +1,6 @@
 import type { UIMessage } from "ai";
 import { create } from "zustand";
-import type { AIConversation, ChatMessage } from "@/types/chat";
+import type { AIConversation, ChatMessage } from "@/types";
 
 // =============================================================================
 // Constants

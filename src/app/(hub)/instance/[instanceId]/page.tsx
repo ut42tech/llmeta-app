@@ -31,13 +31,12 @@ import { LiveKitSyncProvider } from "@/components/providers";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AVATAR_LIST } from "@/constants/avatars";
-import { useAuth } from "@/hooks/auth";
+import { useAuth } from "@/hooks";
 import { useSyncClient } from "@/hooks/livekit/useSyncClient";
 import { createClient } from "@/lib/supabase/client";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import { useWorldStore } from "@/stores/worldStore";
+import { useLocalPlayerStore, useWorldStore } from "@/stores";
+import type { DbInstance, World } from "@/types";
 import type { Tables } from "@/types/supabase";
-import type { DbInstance, World } from "@/types/world";
 
 type HostProfile = Pick<Tables<"profiles">, "id" | "display_name">;
 

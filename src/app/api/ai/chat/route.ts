@@ -10,8 +10,7 @@ import {
 } from "ai";
 import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
-import type { AIContext } from "@/types/ai";
-import type { ChatHistoryMessage } from "@/types/chat";
+import type { AIContext, ChatHistoryMessage } from "@/types";
 import type { Json } from "@/types/supabase";
 import { uploadImageToBlob } from "@/utils/blob";
 

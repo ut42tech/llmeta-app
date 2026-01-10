@@ -3,11 +3,9 @@
 import { useTranslations } from "next-intl";
 import { Waveform } from "@/components/hud/caption/Waveform";
 import { Badge } from "@/components/ui/badge";
-import { useTranscription } from "@/hooks/transcription/useTranscription";
-import { useTranscriptionAutoSend } from "@/hooks/transcription/useTranscriptionAutoSend";
+import { useTranscription, useTranscriptionAutoSend } from "@/hooks";
 import { cn } from "@/lib/utils";
-import { useTranscriptionStore } from "@/stores/transcriptionStore";
-import { useVoiceChatStore } from "@/stores/voiceChatStore";
+import { useTranscriptionStore, useVoiceChatStore } from "@/stores";
 
 export const CaptionWindow = () => {
   useTranscription();

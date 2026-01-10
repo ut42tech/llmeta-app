@@ -1,9 +1,9 @@
 "use client";
 
 import { useCallback } from "react";
-import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { useChatStore } from "@/stores/chatStore";
-import type { ChatMessageImage } from "@/types/chat";
+import { useSyncClient } from "@/hooks";
+import { useChatStore } from "@/stores";
+import type { ChatMessageImage } from "@/types";
 
 /**
  * Simplified text chat hook.

@@ -9,7 +9,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { useChatStore } from "@/stores/chatStore";
+import { useChatStore } from "@/stores";
 
 export const AIChatButton = () => {
   const t = useTranslations("dock");

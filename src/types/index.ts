@@ -2,6 +2,7 @@
 // AI Types
 // =============================================================================
 export type {
+  AIContext,
   ImageToolPart,
   ImageToolState,
   MessagePartRendererProps,
@@ -38,10 +39,11 @@ export type {
   AnimationState,
   MoveData,
   ProfileData,
+  RemotePlayer,
   ViverseAvatar,
 } from "./player";
 
 // =============================================================================
 // World Types
 // =============================================================================
-export type { Instance, World } from "./world";
+export type { DbInstance, Instance, World, WorldContentItem } from "./world";

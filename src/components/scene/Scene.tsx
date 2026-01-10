@@ -8,10 +8,12 @@ import { DebugPanel } from "@/components/common";
 import { DefaultMap } from "@/components/scene/DefaultMap";
 import { WorldContent } from "@/components/scene/WorldContent";
 import { LIGHTING } from "@/constants/world";
-import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import { useCharacterController } from "@/hooks/scene/useCharacterController";
-import { useLightController } from "@/hooks/scene/useLightController";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
+import {
+  useCharacterController,
+  useLightController,
+  useSyncClient,
+} from "@/hooks";
+import { useLocalPlayerStore } from "@/stores";
 
 /**
  * Main scene component.

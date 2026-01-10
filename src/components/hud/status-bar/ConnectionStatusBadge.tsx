@@ -10,7 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
-import type { ConnectionStatus } from "@/stores/worldStore";
+import type { ConnectionStatus } from "@/stores";
 
 type ConnectionStatusBadgeProps = {
   status: ConnectionStatus;

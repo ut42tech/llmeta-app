@@ -13,12 +13,8 @@ import { useEffect, useMemo } from "react";
 import { PlayerTag } from "@/components/character/PlayerTag";
 import { RemoteCharacterAnimation } from "@/components/character/RemoteCharacterAnimation";
 import { TextChatBubble } from "@/components/character/TextChatBubble";
-import { useSyncClient } from "@/hooks/livekit/useSyncClient";
-import {
-  usePositionBuffer,
-  useRotationBuffer,
-} from "@/hooks/scene/useSnapshotBuffer";
-import { useRemotePlayersStore } from "@/stores/remotePlayersStore";
+import { usePositionBuffer, useRotationBuffer, useSyncClient } from "@/hooks";
+import { useRemotePlayersStore } from "@/stores";
 
 export function RemoteCharacter({ sessionId }: { sessionId: string }) {
   const player = useRemotePlayersStore((s) => s.players[sessionId]);

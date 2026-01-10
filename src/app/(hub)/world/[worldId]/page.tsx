@@ -28,8 +28,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { InstanceCard } from "@/components/world";
 import { useInstanceService } from "@/hooks/services";
 import { createClient } from "@/lib/supabase/client";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { Instance, World } from "@/types/world";
+import { useLocalPlayerStore } from "@/stores";
+import type { Instance, World } from "@/types";
 
 export default function WorldDetailPage() {
   const params = useParams<{ worldId: string }>();

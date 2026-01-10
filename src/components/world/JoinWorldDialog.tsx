@@ -19,9 +19,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { AVATAR_LIST } from "@/constants/avatars";
 import { type Locale, localeNames, locales } from "@/i18n/config";
-import { useLanguageStore } from "@/stores/languageStore";
-import { useLocalPlayerStore } from "@/stores/localPlayerStore";
-import type { ViverseAvatar } from "@/types/player";
+import { useLanguageStore, useLocalPlayerStore } from "@/stores";
+import type { ViverseAvatar } from "@/types";
 
 export const JoinWorldDialog = () => {
   const t = useTranslations("joinWorld");

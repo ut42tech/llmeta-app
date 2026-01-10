@@ -13,9 +13,9 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { useTextChat } from "@/hooks/chat";
+import { useTextChat } from "@/hooks";
 import { cn } from "@/lib/utils";
-import type { ChatMessage } from "@/types/chat";
+import type { ChatMessage } from "@/types";
 
 type MessageLineProps = {
   message: ChatMessage;
