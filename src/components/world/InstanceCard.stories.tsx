@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import type { Instance } from "@/types/world";
+import type { Instance } from "@/types";
 import { InstanceCard } from "./InstanceCard";
 
 const mockInstance: Instance = {

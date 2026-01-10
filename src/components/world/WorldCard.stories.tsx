@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/nextjs-vite";
-import type { World } from "@/types/world";
+import type { World } from "@/types";
 import { WorldCard } from "./WorldCard";
 
 const mockWorld: World = {
