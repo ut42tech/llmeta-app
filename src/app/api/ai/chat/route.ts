@@ -225,7 +225,7 @@ const imageGenerationTool = tool({
   }),
   execute: async ({ prompt }) => {
     const { image } = await generateImage({
-      model: openai.image("dall-e-3"),
+      model: openai.image("gpt-image-1.5"),
       prompt,
       size: "1024x1024",
     });
