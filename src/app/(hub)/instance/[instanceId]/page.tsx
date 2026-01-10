@@ -90,9 +90,9 @@ function InstanceContent({
 
   useEffect(() => {
     if (isReadyToEnter && isConnected && hasJoinedWorld) {
-      router.push("/experience");
+      router.push(`/experience/${instanceData.id}`);
     }
-  }, [isReadyToEnter, isConnected, hasJoinedWorld, router]);
+  }, [isReadyToEnter, isConnected, hasJoinedWorld, router, instanceData.id]);
 
   const handleJoinInstance = () => {
     setUsername(profile?.display_name ?? "Player");
