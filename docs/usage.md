@@ -148,16 +148,16 @@ Shows **text messages** from all users in the current room. Messages appear in a
 
 ### Dock (Bottom Center)
 
-The main control bar with six primary buttons:
+The main control bar with four primary buttons:
 
 | Button | Function |
 |--------|----------|
 | 👁️ **View Toggle** | Switch between first-person and third-person camera views |
-| 🎤 **Voice Chat** | Mute/unmute your microphone |
-| 🎭 **Avatar Picker** | Change your avatar during the session |
-| ⚙️ **Preferences** | Open the settings drawer |
-| 🤖 **AI Chat** | Open the AI Agent chat sidebar |
+| 🎙️ **Voice Chat** | Mute/unmute your microphone |
+| ⚙️ **Settings** | Open the settings drawer with General, Language, and Controls tabs |
 | 🚪 **Leave** | Leave the current room and return to Home |
+
+Additionally, the **AI Chat** button is positioned on the right side of the screen for quick access to your AI agent.
 
 ---
 
@@ -218,16 +218,17 @@ Switch between camera perspectives for different experiences:
 | **First-Person** | See through your avatar's eyes for immersive experience |
 | **Third-Person** | See your avatar from behind for spatial awareness |
 
-### Preferences
+### Settings
 
 Access settings by clicking the gear icon in the dock or pressing **P**.
 
 **Tabs:**
 
 | Tab | Options |
-|-----|---------|
+|-----|--------|
 | **General** | View username and avatar, session information (Room Name, Room SID, Session ID) |
 | **Language** | Switch between English (🇺🇸) and Japanese (🇯🇵) |
+| **Controls** | View and customize keyboard shortcuts for movement and camera controls |
 
 ---
 

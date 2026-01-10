@@ -113,7 +113,7 @@ src/
 │   │   ├── ai-chat/         # AI chat sidebar & window
 │   │   ├── caption/         # Caption window & waveform
 │   │   ├── chat/            # Text chat input & stream
-│   │   ├── dock/            # Control buttons & drawers (7 components)
+│   │   ├── dock/            # Control buttons & drawers (10 components)
 │   │   └── status-bar/      # Connection & player status badges
 │   ├── layout/              # Hub layout (4 components)
 │   ├── providers/           # Context providers (Auth, I18n, LiveKitSync)
@@ -121,7 +121,7 @@ src/
 │   ├── ui/                  # Shared shadcn/ui components (35 components)
 │   └── world/               # World cards & instance cards
 ├── constants/               # App constants (animations, avatars, sync, world)
-├── hooks/                   # Custom React hooks (22 hooks)
+├── hooks/                   # Custom React hooks (23 hooks)
 │   ├── ai-chat/             # AI chat history hooks (1 hook)
 │   ├── auth/                # Authentication hooks (1 hook)
 │   ├── chat/                # Text chat hooks (2 hooks)
