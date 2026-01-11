@@ -1,6 +1,6 @@
 # LLMeta: The Concept
 
-> **Intelligence Meets Space** — Where AI and the Metaverse converge to redefine human communication.
+> **Beyond limits, with AI** — Communication reimagined in the metaverse.
 
 ## What is LLMeta?
 
@@ -23,11 +23,11 @@ Traditional metaverse platforms focus primarily on **presence** and **immersion*
 
 LLMeta answers this by introducing **personal AI agents** — intelligent companions assigned to each user that actively participate in facilitating understanding and reducing communication barriers.
 
-### Intelligence Meets Space
+### Beyond Limits, with AI
 
 The tagline captures our essential belief: **technology should amplify human connection, not just simulate physical presence.**
 
-In LLMeta, intelligence (AI) and space (metaverse) work together to create communication experiences that surpass what's possible in traditional virtual — or even physical — environments.
+In LLMeta, AI and the metaverse work together to create communication experiences that surpass what's possible in traditional virtual — or even physical — environments.
 
 ---
 
@@ -179,10 +179,10 @@ As virtual environments become increasingly central to how we work, learn, and c
 
 ---
 
-> **LLMeta: Where intelligence meets space, and communication evolves.**
+> **LLMeta: Beyond limits, with AI.**
 
 ---
 
 *Developed as part of Graduation Research (2025) — Nagasaki University, Setozaki Lab*
 
-*© 2025 Takuya Uehara. All Rights Reserved.*
+*© 2026 Takuya Uehara. All Rights Reserved.*

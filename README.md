@@ -1,4 +1,4 @@
-# LLMeta Client
+# LLMeta App
 
 > 🎓 **Graduation Research Project (2025)** — Nagasaki University Setozaki Lab.
 
@@ -158,7 +158,7 @@ src/
 
 ## License
 
-**Copyright (c) 2025 Takuya UEHARA. All Rights Reserved.**
+**Copyright (c) 2026 Takuya UEHARA. All Rights Reserved.**
 
 This project is developed as part of a graduation research project.
 Source code is provided for **review and portfolio purposes only**.
