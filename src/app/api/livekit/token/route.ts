@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { requireAuth } from "@/utils/api-auth";
 import { createLiveKitAccessToken } from "@/utils/livekit-server";
 
 type TokenPayload = {
@@ -22,6 +23,9 @@ const respondWithToken = async (payload: TokenPayload) => {
 
 export async function GET(request: Request) {
   try {
+    const { error } = await requireAuth();
+    if (error) return error;
+
     const { searchParams } = new URL(request.url);
     const identity = searchParams.get("identity") || undefined;
     const name = searchParams.get("name") || undefined;
@@ -74,6 +78,9 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
+    const { error } = await requireAuth();
+    if (error) return error;
+
     const body = (await request.json()) as TokenPayload | undefined;
 
     if (!body?.identity) {

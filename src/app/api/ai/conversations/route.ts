@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 import type { Json } from "@/types/supabase";
+import { requireAuth } from "@/utils/api-auth";
 
 type MessageRole = "user" | "assistant" | "system";
 
@@ -11,22 +11,13 @@ const json = (data: unknown, status = 200) =>
 const error = (message: string, status: number) =>
   json({ error: message }, status);
 
-const getAuthenticatedUser = async () => {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  return { supabase, user };
-};
-
-// GET: Load all conversations or a specific conversation with messages
 export async function GET(request: NextRequest) {
+  const { error: authError, user, supabase } = await requireAuth();
+  if (authError) return authError;
+
   const url = new URL(request.url);
   const conversationId = url.searchParams.get("conversationId");
   const instanceId = url.searchParams.get("instanceId");
-  const { supabase, user } = await getAuthenticatedUser();
-
-  if (!user) return error("Unauthorized", 401);
 
   // If conversationId is provided, load that specific conversation with messages
   if (conversationId) {
@@ -86,15 +77,14 @@ export async function GET(request: NextRequest) {
   });
 }
 
-// POST: Create conversation
 export async function POST(request: NextRequest) {
+  const { error: authError, user, supabase } = await requireAuth();
+  if (authError) return authError;
+
   const { instanceId, title } = (await request.json()) as {
     instanceId?: string;
     title?: string;
   };
-  const { supabase, user } = await getAuthenticatedUser();
-
-  if (!user) return error("Unauthorized", 401);
 
   // Create new conversation (always create new, don't check existing)
   const now = new Date().toISOString();
@@ -142,8 +132,8 @@ export async function PATCH(request: NextRequest) {
     return error("conversationId required", 400);
   }
 
-  const { supabase, user } = await getAuthenticatedUser();
-  if (!user) return error("Unauthorized", 401);
+  const { error: authError, user, supabase } = await requireAuth();
+  if (authError) return authError;
 
   // Verify ownership
   const { data: conv } = await supabase
@@ -157,10 +147,12 @@ export async function PATCH(request: NextRequest) {
 
   // Update title if provided
   if (title !== undefined) {
-    await supabase
+    const { error: updateError } = await supabase
       .from("ai_conversations")
       .update({ title, updated_at: new Date().toISOString() })
       .eq("id", conversationId);
+
+    if (updateError) return error(updateError.message, 500);
   }
 
   // Save messages if provided
@@ -191,10 +183,12 @@ export async function PATCH(request: NextRequest) {
       if (err) return error(err.message, 500);
 
       // Update conversation timestamp
-      await supabase
+      const { error: touchError } = await supabase
         .from("ai_conversations")
         .update({ updated_at: new Date().toISOString() })
         .eq("id", conversationId);
+
+      if (touchError) return error(touchError.message, 500);
     }
 
     return json({ saved: newMessages.length });
@@ -213,8 +207,8 @@ export async function DELETE(request: NextRequest) {
     return error("conversationId required", 400);
   }
 
-  const { supabase, user } = await getAuthenticatedUser();
-  if (!user) return error("Unauthorized", 401);
+  const { error: authError, user, supabase } = await requireAuth();
+  if (authError) return authError;
 
   // Verify ownership
   const { data: conv } = await supabase

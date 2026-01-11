@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+import { requireAuth } from "@/utils/api-auth";
 import { uploadImageToBlob } from "@/utils/blob";
 
 type UploadRequestBody = {
@@ -9,6 +10,9 @@ type UploadRequestBody = {
 
 export async function POST(request: NextRequest) {
   try {
+    const { error: authError } = await requireAuth();
+    if (authError) return authError;
+
     const body = (await request.json()) as UploadRequestBody;
     const { base64, mediaType, prompt } = body;
 
