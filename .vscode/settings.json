@@ -7,5 +7,12 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.biome": "explicit",
     "source.organizeImports.biome": "explicit"
-  }
+  },
+  "i18n-ally.localesPaths": [
+    "src/i18n",
+    "src/__tests__/i18n",
+    "src/i18n/messages",
+    "src/app/api/messages"
+  ],
+  "i18n-ally.sourceLanguage": "ja"
 }
