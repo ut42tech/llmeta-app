@@ -14,5 +14,5 @@
     "src/i18n/messages",
     "src/app/api/messages"
   ],
-  "i18n-ally.sourceLanguage": "ja"
+  "i18n-ally.sourceLanguage": "en"
 }

@@ -51,8 +51,8 @@ Each user is paired with a personal AI agent that facilitates communication betw
 
 ```bash
 # Clone the repository
-git clone https://github.com/ut42tech/llmeta-client.git
-cd llmeta-client
+git clone https://github.com/ut42tech/llmeta-app.git
+cd llmeta-app
 
 # Install dependencies
 pnpm install
