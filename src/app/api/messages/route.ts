@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { requireAuth } from "@/utils/api-auth";
 
 const DEFAULT_LIMIT = 50;
 
@@ -8,6 +8,9 @@ const DEFAULT_LIMIT = 50;
  * Fetch messages for an instance with optional images
  */
 export async function GET(request: NextRequest) {
+  const { error: authError, supabase } = await requireAuth();
+  if (authError) return authError;
+
   const { searchParams } = new URL(request.url);
   const instanceId = searchParams.get("instanceId");
   const limit = Number(searchParams.get("limit")) || DEFAULT_LIMIT;
@@ -19,10 +22,8 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  const supabase = await createClient();
-
   // Fetch messages with sender profile and images
-  const { data, error } = await supabase
+  const { data, error: queryError } = await supabase
     .from("messages")
     .select(
       `
@@ -40,9 +41,9 @@ export async function GET(request: NextRequest) {
     .order("sent_at", { ascending: true })
     .limit(limit);
 
-  if (error) {
-    console.error("[API] Failed to fetch messages:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  if (queryError) {
+    console.error("[API] Failed to fetch messages:", queryError);
+    return NextResponse.json({ error: queryError.message }, { status: 500 });
   }
 
   return NextResponse.json({ messages: data });
@@ -59,6 +60,9 @@ type PostBody = {
  * Create a new message with optional image
  */
 export async function POST(request: NextRequest) {
+  const { error: authError, user, supabase } = await requireAuth();
+  if (authError) return authError;
+
   const body = (await request.json()) as PostBody;
   const { instanceId, content, image } = body;
 
@@ -74,18 +78,6 @@ export async function POST(request: NextRequest) {
       { error: "content or image is required" },
       { status: 400 },
     );
-  }
-
-  const supabase = await createClient();
-
-  // Get current user
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   // Insert message

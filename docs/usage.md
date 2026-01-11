@@ -1,6 +1,6 @@
 # LLMeta Usage Guide
 
-> Your complete guide to navigating and using the LLMeta client application.
+> Your complete guide to navigating and using the LLMeta application.
 
 ## Quick Start
 
@@ -15,7 +15,7 @@
 
 ### Accessing the Application
 
-Navigate to the application URL in your browser. You'll be greeted by the landing page with the tagline **"Intelligence Meets Space"**.
+Navigate to the application URL in your browser. You'll be greeted by the landing page with the tagline **"Beyond limits, with AI"**.
 
 ---
 
@@ -297,4 +297,4 @@ If you encounter issues not covered in this guide:
 
 ---
 
-*LLMeta Client — Where Intelligence Meets Space*
+*LLMeta — Beyond limits, with AI*

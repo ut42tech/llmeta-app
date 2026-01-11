@@ -28,8 +28,8 @@ const robotoMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Project LLMeta",
-  description: "AI-powered Metaverse",
+  title: "LLMeta",
+  description: "Beyond limits, with AI",
 };
 
 export default async function RootLayout({

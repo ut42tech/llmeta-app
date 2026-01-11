@@ -11,6 +11,7 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import type { AIContext, ChatHistoryMessage } from "@/types";
 import type { Json } from "@/types/supabase";
+import { requireAuth } from "@/utils/api-auth";
 import { uploadImageToBlob } from "@/utils/blob";
 
 export const maxDuration = 120;
@@ -238,6 +239,9 @@ const imageGenerationTool = tool({
 // =============================================================================
 
 export async function POST(req: Request) {
+  const { error } = await requireAuth();
+  if (error) return error;
+
   const { message, conversationId, chatHistory, context }: RequestBody =
     await req.json();
 

@@ -1,334 +1,307 @@
 {
   "common": {
-    "appName": "Project LLMeta",
-    "copyright": "Takuya Uehara, All Rights Reserved.",
+    "appName": "LLMeta",
+    "cancel": "キャンセル",
     "close": "閉じる",
-    "cancel": "キャンセル",
-    "update": "更新",
-    "reset": "リセット",
-    "enabled": "有効",
+    "copyright": "Takuya Uehara, All Rights Reserved.",
     "disabled": "無効",
-    "send": "送信",
+    "enabled": "有効",
     "loading": "読み込み中...",
-    "sendMessage": "メッセージを送信"
+    "reset": "リセット",
+    "send": "送信",
+    "sendMessage": "メッセージを送信",
+    "update": "更新"
   },
-  "home": {
-    "title": "ホーム",
-    "description": "ワールドを探索してインスタンスに参加",
-    "worlds": "ワールド"
-  },
-  "sidebar": {
-    "navigation": "ナビゲーション",
-    "home": "ホーム",
-    "settings": "設定",
-    "logout": "サインアウト",
-    "guest": "ゲスト"
-  },
-  "settingsPage": {
-    "title": "設定",
-    "description": "アカウントと環境設定を管理",
-    "accountInfo": "アカウント情報",
-    "accountInfoDescription": "あなたの個人情報と設定",
-    "email": "メールアドレス",
-    "emailNote": "メールアドレスは変更できません",
-    "displayName": "表示名",
-    "displayNamePlaceholder": "表示名を入力",
-    "update": "更新",
-    "language": "言語",
-    "languageDescription": "インターフェースの表示言語を選択",
-    "avatar": "アバター",
-    "avatarDescription": "ワールド内で使用するアバターを選択",
-    "dangerZone": "危険な操作",
-    "dangerZoneDescription": "取り消せない操作",
-    "logout": "サインアウト",
-    "notifications": {
-      "displayName": {
-        "loading": "表示名を更新中...",
-        "success": "表示名を更新しました",
-        "error": "表示名の更新に失敗しました"
-      },
-      "avatar": {
-        "loading": "アバターを更新中...",
-        "success": "アバターを更新しました",
-        "error": "アバターの更新に失敗しました"
-      },
-      "language": {
-        "loading": "言語設定を更新中...",
-        "success": "言語設定を更新しました",
-        "error": "言語設定の更新に失敗しました"
-      }
-    }
-  },
-  "world": {
-    "back": "戻る",
-    "viewDetails": "詳細を見る",
-    "worldInfo": "ワールド情報",
-    "notFound": {
-      "title": "ワールドが見つかりません",
-      "description": "このワールドは存在しないか、削除された可能性があります。"
-    },
-    "capacity": "定員",
-    "players": "人",
-    "createdAt": "作成日",
-    "instances": "インスタンス",
-    "activeInstances": "件のアクティブなインスタンス",
-    "noActiveInstances": "アクティブなインスタンスはありません",
-    "createInstance": "インスタンスを作成",
-    "createInstanceTitle": "新規インスタンスを作成",
-    "createInstanceDescription": "このワールドの新しいインスタンスを作成します",
-    "instanceName": "インスタンス名",
-    "instanceNamePlaceholder": "インスタンス名を入力（任意）",
-    "cancel": "キャンセル",
-    "create": "作成",
-    "noInstances": "インスタンスがありません",
-    "createFirstInstance": "最初のインスタンスを作成してこのワールドを探索しましょう",
-    "creating": "インスタンスを作成中...",
-    "createInstanceSuccess": "インスタンスを作成しました",
-    "createInstanceError": "インスタンスの作成に失敗しました"
-  },
-  "instance": {
-    "back": "戻る",
-    "instance": "インスタンス",
-    "join": "参加",
-    "hostedBy": "{name} がホスト",
-    "notFound": {
-      "title": "インスタンスが見つかりません",
-      "description": "このインスタンスは存在しないか、削除された可能性があります。",
-      "backToHome": "ホームに戻る"
-    }
-  },
-  "landing": {
-    "tagline": "PROJECT LLMeta",
-    "title1": "Intelligence",
-    "title2": "Meets",
-    "title3": "Space",
-    "description": "AIとメタバースが融合し、コミュニケーションを再定義する場所",
-    "enterWorld": "ワールドに入る",
-    "learnMore": "もっと詳しく",
-    "copyright": "© 2025 — Takuya Uehara, All Rights Reserved."
-  },
-  "joinWorld": {
-    "title": "ワールドに参加",
-    "description": "ワールドに参加するためにプロフィールを設定してください。",
-    "languageLabel": "言語",
-    "warningTitle": "プライバシーに関するお知らせ",
-    "warningText": "このアプリは外部サービスに情報を送信します。個人情報などの機密情報は送信しないでください。",
-    "usernameLabel": "ユーザーネーム",
-    "usernamePlaceholder": "ユーザーネームを入力",
-    "instanceNameLabel": "インスタンス名",
-    "instanceNamePlaceholder": "インスタンス名を入力",
-    "avatarLabel": "アバターを選択",
-    "continueButton": "続ける"
-  },
-  "lobby": {
-    "connecting": "サーバー接続中...",
-    "connected": "接続完了",
-    "failed": "接続に失敗しました",
-    "retry": "再試行",
-    "waitingForConnection": "接続待機中..."
-  },
-  "instanceLobby": {
-    "capacity": "最大人数",
-    "world": "ワールド",
-    "host": "ホスト",
-    "player": "あなた",
-    "privacyTitle": "プライバシーに関するお知らせ",
-    "privacyText": "このアプリは外部サービスに情報を送信します。個人情報などの機密情報は送信しないでください。",
-    "joinButton": "インスタンスに参加"
-  },
-  "dock": {
-    "chat": "チャット",
-    "agent": "エージェント",
-    "aiAgent": "AIエージェント"
-  },
-  "chat": {
-    "title": "チャット",
-    "pressEnterToSend": "<key>Enter</key>で送信",
-    "typePlaceholder": "メッセージを入力...",
-    "openChat": "チャットウィンドウを開く",
-    "placeholder": "メッセージを入力",
-    "inputAriaLabel": "チャットメッセージ",
-    "noMessagesYet": "メッセージはまだありません",
-    "startConversation": "会話を始めるとここに表示されます"
-  },
-  "aiChat": {
-    "title": "AIエージェント",
-    "welcome": {
-      "greeting": "{name}さん",
-      "question": "何から始めますか？",
-      "placeholder": "AIエージェントに相談"
-    },
-    "relativeDate": {
-      "yesterday": "昨日",
-      "daysAgo": "{count}日前"
-    },
-    "emptyStateTitle": "AIエージェント",
-    "emptyStateDescription": "何でも聞いてください！",
-    "generatingImage": "画像を生成中: {prompt}",
-    "errorGeneratingImage": "画像生成エラー: {error}",
-    "refine": "調整",
-    "refineTooltip": "画像を再生成するための指示を追加",
-    "sendToChat": "送信",
-    "connectToSend": "画像を送信するにはルームに接続してください",
-    "regenerate": "再生成",
-    "refinePlaceholder": "例: もっとアニメ風にして",
-    "conversations": "会話一覧",
-    "newConversation": "新しい会話",
-    "noConversations": "会話がありません",
-    "rename": "名前を変更",
-    "delete": "削除",
-    "deleteConfirm": "この会話を削除しますか？",
-    "suggestions": {
-      "summarize": "このチャットを要約して",
-      "explainFlow": "会話の流れを説明して",
-      "misunderstandings": "誤解はありますか？",
-      "generateImage": "チャットに基づいて画像を生成して"
-    },
-    "disclaimer": "AIエージェントの回答は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。"
-  },
-  "worldInfo": {
-    "title": "このワールドについて",
-    "tooltip": "このワールドについて",
-    "description": "💫 他のプレイヤーとリアルタイムで一緒に探索しよう",
-    "intro": "このワールドでは、他のプレイヤーとリアルタイムで交流しながら3D空間を探索できます。音声チャット、テキストチャット、AIエージェントとの会話を楽しめます。",
-    "controlsTitle": "移動・視点操作",
-    "move": "移動する",
-    "jump": "ジャンプ",
-    "run": "走る",
-    "lookAround": "視点を回転（ドラッグ）",
-    "shortcutsTitle": "ショートカットキー",
-    "toggleView": "一人称/三人称視点の切り替え",
-    "toggleMic": "マイクのミュート/解除",
-    "openPreferences": "設定を開く/閉じる",
-    "openAIChat": "AIチャットを開く",
-    "communicationTitle": "コミュニケーション",
-    "voiceChatDesc": "画面下部のマイクボタンをクリックでミュート/解除。発話内容は自動で文字起こしされます。",
-    "textChatDesc": "メッセージを入力してEnterで送信。全員に表示されます。",
-    "aiChatDesc": "AIアシスタントがチャット内容の要約や画像生成をサポートします。"
-  },
-  "yourInfo": {
-    "title": "あなたの情報",
-    "tooltip": "あなたの情報",
-    "description": "🎮 セッションがアクティブでサーバーと同期中です",
-    "username": "ユーザー名",
-    "sessionId": "セッションID"
-  },
-  "experience": {
-    "leave": "退出",
-    "leaveConfirmTitle": "退出しますか？",
-    "leaveConfirmDescription": "現在のセッションから退出します。よろしいですか？",
-    "leaveCancel": "キャンセル",
-    "leaveConfirm": "退出する"
-  },
-  "voiceChat": {
-    "mute": "マイクをミュート",
-    "unmute": "マイクのミュートを解除",
-    "permissionDenied": "マイクの権限が拒否されました",
-    "connectToTalk": "通話するにはルームに接続してください"
-  },
-  "viewToggle": {
-    "firstPerson": "一人称視点",
-    "thirdPerson": "三人称視点"
-  },
-  "settings": {
-    "title": "環境設定",
-    "tooltip": "環境設定",
-    "description": "⚙️ 環境設定を更新",
-    "tabs": {
-      "general": "一般",
-      "controls": "操作",
-      "language": "言語"
-    },
-    "username": "ユーザー名",
-    "usernamePlaceholder": "名前を入力",
-    "avatar": "アバター",
-    "sessionInfo": "セッション情報",
-    "instanceId": "インスタンスID",
-    "sessionId": "セッションID",
-    "notifications": {
-      "displayName": {
-        "loading": "表示名を更新中...",
-        "success": "表示名を更新しました",
-        "error": "表示名の更新に失敗しました"
-      },
-      "avatar": {
-        "loading": "アバターを更新中...",
-        "success": "アバターを更新しました",
-        "error": "アバターの更新に失敗しました"
-      },
-      "language": {
-        "loading": "言語設定を更新中...",
-        "success": "言語設定を更新しました",
-        "error": "言語設定の更新に失敗しました"
-      }
-    }
-  },
-  "language": {
-    "selectLanguage": "言語を選択",
-    "english": "English",
-    "japanese": "日本語"
-  },
-  "caption": {
-    "waitingForSpeech": "文字起こし待機中..."
-  },
-  "statusBar": {
-    "transcription": "ライブキャプション",
-    "transcriptionActive": "文字起こし中",
-    "transcriptionInactive": "文字起こし停止中",
-    "connectionStatus": "サーバー接続状態",
-    "connectionFailedUnknown": "不明なエラーにより接続に失敗しました。",
-    "idle": "待機中",
-    "connecting": "接続中…",
-    "connected": "接続済み",
-    "failed": "接続失敗",
-    "disconnected": "切断済み",
-    "player": "プレイヤー",
-    "players": "プレイヤー",
-    "onlyPlayerOnline": "あなただけがオンラインです",
-    "playersOnline": "{count}人のプレイヤーがオンライン（あなたを含む）"
-  },
+
   "auth": {
+    "logout": "サインアウト",
     "errors": {
-      "profileNotFound": "アカウントの設定に問題があります。再度サインアップしてください。",
       "authCallbackError": "認証に失敗しました。もう一度お試しください。",
+      "profileNotFound": "アカウントの設定に問題があります。再度サインアップしてください。",
       "unexpectedError": "予期しないエラーが発生しました"
     },
     "login": {
       "title": "おかえりなさい",
       "description": "アカウントにサインインして続行",
       "email": "メールアドレス",
-      "password": "パスワード",
-      "submit": "サインイン",
       "loading": "サインイン中...",
       "noAccount": "アカウントをお持ちでないですか？",
-      "signupLink": "新規登録"
+      "password": "パスワード",
+      "signupLink": "新規登録",
+      "submit": "サインイン"
     },
     "signup": {
       "title": "アカウント作成",
       "description": "新規登録して始めましょう",
+      "confirmPassword": "パスワード（確認）",
       "displayName": "表示名",
       "displayNamePlaceholder": "表示名を入力",
       "displayNameRequired": "表示名は必須です",
       "email": "メールアドレス",
-      "password": "パスワード",
-      "confirmPassword": "パスワード（確認）",
-      "submit": "アカウントを作成",
-      "loading": "アカウント作成中...",
+      "goToLogin": "ログインへ",
       "hasAccount": "すでにアカウントをお持ちですか？",
+      "loading": "アカウント作成中...",
       "loginLink": "サインイン",
+      "password": "パスワード",
       "passwordMismatch": "パスワードが一致しません",
       "passwordTooShort": "パスワードは6文字以上である必要があります",
-      "successTitle": "メールを確認してください",
+      "submit": "アカウントを作成",
       "successMessage": "確認リンクを送信しました。メールを確認してアカウントを認証してください。",
-      "goToLogin": "ログインへ"
-    },
-    "logout": "サインアウト"
+      "successTitle": "メールを確認してください"
+    }
   },
+
+  "sidebar": {
+    "guest": "ゲスト",
+    "home": "ホーム",
+    "logout": "サインアウト",
+    "navigation": "ナビゲーション",
+    "settings": "設定"
+  },
+
   "breadcrumb": {
     "home": "ホーム",
-    "settings": "設定",
-    "world": "ワールド",
     "instance": "インスタンス",
-    "loading": "読み込み中..."
+    "loading": "読み込み中...",
+    "settings": "設定",
+    "world": "ワールド"
+  },
+
+  "home": {
+    "title": "ホーム",
+    "description": "ワールドを探索してインスタンスに参加",
+    "worlds": "ワールド"
+  },
+
+  "settingsPage": {
+    "title": "設定",
+    "description": "アカウントと環境設定を管理",
+    "accountInfo": "アカウント情報",
+    "accountInfoDescription": "あなたの個人情報と設定",
+    "avatar": "アバター",
+    "avatarDescription": "ワールド内で使用するアバターを選択",
+    "dangerZone": "危険な操作",
+    "dangerZoneDescription": "取り消せない操作",
+    "displayName": "表示名",
+    "displayNamePlaceholder": "表示名を入力",
+    "email": "メールアドレス",
+    "emailNote": "メールアドレスは変更できません",
+    "language": "言語",
+    "languageDescription": "インターフェースの表示言語を選択",
+    "logout": "サインアウト",
+    "update": "更新"
+  },
+
+  "world": {
+    "activeInstances": "件のアクティブなインスタンス",
+    "back": "戻る",
+    "cancel": "キャンセル",
+    "capacity": "定員",
+    "create": "作成",
+    "createFirstInstance": "最初のインスタンスを作成してこのワールドを探索しましょう",
+    "createInstance": "インスタンスを作成",
+    "createInstanceDescription": "このワールドの新しいインスタンスを作成します",
+    "createInstanceError": "インスタンスの作成に失敗しました",
+    "createInstanceSuccess": "インスタンスを作成しました",
+    "createInstanceTitle": "新規インスタンスを作成",
+    "createdAt": "作成日",
+    "creating": "インスタンスを作成中...",
+    "instanceName": "インスタンス名",
+    "instanceNamePlaceholder": "インスタンス名を入力（任意）",
+    "instances": "インスタンス",
+    "noActiveInstances": "アクティブなインスタンスはありません",
+    "noInstances": "インスタンスがありません",
+    "players": "人",
+    "viewDetails": "詳細を見る",
+    "worldInfo": "ワールド情報",
+    "notFound": {
+      "title": "ワールドが見つかりません",
+      "description": "このワールドは存在しないか、削除された可能性があります。"
+    }
+  },
+
+  "instance": {
+    "back": "戻る",
+    "hostedBy": "{name} がホスト",
+    "instance": "インスタンス",
+    "join": "参加",
+    "notFound": {
+      "title": "インスタンスが見つかりません",
+      "description": "このインスタンスは存在しないか、削除された可能性があります。",
+      "backToHome": "ホームに戻る"
+    }
+  },
+
+  "lobby": {
+    "connected": "接続完了",
+    "connecting": "サーバー接続中...",
+    "failed": "接続に失敗しました",
+    "retry": "再試行",
+    "waitingForConnection": "接続待機中..."
+  },
+
+  "instanceLobby": {
+    "capacity": "最大人数",
+    "host": "ホスト",
+    "joinButton": "インスタンスに参加",
+    "player": "あなた",
+    "privacyText": "このアプリは外部サービスに情報を送信します。個人情報などの機密情報は送信しないでください。",
+    "privacyTitle": "プライバシーに関するお知らせ",
+    "world": "ワールド"
+  },
+
+  "experience": {
+    "leave": "退出",
+    "leaveCancel": "キャンセル",
+    "leaveConfirm": "退出する",
+    "leaveConfirmDescription": "現在のセッションから退出します。よろしいですか？",
+    "leaveConfirmTitle": "退出しますか？"
+  },
+
+  "worldInfo": {
+    "title": "このワールドについて",
+    "description": "💫 他のプレイヤーとリアルタイムで一緒に探索しよう",
+    "tooltip": "このワールドについて",
+    "aiChatDesc": "AIアシスタントがチャット内容の要約や画像生成をサポートします。",
+    "communicationTitle": "コミュニケーション",
+    "controlsTitle": "移動・視点操作",
+    "intro": "このワールドでは、他のプレイヤーとリアルタイムで交流しながら3D空間を探索できます。音声チャット、テキストチャット、AIエージェントとの会話を楽しめます。",
+    "jump": "ジャンプ",
+    "lookAround": "視点を回転（ドラッグ）",
+    "move": "移動する",
+    "openAIChat": "AIチャットを開く",
+    "openPreferences": "設定を開く/閉じる",
+    "run": "走る",
+    "shortcutsTitle": "ショートカットキー",
+    "textChatDesc": "メッセージを入力してEnterで送信。全員に表示されます。",
+    "toggleMic": "マイクのミュート/解除",
+    "toggleView": "一人称/三人称視点の切り替え",
+    "voiceChatDesc": "画面下部のマイクボタンをクリックでミュート/解除。発話内容は自動で文字起こしされます。"
+  },
+
+  "dock": {
+    "agent": "エージェント",
+    "aiAgent": "AIエージェント",
+    "chat": "チャット"
+  },
+
+  "settings": {
+    "title": "環境設定",
+    "description": "⚙️ 環境設定を更新",
+    "tooltip": "環境設定",
+    "avatar": "アバター",
+    "instanceId": "インスタンスID",
+    "sessionId": "セッションID",
+    "sessionInfo": "セッション情報",
+    "username": "ユーザー名",
+    "usernamePlaceholder": "名前を入力",
+    "notifications": {
+      "avatar": {
+        "error": "アバターの更新に失敗しました",
+        "loading": "アバターを更新中...",
+        "success": "アバターを更新しました"
+      },
+      "displayName": {
+        "error": "表示名の更新に失敗しました",
+        "loading": "表示名を更新中...",
+        "success": "表示名を更新しました"
+      },
+      "language": {
+        "error": "言語設定の更新に失敗しました",
+        "loading": "言語設定を更新中...",
+        "success": "言語設定を更新しました"
+      }
+    },
+    "tabs": {
+      "controls": "操作",
+      "general": "一般",
+      "language": "言語"
+    }
+  },
+
+  "viewToggle": {
+    "firstPerson": "一人称視点",
+    "thirdPerson": "三人称視点"
+  },
+
+  "voiceChat": {
+    "connectToTalk": "通話するにはルームに接続してください",
+    "mute": "マイクをミュート",
+    "permissionDenied": "マイクの権限が拒否されました",
+    "unmute": "マイクのミュートを解除"
+  },
+
+  "caption": {
+    "waitingForSpeech": "文字起こし待機中..."
+  },
+
+  "statusBar": {
+    "connected": "接続済み",
+    "connecting": "接続中…",
+    "connectionFailedUnknown": "不明なエラーにより接続に失敗しました。",
+    "connectionStatus": "サーバー接続状態",
+    "disconnected": "切断済み",
+    "failed": "接続失敗",
+    "idle": "待機中",
+    "onlyPlayerOnline": "あなただけがオンラインです",
+    "player": "プレイヤー",
+    "players": "プレイヤー",
+    "playersOnline": "{count}人のプレイヤーがオンライン（あなたを含む）",
+    "transcription": "ライブキャプション",
+    "transcriptionActive": "文字起こし中",
+    "transcriptionInactive": "文字起こし停止中"
+  },
+
+  "chat": {
+    "title": "チャット",
+    "inputAriaLabel": "チャットメッセージ",
+    "noMessagesYet": "メッセージはまだありません",
+    "openChat": "チャットウィンドウを開く",
+    "placeholder": "メッセージを入力",
+    "pressEnterToSend": "<key>Enter</key>で送信",
+    "startConversation": "会話を始めるとここに表示されます",
+    "typePlaceholder": "メッセージを入力..."
+  },
+
+  "aiChat": {
+    "title": "AIエージェント",
+    "connectToSend": "画像を送信するにはルームに接続してください",
+    "conversations": "会話一覧",
+    "delete": "削除",
+    "deleteConfirm": "この会話を削除しますか？",
+    "disclaimer": "AIエージェントの回答は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。",
+    "emptyStateDescription": "何でも聞いてください！",
+    "emptyStateTitle": "AIエージェント",
+    "errorGeneratingImage": "画像生成エラー: {error}",
+    "generatingImage": "画像を生成中: {prompt}",
+    "newConversation": "新しい会話",
+    "noConversations": "会話がありません",
+    "refine": "調整",
+    "refinePlaceholder": "例: もっとアニメ風にして",
+    "refineTooltip": "画像を再生成するための指示を追加",
+    "regenerate": "再生成",
+    "rename": "名前を変更",
+    "sendToChat": "送信",
+    "relativeDate": {
+      "daysAgo": "{count}日前",
+      "yesterday": "昨日"
+    },
+    "suggestions": {
+      "explainFlow": "会話の流れを説明して",
+      "generateImage": "チャットに基づいて画像を生成して",
+      "misunderstandings": "誤解はありますか？",
+      "summarize": "このチャットを要約して"
+    },
+    "welcome": {
+      "greeting": "{name}さん",
+      "placeholder": "AIエージェントに相談",
+      "question": "何から始めますか？"
+    }
+  },
+
+  "language": {
+    "english": "English",
+    "japanese": "日本語",
+    "selectLanguage": "言語を選択"
   }
 }
