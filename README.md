@@ -67,14 +67,15 @@ cp .env.example .env.local
 ```
 
 | Variable | Description |
-|----------|-------------|| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (anon) key || `LIVEKIT_API_KEY` | LiveKit API key |
+|----------|-------------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (anon) key |
+| `LIVEKIT_API_KEY` | LiveKit API key |
 | `LIVEKIT_API_SECRET` | LiveKit API secret |
 | `LIVEKIT_URL` | LiveKit WebSocket URL |
 | `DEEPGRAM_PROJECT_ID` | Deepgram project ID |
 | `DEEPGRAM_API_KEY` | Deepgram API key |
 | `OPENAI_API_KEY` | OpenAI API key |
-| `AI_GATEWAY_API_KEY` | Vercel AI Gateway key |
 | `BLOB_READ_WRITE_TOKEN` | Vercel Blob token |
 
 ### Development
@@ -136,7 +137,7 @@ src/
 │   └── supabase/            # Supabase client (server/browser/middleware)
 ├── stores/                  # Zustand state stores (8 stores)
 ├── types/                   # TypeScript types (7 type files)
-└── utils/                   # Utility functions (7 utilities)
+└── utils/                   # Utility functions (8 utilities)
 ```
 
 ## Scripts
