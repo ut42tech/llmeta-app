@@ -71,7 +71,6 @@ cp .env.example .env.local
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Supabase publishable (anon) key || `LIVEKIT_API_KEY` | LiveKit API key |
 | `LIVEKIT_API_SECRET` | LiveKit API secret |
 | `LIVEKIT_URL` | LiveKit WebSocket URL |
-| `LIVEKIT_DEFAULT_ROOM` | Default room name |
 | `DEEPGRAM_PROJECT_ID` | Deepgram project ID |
 | `DEEPGRAM_API_KEY` | Deepgram API key |
 | `OPENAI_API_KEY` | OpenAI API key |
