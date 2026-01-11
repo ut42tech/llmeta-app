@@ -2,7 +2,6 @@ import { openai } from "@ai-sdk/openai";
 import {
   convertToModelMessages,
   createIdGenerator,
-  gateway,
   generateImage,
   streamText,
   tool,
@@ -255,7 +254,7 @@ export async function POST(req: Request) {
 
   // Stream AI response
   const result = streamText({
-    model: gateway("openai/gpt-5.2"),
+    model: openai("gpt-5.2"),
     messages: await convertToModelMessages(allMessages),
     system: buildSystemPrompt(chatHistory, context),
     tools: { generateImage: imageGenerationTool },
